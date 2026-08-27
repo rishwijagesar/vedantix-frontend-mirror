@@ -1,0 +1,10 @@
+{
+  "name": "Vedantix",
+  "short_name": "Vedantix",
+  "description": "Webdesign, websites, hosting, onderhoud, SEO, AEO, GEO en AI-vindbaarheid voor lokale ondernemers.",
+  "lang": "nl-NL",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#111827"
+}

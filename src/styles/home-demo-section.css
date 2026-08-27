@@ -1,0 +1,16 @@
+.demo-section{
+  padding:96px 5%;
+  background:#fff;
+}
+
+@media(max-width:768px){
+  .demo-section{
+    padding:80px 5%;
+  }
+}
+
+@media(max-width:480px){
+  .demo-section{
+    padding:60px 5%;
+  }
+}
