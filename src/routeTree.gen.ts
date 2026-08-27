@@ -10,33 +10,402 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SplatRouteImport } from './routes/$'
+import { Route as AiVindbaarheidRouteImport } from './routes/ai-vindbaarheid'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DataDeletionRouteImport } from './routes/data-deletion'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GroeimodelRouteImport } from './routes/groeimodel'
+import { Route as OnlineGroeiAuditRouteImport } from './routes/online-groei-audit'
+import { Route as PlanningRouteImport } from './routes/planning'
+import { Route as PrijzenRouteImport } from './routes/prijzen'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ProcesRouteImport } from './routes/proces'
+import { Route as ResultatenRouteImport } from './routes/resultaten'
+import { Route as StartersRouteImport } from './routes/starters'
+import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as VedantixhomeRouteImport } from './routes/vedantixhome'
+import { Route as VoorwieRouteImport } from './routes/voorwie'
+import { Route as WebsiteFotograafRouteImport } from './routes/website-fotograaf'
+import { Route as WebsiteKapperRouteImport } from './routes/website-kapper'
+import { Route as WebsiteKlusbedrijfRouteImport } from './routes/website-klusbedrijf'
+import { Route as WebsiteRestaurantRouteImport } from './routes/website-restaurant'
+import { Route as WebsiteSalonRouteImport } from './routes/website-salon'
+import { Route as WebsiteSchoonmaakbedrijfRouteImport } from './routes/website-schoonmaakbedrijf'
+import { Route as WebsiteZzpRouteImport } from './routes/website-zzp'
+import { Route as BlogIndexRouteImport } from './routes/blog/index'
+import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as WebsiteBrancheIndexRouteImport } from './routes/website/$branche/index'
+import { Route as WebsiteBrancheStadRouteImport } from './routes/website/$branche/$stad'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiVindbaarheidRoute = AiVindbaarheidRouteImport.update({
+  id: '/ai-vindbaarheid',
+  path: '/ai-vindbaarheid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataDeletionRoute = DataDeletionRouteImport.update({
+  id: '/data-deletion',
+  path: '/data-deletion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroeimodelRoute = GroeimodelRouteImport.update({
+  id: '/groeimodel',
+  path: '/groeimodel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnlineGroeiAuditRoute = OnlineGroeiAuditRouteImport.update({
+  id: '/online-groei-audit',
+  path: '/online-groei-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanningRoute = PlanningRouteImport.update({
+  id: '/planning',
+  path: '/planning',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrijzenRoute = PrijzenRouteImport.update({
+  id: '/prijzen',
+  path: '/prijzen',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcesRoute = ProcesRouteImport.update({
+  id: '/proces',
+  path: '/proces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResultatenRoute = ResultatenRouteImport.update({
+  id: '/resultaten',
+  path: '/resultaten',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartersRoute = StartersRouteImport.update({
+  id: '/starters',
+  path: '/starters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VedantixhomeRoute = VedantixhomeRouteImport.update({
+  id: '/vedantixhome',
+  path: '/vedantixhome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VoorwieRoute = VoorwieRouteImport.update({
+  id: '/voorwie',
+  path: '/voorwie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteFotograafRoute = WebsiteFotograafRouteImport.update({
+  id: '/website-fotograaf',
+  path: '/website-fotograaf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteKapperRoute = WebsiteKapperRouteImport.update({
+  id: '/website-kapper',
+  path: '/website-kapper',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteKlusbedrijfRoute = WebsiteKlusbedrijfRouteImport.update({
+  id: '/website-klusbedrijf',
+  path: '/website-klusbedrijf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteRestaurantRoute = WebsiteRestaurantRouteImport.update({
+  id: '/website-restaurant',
+  path: '/website-restaurant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteSalonRoute = WebsiteSalonRouteImport.update({
+  id: '/website-salon',
+  path: '/website-salon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteSchoonmaakbedrijfRoute =
+  WebsiteSchoonmaakbedrijfRouteImport.update({
+    id: '/website-schoonmaakbedrijf',
+    path: '/website-schoonmaakbedrijf',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const WebsiteZzpRoute = WebsiteZzpRouteImport.update({
+  id: '/website-zzp',
+  path: '/website-zzp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteBrancheIndexRoute = WebsiteBrancheIndexRouteImport.update({
+  id: '/website/$branche/',
+  path: '/website/$branche/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteBrancheStadRoute = WebsiteBrancheStadRouteImport.update({
+  id: '/website/$branche/$stad',
+  path: '/website/$branche/$stad',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/ai-vindbaarheid': typeof AiVindbaarheidRoute
+  '/contact': typeof ContactRoute
+  '/data-deletion': typeof DataDeletionRoute
+  '/faq': typeof FaqRoute
+  '/groeimodel': typeof GroeimodelRoute
+  '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/planning': typeof PlanningRoute
+  '/prijzen': typeof PrijzenRoute
+  '/privacy': typeof PrivacyRoute
+  '/proces': typeof ProcesRoute
+  '/resultaten': typeof ResultatenRoute
+  '/starters': typeof StartersRoute
+  '/templates': typeof TemplatesRoute
+  '/terms': typeof TermsRoute
+  '/vedantixhome': typeof VedantixhomeRoute
+  '/voorwie': typeof VoorwieRoute
+  '/website-fotograaf': typeof WebsiteFotograafRoute
+  '/website-kapper': typeof WebsiteKapperRoute
+  '/website-klusbedrijf': typeof WebsiteKlusbedrijfRoute
+  '/website-restaurant': typeof WebsiteRestaurantRoute
+  '/website-salon': typeof WebsiteSalonRoute
+  '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
+  '/website-zzp': typeof WebsiteZzpRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
+  '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
+  '/website/$branche/': typeof WebsiteBrancheIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/ai-vindbaarheid': typeof AiVindbaarheidRoute
+  '/contact': typeof ContactRoute
+  '/data-deletion': typeof DataDeletionRoute
+  '/faq': typeof FaqRoute
+  '/groeimodel': typeof GroeimodelRoute
+  '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/planning': typeof PlanningRoute
+  '/prijzen': typeof PrijzenRoute
+  '/privacy': typeof PrivacyRoute
+  '/proces': typeof ProcesRoute
+  '/resultaten': typeof ResultatenRoute
+  '/starters': typeof StartersRoute
+  '/templates': typeof TemplatesRoute
+  '/terms': typeof TermsRoute
+  '/vedantixhome': typeof VedantixhomeRoute
+  '/voorwie': typeof VoorwieRoute
+  '/website-fotograaf': typeof WebsiteFotograafRoute
+  '/website-kapper': typeof WebsiteKapperRoute
+  '/website-klusbedrijf': typeof WebsiteKlusbedrijfRoute
+  '/website-restaurant': typeof WebsiteRestaurantRoute
+  '/website-salon': typeof WebsiteSalonRoute
+  '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
+  '/website-zzp': typeof WebsiteZzpRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog': typeof BlogIndexRoute
+  '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
+  '/website/$branche': typeof WebsiteBrancheIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/ai-vindbaarheid': typeof AiVindbaarheidRoute
+  '/contact': typeof ContactRoute
+  '/data-deletion': typeof DataDeletionRoute
+  '/faq': typeof FaqRoute
+  '/groeimodel': typeof GroeimodelRoute
+  '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/planning': typeof PlanningRoute
+  '/prijzen': typeof PrijzenRoute
+  '/privacy': typeof PrivacyRoute
+  '/proces': typeof ProcesRoute
+  '/resultaten': typeof ResultatenRoute
+  '/starters': typeof StartersRoute
+  '/templates': typeof TemplatesRoute
+  '/terms': typeof TermsRoute
+  '/vedantixhome': typeof VedantixhomeRoute
+  '/voorwie': typeof VoorwieRoute
+  '/website-fotograaf': typeof WebsiteFotograafRoute
+  '/website-kapper': typeof WebsiteKapperRoute
+  '/website-klusbedrijf': typeof WebsiteKlusbedrijfRoute
+  '/website-restaurant': typeof WebsiteRestaurantRoute
+  '/website-salon': typeof WebsiteSalonRoute
+  '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
+  '/website-zzp': typeof WebsiteZzpRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
+  '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
+  '/website/$branche/': typeof WebsiteBrancheIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/ai-vindbaarheid'
+    | '/contact'
+    | '/data-deletion'
+    | '/faq'
+    | '/groeimodel'
+    | '/online-groei-audit'
+    | '/planning'
+    | '/prijzen'
+    | '/privacy'
+    | '/proces'
+    | '/resultaten'
+    | '/starters'
+    | '/templates'
+    | '/terms'
+    | '/vedantixhome'
+    | '/voorwie'
+    | '/website-fotograaf'
+    | '/website-kapper'
+    | '/website-klusbedrijf'
+    | '/website-restaurant'
+    | '/website-salon'
+    | '/website-schoonmaakbedrijf'
+    | '/website-zzp'
+    | '/blog/$slug'
+    | '/blog/'
+    | '/website/$branche/$stad'
+    | '/website/$branche/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/$'
+    | '/ai-vindbaarheid'
+    | '/contact'
+    | '/data-deletion'
+    | '/faq'
+    | '/groeimodel'
+    | '/online-groei-audit'
+    | '/planning'
+    | '/prijzen'
+    | '/privacy'
+    | '/proces'
+    | '/resultaten'
+    | '/starters'
+    | '/templates'
+    | '/terms'
+    | '/vedantixhome'
+    | '/voorwie'
+    | '/website-fotograaf'
+    | '/website-kapper'
+    | '/website-klusbedrijf'
+    | '/website-restaurant'
+    | '/website-salon'
+    | '/website-schoonmaakbedrijf'
+    | '/website-zzp'
+    | '/blog/$slug'
+    | '/blog'
+    | '/website/$branche/$stad'
+    | '/website/$branche'
+  id:
+    | '__root__'
+    | '/'
+    | '/$'
+    | '/ai-vindbaarheid'
+    | '/contact'
+    | '/data-deletion'
+    | '/faq'
+    | '/groeimodel'
+    | '/online-groei-audit'
+    | '/planning'
+    | '/prijzen'
+    | '/privacy'
+    | '/proces'
+    | '/resultaten'
+    | '/starters'
+    | '/templates'
+    | '/terms'
+    | '/vedantixhome'
+    | '/voorwie'
+    | '/website-fotograaf'
+    | '/website-kapper'
+    | '/website-klusbedrijf'
+    | '/website-restaurant'
+    | '/website-salon'
+    | '/website-schoonmaakbedrijf'
+    | '/website-zzp'
+    | '/blog/$slug'
+    | '/blog/'
+    | '/website/$branche/$stad'
+    | '/website/$branche/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
+  AiVindbaarheidRoute: typeof AiVindbaarheidRoute
+  ContactRoute: typeof ContactRoute
+  DataDeletionRoute: typeof DataDeletionRoute
+  FaqRoute: typeof FaqRoute
+  GroeimodelRoute: typeof GroeimodelRoute
+  OnlineGroeiAuditRoute: typeof OnlineGroeiAuditRoute
+  PlanningRoute: typeof PlanningRoute
+  PrijzenRoute: typeof PrijzenRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ProcesRoute: typeof ProcesRoute
+  ResultatenRoute: typeof ResultatenRoute
+  StartersRoute: typeof StartersRoute
+  TemplatesRoute: typeof TemplatesRoute
+  TermsRoute: typeof TermsRoute
+  VedantixhomeRoute: typeof VedantixhomeRoute
+  VoorwieRoute: typeof VoorwieRoute
+  WebsiteFotograafRoute: typeof WebsiteFotograafRoute
+  WebsiteKapperRoute: typeof WebsiteKapperRoute
+  WebsiteKlusbedrijfRoute: typeof WebsiteKlusbedrijfRoute
+  WebsiteRestaurantRoute: typeof WebsiteRestaurantRoute
+  WebsiteSalonRoute: typeof WebsiteSalonRoute
+  WebsiteSchoonmaakbedrijfRoute: typeof WebsiteSchoonmaakbedrijfRoute
+  WebsiteZzpRoute: typeof WebsiteZzpRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  WebsiteBrancheStadRoute: typeof WebsiteBrancheStadRoute
+  WebsiteBrancheIndexRoute: typeof WebsiteBrancheIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +417,235 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-vindbaarheid': {
+      id: '/ai-vindbaarheid'
+      path: '/ai-vindbaarheid'
+      fullPath: '/ai-vindbaarheid'
+      preLoaderRoute: typeof AiVindbaarheidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-deletion': {
+      id: '/data-deletion'
+      path: '/data-deletion'
+      fullPath: '/data-deletion'
+      preLoaderRoute: typeof DataDeletionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/groeimodel': {
+      id: '/groeimodel'
+      path: '/groeimodel'
+      fullPath: '/groeimodel'
+      preLoaderRoute: typeof GroeimodelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/online-groei-audit': {
+      id: '/online-groei-audit'
+      path: '/online-groei-audit'
+      fullPath: '/online-groei-audit'
+      preLoaderRoute: typeof OnlineGroeiAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planning': {
+      id: '/planning'
+      path: '/planning'
+      fullPath: '/planning'
+      preLoaderRoute: typeof PlanningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prijzen': {
+      id: '/prijzen'
+      path: '/prijzen'
+      fullPath: '/prijzen'
+      preLoaderRoute: typeof PrijzenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proces': {
+      id: '/proces'
+      path: '/proces'
+      fullPath: '/proces'
+      preLoaderRoute: typeof ProcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resultaten': {
+      id: '/resultaten'
+      path: '/resultaten'
+      fullPath: '/resultaten'
+      preLoaderRoute: typeof ResultatenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/starters': {
+      id: '/starters'
+      path: '/starters'
+      fullPath: '/starters'
+      preLoaderRoute: typeof StartersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vedantixhome': {
+      id: '/vedantixhome'
+      path: '/vedantixhome'
+      fullPath: '/vedantixhome'
+      preLoaderRoute: typeof VedantixhomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/voorwie': {
+      id: '/voorwie'
+      path: '/voorwie'
+      fullPath: '/voorwie'
+      preLoaderRoute: typeof VoorwieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-fotograaf': {
+      id: '/website-fotograaf'
+      path: '/website-fotograaf'
+      fullPath: '/website-fotograaf'
+      preLoaderRoute: typeof WebsiteFotograafRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-kapper': {
+      id: '/website-kapper'
+      path: '/website-kapper'
+      fullPath: '/website-kapper'
+      preLoaderRoute: typeof WebsiteKapperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-klusbedrijf': {
+      id: '/website-klusbedrijf'
+      path: '/website-klusbedrijf'
+      fullPath: '/website-klusbedrijf'
+      preLoaderRoute: typeof WebsiteKlusbedrijfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-restaurant': {
+      id: '/website-restaurant'
+      path: '/website-restaurant'
+      fullPath: '/website-restaurant'
+      preLoaderRoute: typeof WebsiteRestaurantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-salon': {
+      id: '/website-salon'
+      path: '/website-salon'
+      fullPath: '/website-salon'
+      preLoaderRoute: typeof WebsiteSalonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-schoonmaakbedrijf': {
+      id: '/website-schoonmaakbedrijf'
+      path: '/website-schoonmaakbedrijf'
+      fullPath: '/website-schoonmaakbedrijf'
+      preLoaderRoute: typeof WebsiteSchoonmaakbedrijfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-zzp': {
+      id: '/website-zzp'
+      path: '/website-zzp'
+      fullPath: '/website-zzp'
+      preLoaderRoute: typeof WebsiteZzpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website/$branche/': {
+      id: '/website/$branche/'
+      path: '/website/$branche'
+      fullPath: '/website/$branche/'
+      preLoaderRoute: typeof WebsiteBrancheIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website/$branche/$stad': {
+      id: '/website/$branche/$stad'
+      path: '/website/$branche/$stad'
+      fullPath: '/website/$branche/$stad'
+      preLoaderRoute: typeof WebsiteBrancheStadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
+  AiVindbaarheidRoute: AiVindbaarheidRoute,
+  ContactRoute: ContactRoute,
+  DataDeletionRoute: DataDeletionRoute,
+  FaqRoute: FaqRoute,
+  GroeimodelRoute: GroeimodelRoute,
+  OnlineGroeiAuditRoute: OnlineGroeiAuditRoute,
+  PlanningRoute: PlanningRoute,
+  PrijzenRoute: PrijzenRoute,
+  PrivacyRoute: PrivacyRoute,
+  ProcesRoute: ProcesRoute,
+  ResultatenRoute: ResultatenRoute,
+  StartersRoute: StartersRoute,
+  TemplatesRoute: TemplatesRoute,
+  TermsRoute: TermsRoute,
+  VedantixhomeRoute: VedantixhomeRoute,
+  VoorwieRoute: VoorwieRoute,
+  WebsiteFotograafRoute: WebsiteFotograafRoute,
+  WebsiteKapperRoute: WebsiteKapperRoute,
+  WebsiteKlusbedrijfRoute: WebsiteKlusbedrijfRoute,
+  WebsiteRestaurantRoute: WebsiteRestaurantRoute,
+  WebsiteSalonRoute: WebsiteSalonRoute,
+  WebsiteSchoonmaakbedrijfRoute: WebsiteSchoonmaakbedrijfRoute,
+  WebsiteZzpRoute: WebsiteZzpRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  WebsiteBrancheStadRoute: WebsiteBrancheStadRoute,
+  WebsiteBrancheIndexRoute: WebsiteBrancheIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

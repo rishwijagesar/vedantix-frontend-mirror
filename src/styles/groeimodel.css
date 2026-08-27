@@ -1,0 +1,492 @@
+.groei-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  color: #0f172a;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.groei-page a {
+  text-decoration: none;
+}
+
+.groei-shell {
+  width: min(1160px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.groei-hero {
+  padding: 118px 0 70px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 78% 18%, rgba(96, 165, 250, .2), transparent 34%),
+    radial-gradient(circle at 18% 78%, rgba(34, 197, 94, .14), transparent 30%),
+    linear-gradient(150deg, #061023 0%, #0c1a33 55%, #0d2746 100%);
+}
+
+.groei-hero-grid {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+}
+
+.groei-kicker,
+.groei-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  color: #2563eb;
+  font-size: .72rem;
+  font-weight: 950;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.groei-kicker {
+  margin-bottom: 18px;
+  padding: 8px 13px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .07);
+  color: rgba(255, 255, 255, .88);
+}
+
+.groei-hero h1 {
+  max-width: 760px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.55rem, 10vw, 5rem);
+  font-weight: 950;
+  line-height: .98;
+  letter-spacing: 0;
+}
+
+.groei-hero-copy p {
+  max-width: 680px;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, .76);
+  font-size: clamp(1rem, 2.6vw, 1.12rem);
+  line-height: 1.75;
+}
+
+.groei-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  margin-top: 28px;
+  padding: 13px 20px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: .93rem;
+  font-weight: 950;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.groei-btn:hover {
+  transform: translateY(-1px);
+}
+
+.groei-btn-primary {
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .2);
+}
+
+.groei-final-card .groei-btn-primary {
+  background: #0f172a;
+  color: #fff;
+}
+
+.groei-hero-panel {
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 8px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .06));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .24);
+}
+
+.groei-panel-logo {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2563eb, #22c55e);
+  color: #fff;
+  font-size: 1.7rem;
+  font-weight: 950;
+}
+
+.groei-hero-panel h2 {
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: 1.45rem;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.groei-hero-panel p {
+  margin: 0;
+  color: rgba(255, 255, 255, .74);
+  line-height: 1.7;
+}
+
+.groei-panel-points {
+  display: grid;
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.groei-panel-points span {
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .07);
+  color: rgba(255, 255, 255, .86);
+  font-size: .82rem;
+  font-weight: 850;
+}
+
+.groei-section {
+  padding: 72px 0;
+  background: #fff;
+}
+
+.groei-section-muted {
+  background: #f4f7fb;
+}
+
+.groei-section-dark {
+  background: #071225;
+  color: #fff;
+}
+
+.groei-section-heading {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.groei-section-heading.center {
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+}
+
+.groei-section-heading h2,
+.groei-final-card h2 {
+  margin: 8px 0 0;
+  color: #0f172a;
+  font-size: clamp(1.9rem, 7vw, 3.2rem);
+  font-weight: 950;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.groei-section-dark .groei-section-heading h2,
+.groei-section-dark .groei-label {
+  color: #fff;
+}
+
+.groei-benefit-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.groei-benefit-card,
+.groei-compare-card,
+.groei-roadmap-step,
+.groei-final-card {
+  border: 1px solid #dbe4f0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, .065);
+}
+
+.groei-benefit-card {
+  padding: 24px;
+}
+
+.groei-benefit-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.groei-benefit-card h3,
+.groei-compare-card h3,
+.groei-roadmap-step h3 {
+  margin: 0 0 9px;
+  color: #0f172a;
+  font-size: 1.14rem;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.groei-benefit-card p,
+.groei-roadmap-step p,
+.groei-final-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: .95rem;
+  line-height: 1.7;
+}
+
+.groei-compare-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.groei-compare-card {
+  padding: 24px;
+}
+
+.groei-compare-card.good {
+  border-color: rgba(34, 197, 94, .32);
+}
+
+.groei-compare-card.bad {
+  border-color: rgba(220, 38, 38, .24);
+}
+
+.groei-compare-list {
+  display: grid;
+  gap: 11px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.groei-compare-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #334155;
+  font-size: .95rem;
+  font-weight: 760;
+  line-height: 1.45;
+}
+
+.groei-compare-card.bad svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: #dc2626;
+}
+
+.groei-compare-card.good svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: #16a34a;
+}
+
+.groei-roadmap {
+  display: grid;
+  gap: 14px;
+}
+
+.groei-roadmap-step {
+  position: relative;
+  padding: 24px;
+  text-align: center;
+}
+
+.groei-step-icon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  margin: 0 auto 16px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2563eb, #22c55e);
+  color: #fff;
+}
+
+.groei-step-arrow {
+  margin: 20px auto -3px;
+  color: #2563eb;
+}
+
+.groei-ecosystem {
+  display: grid;
+  gap: 20px;
+  align-items: center;
+}
+
+.groei-ecosystem-center {
+  display: grid;
+  min-height: 172px;
+  place-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(34, 197, 94, .28), transparent 34%),
+    linear-gradient(145deg, #0d1a33, #0d2a52);
+  color: #fff;
+  text-align: center;
+}
+
+.groei-ecosystem-center strong {
+  display: block;
+  font-size: 1.45rem;
+  font-weight: 950;
+}
+
+.groei-ecosystem-items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.groei-ecosystem-item {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .06);
+  color: rgba(255, 255, 255, .9);
+  font-size: .86rem;
+  font-weight: 850;
+}
+
+.groei-ecosystem-item svg {
+  flex: 0 0 auto;
+  color: #93c5fd;
+}
+
+.groei-roof-copy {
+  display: grid;
+  gap: 10px;
+  max-width: 780px;
+  margin: 28px auto 0;
+  text-align: center;
+}
+
+.groei-roof-copy p {
+  margin: 0;
+  color: rgba(255, 255, 255, .82);
+  font-size: 1.12rem;
+  font-weight: 900;
+}
+
+.groei-final-section {
+  padding: 72px 0;
+  background: #f4f7fb;
+}
+
+.groei-faq-block {
+  margin-bottom: 26px;
+}
+
+.groei-faq-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.groei-faq-card {
+  padding: 22px;
+  border: 1px solid #dbe4f0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, .055);
+}
+
+.groei-faq-card h3 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 1.02rem;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.groei-faq-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: .94rem;
+  line-height: 1.7;
+}
+
+.groei-final-card {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  text-align: center;
+}
+
+.groei-final-card .groei-label {
+  margin: 0 auto;
+}
+
+.groei-final-card p {
+  max-width: 660px;
+  margin: 16px auto 0;
+}
+
+@media (min-width: 760px) {
+  .groei-hero-grid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(300px, .68fr);
+  }
+
+  .groei-benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .groei-compare-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .groei-faq-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .groei-ecosystem {
+    grid-template-columns: .76fr 1.24fr;
+  }
+}
+
+@media (min-width: 1040px) {
+  .groei-benefit-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .groei-roadmap {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .groei-roadmap-step {
+    min-height: 100%;
+  }
+
+  .groei-step-arrow {
+    position: absolute;
+    top: 33px;
+    right: -19px;
+    margin: 0;
+    transform: rotate(-90deg);
+  }
+}
+
+@media (max-width: 620px) {
+  .groei-hero {
+    padding: 104px 0 56px;
+  }
+
+  .groei-btn {
+    width: 100%;
+  }
+
+  .groei-ecosystem-items {
+    grid-template-columns: 1fr;
+  }
+}

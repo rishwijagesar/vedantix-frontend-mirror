@@ -8,8 +8,11 @@
     "types": ["vite/client"],
 
     "moduleResolution": "Bundler",
+    "allowJs": true,
+    "checkJs": false,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": false,
+
     "noEmit": true,
 
     "skipLibCheck": true,

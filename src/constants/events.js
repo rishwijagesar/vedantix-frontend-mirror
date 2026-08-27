@@ -1,0 +1,5 @@
+export const EVENTS = {
+  CREATED: 'CREATED',
+  UPDATED: 'UPDATED',
+  DELETED: 'DELETED'
+};
