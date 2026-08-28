@@ -1,0 +1,61 @@
+name: Sync controlled Vedantix frontend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/sync-controlled-frontend.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Lovable mirror
+        uses: actions/checkout@v4
+        with:
+          path: target
+          fetch-depth: 1
+
+      - name: Checkout controlled Vedantix migration source
+        uses: actions/checkout@v4
+        with:
+          repository: rishwijagesar/vedantix
+          ref: lovable-migration
+          path: source
+          fetch-depth: 1
+
+      - name: Synchronize source into Lovable mirror
+        run: |
+          rsync -a --delete \
+            --exclude '.git/' \
+            --exclude '.lovable/' \
+            source/ target/
+
+          # Lovable must keep its repository/project binding metadata.
+          test -f target/.lovable/project.json
+
+          # AWS production deployment belongs to the original repository, not this Lovable mirror.
+          rm -rf target/infra
+          rm -f target/cf-config.json target/cf-config-updated.json target/cf-etag.txt
+          rm -f target/.github/workflows/deploy.yml target/.github/workflows/deploy-infra.sh
+
+          # One-time workflow: do not leave migration machinery in the finished repository.
+          rm -f target/.github/workflows/sync-controlled-frontend.yml
+
+      - name: Commit synchronized frontend
+        working-directory: target
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git status --short
+          if git diff --cached --quiet; then
+            echo 'Mirror already matches controlled migration source.'
+            exit 0
+          fi
+          git commit -m 'chore: sync controlled Vedantix frontend from migration branch'
+          git push origin HEAD:main
