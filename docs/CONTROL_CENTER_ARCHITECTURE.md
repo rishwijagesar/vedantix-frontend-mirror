@@ -174,3 +174,23 @@ Control Center v0.1 is klaar wanneer:
 - nul demo-data aanwezig is;
 - een domein een read-only DNS-healthscan kan krijgen;
 - een website aan een Lovable-project en GitHub-repo gekoppeld kan worden.
+
+## Bootstrapstatus augustus 2026
+
+Voor de eerste admin-activatie mag `/admin` tijdelijk op de bestaande Lovable mirror-testhost draaien. Dit verandert niet de live AWS-hosting van `vedantix.nl`.
+
+Huidige technische status:
+
+- Supabase Auth + staff allowlist actief;
+- rollen `ADMIN`, `OPERATOR`, `READ_ONLY`;
+- RLS op alle operationele tabellen;
+- security advisors zonder findings;
+- Customers, Domains en Websites CRUD-laag aanwezig;
+- `domain-health-scan` Edge Function actief met JWT-verificatie;
+- A/AAAA, MX, SPF, DMARC en per-domein DKIM-selectors worden gecontroleerd;
+- `domain_latest_checks` gebruikt alleen de nieuwste healthstatus per checktype;
+- Vedantix staat als eerste echte klant in de database;
+- `vedantix.nl` staat geregistreerd met Route 53, Migadu, Lovable en pre-cutover AWS/CloudFront rollbackgegevens;
+- Migadu DKIM-selectors voor `vedantix.nl`: `key1`, `key2`, `key3`.
+
+Na bootstrap hoort het Control Center alsnog als aparte app/repository op `admin.vedantix.nl` te draaien.
