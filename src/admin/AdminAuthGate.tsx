@@ -79,7 +79,7 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
         <div className="cc-auth-card">
           <span className="cc-kicker">Geen toegang</span>
           <h1>Account niet geautoriseerd</h1>
-          <p>Je bent wel ingelogd, maar dit account staat niet in de Vedantix staff-allowlist.</p>
+          <p>Je bent wel ingelogd, maar dit account staat nog niet in de Vedantix staff-allowlist. Na je eerste login kan het account als ADMIN worden geactiveerd.</p>
           <button className="cc-primary-button" type="button" onClick={() => supabase.auth.signOut()}>Uitloggen</button>
         </div>
       </div>
