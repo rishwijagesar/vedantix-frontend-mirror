@@ -1,5 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import AdminControlCenter from "@/admin/AdminControlCenter";
+import AdminAuthGate from "@/admin/AdminAuthGate";
+
+function AdminPage() {
+  return (
+    <AdminAuthGate>
+      <AdminControlCenter />
+    </AdminAuthGate>
+  );
+}
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -12,5 +21,5 @@ export const Route = createFileRoute("/admin")({
       },
     ],
   }),
-  component: AdminControlCenter,
+  component: AdminPage,
 });
