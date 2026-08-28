@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import CustomerPreviewPage from "@/pages/CustomerPreviewPage";
 
 /**
  * Catch-all that reproduces the legacy redirect table from the previous
