@@ -1,0 +1,29 @@
+name: Admin Bootstrap Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/admin-bootstrap-smoke.yml
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for Lovable admin deployment
+        run: |
+          for i in {1..60}; do
+            code=$(curl -sS -L -o /tmp/admin.html -w '%{http_code}' https://vedantix-migration-test.lovable.app/admin || true)
+            echo "attempt=$i status=$code"
+            if [ "$code" = "200" ] && grep -q 'Vedantix Control Center' /tmp/admin.html; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Admin bootstrap page did not become reachable in time.'
+          head -c 1500 /tmp/admin.html || true
+          exit 1
