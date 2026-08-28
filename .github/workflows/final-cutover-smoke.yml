@@ -1,0 +1,217 @@
+name: Final Cutover Smoke
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/final-cutover-smoke.yml
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Wait for Lovable deployment
+        run: |
+          for i in {1..120}; do
+            code=$(curl -sS -L -o /tmp/lovable-home.html -w '%{http_code}' https://vedantix-migration-test.lovable.app/ || true)
+            echo "attempt=$i status=$code"
+            if [ "$code" = "200" ] && grep -q 'Vedantix' /tmp/lovable-home.html; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Lovable deployment did not become publicly reachable in time.'
+          head -c 1000 /tmp/lovable-home.html || true
+          exit 1
+
+      - name: Smoke public API proxy
+        run: |
+          status=$(curl -sS -o /tmp/pricing.body -D /tmp/pricing.headers -w '%{http_code}' https://vedantix-migration-test.lovable.app/api/pricing)
+          echo "pricing_status=$status"
+          test "$status" = "200"
+          grep -Eiq '^content-type: .*json' /tmp/pricing.headers
+          grep -q 'STARTER' /tmp/pricing.body
+
+          status=$(curl -sS -o /tmp/preview.body -D /tmp/preview.headers -w '%{http_code}' https://vedantix-migration-test.lovable.app/api/preview/nonexistent-migration-smoke/html)
+          echo "preview_status=$status"
+          test "$status" = "404"
+          grep -q 'Preview not found' /tmp/preview.body
+
+          status=$(curl -sS -o /tmp/audit.body -D /tmp/audit.headers -w '%{http_code}' -X OPTIONS https://vedantix-migration-test.lovable.app/api/audit)
+          echo "audit_options_status=$status"
+          test "$status" = "204"
+
+      - name: Check SEO and AI discovery files
+        run: |
+          for path in robots.txt sitemap.xml llms.txt llms-full.txt .well-known/llms.txt; do
+            code=$(curl -sS -L -o "/tmp/${path//\//_}" -w '%{http_code}' "https://vedantix-migration-test.lovable.app/$path")
+            echo "$path status=$code"
+            test "$code" = "200"
+          done
+          grep -q 'vedantix.nl' /tmp/robots.txt
+          grep -q '<urlset' /tmp/sitemap.xml
+          grep -q 'Vedantix' /tmp/llms.txt
+          grep -q 'Vedantix' /tmp/llms-full.txt
+          grep -q 'Vedantix' /tmp/.well-known_llms.txt
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Browser route and visual parity
+        run: |
+          mkdir -p final-parity
+          node <<'EOF'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+
+          const PROD = 'https://vedantix.nl';
+          const LOVABLE = 'https://vedantix-migration-test.lovable.app';
+          const routes = [
+            ['home','/'],
+            ['prijzen','/prijzen'],
+            ['resultaten','/resultaten'],
+            ['contact','/contact'],
+            ['faq','/faq'],
+            ['audit','/online-groei-audit'],
+            ['ai','/ai-vindbaarheid'],
+            ['blog','/blog'],
+          ];
+          const viewports = [
+            ['desktop',{width:1440,height:1000}],
+            ['mobile',{width:390,height:844}],
+          ];
+
+          function normalizeText(s) { return (s || '').replace(/\s+/g,' ').trim(); }
+
+          async function signature(page) {
+            return await page.evaluate(() => {
+              const css = (el) => el ? getComputedStyle(el) : null;
+              const h1 = document.querySelector('h1');
+              const body = css(document.body);
+              const main = document.querySelector('main');
+              const headings = [...document.querySelectorAll('h1,h2')].map(e => e.textContent.replace(/\s+/g,' ').trim()).slice(0,20);
+              const nav = [...document.querySelectorAll('nav a')].map(a => a.textContent.replace(/\s+/g,' ').trim()).filter(Boolean).slice(0,20);
+              const ctas = [...document.querySelectorAll('a,button')].map(a => a.textContent.replace(/\s+/g,' ').trim()).filter(Boolean).slice(0,40);
+              return {
+                title: document.title,
+                h1: h1 ? h1.textContent.replace(/\s+/g,' ').trim() : null,
+                h1Style: h1 ? [css(h1).fontSize, css(h1).fontFamily, css(h1).fontWeight, css(h1).letterSpacing, css(h1).lineHeight] : null,
+                bodyStyle: [body.fontSize, body.fontFamily, body.backgroundColor, body.color],
+                nav,
+                headings,
+                ctas,
+                footerLinks: document.querySelectorAll('footer a').length,
+                mainWidth: main ? Math.round(main.getBoundingClientRect().width) : null,
+                scrollHeight: document.documentElement.scrollHeight,
+              };
+            });
+          }
+
+          (async () => {
+            const browser = await chromium.launch({headless:true});
+            const results = {};
+            let failed = false;
+
+            for (const [vpName, viewport] of viewports) {
+              const context = await browser.newContext({viewport});
+              for (const [routeName, route] of routes) {
+                const pair = {};
+                for (const [targetName, base] of [['production',PROD],['lovable',LOVABLE]]) {
+                  const page = await context.newPage();
+                  const pageErrors = [];
+                  page.on('pageerror', e => pageErrors.push(e.message));
+                  const response = await page.goto(base + route, {waitUntil:'domcontentloaded', timeout:60000});
+                  await page.waitForTimeout(3000);
+                  pair[targetName] = {
+                    status: response ? response.status() : null,
+                    url: page.url(),
+                    sig: await signature(page),
+                    pageErrors,
+                  };
+                  await page.screenshot({path:`final-parity/${vpName}-${targetName}-${routeName}.png`, fullPage:true});
+                  await page.close();
+                }
+
+                const a = pair.production.sig;
+                const b = pair.lovable.sig;
+                const exactFields = ['title','h1','nav','headings','footerLinks','mainWidth'];
+                const diffs = [];
+                for (const field of exactFields) {
+                  if (JSON.stringify(a[field]) !== JSON.stringify(b[field])) diffs.push(field);
+                }
+                if (a.h1Style && b.h1Style && JSON.stringify(a.h1Style) !== JSON.stringify(b.h1Style)) diffs.push('h1Style');
+                if (a.bodyStyle && b.bodyStyle && JSON.stringify(a.bodyStyle) !== JSON.stringify(b.bodyStyle)) diffs.push('bodyStyle');
+                const hA = a.scrollHeight || 0, hB = b.scrollHeight || 0;
+                const heightDelta = hA && hB ? Math.abs(hA-hB)/Math.max(hA,hB) : 0;
+                if (heightDelta > 0.05) diffs.push(`scrollHeight:${hA}->${hB}`);
+                if (pair.production.status !== 200 || pair.lovable.status !== 200) diffs.push('status');
+                if (pair.lovable.pageErrors.length) diffs.push(`pageErrors:${pair.lovable.pageErrors.join('|')}`);
+
+                results[`${vpName}:${route}`] = {diffs, pair};
+                if (diffs.length) {
+                  console.error('PARITY_DIFF', vpName, route, diffs);
+                  failed = true;
+                } else {
+                  console.log('PARITY_OK', vpName, route);
+                }
+              }
+              await context.close();
+            }
+
+            const context = await browser.newContext({viewport:{width:1280,height:900}});
+            const routeCases = [
+              ['/pakketvergelijking', '/prijzen#vergelijk'],
+              ['/foo/bar/baz', '/'],
+              ['/login', '/'],
+              ['/klantenportaal', '/'],
+              ['/ClientPortal', '/'],
+              ['/CRM', '/'],
+              ['/admin', '/'],
+            ];
+            for (const [route, expectedPathAndHash] of routeCases) {
+              const p = await context.newPage();
+              await p.goto(LOVABLE + route, {waitUntil:'domcontentloaded', timeout:60000});
+              await p.waitForTimeout(800);
+              const u = new URL(p.url());
+              const actual = u.pathname + u.hash;
+              console.log('ROUTE', route, '=>', actual);
+              if (actual !== expectedPathAndHash) { failed = true; console.error('ROUTE_FAIL', route, actual, expectedPathAndHash); }
+              await p.close();
+            }
+
+            const p = await context.newPage();
+            await p.goto(LOVABLE + '/nonexistent-migration-smoke', {waitUntil:'domcontentloaded', timeout:60000});
+            await p.waitForTimeout(1500);
+            const previewText = normalizeText(await p.locator('body').innerText());
+            console.log('PREVIEW_ROUTE_TEXT', previewText.slice(0,200));
+            if (!previewText.includes('Preview niet beschikbaar') && !previewText.includes('Preview laden')) {
+              failed = true;
+              console.error('PREVIEW_ROUTE_FAIL');
+            }
+            await p.close();
+            await context.close();
+
+            await browser.close();
+            fs.writeFileSync('final-parity/results.json', JSON.stringify(results, null, 2));
+            if (failed) process.exit(1);
+          })().catch(err => { console.error(err); process.exit(1); });
+          EOF
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vedantix-final-cutover-parity
+          path: final-parity
+          retention-days: 7
