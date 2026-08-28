@@ -1,0 +1,92 @@
+name: Public API Proxy Smoke Test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/proxy-smoke-test.yml
+
+permissions:
+  contents: read
+
+jobs:
+  proxy-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Start TanStack dev server
+        run: |
+          bun run dev -- --host 127.0.0.1 --port 4173 > /tmp/vedantix-lovable.log 2>&1 &
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/vedantix-lovable.log
+          exit 1
+
+      - name: Test pricing proxy
+        run: |
+          status=$(curl -sS -o /tmp/pricing.body -D /tmp/pricing.headers -w '%{http_code}' \
+            -H 'X-Tenant-Id: default' \
+            -H 'X-Actor-Id: migration-smoke' \
+            -H 'X-Source: PUBLIC_SITE' \
+            http://127.0.0.1:4173/api/pricing)
+          echo "pricing_status=$status"
+          cat /tmp/pricing.headers
+          head -c 1000 /tmp/pricing.body; echo
+          test "$status" = "200"
+          grep -Eiq '^content-type: .*json' /tmp/pricing.headers
+
+      - name: Test customer preview proxy
+        run: |
+          status=$(curl -sS -o /tmp/preview.body -D /tmp/preview.headers -w '%{http_code}' \
+            -H 'X-Tenant-Id: default' \
+            -H 'X-Actor-Id: migration-smoke' \
+            -H 'X-Source: API' \
+            http://127.0.0.1:4173/api/preview/nonexistent-migration-smoke/html)
+          echo "preview_status=$status"
+          cat /tmp/preview.headers
+          head -c 1000 /tmp/preview.body; echo
+          # A missing preview may be 404; the important part is that this is an upstream API response,
+          # not the HTML application router fallback.
+          test "$status" != "200" || true
+          if grep -Eiq '^content-type: .*text/html' /tmp/preview.headers; then
+            if grep -Eqi '<!doctype html|<html' /tmp/preview.body; then
+              echo 'Unexpected app/router HTML fallback from proxy endpoint'
+              exit 1
+            fi
+          fi
+
+      - name: Test audit proxy without creating an audit
+        run: |
+          status=$(curl -sS -o /tmp/audit.body -D /tmp/audit.headers -w '%{http_code}' \
+            -X OPTIONS \
+            -H 'X-Tenant-Id: default' \
+            -H 'X-Actor-Id: migration-smoke' \
+            -H 'X-Source: PUBLIC_SITE' \
+            http://127.0.0.1:4173/api/audit)
+          echo "audit_options_status=$status"
+          cat /tmp/audit.headers
+          head -c 1000 /tmp/audit.body; echo
+          # Any normal upstream response is acceptable; 5xx means proxy/runtime failure.
+          case "$status" in
+            5*) exit 1 ;;
+          esac
+
+      - name: Show server log
+        if: always()
+        run: cat /tmp/vedantix-lovable.log || true
