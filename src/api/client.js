@@ -1,5 +1,6 @@
-const RAW_API_BASE =
-  import.meta.env.VITE_API_BASE_URL || "https://api.vedantix.nl";
+// Lovable defaults to the same-origin proxy in src/server.ts. An explicit
+// VITE_API_BASE_URL can still override this for local/debug environments.
+const RAW_API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 
 const API_BASE = String(RAW_API_BASE).replace(/\/$/, "");
 
@@ -38,8 +39,8 @@ function buildHeaders(params = {}) {
 }
 
 function generateIdempotencyKey(prefix = "req") {
-  if (window.crypto?.randomUUID) {
-    return `${prefix}-${window.crypto.randomUUID()}`;
+  if (globalThis.crypto?.randomUUID) {
+    return `${prefix}-${globalThis.crypto.randomUUID()}`;
   }
   return `${prefix}-${Date.now()}`;
 }
