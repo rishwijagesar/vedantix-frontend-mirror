@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import AdminControlCenterV2 from "@/admin/AdminControlCenterV2";
+import AdminControlCenterV3 from "@/admin/AdminControlCenterV3";
 import AdminAuthGate from "@/admin/AdminAuthGate";
 
 function AdminPage() {
   return (
     <AdminAuthGate>
-      <AdminControlCenterV2 />
+      <AdminControlCenterV3 />
     </AdminAuthGate>
   );
 }
