@@ -28,6 +28,14 @@ const LEGACY_REDIRECTS: Record<string, string> = {
   "/pakketvergelijking": "/prijzen",
   "/online-groei-audit": "/online-groei-audit",
   "/ai-vindbaarheid": "/ai-vindbaarheid",
+
+  // Retired Base44/auth/backoffice routes from the legacy SPA must continue
+  // to resolve to the public homepage instead of being treated as preview slugs.
+  "/login": "/",
+  "/klantenportaal": "/",
+  "/clientportal": "/",
+  "/crm": "/",
+  "/admin": "/",
 };
 
 export const Route = createFileRoute("/$")({
