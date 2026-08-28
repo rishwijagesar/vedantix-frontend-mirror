@@ -31,7 +31,8 @@ const LEGACY_REDIRECTS: Record<string, string> = {
 
 export const Route = createFileRoute("/$")({
   beforeLoad: ({ params }) => {
-    const raw = `/${(params._splat ?? "").replace(/\/+$/, "")}`;
+    const splat = (params._splat ?? "").replace(/^\/+|\/+$/g, "");
+    const raw = `/${splat}`;
     const key = raw.toLowerCase();
 
     if (key === "/pakketvergelijking") {
@@ -39,6 +40,23 @@ export const Route = createFileRoute("/$")({
     }
 
     const target = LEGACY_REDIRECTS[key];
-    throw redirect({ to: target ?? "/", replace: true });
+    if (target) {
+      throw redirect({ to: target, replace: true });
+    }
+
+    // Exactly one unknown segment is treated as a public customer preview slug
+    // (legacy `/:previewSlug` route). Anything deeper keeps the old wildcard
+    // behaviour and redirects home.
+    if (splat && !splat.includes("/")) {
+      return { previewSlug: splat };
+    }
+
+    throw redirect({ to: "/", replace: true });
   },
+  component: CustomerPreviewRoute,
 });
+
+function CustomerPreviewRoute() {
+  const { previewSlug } = Route.useRouteContext();
+  return <CustomerPreviewPage slug={previewSlug} />;
+}
