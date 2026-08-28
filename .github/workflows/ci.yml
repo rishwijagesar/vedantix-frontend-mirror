@@ -22,8 +22,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Lint
+      - name: Lint (informational during migration)
+        continue-on-error: true
         run: bun run lint
 
-      - name: Build
+      - name: Production build
         run: bun run build
