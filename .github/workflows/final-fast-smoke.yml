@@ -1,0 +1,78 @@
+name: Final Fast Smoke
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/final-fast-smoke.yml
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: External route parity
+        run: |
+          node <<'EOF'
+          const PROD='https://vedantix.nl';
+          const LOVABLE='https://vedantix-migration-test.lovable.app';
+          const routes=['/','/prijzen','/resultaten','/contact','/faq','/online-groei-audit','/ai-vindbaarheid','/blog'];
+          const strip=s=>s.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
+          const title=html=>((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||'').replace(/\s+/g,' ').trim();
+          const h1=html=>strip(((html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)||[])[1]||''));
+          (async()=>{
+            let failed=false;
+            for(const route of routes){
+              const [a,b]=await Promise.all([fetch(PROD+route),fetch(LOVABLE+route)]);
+              const [ha,hb]=await Promise.all([a.text(),b.text()]);
+              const ta=title(ha),tb=title(hb), h1a=h1(ha),h1b=h1(hb);
+              console.log(route,'status',a.status,b.status,'title',JSON.stringify(ta),JSON.stringify(tb),'h1',JSON.stringify(h1a),JSON.stringify(h1b));
+              if(a.status!==200||b.status!==200||ta!==tb||h1a!==h1b){failed=true;console.error('PARITY_FAIL',route);}
+            }
+            if(failed) process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          EOF
+
+      - name: Legacy redirects and preview routing
+        run: |
+          check_route() {
+            path="$1"; expected="$2"
+            actual=$(curl -sS -L -o /dev/null -w '%{url_effective}' "https://vedantix-migration-test.lovable.app$path")
+            actual_path=$(node -e 'const u=new URL(process.argv[1]);console.log(u.pathname+u.hash)' "$actual")
+            echo "$path => $actual_path"
+            test "$actual_path" = "$expected"
+          }
+          check_route /pakketvergelijking '/prijzen#vergelijk'
+          check_route /foo/bar/baz '/'
+          check_route /login '/'
+          check_route /klantenportaal '/'
+          check_route /ClientPortal '/'
+          check_route /CRM '/'
+          check_route /admin '/'
+
+          code=$(curl -sS -o /tmp/preview-page -w '%{http_code}' https://vedantix-migration-test.lovable.app/nonexistent-migration-smoke)
+          echo "preview_page_status=$code"
+          test "$code" = "200"
+          grep -Eq 'Preview (laden|niet beschikbaar)' /tmp/preview-page
+
+      - name: Public API and discovery smoke
+        run: |
+          code=$(curl -sS -o /tmp/pricing -w '%{http_code}' https://vedantix-migration-test.lovable.app/api/pricing)
+          echo "pricing=$code"; test "$code" = 200; grep -q STARTER /tmp/pricing
+          code=$(curl -sS -o /tmp/preview -w '%{http_code}' https://vedantix-migration-test.lovable.app/api/preview/nonexistent-migration-smoke/html)
+          echo "preview=$code"; test "$code" = 404; grep -q 'Preview not found' /tmp/preview
+          code=$(curl -sS -o /dev/null -w '%{http_code}' -X OPTIONS https://vedantix-migration-test.lovable.app/api/audit)
+          echo "audit_options=$code"; test "$code" = 204
+          for f in robots.txt sitemap.xml llms.txt llms-full.txt .well-known/llms.txt; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' "https://vedantix-migration-test.lovable.app/$f")
+            echo "$f=$code"; test "$code" = 200
+          done
