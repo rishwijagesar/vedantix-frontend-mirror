@@ -68,7 +68,7 @@ Deno.serve(async (request: Request) => {
 
   const { data: domain, error: domainError } = await supabase
     .from("domains")
-    .select("id, domain_name, email_provider")
+    .select("id, domain_name, email_provider, dkim_selectors")
     .eq("id", body.domain_id)
     .single();
 
@@ -77,15 +77,17 @@ Deno.serve(async (request: Request) => {
   }
 
   const domainName = normalizeDomain(domain.domain_name);
+  const selectors = Array.isArray(domain.dkim_selectors) ? domain.dkim_selectors.filter(Boolean) : [];
   const checks: Check[] = [];
 
   try {
-    const [mx, txt, dmarc, a, aaaa] = await Promise.all([
+    const [mx, txt, dmarc, a, aaaa, ...dkimAnswers] = await Promise.all([
       dnsResolve(domainName, "MX"),
       dnsResolve(domainName, "TXT"),
       dnsResolve(`_dmarc.${domainName}`, "TXT"),
       dnsResolve(domainName, "A"),
       dnsResolve(domainName, "AAAA"),
+      ...selectors.map((selector: string) => dnsResolve(`${selector}._domainkey.${domainName}`, "TXT")),
     ]);
 
     const mxRecords = answerValues(mx);
@@ -127,12 +129,31 @@ Deno.serve(async (request: Request) => {
       details: { record: dmarcRecord, policy },
     });
 
-    checks.push({
-      check_type: "DKIM",
-      status: "UNKNOWN",
-      summary: "DKIM vereist de selector van de mailprovider",
-      details: { email_provider: domain.email_provider ?? null },
-    });
+    if (selectors.length === 0) {
+      checks.push({
+        check_type: "DKIM",
+        status: "UNKNOWN",
+        summary: "Geen DKIM-selectors geconfigureerd",
+        details: { email_provider: domain.email_provider ?? null },
+      });
+    } else {
+      const selectorResults = selectors.map((selector: string, index: number) => {
+        const records = txtValues(dkimAnswers[index]).filter((record) => /^v=DKIM1\b/i.test(record));
+        return { selector, published: records.length > 0, records };
+      });
+      const allPublished = selectorResults.every((result: { published: boolean }) => result.published);
+      const anyPublished = selectorResults.some((result: { published: boolean }) => result.published);
+      checks.push({
+        check_type: "DKIM",
+        status: allPublished ? "PASS" : anyPublished ? "WARNING" : "FAIL",
+        summary: allPublished
+          ? `Alle ${selectors.length} DKIM-selector(s) zijn gepubliceerd`
+          : anyPublished
+            ? "Niet alle geconfigureerde DKIM-selectors zijn gepubliceerd"
+            : "Geen geconfigureerde DKIM-selector resolveert",
+        details: { selectors: selectorResults, email_provider: domain.email_provider ?? null },
+      });
+    }
   } catch (error) {
     checks.push({
       check_type: "DNS",
