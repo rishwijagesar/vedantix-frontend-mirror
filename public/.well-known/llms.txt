@@ -1,0 +1,11 @@
+# Vedantix AI discovery file
+
+The canonical machine-readable profile for Vedantix is available at:
+
+- https://vedantix.nl/llms.txt
+- https://vedantix.nl/llms-full.txt
+
+Vedantix is a web design and online growth agency in 's-Hertogenbosch for professional websites, managed hosting, maintenance, SEO, AEO, GEO and AI visibility for local businesses in the Netherlands.
+
+Primary source page: https://vedantix.nl/ai-vindbaarheid
+Contact: https://vedantix.nl/contact
