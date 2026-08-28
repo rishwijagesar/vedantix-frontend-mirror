@@ -23,6 +23,7 @@ export type Domain = {
   registrar: string | null;
   dns_provider: string | null;
   email_provider: string | null;
+  dkim_selectors: string[];
   status: DomainStatus;
   expires_at: string | null;
   auto_renew: boolean | null;
@@ -65,7 +66,7 @@ export async function getOverview(): Promise<Overview> {
     supabase.from("customers").select("id", { count: "exact", head: true }),
     supabase.from("domains").select("id", { count: "exact", head: true }),
     supabase.from("websites").select("id", { count: "exact", head: true }),
-    supabase.from("domain_checks").select("id", { count: "exact", head: true }).in("status", ["WARNING", "FAIL"]),
+    supabase.from("domain_latest_checks").select("id", { count: "exact", head: true }).in("status", ["WARNING", "FAIL"]),
   ]);
 
   [customers, domains, websites, checks].forEach((result) => throwIfError(result.error));
@@ -120,6 +121,7 @@ export async function createDomain(input: {
   registrar?: string | null;
   dns_provider?: string | null;
   email_provider?: string | null;
+  dkim_selectors?: string[];
   status?: DomainStatus;
 }): Promise<Domain> {
   const normalized = { ...input, domain_name: input.domain_name.trim().toLowerCase() };
