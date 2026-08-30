@@ -220,8 +220,8 @@ export default function MonitoringConsole({ embedded = false }: { embedded?: boo
             <Panel title="Automation runs" subtitle="Audit trail van de autonome dagelijkse domeinmonitor.">
               {runs.length === 0 ? <Empty>Nog geen automation-runs.</Empty> : <div className="space-y-3">{runs.slice(0, 20).map((run) => {
                 const output = run.output ?? {};
-                const changeCount = Number(output.change_count ?? 0);
-                const overall = String(output.overall_status ?? "—");
+                const changeCount = Number(output['change_count'] ?? 0);
+                const overall = String(output['overall_status'] ?? "—");
                 return <div key={run.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><div className="flex items-center gap-2"><strong className="text-sm">{run.domain_id ? domainName.get(run.domain_id) || run.domain_id.slice(0, 8) : "Monitoring run"}</strong><Badge tone={runTone(run.status)}>{run.status}</Badge></div><span className="mt-1 block text-xs text-slate-400">{formatDate(run.finished_at || run.created_at)} · overall {overall} · {changeCount} relevante wijziging(en)</span>{run.error_message ? <span className="mt-1 block text-xs text-red-600">{run.error_message}</span> : null}</div><Clock3 size={16} className="text-slate-300" /></div>;
               })}</div>}
             </Panel>
@@ -242,7 +242,7 @@ export default function MonitoringConsole({ embedded = false }: { embedded?: boo
             <Panel title="Notification outbox" subtitle="Queued, verzonden en mislukte monitoringberichten.">
               {notifications.length === 0 ? <Empty>De outbox is leeg.</Empty> : <div className="space-y-3">{notifications.slice(0, 25).map((notification) => {
                 const payload = notification.payload ?? {};
-                const domainId = String(payload.domain_id ?? "");
+                const domainId = String(payload['domain_id'] ?? "");
                 return <div key={notification.id} className="rounded-xl border border-slate-100 p-3"><div className="flex items-center justify-between gap-2"><div><strong className="text-xs">{domainName.get(domainId) || "Monitoring"}</strong><span className="block text-xs text-slate-400">{notification.event_type} · {formatDate(notification.created_at)}</span></div><div className="flex items-center gap-2"><Badge tone={notificationTone(notification.status)}>{notification.status}</Badge>{notification.status === "FAILED" ? <button type="button" disabled={busyId === notification.id} onClick={() => retryNotification(notification)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 disabled:opacity-50" title="Opnieuw proberen"><RotateCcw size={14} /></button> : null}</div></div>{notification.error_message ? <p className="mt-2 text-xs leading-5 text-red-600">{notification.error_message}</p> : null}</div>;
               })}</div>}
             </Panel>

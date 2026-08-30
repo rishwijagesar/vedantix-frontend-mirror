@@ -73,8 +73,8 @@ export async function listMonitoringAlerts(limit = 100): Promise<MonitoringAlert
 
 export async function updateMonitoringAlertStatus(id: string, status: AlertStatus): Promise<void> {
   const changes: Record<string, unknown> = { status };
-  if (status === "RESOLVED") changes.resolved_at = new Date().toISOString();
-  if (status !== "RESOLVED") changes.resolved_at = null;
+  if (status === "RESOLVED") changes['resolved_at'] = new Date().toISOString();
+  if (status !== "RESOLVED") changes['resolved_at'] = null;
   const { error } = await supabase.from("monitoring_alerts").update(changes).eq("id", id);
   throwIfError(error);
 }
