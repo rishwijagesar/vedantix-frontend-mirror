@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { CheckCircle2, KeyRound, LockKeyhole, Mail, ShieldCheck, X } from "lucide-react";
-import { getCurrentStaffRole, saveMigaduCredentials } from "./migadu-credentials";
+import { CheckCircle2, KeyRound, LockKeyhole, Mail, Send, ShieldCheck, X } from "lucide-react";
+import { getDeliveryConfig } from "./monitoring-data";
+import { getCurrentStaffRole, saveMigaduCredentials, sendMigaduTestEmail } from "./migadu-credentials";
 
 type Props = {
   open: boolean;
@@ -11,11 +12,12 @@ type Props = {
 export default function MigaduCredentialModal({ open, onClose, onSaved }: Props) {
   const [role, setRole] = useState<string | null>(null);
   const [roleLoading, setRoleLoading] = useState(false);
+  const [configured, setConfigured] = useState(false);
   const [user, setUser] = useState("info@vedantix.nl");
   const [password, setPassword] = useState("");
   const [alertTo, setAlertTo] = useState("info@vedantix.nl");
   const [alertFrom, setAlertFrom] = useState("info@vedantix.nl");
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"save" | "test" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -25,16 +27,20 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
     setRoleLoading(true);
     setError(null);
     setSuccess(null);
-    getCurrentStaffRole()
-      .then((nextRole) => {
-        if (mounted) setRole(nextRole);
+
+    Promise.all([getCurrentStaffRole(), getDeliveryConfig()])
+      .then(([nextRole, delivery]) => {
+        if (!mounted) return;
+        setRole(nextRole);
+        setConfigured(delivery?.credentials_configured === true);
       })
       .catch((err) => {
-        if (mounted) setError(err instanceof Error ? err.message : "Staffrol kon niet worden gecontroleerd.");
+        if (mounted) setError(err instanceof Error ? err.message : "Migadu-configuratie kon niet worden gecontroleerd.");
       })
       .finally(() => {
         if (mounted) setRoleLoading(false);
       });
+
     return () => {
       mounted = false;
     };
@@ -47,7 +53,7 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!isAdmin || busy) return;
-    setBusy(true);
+    setBusy("save");
     setError(null);
     setSuccess(null);
 
@@ -59,12 +65,28 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
         alert_from: alertFrom,
       });
       setPassword("");
-      setSuccess(`Migadu-authenticatie gelukt voor ${result.user}. Credentials zijn versleuteld opgeslagen in Supabase Vault.`);
-      window.setTimeout(() => onSaved(), 900);
+      setConfigured(true);
+      setSuccess(`Migadu-authenticatie gelukt voor ${result.user}. Credentials zijn versleuteld opgeslagen in Supabase Vault. Je kunt nu direct een testmail versturen.`);
+      onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Migadu-configuratie is mislukt.");
     } finally {
-      setBusy(false);
+      setBusy(null);
+    }
+  }
+
+  async function sendTest() {
+    if (!isAdmin || !configured || busy) return;
+    setBusy("test");
+    setError(null);
+    setSuccess(null);
+    try {
+      const result = await sendMigaduTestEmail();
+      setSuccess(`Testmail is via Migadu verstuurd naar ${result.recipients.join(", ")}.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Migadu testmail kon niet worden verstuurd.");
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -87,26 +109,36 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
             <SecurityPoint icon={LockKeyhole} title="Supabase Vault" text="Geen wachtwoord in GitHub of UI." />
           </div>
 
-          {roleLoading ? <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">Adminrechten controleren…</div> : null}
+          {roleLoading ? <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">Adminrechten en deliverystatus controleren…</div> : null}
           {!roleLoading && !isAdmin ? <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">Alleen een account met de rol ADMIN mag Migadu-credentials wijzigen.</div> : null}
           {error ? <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
           {success ? <div className="mb-4 flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 size={17} className="mt-0.5 shrink-0" />{success}</div> : null}
 
+          {configured ? (
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+              <div>
+                <strong className="text-sm text-emerald-900">Migadu credentials zijn geconfigureerd</strong>
+                <p className="mt-1 text-xs leading-5 text-emerald-700">Gebruik de testmail om SMTP AUTH, MAIL FROM, RCPT TO en DATA end-to-end te controleren.</p>
+              </div>
+              <button type="button" onClick={sendTest} disabled={!isAdmin || busy !== null} className="inline-flex items-center gap-2 rounded-xl bg-emerald-900 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><Send size={15} />{busy === "test" ? "Testmail versturen…" : "Stuur testmail"}</button>
+            </div>
+          ) : null}
+
           <form onSubmit={submit} className="space-y-4">
             <Field label="Migadu mailbox" hint="Dit is de mailbox die bij Migadu SMTP mag aanmelden.">
-              <input type="email" value={user} onChange={(event) => setUser(event.target.value)} autoComplete="username" required disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+              <input type="email" value={user} onChange={(event) => setUser(event.target.value)} autoComplete="username" required disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
             </Field>
 
-            <Field label="Migadu wachtwoord" hint="Wordt niet opgeslagen in React-state nadat de configuratie is voltooid.">
-              <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+            <Field label="Migadu wachtwoord" hint={configured ? "Laat leeg zolang je de bestaande configuratie niet wilt vervangen." : "Wordt niet in GitHub, browser storage of deze chat opgeslagen."}>
+              <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required={!configured} disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
             </Field>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Alerts naar" hint="Komma-gescheiden adressen worden later ondersteund door de worker.">
-                <input type="email" value={alertTo} onChange={(event) => setAlertTo(event.target.value)} disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+              <Field label="Alerts naar" hint="Voor één of meerdere adressen; meerdere adressen scheiden met een komma.">
+                <input type="text" value={alertTo} onChange={(event) => setAlertTo(event.target.value)} disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
               </Field>
               <Field label="Afzender" hint="Gebruik bij voorkeur dezelfde Migadu mailbox.">
-                <input type="email" value={alertFrom} onChange={(event) => setAlertFrom(event.target.value)} disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+                <input type="email" value={alertFrom} onChange={(event) => setAlertFrom(event.target.value)} disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
               </Field>
             </div>
 
@@ -116,8 +148,8 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
             </div>
 
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <button type="button" onClick={onClose} disabled={busy} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">Annuleren</button>
-              <button type="submit" disabled={!isAdmin || !password || busy} className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40">{busy ? "Authenticeren en opslaan…" : "Verbinding testen & veilig opslaan"}</button>
+              <button type="button" onClick={onClose} disabled={busy !== null} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">Sluiten</button>
+              <button type="submit" disabled={!isAdmin || !password || busy !== null} className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40">{busy === "save" ? "Authenticeren en opslaan…" : configured ? "Credentials vervangen" : "Verbinding testen & veilig opslaan"}</button>
             </div>
           </form>
         </div>
