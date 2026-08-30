@@ -50,28 +50,21 @@ async function smtpProbe() {
 }
 
 Deno.serve(async (request: Request) => {
-  if (request.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers });
-  }
+  if (request.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers });
 
   const token = request.headers.get("x-control-token");
   if (!token) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers });
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!supabaseUrl || !serviceRole) {
-    return new Response(JSON.stringify({ error: "Server configuration missing" }), { status: 500, headers });
-  }
+  if (!supabaseUrl || !serviceRole) return new Response(JSON.stringify({ error: "Server configuration missing" }), { status: 500, headers });
 
   const admin = createClient(supabaseUrl, serviceRole, { auth: { persistSession: false } });
   const { data: valid, error } = await admin.rpc("verify_notification_delivery_token", { p_token: token });
-  if (error || valid !== true) {
-    return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers });
-  }
+  if (error || valid !== true) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers });
 
-  const smtpUser = Deno.env.get("MIGADU_SMTP_USER")?.trim();
-  const smtpPassword = Deno.env.get("MIGADU_SMTP_PASSWORD");
-  const credentialsConfigured = Boolean(smtpUser && smtpPassword);
+  const { data: credentialsConfigured, error: credentialsError } = await admin.rpc("has_migadu_delivery_credentials");
+  if (credentialsError) return new Response(JSON.stringify({ error: "Could not inspect credential state" }), { status: 500, headers });
 
   try {
     const capabilities = await smtpProbe();
@@ -79,7 +72,8 @@ Deno.serve(async (request: Request) => {
       JSON.stringify({
         ok: true,
         transport_ok: true,
-        credentials_configured: credentialsConfigured,
+        credentials_configured: credentialsConfigured === true,
+        credential_storage: "supabase_vault",
         host: "smtp.migadu.com",
         port: 465,
         tls: true,
@@ -92,7 +86,8 @@ Deno.serve(async (request: Request) => {
       JSON.stringify({
         ok: false,
         transport_ok: false,
-        credentials_configured: credentialsConfigured,
+        credentials_configured: credentialsConfigured === true,
+        credential_storage: "supabase_vault",
         error: probeError instanceof Error ? probeError.message : String(probeError),
       }),
       { status: 200, headers },
