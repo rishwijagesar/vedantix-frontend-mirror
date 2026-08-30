@@ -55,8 +55,8 @@ export type Overview = {
   domains: number;
   websites: number;
   checksNeedingAttention: number;
-  lastMonitoringAt: string | null;
-  lastMonitoringStatus: string | null;
+  lastMonitoringAt?: string | null;
+  lastMonitoringStatus?: string | null;
 };
 
 export type MonitoringAlert = {
