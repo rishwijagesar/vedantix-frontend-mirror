@@ -45,27 +45,18 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
   async function sendMagicLink(event: React.FormEvent) {
     event.preventDefault();
     const normalizedEmail = email.trim().toLowerCase();
-    setMessage("Toegang controleren…");
+    setMessage("Beveiligde inloglink aanvragen…");
 
-    const { data: allowed, error: guardError } = await supabase.rpc("can_request_admin_login", {
-      p_email: normalizedEmail,
+    const { data, error } = await supabase.functions.invoke("admin-magic-link", {
+      body: { email: normalizedEmail },
     });
-    if (guardError) {
+
+    if (error) {
       setMessage("Inloggen is tijdelijk niet beschikbaar. Probeer het later opnieuw.");
       return;
     }
-    if (allowed !== true) {
-      setMessage("Dit e-mailadres is niet geautoriseerd voor het Vedantix Control Center.");
-      return;
-    }
 
-    setMessage("Bezig met versturen…");
-    const redirectTo = typeof window !== "undefined" ? `${window.location.origin}/admin` : undefined;
-    const { error } = await supabase.auth.signInWithOtp({
-      email: normalizedEmail,
-      options: { emailRedirectTo: redirectTo },
-    });
-    setMessage(error ? error.message : "Controleer je e-mail voor de inloglink.");
+    setMessage(data?.message || "Als dit e-mailadres geautoriseerd is, ontvang je een beveiligde inloglink.");
   }
 
   if (state === "loading") {
