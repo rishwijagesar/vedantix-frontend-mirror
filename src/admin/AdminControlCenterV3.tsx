@@ -177,6 +177,12 @@ export default function AdminControlCenterV3() {
                 </button>
               );
             })}
+            <a
+              href="/admin/monitoring"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+              <Activity size={17} />Monitoring
+            </a>
           </nav>
           <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-slate-400">
             <div className="mb-1 flex items-center gap-2 text-emerald-300"><ShieldCheck size={14} /> Supabase Auth + RLS</div>
