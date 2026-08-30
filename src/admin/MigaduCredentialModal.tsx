@@ -1,0 +1,147 @@
+import { useEffect, useState, type FormEvent } from "react";
+import { CheckCircle2, KeyRound, LockKeyhole, Mail, ShieldCheck, X } from "lucide-react";
+import { getCurrentStaffRole, saveMigaduCredentials } from "./migadu-credentials";
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  onSaved: () => void;
+};
+
+export default function MigaduCredentialModal({ open, onClose, onSaved }: Props) {
+  const [role, setRole] = useState<string | null>(null);
+  const [roleLoading, setRoleLoading] = useState(false);
+  const [user, setUser] = useState("info@vedantix.nl");
+  const [password, setPassword] = useState("");
+  const [alertTo, setAlertTo] = useState("info@vedantix.nl");
+  const [alertFrom, setAlertFrom] = useState("info@vedantix.nl");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    let mounted = true;
+    setRoleLoading(true);
+    setError(null);
+    setSuccess(null);
+    getCurrentStaffRole()
+      .then((nextRole) => {
+        if (mounted) setRole(nextRole);
+      })
+      .catch((err) => {
+        if (mounted) setError(err instanceof Error ? err.message : "Staffrol kon niet worden gecontroleerd.");
+      })
+      .finally(() => {
+        if (mounted) setRoleLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [open]);
+
+  if (!open) return null;
+
+  const isAdmin = role === "ADMIN";
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!isAdmin || busy) return;
+    setBusy(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const result = await saveMigaduCredentials({
+        user,
+        password,
+        alert_to: alertTo,
+        alert_from: alertFrom,
+      });
+      setPassword("");
+      setSuccess(`Migadu-authenticatie gelukt voor ${result.user}. Credentials zijn versleuteld opgeslagen in Supabase Vault.`);
+      window.setTimeout(() => onSaved(), 900);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Migadu-configuratie is mislukt.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="migadu-title">
+      <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-100 p-5">
+          <div>
+            <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400"><Mail size={14} /> Migadu SMTP</div>
+            <h2 id="migadu-title" className="text-xl font-bold text-slate-950">Monitoring e-mail configureren</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-500">De browser stuurt de gegevens rechtstreeks naar de beveiligde Vedantix Edge Function. Het wachtwoord wordt alleen na succesvolle SMTP-authenticatie versleuteld in Supabase Vault opgeslagen.</p>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Sluiten"><X size={18} /></button>
+        </div>
+
+        <div className="p-5">
+          <div className="mb-5 grid gap-3 sm:grid-cols-3">
+            <SecurityPoint icon={ShieldCheck} title="ADMIN-only" text="Alleen actieve Vedantix admins." />
+            <SecurityPoint icon={KeyRound} title="SMTP-validatie" text="Eerst echte Migadu login-test." />
+            <SecurityPoint icon={LockKeyhole} title="Supabase Vault" text="Geen wachtwoord in GitHub of UI." />
+          </div>
+
+          {roleLoading ? <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">Adminrechten controleren…</div> : null}
+          {!roleLoading && !isAdmin ? <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">Alleen een account met de rol ADMIN mag Migadu-credentials wijzigen.</div> : null}
+          {error ? <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+          {success ? <div className="mb-4 flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 size={17} className="mt-0.5 shrink-0" />{success}</div> : null}
+
+          <form onSubmit={submit} className="space-y-4">
+            <Field label="Migadu mailbox" hint="Dit is de mailbox die bij Migadu SMTP mag aanmelden.">
+              <input type="email" value={user} onChange={(event) => setUser(event.target.value)} autoComplete="username" required disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+            </Field>
+
+            <Field label="Migadu wachtwoord" hint="Wordt niet opgeslagen in React-state nadat de configuratie is voltooid.">
+              <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+            </Field>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Alerts naar" hint="Komma-gescheiden adressen worden later ondersteund door de worker.">
+                <input type="email" value={alertTo} onChange={(event) => setAlertTo(event.target.value)} disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+              </Field>
+              <Field label="Afzender" hint="Gebruik bij voorkeur dezelfde Migadu mailbox.">
+                <input type="email" value={alertFrom} onChange={(event) => setAlertFrom(event.target.value)} disabled={!isAdmin || busy} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
+              </Field>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">
+              <strong className="block text-slate-800">Wat gebeurt er na opslaan?</strong>
+              De backend maakt een TLS-verbinding met <code>smtp.migadu.com:465</code>, voert SMTP AUTH uit en schrijft de gegevens alleen bij succes naar Supabase Vault. Notification delivery blijft daarna nog uitgeschakeld totdat je hem in de monitoringconsole expliciet aanzet.
+            </div>
+
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button type="button" onClick={onClose} disabled={busy} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">Annuleren</button>
+              <button type="submit" disabled={!isAdmin || !password || busy} className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40">{busy ? "Authenticeren en opslaan…" : "Verbinding testen & veilig opslaan"}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, hint, children }: { label: string; hint: string; children: React.ReactNode }) {
+  return (
+    <label className="block text-sm font-medium text-slate-700">
+      {label}
+      <span className="mb-1.5 mt-0.5 block text-xs font-normal text-slate-400">{hint}</span>
+      {children}
+    </label>
+  );
+}
+
+function SecurityPoint({ icon: Icon, title, text }: { icon: typeof ShieldCheck; title: string; text: string }) {
+  return (
+    <div className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+      <Icon size={16} className="mb-2 text-slate-700" />
+      <strong className="block text-xs text-slate-900">{title}</strong>
+      <span className="mt-1 block text-xs leading-5 text-slate-500">{text}</span>
+    </div>
+  );
+}
