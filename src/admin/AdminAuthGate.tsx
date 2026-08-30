@@ -44,11 +44,31 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
 
   async function sendMagicLink(event: React.FormEvent) {
     event.preventDefault();
+    setMessage("Bezig met controleren…");
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const { data: allowed, error: guardError } = await supabase.rpc("can_request_admin_login", {
+      p_email: normalizedEmail,
+    });
+
+    if (guardError) {
+      setMessage("Toegang kon niet worden gecontroleerd. Probeer het opnieuw.");
+      return;
+    }
+
+    if (!allowed) {
+      setMessage("Dit e-mailadres is niet geautoriseerd voor het Vedantix Control Center.");
+      return;
+    }
+
     setMessage("Bezig met versturen…");
     const redirectTo = typeof window !== "undefined" ? `${window.location.origin}/admin` : undefined;
     const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: redirectTo },
+      email: normalizedEmail,
+      options: {
+        emailRedirectTo: redirectTo,
+        shouldCreateUser: true,
+      },
     });
     setMessage(error ? error.message : "Controleer je e-mail voor de inloglink.");
   }
@@ -61,9 +81,9 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
     return (
       <div className="cc-auth-screen">
         <form className="cc-auth-card" onSubmit={sendMagicLink}>
-          <span className="cc-kicker">Vedantix Admin v2</span>
+          <span className="cc-kicker">Vedantix Admin v3</span>
           <h1>Inloggen</h1>
-          <p>Gebruik je geautoriseerde Vedantix e-mailadres. Je ontvangt een beveiligde magic link.</p>
+          <p>Gebruik een geautoriseerd staff-adres of een e-mailadres met een actieve uitnodiging.</p>
           <label htmlFor="admin-email">E-mailadres</label>
           <input id="admin-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
           <button className="cc-primary-button" type="submit">Stuur inloglink</button>
@@ -79,7 +99,7 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
         <div className="cc-auth-card">
           <span className="cc-kicker">Geen toegang</span>
           <h1>Account niet geautoriseerd</h1>
-          <p>Je bent wel ingelogd, maar dit account staat nog niet in de Vedantix staff-allowlist. Na je eerste login kan het account als ADMIN worden geactiveerd.</p>
+          <p>Dit account is ingelogd, maar heeft geen actieve Vedantix staff-rol. Vraag een ADMIN om de toegang of uitnodiging te controleren.</p>
           <button className="cc-primary-button" type="button" onClick={() => supabase.auth.signOut()}>Uitloggen</button>
         </div>
       </div>
