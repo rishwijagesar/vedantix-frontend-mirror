@@ -11,6 +11,12 @@ type NotificationRow = {
   payload: Record<string, unknown>;
   created_at: string;
 };
+type VaultCredentials = {
+  smtp_user: string | null;
+  smtp_password: string | null;
+  alert_to: string | null;
+  alert_from: string | null;
+};
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
 const encoder = new TextEncoder();
@@ -61,9 +67,7 @@ class SmtpConnection {
         if (line.startsWith(`${code} `)) break;
       }
     }
-    if (expected && !expected.includes(code)) {
-      throw new Error(`SMTP ${code}: ${lines.join(" | ")}`);
-    }
+    if (expected && !expected.includes(code)) throw new Error(`SMTP ${code}: ${lines.join(" | ")}`);
     return { code, lines };
   }
 
@@ -78,11 +82,7 @@ class SmtpConnection {
   }
 
   close() {
-    try {
-      this.conn.close();
-    } catch {
-      // no-op
-    }
+    try { this.conn.close(); } catch { /* no-op */ }
   }
 }
 
@@ -104,22 +104,13 @@ async function smtpProbe() {
   return capabilities;
 }
 
-async function sendSmtpMail(args: {
-  user: string;
-  password: string;
-  from: string;
-  recipients: string[];
-  subject: string;
-  body: string;
-}) {
+async function sendSmtpMail(args: { user: string; password: string; from: string; recipients: string[]; subject: string; body: string }) {
   const { smtp } = await connectSmtp();
   try {
     const authPayload = utf8Base64(`\u0000${args.user}\u0000${args.password}`);
     await smtp.command(`AUTH PLAIN ${authPayload}`, [235]);
     await smtp.command(`MAIL FROM:<${args.from}>`, [250]);
-    for (const recipient of args.recipients) {
-      await smtp.command(`RCPT TO:<${recipient}>`, [250, 251]);
-    }
+    for (const recipient of args.recipients) await smtp.command(`RCPT TO:<${recipient}>`, [250, 251]);
     await smtp.command("DATA", [354]);
 
     const messageId = `<${crypto.randomUUID()}@admin.vedantix.nl>`;
@@ -170,79 +161,43 @@ function notificationText(notification: NotificationRow, domainName: string) {
 }
 
 Deno.serve(async (request: Request) => {
-  if (request.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: jsonHeaders });
-  }
+  if (request.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: jsonHeaders });
 
   const token = request.headers.get("x-control-token");
-  if (!token) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders });
-  }
+  if (!token) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders });
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!supabaseUrl || !serviceRole) {
-    return new Response(JSON.stringify({ error: "Server configuration missing" }), { status: 500, headers: jsonHeaders });
-  }
+  if (!supabaseUrl || !serviceRole) return new Response(JSON.stringify({ error: "Server configuration missing" }), { status: 500, headers: jsonHeaders });
 
   const admin = createClient(supabaseUrl, serviceRole, { auth: { persistSession: false } });
-  const { data: tokenValid, error: tokenError } = await admin.rpc("verify_notification_delivery_token", {
-    p_token: token,
-  });
-  if (tokenError || tokenValid !== true) {
-    return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: jsonHeaders });
-  }
+  const { data: tokenValid, error: tokenError } = await admin.rpc("verify_notification_delivery_token", { p_token: token });
+  if (tokenError || tokenValid !== true) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: jsonHeaders });
 
   let body: { mode?: Mode } = {};
-  try {
-    body = await request.json();
-  } catch {
-    // default mode
-  }
+  try { body = await request.json(); } catch { /* default mode */ }
   const mode: Mode = body.mode === "probe" ? "probe" : "deliver";
 
   if (mode === "probe") {
     try {
       const capabilities = await smtpProbe();
-      return new Response(
-        JSON.stringify({ ok: true, host: "smtp.migadu.com", port: 465, tls: true, capabilities }),
-        { status: 200, headers: jsonHeaders },
-      );
+      return new Response(JSON.stringify({ ok: true, host: "smtp.migadu.com", port: 465, tls: true, capabilities }), { status: 200, headers: jsonHeaders });
     } catch (error) {
-      return new Response(
-        JSON.stringify({ ok: false, error: error instanceof Error ? error.message : String(error) }),
-        { status: 502, headers: jsonHeaders },
-      );
+      return new Response(JSON.stringify({ ok: false, error: error instanceof Error ? error.message : String(error) }), { status: 502, headers: jsonHeaders });
     }
   }
 
-  const smtpUser = Deno.env.get("MIGADU_SMTP_USER")?.trim();
-  const smtpPassword = Deno.env.get("MIGADU_SMTP_PASSWORD");
-  const smtpFrom = Deno.env.get("VEDANTIX_ALERT_EMAIL_FROM")?.trim() || smtpUser;
-  const recipients = (Deno.env.get("VEDANTIX_ALERT_EMAIL_TO") || smtpUser || "")
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean);
+  const { data: credentialRows, error: credentialError } = await admin.rpc("get_migadu_delivery_credentials");
+  if (credentialError) return new Response(JSON.stringify({ error: "Could not read SMTP credentials" }), { status: 500, headers: jsonHeaders });
+  const credentials = (Array.isArray(credentialRows) ? credentialRows[0] : credentialRows) as VaultCredentials | null;
+  const smtpUser = credentials?.smtp_user?.trim();
+  const smtpPassword = credentials?.smtp_password;
+  const smtpFrom = credentials?.alert_from?.trim() || smtpUser;
+  const recipients = (credentials?.alert_to || smtpUser || "").split(",").map((value) => value.trim()).filter(Boolean);
 
   if (!smtpUser || !smtpPassword || !smtpFrom || recipients.length === 0) {
-    const { count } = await admin
-      .from("monitoring_notifications")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "QUEUED");
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        configured: false,
-        queued: count ?? 0,
-        required_secrets: [
-          "MIGADU_SMTP_USER",
-          "MIGADU_SMTP_PASSWORD",
-          "VEDANTIX_ALERT_EMAIL_TO (optional)",
-          "VEDANTIX_ALERT_EMAIL_FROM (optional)",
-        ],
-      }),
-      { status: 200, headers: jsonHeaders },
-    );
+    const { count } = await admin.from("monitoring_notifications").select("id", { count: "exact", head: true }).eq("status", "QUEUED");
+    return new Response(JSON.stringify({ ok: true, configured: false, storage: "supabase_vault", queued: count ?? 0 }), { status: 200, headers: jsonHeaders });
   }
 
   const { data: notifications, error: queueError } = await admin
@@ -251,10 +206,7 @@ Deno.serve(async (request: Request) => {
     .eq("status", "QUEUED")
     .order("created_at", { ascending: true })
     .limit(10);
-
-  if (queueError) {
-    return new Response(JSON.stringify({ error: queueError.message }), { status: 500, headers: jsonHeaders });
-  }
+  if (queueError) return new Response(JSON.stringify({ error: queueError.message }), { status: 500, headers: jsonHeaders });
 
   const rows = (notifications ?? []) as NotificationRow[];
   const results: Array<Record<string, unknown>> = [];
@@ -268,41 +220,15 @@ Deno.serve(async (request: Request) => {
     const { subject, body: emailBody } = notificationText(notification, domainName);
 
     try {
-      await sendSmtpMail({
-        user: smtpUser,
-        password: smtpPassword,
-        from: smtpFrom,
-        recipients,
-        subject,
-        body: emailBody,
-      });
-      await admin
-        .from("monitoring_notifications")
-        .update({
-          channel: "MIGADU_SMTP",
-          status: "SENT",
-          processed_at: new Date().toISOString(),
-          error_message: null,
-        })
-        .eq("id", notification.id);
+      await sendSmtpMail({ user: smtpUser, password: smtpPassword, from: smtpFrom, recipients, subject, body: emailBody });
+      await admin.from("monitoring_notifications").update({ channel: "MIGADU_SMTP", status: "SENT", processed_at: new Date().toISOString(), error_message: null }).eq("id", notification.id);
       results.push({ id: notification.id, status: "SENT", domain: domainName });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      await admin
-        .from("monitoring_notifications")
-        .update({
-          channel: "MIGADU_SMTP",
-          status: "FAILED",
-          processed_at: new Date().toISOString(),
-          error_message: errorMessage.slice(0, 1000),
-        })
-        .eq("id", notification.id);
+      await admin.from("monitoring_notifications").update({ channel: "MIGADU_SMTP", status: "FAILED", processed_at: new Date().toISOString(), error_message: errorMessage.slice(0, 1000) }).eq("id", notification.id);
       results.push({ id: notification.id, status: "FAILED", domain: domainName, error: errorMessage });
     }
   }
 
-  return new Response(JSON.stringify({ ok: true, configured: true, processed: results.length, results }), {
-    status: 200,
-    headers: jsonHeaders,
-  });
+  return new Response(JSON.stringify({ ok: true, configured: true, storage: "supabase_vault", processed: results.length, results }), { status: 200, headers: jsonHeaders });
 });
