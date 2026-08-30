@@ -28,6 +28,11 @@ function utf8Base64(value: string) {
   return btoa(binary);
 }
 
+function foldBase64(value: string) {
+  const encoded = utf8Base64(value);
+  return encoded.match(/.{1,76}/g)?.join("\r\n") ?? encoded;
+}
+
 class SmtpConnection {
   private conn: Deno.TlsConn;
   private buffer = "";
@@ -69,12 +74,17 @@ class SmtpConnection {
     return await this.response(expected);
   }
 
+  async writeData(data: string, expected: number[]) {
+    await this.conn.write(encoder.encode(data));
+    return await this.response(expected);
+  }
+
   close() {
     try { this.conn.close(); } catch { /* no-op */ }
   }
 }
 
-async function verifyMigaduLogin(user: string, password: string) {
+async function connectAuthenticated(user: string, password: string) {
   const conn = await Deno.connectTls({ hostname: "smtp.migadu.com", port: 465 });
   const smtp = new SmtpConnection(conn);
   try {
@@ -82,6 +92,58 @@ async function verifyMigaduLogin(user: string, password: string) {
     await smtp.command("EHLO admin.vedantix.nl", [250]);
     const authPayload = utf8Base64(`\u0000${user}\u0000${password}`);
     await smtp.command(`AUTH PLAIN ${authPayload}`, [235]);
+    return smtp;
+  } catch (error) {
+    smtp.close();
+    throw error;
+  }
+}
+
+async function verifyMigaduLogin(user: string, password: string) {
+  const smtp = await connectAuthenticated(user, password);
+  try {
+    await smtp.command("QUIT", [221]);
+  } finally {
+    smtp.close();
+  }
+}
+
+async function sendTestMail(args: { user: string; password: string; from: string; recipients: string[] }) {
+  const smtp = await connectAuthenticated(args.user, args.password);
+  try {
+    await smtp.command(`MAIL FROM:<${args.from}>`, [250]);
+    for (const recipient of args.recipients) {
+      await smtp.command(`RCPT TO:<${recipient}>`, [250, 251]);
+    }
+    await smtp.command("DATA", [354]);
+
+    const body = [
+      "Vedantix Control Center monitoring",
+      "",
+      "Deze testmail bevestigt dat de beveiligde Migadu SMTP-koppeling werkt.",
+      "",
+      `SMTP mailbox: ${args.user}`,
+      `Tijdstip: ${new Date().toISOString()}`,
+      "",
+      "Er is geen test-alert of andere operationele data aangemaakt.",
+    ].join("\n");
+
+    const data = [
+      `From: Vedantix Monitoring <${args.from}>`,
+      `To: ${args.recipients.join(", ")}`,
+      "Subject: [Vedantix] Monitoring testmail",
+      `Date: ${new Date().toUTCString()}`,
+      `Message-ID: <${crypto.randomUUID()}@admin.vedantix.nl>`,
+      "MIME-Version: 1.0",
+      "Content-Type: text/plain; charset=UTF-8",
+      "Content-Transfer-Encoding: base64",
+      "",
+      foldBase64(body),
+      ".",
+      "",
+    ].join("\r\n");
+
+    await smtp.writeData(data, [250]);
     await smtp.command("QUIT", [221]);
   } finally {
     smtp.close();
@@ -122,9 +184,37 @@ Deno.serve(async (request: Request) => {
     .maybeSingle();
   if (staffError || staff?.role !== "ADMIN") return new Response(JSON.stringify({ error: "Admin role required" }), { status: 403, headers });
 
-  let body: { user?: string; password?: string; alert_to?: string; alert_from?: string } = {};
+  let body: { action?: "save" | "test"; user?: string; password?: string; alert_to?: string; alert_from?: string } = {};
   try { body = await request.json(); } catch {
     return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400, headers });
+  }
+
+  const admin = createClient(supabaseUrl, serviceRole, { auth: { persistSession: false } });
+
+  if (body.action === "test") {
+    const { data: credentialRows, error: credentialError } = await admin.rpc("get_migadu_delivery_credentials");
+    const credentials = Array.isArray(credentialRows) ? credentialRows[0] : credentialRows;
+    if (credentialError || !credentials?.smtp_user || !credentials?.smtp_password) {
+      return new Response(JSON.stringify({ error: "Migadu credentials are not configured" }), { status: 400, headers });
+    }
+
+    const recipients = String(credentials.alert_to || credentials.smtp_user)
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const from = String(credentials.alert_from || credentials.smtp_user).trim();
+
+    try {
+      await sendTestMail({
+        user: String(credentials.smtp_user),
+        password: String(credentials.smtp_password),
+        from,
+        recipients,
+      });
+      return new Response(JSON.stringify({ ok: true, test_email_sent: true, recipients }), { status: 200, headers });
+    } catch {
+      return new Response(JSON.stringify({ ok: false, test_email_sent: false, error: "Migadu testmail kon niet worden verstuurd." }), { status: 502, headers });
+    }
   }
 
   const smtpUser = body.user?.trim().toLowerCase() ?? "";
@@ -144,7 +234,6 @@ Deno.serve(async (request: Request) => {
     );
   }
 
-  const admin = createClient(supabaseUrl, serviceRole, { auth: { persistSession: false } });
   const { error: storeError } = await admin.rpc("store_migadu_delivery_credentials", {
     p_user: smtpUser,
     p_password: smtpPassword,
