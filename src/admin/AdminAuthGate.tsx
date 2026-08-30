@@ -92,19 +92,5 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
     );
   }
 
-  const showMonitoringShortcut = typeof window !== "undefined" && window.location.pathname === "/admin";
-
-  return (
-    <>
-      {children}
-      {showMonitoringShortcut ? (
-        <a
-          href="/admin/monitoring"
-          className="fixed bottom-5 right-5 z-50 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-slate-800"
-        >
-          Monitoring
-        </a>
-      ) : null}
-    </>
-  );
+  return <>{children}</>;
 }
