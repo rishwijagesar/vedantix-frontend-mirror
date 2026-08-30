@@ -55,6 +55,21 @@ export type Overview = {
   domains: number;
   websites: number;
   checksNeedingAttention: number;
+  lastMonitoringAt: string | null;
+  lastMonitoringStatus: string | null;
+};
+
+export type MonitoringAlert = {
+  id: string;
+  domain_id: string;
+  check_type: "DNS" | "MX" | "SPF" | "DKIM" | "DMARC" | "SSL" | "EXPIRY" | "WEBSITE";
+  severity: "INFO" | "WARNING" | "CRITICAL";
+  status: "OPEN" | "ACKNOWLEDGED" | "RESOLVED";
+  message: string;
+  details: Record<string, unknown>;
+  first_seen_at: string;
+  last_seen_at: string;
+  resolved_at: string | null;
 };
 
 function throwIfError(error: { message: string } | null) {
@@ -62,21 +77,43 @@ function throwIfError(error: { message: string } | null) {
 }
 
 export async function getOverview(): Promise<Overview> {
-  const [customers, domains, websites, checks] = await Promise.all([
+  const [customers, domains, websites, alerts, latestMonitoring] = await Promise.all([
     supabase.from("customers").select("id", { count: "exact", head: true }),
     supabase.from("domains").select("id", { count: "exact", head: true }),
     supabase.from("websites").select("id", { count: "exact", head: true }),
-    supabase.from("domain_latest_checks").select("id", { count: "exact", head: true }).in("status", ["WARNING", "FAIL"]),
+    supabase.from("monitoring_alerts").select("id", { count: "exact", head: true }).in("status", ["OPEN", "ACKNOWLEDGED"]),
+    supabase
+      .from("automation_runs")
+      .select("status,finished_at,created_at,output")
+      .eq("automation_type", "DOMAIN_HEALTH_MONITOR")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
-  [customers, domains, websites, checks].forEach((result) => throwIfError(result.error));
+  [customers, domains, websites, alerts, latestMonitoring].forEach((result) => throwIfError(result.error));
+
+  const run = latestMonitoring.data as { status?: string; finished_at?: string | null; created_at?: string | null; output?: { overall_status?: string } | null } | null;
 
   return {
     customers: customers.count ?? 0,
     domains: domains.count ?? 0,
     websites: websites.count ?? 0,
-    checksNeedingAttention: checks.count ?? 0,
+    checksNeedingAttention: alerts.count ?? 0,
+    lastMonitoringAt: run?.finished_at ?? run?.created_at ?? null,
+    lastMonitoringStatus: run?.output?.overall_status ?? run?.status ?? null,
   };
+}
+
+export async function listMonitoringAlerts(): Promise<MonitoringAlert[]> {
+  const { data, error } = await supabase
+    .from("monitoring_alerts")
+    .select("*")
+    .in("status", ["OPEN", "ACKNOWLEDGED"])
+    .order("severity", { ascending: false })
+    .order("last_seen_at", { ascending: false });
+  throwIfError(error);
+  return (data ?? []) as MonitoringAlert[];
 }
 
 export async function listCustomers(): Promise<Customer[]> {
