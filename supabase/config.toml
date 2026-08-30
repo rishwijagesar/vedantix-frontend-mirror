@@ -1,0 +1,4 @@
+project_id = "zxnexwqvoznmirajhgxj"
+
+[functions.domain-health-scan]
+verify_jwt = false
