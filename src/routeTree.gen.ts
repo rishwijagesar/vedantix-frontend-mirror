@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AiVindbaarheidRouteImport } from './routes/ai-vindbaarheid'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DataDeletionRouteImport } from './routes/data-deletion'
@@ -34,6 +35,7 @@ import { Route as WebsiteRestaurantRouteImport } from './routes/website-restaura
 import { Route as WebsiteSalonRouteImport } from './routes/website-salon'
 import { Route as WebsiteSchoonmaakbedrijfRouteImport } from './routes/website-schoonmaakbedrijf'
 import { Route as WebsiteZzpRouteImport } from './routes/website-zzp'
+import { Route as AdminMonitoringRouteImport } from './routes/admin_.monitoring'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as WebsiteBrancheIndexRouteImport } from './routes/website/$branche/index'
@@ -47,6 +49,11 @@ const IndexRoute = IndexRouteImport.update({
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
   path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AiVindbaarheidRoute = AiVindbaarheidRouteImport.update({
@@ -165,6 +172,11 @@ const WebsiteZzpRoute = WebsiteZzpRouteImport.update({
   path: '/website-zzp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminMonitoringRoute = AdminMonitoringRouteImport.update({
+  id: '/admin_/monitoring',
+  path: '/admin/monitoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -189,6 +201,7 @@ const WebsiteBrancheStadRoute = WebsiteBrancheStadRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/admin': typeof AdminRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
   '/data-deletion': typeof DataDeletionRoute
@@ -212,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/website-salon': typeof WebsiteSalonRoute
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
+  '/admin/monitoring': typeof AdminMonitoringRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
@@ -220,6 +234,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/admin': typeof AdminRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
   '/data-deletion': typeof DataDeletionRoute
@@ -243,6 +258,7 @@ export interface FileRoutesByTo {
   '/website-salon': typeof WebsiteSalonRoute
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
+  '/admin/monitoring': typeof AdminMonitoringRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
   '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
@@ -252,6 +268,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/admin': typeof AdminRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
   '/data-deletion': typeof DataDeletionRoute
@@ -275,6 +292,7 @@ export interface FileRoutesById {
   '/website-salon': typeof WebsiteSalonRoute
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
+  '/admin_/monitoring': typeof AdminMonitoringRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
@@ -285,6 +303,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$'
+    | '/admin'
     | '/ai-vindbaarheid'
     | '/contact'
     | '/data-deletion'
@@ -308,6 +327,7 @@ export interface FileRouteTypes {
     | '/website-salon'
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
+    | '/admin/monitoring'
     | '/blog/$slug'
     | '/blog/'
     | '/website/$branche/$stad'
@@ -316,6 +336,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$'
+    | '/admin'
     | '/ai-vindbaarheid'
     | '/contact'
     | '/data-deletion'
@@ -339,6 +360,7 @@ export interface FileRouteTypes {
     | '/website-salon'
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
+    | '/admin/monitoring'
     | '/blog/$slug'
     | '/blog'
     | '/website/$branche/$stad'
@@ -347,6 +369,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$'
+    | '/admin'
     | '/ai-vindbaarheid'
     | '/contact'
     | '/data-deletion'
@@ -370,6 +393,7 @@ export interface FileRouteTypes {
     | '/website-salon'
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
+    | '/admin_/monitoring'
     | '/blog/$slug'
     | '/blog/'
     | '/website/$branche/$stad'
@@ -379,6 +403,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
+  AdminRoute: typeof AdminRoute
   AiVindbaarheidRoute: typeof AiVindbaarheidRoute
   ContactRoute: typeof ContactRoute
   DataDeletionRoute: typeof DataDeletionRoute
@@ -402,6 +427,7 @@ export interface RootRouteChildren {
   WebsiteSalonRoute: typeof WebsiteSalonRoute
   WebsiteSchoonmaakbedrijfRoute: typeof WebsiteSchoonmaakbedrijfRoute
   WebsiteZzpRoute: typeof WebsiteZzpRoute
+  AdminMonitoringRoute: typeof AdminMonitoringRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   WebsiteBrancheStadRoute: typeof WebsiteBrancheStadRoute
@@ -422,6 +448,13 @@ declare module '@tanstack/react-router' {
       path: '/$'
       fullPath: '/$'
       preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai-vindbaarheid': {
@@ -585,6 +618,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebsiteZzpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin_/monitoring': {
+      id: '/admin_/monitoring'
+      path: '/admin/monitoring'
+      fullPath: '/admin/monitoring'
+      preLoaderRoute: typeof AdminMonitoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -619,6 +659,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
+  AdminRoute: AdminRoute,
   AiVindbaarheidRoute: AiVindbaarheidRoute,
   ContactRoute: ContactRoute,
   DataDeletionRoute: DataDeletionRoute,
@@ -642,6 +683,7 @@ const rootRouteChildren: RootRouteChildren = {
   WebsiteSalonRoute: WebsiteSalonRoute,
   WebsiteSchoonmaakbedrijfRoute: WebsiteSchoonmaakbedrijfRoute,
   WebsiteZzpRoute: WebsiteZzpRoute,
+  AdminMonitoringRoute: AdminMonitoringRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   WebsiteBrancheStadRoute: WebsiteBrancheStadRoute,

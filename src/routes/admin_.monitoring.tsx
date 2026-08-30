@@ -37,7 +37,7 @@ function MonitoringPage() {
   );
 }
 
-export const Route = createFileRoute("/admin/monitoring")({
+export const Route = createFileRoute("/admin_/monitoring")({
   head: () => ({
     meta: [
       { title: "Monitoring | Vedantix Control Center" },
