@@ -15,7 +15,7 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
   const [configured, setConfigured] = useState(false);
   const [user, setUser] = useState("info@vedantix.nl");
   const [password, setPassword] = useState("");
-  const [alertTo, setAlertTo] = useState("info@vedantix.nl");
+  const [alertTo, setAlertTo] = useState("rishwijagesar@hotmail.com");
   const [alertFrom, setAlertFrom] = useState("info@vedantix.nl");
   const [busy, setBusy] = useState<"save" | "test" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -97,7 +97,7 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
           <div>
             <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400"><Mail size={14} /> Migadu SMTP</div>
             <h2 id="migadu-title" className="text-xl font-bold text-slate-950">Monitoring e-mail configureren</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-500">De browser stuurt de gegevens rechtstreeks naar de beveiligde Vedantix Edge Function. Het wachtwoord wordt alleen na succesvolle SMTP-authenticatie versleuteld in Supabase Vault opgeslagen.</p>
+            <p className="mt-1 text-sm leading-6 text-slate-500">Gebruik hier de daadwerkelijke Migadu mailbox op je eigen domein. Je Migadu beheeraccount (bijvoorbeeld een Hotmail-adres waarmee je in het dashboard inlogt) is geen SMTP-mailbox.</p>
           </div>
           <button type="button" onClick={onClose} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Sluiten"><X size={18} /></button>
         </div>
@@ -105,7 +105,7 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
         <div className="p-5">
           <div className="mb-5 grid gap-3 sm:grid-cols-3">
             <SecurityPoint icon={ShieldCheck} title="ADMIN-only" text="Alleen actieve Vedantix admins." />
-            <SecurityPoint icon={KeyRound} title="SMTP-validatie" text="Eerst echte Migadu login-test." />
+            <SecurityPoint icon={KeyRound} title="SMTP-validatie" text="Eerst echte mailbox login-test." />
             <SecurityPoint icon={LockKeyhole} title="Supabase Vault" text="Geen wachtwoord in GitHub of UI." />
           </div>
 
@@ -125,26 +125,26 @@ export default function MigaduCredentialModal({ open, onClose, onSaved }: Props)
           ) : null}
 
           <form onSubmit={submit} className="space-y-4">
-            <Field label="Migadu mailbox" hint="Dit is de mailbox die bij Migadu SMTP mag aanmelden.">
+            <Field label="Migadu mailbox (SMTP-login)" hint="Volledige mailbox op je eigen domein, bijvoorbeeld info@vedantix.nl. Niet je Migadu beheerlogin/Hotmail-adres.">
               <input type="email" value={user} onChange={(event) => setUser(event.target.value)} autoComplete="username" required disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
             </Field>
 
-            <Field label="Migadu wachtwoord" hint={configured ? "Laat leeg zolang je de bestaande configuratie niet wilt vervangen." : "Wordt niet in GitHub, browser storage of deze chat opgeslagen."}>
+            <Field label="Wachtwoord van deze mailbox" hint={configured ? "Laat leeg zolang je de bestaande configuratie niet wilt vervangen." : "Gebruik het wachtwoord van de Migadu mailbox hierboven, niet je Migadu beheeraccountwachtwoord."}>
               <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required={!configured} disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
             </Field>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Alerts naar" hint="Voor één of meerdere adressen; meerdere adressen scheiden met een komma.">
+              <Field label="Alerts naar" hint="Dit mag een extern adres zijn, bijvoorbeeld je Hotmail-adres.">
                 <input type="text" value={alertTo} onChange={(event) => setAlertTo(event.target.value)} disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
               </Field>
-              <Field label="Afzender" hint="Gebruik bij voorkeur dezelfde Migadu mailbox.">
+              <Field label="Afzender" hint="Gebruik voor de eerste setup dezelfde Migadu mailbox als de SMTP-login.">
                 <input type="email" value={alertFrom} onChange={(event) => setAlertFrom(event.target.value)} disabled={!isAdmin || busy !== null} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50" />
               </Field>
             </div>
 
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">
               <strong className="block text-slate-800">Wat gebeurt er na opslaan?</strong>
-              De backend maakt een TLS-verbinding met <code>smtp.migadu.com:465</code>, voert SMTP AUTH uit en schrijft de gegevens alleen bij succes naar Supabase Vault. Notification delivery blijft daarna nog uitgeschakeld totdat je hem in de monitoringconsole expliciet aanzet.
+              De backend maakt een TLS-verbinding met <code>smtp.migadu.com:465</code>, voert SMTP AUTH uit met de mailbox hierboven en schrijft de gegevens alleen bij succes naar Supabase Vault. Notification delivery blijft daarna nog uitgeschakeld totdat je hem expliciet aanzet.
             </div>
 
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
