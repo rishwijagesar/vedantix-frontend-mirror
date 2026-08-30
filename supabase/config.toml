@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.migadu-credentials]
 verify_jwt = false
+
+[functions.admin-magic-link]
+verify_jwt = false
