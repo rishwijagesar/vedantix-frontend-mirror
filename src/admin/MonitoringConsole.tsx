@@ -79,7 +79,7 @@ function alertTone(alert: MonitoringAlert): "neutral" | "success" | "warning" | 
   return "neutral";
 }
 
-export default function MonitoringConsole() {
+export default function MonitoringConsole({ embedded = false }: { embedded?: boolean } = {}) {
   const [alerts, setAlerts] = useState<MonitoringAlert[]>([]);
   const [runs, setRuns] = useState<AutomationRun[]>([]);
   const [notifications, setNotifications] = useState<MonitoringNotification[]>([]);
@@ -162,26 +162,34 @@ export default function MonitoringConsole() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-7">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white">V</div>
-            <div><strong className="block text-sm">Vedantix Monitoring</strong><span className="text-xs text-slate-400">Control Center</span></div>
+    <div className={embedded ? "text-slate-950" : "min-h-screen bg-slate-50 text-slate-950"}>
+      {embedded ? null : (
+        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-7">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white">V</div>
+              <div><strong className="block text-sm">Vedantix Monitoring</strong><span className="text-xs text-slate-400">Control Center</span></div>
+            </div>
+            <div className="flex items-center gap-2">
+              <a href="/admin" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><ArrowLeft size={14} /> Control Center</a>
+              <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Vernieuwen</button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <a href="/admin" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><ArrowLeft size={14} /> Control Center</a>
-            <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Vernieuwen</button>
-          </div>
-        </div>
-      </header>
+        </header>
+      )}
 
-      <main className="mx-auto max-w-7xl p-4 md:p-7">
-        <div className="mb-7">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Vedantix Operations</span>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight">Monitoring</h1>
-          <p className="mt-2 max-w-3xl text-sm text-slate-500">Autonome domein-, e-mail- en websitecontrole met audit trail, alerts en notification delivery.</p>
-        </div>
+      <main className={embedded ? "" : "mx-auto max-w-7xl p-4 md:p-7"}>
+        {embedded ? (
+          <div className="mb-5 flex justify-end">
+            <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Monitoring vernieuwen</button>
+          </div>
+        ) : (
+          <div className="mb-7">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Vedantix Operations</span>
+            <h1 className="mt-1 text-3xl font-bold tracking-tight">Monitoring</h1>
+            <p className="mt-2 max-w-3xl text-sm text-slate-500">Autonome domein-, e-mail- en websitecontrole met audit trail, alerts en notification delivery.</p>
+          </div>
+        )}
 
         {error ? <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
@@ -212,8 +220,8 @@ export default function MonitoringConsole() {
             <Panel title="Automation runs" subtitle="Audit trail van de autonome dagelijkse domeinmonitor.">
               {runs.length === 0 ? <Empty>Nog geen automation-runs.</Empty> : <div className="space-y-3">{runs.slice(0, 20).map((run) => {
                 const output = run.output ?? {};
-                const changeCount = Number(output.change_count ?? 0);
-                const overall = String(output.overall_status ?? "—");
+                const changeCount = Number(output['change_count'] ?? 0);
+                const overall = String(output['overall_status'] ?? "—");
                 return <div key={run.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><div className="flex items-center gap-2"><strong className="text-sm">{run.domain_id ? domainName.get(run.domain_id) || run.domain_id.slice(0, 8) : "Monitoring run"}</strong><Badge tone={runTone(run.status)}>{run.status}</Badge></div><span className="mt-1 block text-xs text-slate-400">{formatDate(run.finished_at || run.created_at)} · overall {overall} · {changeCount} relevante wijziging(en)</span>{run.error_message ? <span className="mt-1 block text-xs text-red-600">{run.error_message}</span> : null}</div><Clock3 size={16} className="text-slate-300" /></div>;
               })}</div>}
             </Panel>
@@ -234,7 +242,7 @@ export default function MonitoringConsole() {
             <Panel title="Notification outbox" subtitle="Queued, verzonden en mislukte monitoringberichten.">
               {notifications.length === 0 ? <Empty>De outbox is leeg.</Empty> : <div className="space-y-3">{notifications.slice(0, 25).map((notification) => {
                 const payload = notification.payload ?? {};
-                const domainId = String(payload.domain_id ?? "");
+                const domainId = String(payload['domain_id'] ?? "");
                 return <div key={notification.id} className="rounded-xl border border-slate-100 p-3"><div className="flex items-center justify-between gap-2"><div><strong className="text-xs">{domainName.get(domainId) || "Monitoring"}</strong><span className="block text-xs text-slate-400">{notification.event_type} · {formatDate(notification.created_at)}</span></div><div className="flex items-center gap-2"><Badge tone={notificationTone(notification.status)}>{notification.status}</Badge>{notification.status === "FAILED" ? <button type="button" disabled={busyId === notification.id} onClick={() => retryNotification(notification)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 disabled:opacity-50" title="Opnieuw proberen"><RotateCcw size={14} /></button> : null}</div></div>{notification.error_message ? <p className="mt-2 text-xs leading-5 text-red-600">{notification.error_message}</p> : null}</div>;
               })}</div>}
             </Panel>

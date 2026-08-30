@@ -11,6 +11,7 @@ import {
   Plus,
   RefreshCw,
   ScanLine,
+  Settings,
   ShieldCheck,
   Trash2,
   UserCog,
@@ -44,9 +45,11 @@ import {
   type StaffRole,
   type StaffUser,
 } from "./staff-data";
+import MonitoringConsole from "./MonitoringConsole";
+import MigaduCredentialModal from "./MigaduCredentialModal";
 import "./control-center.css";
 
-type Section = "dashboard" | "customers" | "domains" | "websites" | "health" | "staff";
+type Section = "dashboard" | "customers" | "domains" | "websites" | "health" | "monitoring" | "staff";
 
 const sections: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -54,6 +57,7 @@ const sections: Array<{ id: Section; label: string; icon: typeof LayoutDashboard
   { id: "domains", label: "Domeinen", icon: Globe2 },
   { id: "websites", label: "Websites", icon: MonitorSmartphone },
   { id: "health", label: "E-mail & DNS", icon: Mail },
+  { id: "monitoring", label: "Monitoring", icon: Activity },
   { id: "staff", label: "Staff", icon: UserCog },
 ];
 
@@ -149,6 +153,7 @@ export default function AdminControlCenterV3() {
     domains: ["Domeinen", "DNS, e-mailprovider, status en technische gezondheid."],
     websites: ["Websites", "GitHub-, Lovable- en domeinkoppelingen per website."],
     health: ["E-mail & DNS", "Live MX, SPF, DKIM en DMARC-health per domein."],
+    monitoring: ["Monitoring", "Autonome domein-, e-mail- en websitecontrole met alerts en notification delivery."],
     staff: ["Staff", "Toegang, rollen en uitnodigingen voor het Control Center."],
   };
 
@@ -177,12 +182,6 @@ export default function AdminControlCenterV3() {
                 </button>
               );
             })}
-            <a
-              href="/admin/monitoring"
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
-            >
-              <Activity size={17} />Monitoring
-            </a>
           </nav>
           <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-slate-400">
             <div className="mb-1 flex items-center gap-2 text-emerald-300"><ShieldCheck size={14} /> Supabase Auth + RLS</div>
@@ -214,6 +213,7 @@ export default function AdminControlCenterV3() {
             {section === "domains" ? <DomainsModule domains={domains} customers={customers} showForm={showForm} onDone={async () => { setShowForm(false); await load(); }} /> : null}
             {section === "websites" ? <WebsitesModule websites={websites} customers={customers} domainsByCustomer={domainsByCustomer} showForm={showForm} onDone={async () => { setShowForm(false); await load(); }} /> : null}
             {section === "health" ? <HealthModule domains={domains} onChanged={load} /> : null}
+            {section === "monitoring" ? <MonitoringModule /> : null}
             {section === "staff" ? <StaffModule /> : null}
           </main>
         </div>
@@ -403,3 +403,33 @@ function HealthLine({ label, ok, pending }: { label: string; ok: boolean; pendin
 }
 
 void HealthLine;
+
+function MonitoringModule() {
+  const [migaduOpen, setMigaduOpen] = useState(false);
+  const [migaduSaved, setMigaduSaved] = useState(false);
+
+  function closeMigadu() {
+    setMigaduOpen(false);
+    if (migaduSaved) {
+      setMigaduSaved(false);
+      window.setTimeout(() => window.location.reload(), 50);
+    }
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <button
+          type="button"
+          onClick={() => setMigaduOpen(true)}
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+        >
+          <Settings size={15} />
+          Migadu instellen
+        </button>
+      </div>
+      <MonitoringConsole embedded />
+      <MigaduCredentialModal open={migaduOpen} onClose={closeMigadu} onSaved={() => setMigaduSaved(true)} />
+    </div>
+  );
+}
