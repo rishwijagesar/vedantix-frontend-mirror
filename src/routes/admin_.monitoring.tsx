@@ -7,6 +7,15 @@ import MonitoringConsole from "@/admin/MonitoringConsole";
 
 function MonitoringPage() {
   const [migaduOpen, setMigaduOpen] = useState(false);
+  const [migaduSaved, setMigaduSaved] = useState(false);
+
+  function closeMigadu() {
+    setMigaduOpen(false);
+    if (migaduSaved) {
+      setMigaduSaved(false);
+      window.setTimeout(() => window.location.reload(), 50);
+    }
+  }
 
   return (
     <AdminAuthGate>
@@ -21,11 +30,8 @@ function MonitoringPage() {
       </button>
       <MigaduCredentialModal
         open={migaduOpen}
-        onClose={() => setMigaduOpen(false)}
-        onSaved={() => {
-          setMigaduOpen(false);
-          window.location.reload();
-        }}
+        onClose={closeMigadu}
+        onSaved={() => setMigaduSaved(true)}
       />
     </AdminAuthGate>
   );
