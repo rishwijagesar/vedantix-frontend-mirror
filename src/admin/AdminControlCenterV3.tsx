@@ -11,6 +11,7 @@ import {
   Plus,
   RefreshCw,
   ScanLine,
+  Settings,
   ShieldCheck,
   Trash2,
   UserCog,
