@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.notification-delivery-status]
 verify_jwt = false
+
+[functions.migadu-credentials]
+verify_jwt = false
