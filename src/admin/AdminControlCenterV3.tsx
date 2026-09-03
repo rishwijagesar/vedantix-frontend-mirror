@@ -10,6 +10,7 @@ import {
   MonitorSmartphone,
   Plus,
   RefreshCw,
+  ReceiptText,
   ScanLine,
   Settings,
   ShieldCheck,
@@ -47,6 +48,7 @@ import {
 } from "./staff-data";
 import MonitoringConsole from "./MonitoringConsole";
 import MigaduCredentialModal from "./MigaduCredentialModal";
+import { BillingDashboardCards } from "./SalesBillingModules";
 import "./control-center.css";
 
 type Section = "dashboard" | "customers" | "domains" | "websites" | "health" | "monitoring" | "staff";
@@ -182,6 +184,15 @@ export default function AdminControlCenterV3() {
                 </button>
               );
             })}
+            <div className="my-3 border-t border-white/10 pt-3">
+              <div className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Sales & Billing</div>
+              <a
+                href="/admin/billing"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+              >
+                <ReceiptText size={17} /> Offertes & facturen
+              </a>
+            </div>
           </nav>
           <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-slate-400">
             <div className="mb-1 flex items-center gap-2 text-emerald-300"><ShieldCheck size={14} /> Supabase Auth + RLS</div>
@@ -234,6 +245,7 @@ function Dashboard({ overview, customers, domains, websites, loading }: { overvi
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map(([label, value, Icon, caption]) => <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={label}><div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100"><Icon size={18} /></div><p className="text-sm text-slate-500">{label}</p><strong className="mt-1 block text-3xl font-bold">{loading ? "—" : value}</strong><span className="mt-1 block text-xs text-slate-400">{caption}</span></article>)}
       </section>
+      <BillingDashboardCards />
       <div className="grid gap-6 xl:grid-cols-[1.3fr_1fr]">
         <Panel title="Beheerde omgeving" subtitle="Echte data uit Supabase; geen demo-records.">{customers.length === 0 ? <Empty>Nog geen klanten.</Empty> : <div className="space-y-3">{customers.slice(0, 6).map((customer) => <div key={customer.id} className="flex items-center justify-between rounded-xl border border-slate-100 px-4 py-3"><div><strong className="text-sm">{customer.company_name}</strong><span className="mt-0.5 block text-xs text-slate-400">{customer.email || "Geen e-mail"}</span></div><Badge tone={customer.status === "ACTIVE" ? "success" : "neutral"}>{customer.status}</Badge></div>)}</div>}</Panel>
         <Panel title="Providerstatus" subtitle="Vaste Vedantix-stack."><div className="space-y-3 text-sm"><ProviderRow label="Websitehosting" value="Lovable" /><ProviderRow label="Source control" value="GitHub" /><ProviderRow label="Database & Auth" value="Supabase" /><ProviderRow label="E-mail" value="Migadu" /><ProviderRow label="DNS Vedantix" value={domains[0]?.dns_provider || "Nog onbekend"} /><ProviderRow label="Website records" value={`${websites.length} gekoppeld`} /></div></Panel>
