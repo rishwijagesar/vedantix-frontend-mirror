@@ -3,15 +3,14 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const allowedOrigins = new Set([
   "https://vedantix-migration-test.lovable.app",
-  "https://vedantix-control-center-test.lovable.app",
-  "https://admin.vedantix.nl",
+  "https://vedantix.nl",
 ]);
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 function responseHeaders(request: Request) {
   const origin = request.headers.get("Origin");
-  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix-control-center-test.lovable.app";
+  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix-migration-test.lovable.app";
   return {
     "content-type": "application/json; charset=utf-8",
     "access-control-allow-origin": allowOrigin,
@@ -90,7 +89,7 @@ async function connectAuthenticated(user: string, password: string) {
   const smtp = new SmtpConnection(conn);
   try {
     await smtp.response([220]);
-    await smtp.command("EHLO admin.vedantix.nl", [250]);
+    await smtp.command("EHLO vedantix.nl", [250]);
     const authPayload = utf8Base64(`\u0000${user}\u0000${password}`);
     await smtp.command(`AUTH PLAIN ${authPayload}`, [235]);
     return smtp;
@@ -134,7 +133,7 @@ async function sendTestMail(args: { user: string; password: string; from: string
       `To: ${args.recipients.join(", ")}`,
       "Subject: [Vedantix] Monitoring testmail",
       `Date: ${new Date().toUTCString()}`,
-      `Message-ID: <${crypto.randomUUID()}@admin.vedantix.nl>`,
+      `Message-ID: <${crypto.randomUUID()}@vedantix.nl>`,
       "MIME-Version: 1.0",
       "Content-Type: text/plain; charset=UTF-8",
       "Content-Transfer-Encoding: base64",
