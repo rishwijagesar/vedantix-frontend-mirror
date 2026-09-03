@@ -10,6 +10,13 @@ export type Customer = {
   contact_name: string | null;
   email: string | null;
   phone: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  postal_code: string | null;
+  city: string | null;
+  country: string | null;
+  kvk_number: string | null;
+  vat_number: string | null;
   status: CustomerStatus;
   notes: string | null;
   created_at: string;
@@ -127,6 +134,13 @@ export async function createCustomer(input: {
   contact_name?: string | null;
   email?: string | null;
   phone?: string | null;
+  address_line1?: string | null;
+  address_line2?: string | null;
+  postal_code?: string | null;
+  city?: string | null;
+  country?: string | null;
+  kvk_number?: string | null;
+  vat_number?: string | null;
   status?: CustomerStatus;
   notes?: string | null;
 }): Promise<Customer> {
