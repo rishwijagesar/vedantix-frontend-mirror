@@ -5,7 +5,8 @@ The canonical machine-readable profile for Vedantix is available at:
 - https://vedantix.nl/llms.txt
 - https://vedantix.nl/llms-full.txt
 
-Vedantix is a web design and online growth agency in 's-Hertogenbosch for professional websites, managed hosting, maintenance, SEO, AEO, GEO and AI visibility for local businesses in the Netherlands.
+Vedantix is a web design and online growth agency in 's-Hertogenbosch for affordable professional websites from EUR 399 one-time, hosting from EUR 30 per year, SEO, AEO, GEO, AIO and AI visibility for starters, self-employed professionals and local businesses in the Netherlands.
 
 Primary source page: https://vedantix.nl/ai-vindbaarheid
+Pricing source: https://vedantix.nl/prijzen
 Contact: https://vedantix.nl/contact

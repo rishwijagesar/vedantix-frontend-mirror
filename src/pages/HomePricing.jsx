@@ -1,147 +1,86 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import "../styles/home-pricing.css";
-import { fetchPricingSummary } from "../api/pricing.api";
 
-const DEFAULT_PRICING = {
-  packages: [],
-  addons: [],
-};
-
-function currency(value) {
-  return new Intl.NumberFormat("nl-NL", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  }).format(Number(value || 0));
-}
-
-function activePackageOptions(options) {
-  return [...options]
-    .filter((item) => item.isActive !== false)
-    .sort((a, b) => Number(a.sortOrder || 0) - Number(b.sortOrder || 0));
-}
-
-const PACKAGE_COPY = {
-  STARTER: { tier: "Starter", name: "", fit: "", featured: false, cancelNote: "", bullets: [], cta: "" },
-  GROWTH: { tier: "Growth", name: "", fit: "", featured: true, cancelNote: "", bullets: [], cta: "" },
-  PRO: { tier: "Pro", name: "", fit: "", featured: false, cancelNote: "", bullets: [], cta: "" },
-  CUSTOM: { tier: "Custom", name: "", fit: "", featured: false, cancelNote: "", bullets: [], cta: "" },
-};
-
-const CUSTOMER_FRIENDLY_BULLETS = {
-  STARTER: [
-    "Professionele website tot 5 pagina's",
-    "Wij houden je website veilig en bereikbaar",
-    "Contactformulier en WhatsApp-knop",
-  ],
-  GROWTH: [
-    "Uitgebreide website tot 10 pagina's",
-    "Meer aandacht voor lokale vindbaarheid",
-    "Snellere hulp en doorlopende verbeteringen",
-  ],
-  PRO: [
-    "Uitgebreide website met groeiruimte",
-    "Doorlopende verbetering voor Google en AI-tools",
-    "Voorrang bij ondersteuning en meer maatwerk",
-  ],
-};
+const PACKAGES = [
+  {
+    code: "STARTER",
+    tier: "Starter",
+    name: "Professionele onepage",
+    fit: "Voor starters en zzp'ers",
+    featured: false,
+    price: 399,
+    bullets: [
+      "Professionele responsive onepage",
+      "Contactformulier en WhatsApp-knop",
+      "Technische SEO-basis voor Google",
+    ],
+  },
+  {
+    code: "GROWTH",
+    tier: "Growth",
+    name: "Complete bedrijfswebsite",
+    fit: "Voor lokale bedrijven met meerdere diensten",
+    featured: true,
+    price: 599,
+    bullets: [
+      "Tot 5 pagina's met sterke dienstenstructuur",
+      "SEO en lokale vindbaarheidsbasis",
+      "AEO-basis met FAQ en structured data",
+    ],
+  },
+  {
+    code: "PRO",
+    tier: "Pro",
+    name: "Website voor online groei",
+    fit: "Voor bedrijven die meer uit hun website willen halen",
+    featured: false,
+    price: 999,
+    bullets: [
+      "Tot 10 pagina's en meer maatwerkruimte",
+      "Uitgebreidere SEO en lokale structuur",
+      "AEO + GEO/AIO-basis voor AI-platformen",
+    ],
+  },
+];
 
 export default function HomePricing() {
-  const [pricing, setPricing] = useState(DEFAULT_PRICING);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-
-    async function load() {
-      try {
-        const data = await fetchPricingSummary();
-        if (!active) return;
-
-        setPricing({
-          packages: Array.isArray(data?.packages) ? data.packages : [],
-          addons: Array.isArray(data?.addons) ? data.addons : [],
-        });
-      } catch {
-        if (!active) return;
-        setPricing(DEFAULT_PRICING);
-      } finally {
-        if (!active) return;
-        setLoading(false);
-      }
-    }
-
-    load();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const packages = useMemo(() => {
-    return activePackageOptions(pricing.packages || []).map((pkg) => {
-      const copy = PACKAGE_COPY[pkg.code] || {
-        tier: pkg.label,
-        name: "",
-        fit: "",
-        featured: false,
-        cancelNote: "",
-        bullets: [],
-        cta: "",
-      };
-
-      return {
-        code: pkg.code,
-        tier: pkg.label || copy.tier,
-        name: pkg.description || copy.name || pkg.label,
-        fit: pkg.fit || copy.fit || "Pakketinformatie",
-        featured: Boolean(pkg.featured ?? copy.featured),
-        cancelNote: pkg.cancelNote || copy.cancelNote || "Neem contact op voor details",
-        bullets: CUSTOMER_FRIENDLY_BULLETS[pkg.code]
-          || (Array.isArray(pkg.bullets) && pkg.bullets.length > 0 ? pkg.bullets : copy.bullets),
-        cta: pkg.cta || copy.cta || `Bespreek ${pkg.label} →`,
-        priceInclVat: Number(pkg.monthlyPriceInclVat || 0),
-        setupInclVat: Number(pkg.setupPriceInclVat || 0),
-      };
-    });
-  }, [pricing]);
-
   return (
     <section id="pricing" className="pricing-section anchor-section">
       <div className="section-wrap">
         <div className="pricing-intro">
           <div className="pricing-kicker">
-            Kies niet alleen een website — kies hoeveel hij voor je moet doen
+            Professionele websites zonder verplicht bureau-abonnement
           </div>
         </div>
 
         <div className="section-header center">
           <div className="section-label">Pakketten</div>
           <h2 className="section-h2">
-            Kies eenmalig of laat ons voor je website zorgen
+            Begin betaalbaar. Voeg groei toe wanneer je die nodig hebt.
           </h2>
           <p className="section-p">
-            Betaal je website één keer en beheer hem daarna zelf, of kies voor een abonnement
-            waarbij Vedantix je website online, veilig en actueel houdt.
+            Je betaalt de website één keer. Hosting kost vanaf €30 per jaar. SEO, AEO,
+            GEO/AIO en doorlopende groei kun je uitbreiden zonder dat iedere klant daarvoor
+            standaard een maandabonnement nodig heeft.
           </p>
         </div>
 
         <div className="pricing-payment-choice">
           <div>
-            <span>Voor starters en zelfbeheerders</span>
-            <strong>Eenmalige websites vanaf €1.295</strong>
-            <p>Geen verplicht maandabonnement. Losse diensten voeg je alleen toe als je ze nodig hebt.</p>
+            <span>Website laten maken</span>
+            <strong>Vanaf €399 eenmalig</strong>
+            <p>Geen verplicht maandabonnement. Je kiest alleen wat bij jouw bedrijf past.</p>
           </div>
           <div>
-            <span>Voor volledige ontzorging</span>
-            <strong>Vanaf €99 per maand + bouw en inrichting</strong>
-            <p>Wij blijven je website online houden, bijwerken en ondersteunen.</p>
+            <span>Hosting & zakelijke e-mail</span>
+            <strong>Vanaf €30 per jaar</strong>
+            <p>Hosting en mailboxen staan los van je websitepakket en blijven transparant geprijsd.</p>
           </div>
-          <a href="/prijzen">Vergelijk beide mogelijkheden →</a>
+          <a href="/prijzen">Bekijk alle prijzen en vindbaarheid →</a>
         </div>
 
         <div className="pricing-grid">
-          {packages.map((pkg) => (
+          {PACKAGES.map((pkg) => (
             <div key={pkg.code} className={`pricing-card ${pkg.featured ? "featured" : ""}`}>
               {pkg.featured && <div className="pricing-badge">Meest gekozen</div>}
 
@@ -152,14 +91,14 @@ export default function HomePricing() {
               <div className="p-price-row">
                 <div className="p-price">
                   <sup>€</sup>
-                  {Math.round(pkg.priceInclVat)}
-                  <span>/m</span>
+                  {pkg.price}
+                  <span> eenmalig</span>
                 </div>
               </div>
 
-              <div className="p-setup">+ {currency(pkg.setupInclVat)} eenmalige setup</div>
+              <div className="p-setup">Daarna €0 verplicht per maand</div>
 
-              <div className="p-terms">{pkg.cancelNote}</div>
+              <div className="p-terms">Alle websiteprijzen zijn inclusief btw</div>
               <div className="p-divider" />
 
               <ul className="p-features">
@@ -170,35 +109,29 @@ export default function HomePricing() {
 
               <a
                 href={`https://wa.me/310626219989?text=${encodeURIComponent(
-                  `Hallo Vedantix, ik wil graag meer weten over het ${pkg.tier} pakket en of dit bij mijn bedrijf past.`
+                  `Hallo Vedantix, ik wil graag meer weten over het ${pkg.tier}-websitepakket van €${pkg.price}.`
                 )}`}
                 target="_blank"
                 rel="noreferrer"
                 className={`p-cta ${pkg.featured ? "featured" : "default"}`}
               >
-                {pkg.cta}
+                Bespreek {pkg.tier} →
               </a>
             </div>
           ))}
-
-          {!loading && packages.length === 0 && (
-            <div className="pricing-empty">
-              Momenteel zijn er geen actieve pakketten zichtbaar.
-            </div>
-          )}
         </div>
 
         <div className="pricing-decision">
-          <h3>Twijfel je tussen de pakketten?</h3>
+          <h3>Google én AI-vindbaarheid nodig?</h3>
           <p>
-            In de meeste gevallen is <strong>Growth</strong> de beste keuze. Dat pakket geeft
-            meestal de beste balans tussen professionele uitstraling, groeiruimte en meer
-            aanvragen.
+            <strong>Growth</strong> geeft een goede SEO- en AEO-basis. Met <strong>Pro</strong>
+            voegen we daar een uitgebreidere GEO/AIO-basis aan toe. Voor structurele groei kun je
+            daarna een optioneel Google- of Google + AI-groeipakket kiezen.
           </p>
         </div>
 
         <div className="pricing-help">
-          <a href="/prijzen#vergelijk">Bekijk de uitgebreide pakketvergelijking →</a>
+          <a href="/prijzen#vergelijk">Vergelijk SEO, AEO, GEO en AIO per pakket →</a>
         </div>
       </div>
     </section>

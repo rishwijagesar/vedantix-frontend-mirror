@@ -9,7 +9,7 @@ const FAQS = [
     id: 1,
     question: "Wat kost een website bij Vedantix?",
     answer:
-      "Je kunt een website eenmalig laten bouwen vanaf €1.295 of kiezen voor een beheerd abonnement vanaf €99 per maand plus de bouw en inrichting. Je kiest zelf welke vorm het beste bij jouw bedrijf past.",
+      "Een professionele website begint bij €399 eenmalig. Growth kost €599 en Pro €999. Er is geen verplicht maandabonnement. Hosting, zakelijke e-mail en groeidiensten kies je los wanneer je ze nodig hebt.",
   },
   {
     id: 2,
@@ -25,63 +25,69 @@ const FAQS = [
   },
   {
     id: 4,
-    question: "Wat zit er in het maandabonnement?",
+    question: "Moet ik een maandabonnement afsluiten?",
     answer:
-      "Met het abonnement houden wij je website online, veilig en actueel. Je krijgt ook hulp bij vragen en, afhankelijk van het pakket, bij kleine wijzigingen en verbeteringen.",
+      "Nee. De website betaal je eenmalig en er is geen verplicht maandabonnement. Hosting kost vanaf €30 per jaar. Wil je dat Vedantix structureel aan SEO, lokale vindbaarheid of AI-vindbaarheid werkt, dan kun je optioneel een groeipakket kiezen.",
   },
   {
     id: 5,
     question: "Kan ik later nog iets laten aanpassen aan mijn website?",
     answer:
-      "Ja. Je website kan later altijd worden uitgebreid of aangepast. Afhankelijk van je pakket zijn kleine wijzigingen inbegrepen. Grotere uitbreidingen of extra werkzaamheden worden apart geoffreerd.",
+      "Ja. Je website kan later altijd worden uitgebreid of aangepast. Kleine en grotere uitbreidingen kunnen los worden aangevraagd, zoals extra pagina’s, teksten, afsprakenfunctionaliteit, SEO of AI-vindbaarheid.",
   },
   {
     id: 6,
-    question: "Zit ik vast aan een lang contract?",
+    question: "Wat kost hosting bij Vedantix?",
     answer:
-      "Een eenmalige website heeft geen abonnement. De beheerde abonnementen zijn na oplevering maandelijks opzegbaar met een opzegtermijn van 30 dagen, tenzij in je voorstel iets anders is afgesproken.",
+      "Voor een normale Vedantix-bedrijfswebsite kost hosting €30 per jaar. Een domeinnaam, zakelijke mailboxen en uitzonderlijk zwaar gebruik kunnen apart worden berekend wanneer dat van toepassing is.",
   },
   {
     id: 7,
-    question: "Wat gebeurt er als ik stop met mijn abonnement?",
+    question: "Wat kost een zakelijk e-mailadres?",
     answer:
-      "Na beëindiging van het abonnement wordt de website offline gehaald na afloop van de opzegtermijn. Neem vooraf contact op als je de mogelijkheden wilt bespreken voor overdracht of overname van onderdelen van de website.",
+      "Een zakelijke mailbox op je eigen domeinnaam kost vanaf €30 per jaar per mailbox. Zo kun je bijvoorbeeld werken met info@jouwbedrijf.nl of afspraken@jouwbedrijf.nl.",
   },
   {
     id: 8,
     question: "Helpt Vedantix ook met meer klanten krijgen?",
     answer:
-      "Vedantix bouwt websites die gericht zijn op duidelijkheid, vertrouwen en conversie. Denk aan een professionele uitstraling, goede mobiele weergave, snelle laadtijd, contactmogelijkheden en een logische opbouw. Dat helpt om bezoekers sneller om te zetten in aanvragen of afspraken.",
+      "Vedantix bouwt websites die gericht zijn op duidelijkheid, vertrouwen en conversie. Daarnaast kun je kiezen voor doorlopende groeidiensten voor Google, lokale vindbaarheid en AI-platformen. Dat vergroot de kans dat relevante bezoekers je bedrijf vinden en contact opnemen.",
   },
   {
     id: 11,
-    question: "Hoe word ik beter gevonden in Google?",
+    question: "Wat is het verschil tussen SEO, AEO, GEO en AIO?",
     answer:
-      "Je wordt beter gevonden met een snelle en duidelijke website, sterke teksten, goede paginatitels en pagina’s die antwoord geven op vragen van klanten. We zorgen ook dat jouw diensten en werkgebied duidelijk naar voren komen.",
+      "SEO richt zich op vindbaarheid in zoekmachines zoals Google. AEO helpt antwoordmachines duidelijke antwoorden uit je website te halen. GEO richt zich op generatieve zoek- en antwoordplatformen. AIO is een bredere optimalisatielaag voor AI-systemen waarin techniek, content, entiteiten en structuur samenkomen.",
   },
   {
     id: 12,
     question: "Wat doet Vedantix?",
     answer:
-      "Vedantix helpt lokale ondernemers groeien met websites, SEO, content, online zichtbaarheid, hosting en onderhoud. Het doel is meer vertrouwen, meer aanvragen en minder technische zorgen.",
+      "Vedantix helpt starters, zzp’ers en kleine bedrijven met betaalbare professionele websites, hosting, zakelijke e-mail, SEO, AEO, GEO/AIO, content en online groei. Je neemt alleen af wat je nodig hebt.",
   },
   {
     id: 13,
     question: "Zijn Vedantix websites voorbereid op AI-zoekmachines?",
     answer:
-      "Ja. We leggen duidelijk uit wie je bent, wat je aanbiedt, waar je werkt en welke vragen klanten vaak stellen. Daardoor kunnen zoekmachines en AI-tools beter begrijpen wanneer jouw bedrijf relevant is.",
+      "Iedere website krijgt een technisch duidelijke basis. Bij Growth en vooral Pro voegen we meer antwoordgerichte structuur, structured data en AI-leesbare content toe. Voor uitgebreidere of doorlopende AEO, GEO en AIO kun je een losse uitbreiding of groeipakket kiezen.",
+  },
+  {
+    id: 14,
+    question: "Kan Vedantix garanderen dat ik bovenaan Google of in ChatGPT kom?",
+    answer:
+      "Nee. Geen betrouwbare partij kan een specifieke Google-positie of vermelding door een AI-platform garanderen. Vedantix kan wel techniek, inhoud, structuur, lokale signalen en meetbaarheid verbeteren zodat zoekmachines en AI-systemen je bedrijf beter kunnen begrijpen en beoordelen.",
   },
   {
     id: 9,
     question: "Moet ik zelf technisch zijn om met Vedantix te werken?",
     answer:
-      "Nee. Wij leggen alles in gewone taal uit. Bij een abonnement blijven wij je website verzorgen. Kies je een eenmalige website, dan kun je later losse hulp of een vooruitbetaald Website Online-pakket toevoegen.",
+      "Nee. Wij leggen alles in gewone taal uit. Hosting en technische uitbreidingen kunnen door Vedantix worden geregeld, terwijl je zelf bepaalt hoeveel beheer en groei je wilt uitbesteden.",
   },
   {
     id: 10,
     question: "Hoe kan ik starten met Vedantix?",
     answer:
-      "Je kunt starten door contact op te nemen via WhatsApp of het contactformulier. Daarna worden je wensen besproken, ontvang je een voorstel en kan de bouw van je website snel worden gestart.",
+      "Je kunt starten door contact op te nemen via WhatsApp of het contactformulier. Daarna bespreken we je wensen, adviseren we welk websitepakket past en spreken we eventuele hosting of vindbaarheidsdiensten vooraf duidelijk af.",
   },
 ];
 
@@ -372,9 +378,7 @@ export default function FAQ() {
   const [openId, setOpenId] = useState(1);
 
   const canonical = "https://vedantix.nl/faq";
-
   const faqSchema = createFAQSchema(FAQS);
-
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Home", url: "https://vedantix.nl/" },
     { name: "FAQ", url: canonical },
@@ -383,8 +387,8 @@ export default function FAQ() {
   return (
     <>
       <SEO
-        title="FAQ | Veelgestelde vragen over websites | Vedantix"
-        description="Bekijk de veelgestelde vragen van Vedantix over prijzen, abonnementen, oplevering, wijzigingen, support en het laten maken van een website."
+        title="FAQ | Prijzen, hosting, SEO en AI-vindbaarheid | Vedantix"
+        description="Veelgestelde vragen over Vedantix websites vanaf €399, hosting vanaf €30 per jaar, SEO, AEO, GEO/AIO, oplevering en uitbreidingen."
         canonical={canonical}
         schemas={[faqSchema, breadcrumbSchema]}
       />
@@ -402,9 +406,8 @@ export default function FAQ() {
 
             <h1 className="faq-title">Veelgestelde vragen</h1>
             <p className="faq-subtitle">
-              Hier vind je duidelijke antwoorden op vragen over prijzen,
-              oplevering, abonnementen, support en het laten maken van een
-              website bij Vedantix.
+              Duidelijke antwoorden over websiteprijzen, hosting, zakelijke e-mail,
+              SEO, AEO, GEO/AIO, oplevering en ondersteuning bij Vedantix.
             </p>
           </div>
         </header>
@@ -414,9 +417,9 @@ export default function FAQ() {
             <section className="faq-intro" aria-labelledby="faq-overview-title">
               <h2 id="faq-overview-title">Antwoorden op de belangrijkste vragen</h2>
               <p>
-                Twijfel je nog over kosten, snelheid of hoe het traject werkt?
-                Hieronder staan de vragen die het vaakst worden gesteld door
-                ondernemers die een professionele website willen laten maken.
+                Hieronder staan de vragen die het vaakst worden gesteld door ondernemers
+                die betaalbaar professioneel online willen en zelf willen bepalen hoeveel
+                hosting, ondersteuning en online groei ze afnemen.
               </p>
             </section>
 
@@ -440,9 +443,7 @@ export default function FAQ() {
                       onClick={() => setOpenId(isOpen ? null : faq.id)}
                     >
                       <span className="faq-question">{faq.question}</span>
-                      <span className="faq-icon" aria-hidden="true">
-                        ▼
-                      </span>
+                      <span className="faq-icon" aria-hidden="true">▼</span>
                     </button>
 
                     <div
@@ -465,14 +466,13 @@ export default function FAQ() {
             <section className="faq-cta" aria-labelledby="faq-cta-title">
               <h2 id="faq-cta-title">Klaar om je website te laten maken?</h2>
               <p>
-                Wil je snel online met een professionele website voor jouw
-                bedrijf? Neem contact op en bespreek vrijblijvend wat er
-                mogelijk is voor jouw situatie.
+                Start met een professionele website vanaf €399 en voeg hosting of online
+                groei alleen toe wanneer jouw bedrijf dat nodig heeft.
               </p>
 
               <div className="faq-cta-actions">
-                <Link className="faq-btn faq-btn-primary" to="/starters">
-                  Bekijk pakketten
+                <Link className="faq-btn faq-btn-primary" to="/prijzen">
+                  Bekijk prijzen
                 </Link>
                 <a
                   className="faq-btn faq-btn-secondary"
@@ -486,7 +486,6 @@ export default function FAQ() {
             </section>
           </div>
         </main>
-
       </div>
     </>
   );

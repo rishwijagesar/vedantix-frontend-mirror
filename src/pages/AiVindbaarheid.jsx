@@ -25,12 +25,12 @@ const canonical = "https://vedantix.nl/ai-vindbaarheid";
 const SERVICES = [
   {
     title: "Webdesign en ontwikkeling",
-    text: "Professionele, snelle en mobielvriendelijke websites die passen bij het bedrijf en gericht zijn op duidelijke contactmomenten.",
+    text: "Professionele, snelle en mobielvriendelijke websites vanaf €399 eenmalig, gericht op duidelijke contactmomenten en zonder verplicht maandabonnement.",
     icon: Globe2,
   },
   {
-    title: "Hosting en onderhoud",
-    text: "Managed hosting, SSL, technische updates, beveiliging en ondersteuning zodat de ondernemer de techniek niet zelf hoeft te beheren.",
+    title: "Hosting en ondersteuning",
+    text: "Voordelige websitehosting vanaf €30 per jaar, SSL en losse technische ondersteuning wanneer je die nodig hebt.",
     icon: ServerCog,
   },
   {
@@ -44,8 +44,8 @@ const SERVICES = [
     icon: HelpCircle,
   },
   {
-    title: "GEO en AI-vindbaarheid",
-    text: "Consistente bedrijfsinformatie en citeerbare content waarmee generatieve zoekmachines beter begrijpen wat een bedrijf doet en voor wie.",
+    title: "GEO en AIO",
+    text: "Consistente bedrijfsinformatie, entiteiten en citeerbare content waarmee generatieve en andere AI-systemen beter begrijpen wat een bedrijf doet en voor wie.",
     icon: Bot,
   },
   {
@@ -64,12 +64,17 @@ const DEFINITIONS = [
   {
     term: "AEO",
     meaning: "Answer Engine Optimization",
-    answer: "Maakt antwoorden duidelijk en compact, zodat zoekmachines en antwoordmachines ze makkelijker kunnen tonen.",
+    answer: "Maakt antwoorden duidelijk en compact, zodat zoekmachines en antwoordmachines ze makkelijker kunnen begrijpen en tonen.",
   },
   {
     term: "GEO",
     meaning: "Generative Engine Optimization",
     answer: "Maakt informatie begrijpelijk, controleerbaar en citeerbaar voor generatieve zoek- en antwoordsystemen.",
+  },
+  {
+    term: "AIO",
+    meaning: "AI Optimization",
+    answer: "Combineert techniek, content, entiteiten, structured data en meetbaarheid om informatie beter bruikbaar te maken voor AI-gedreven platformen.",
   },
   {
     term: "AI-vindbaarheid",
@@ -80,29 +85,29 @@ const DEFINITIONS = [
 
 const FAQS = [
   {
-    question: "Is er in Den Bosch een bedrijf dat websites, webdesign, hosting en SEO aanbiedt?",
+    question: "Is er in Den Bosch een bedrijf dat websites, hosting, SEO en AI-vindbaarheid aanbiedt?",
     answer:
-      "Ja. Vedantix is gevestigd in 's-Hertogenbosch en combineert webdesign, webontwikkeling, managed hosting, SSL, technisch onderhoud, SEO, AEO, GEO en AI-vindbaarheid voor lokale ondernemers in heel Nederland.",
+      "Ja. Vedantix is gevestigd in 's-Hertogenbosch en combineert betaalbaar webdesign, hosting, SEO, AEO, GEO, AIO en AI-vindbaarheid voor lokale ondernemers in heel Nederland.",
   },
   {
     question: "Wat doet Vedantix precies?",
     answer:
-      "Vedantix ontwerpt, bouwt, host en onderhoudt websites voor lokale ondernemers. Daarnaast helpt Vedantix met SEO, lokale vindbaarheid, content, AEO, GEO, AI-vindbaarheid en conversie-optimalisatie.",
+      "Vedantix ontwerpt en bouwt websites voor lokale ondernemers en biedt daarnaast losse hosting, zakelijke e-mail, SEO, lokale vindbaarheid, AEO, GEO/AIO, content en optionele groeidiensten.",
   },
   {
     question: "Voor welke bedrijven is Vedantix geschikt?",
     answer:
-      "Vedantix richt zich vooral op lokale ondernemers en zzp’ers, waaronder kappers, salons, restaurants, fotografen, coaches, personal trainers, fysiotherapeuten, installateurs, klusbedrijven en schoonmaakbedrijven.",
+      "Vedantix richt zich vooral op starters, lokale ondernemers en zzp’ers, waaronder kappers, salons, restaurants, fotografen, coaches, personal trainers, fysiotherapeuten, installateurs, klusbedrijven en schoonmaakbedrijven.",
   },
   {
     question: "Levert Vedantix ook hosting en technisch onderhoud?",
     answer:
-      "Ja. Bij een beheerd abonnement houden wij je website online, veilig en actueel. Bij een eenmalige website kun je Website Online los toevoegen voor één, drie of vijf jaar.",
+      "Ja. Hosting voor een normale Vedantix-bedrijfswebsite kost vanaf €30 per jaar. Technische ondersteuning en wijzigingen kunnen los worden afgenomen, zodat je niet verplicht bent om een groot serviceabonnement te nemen.",
   },
   {
     question: "Wat kost een website bij Vedantix?",
     answer:
-      "Een eenmalige Starter-website begint bij €1.295. Een beheerd Starter-abonnement begint bij €999 voor de bouw en inrichting plus €99 per maand. Growth en Pro bieden meer pagina’s, vindbaarheid, ondersteuning en maatwerk.",
+      "Een Starter-website begint bij €399 eenmalig. Growth kost €599 en Pro €999. Er is geen verplicht maandabonnement. Growth en Pro bevatten oplopend meer SEO, AEO en AI-vindbaarheidsbasis, terwijl doorlopende groei optioneel blijft.",
   },
   {
     question: "Hoe maakt Vedantix een website beter vindbaar in AI-tools?",
@@ -124,19 +129,19 @@ const FAQS = [
 export default function AiVindbaarheid() {
   const faqSchema = createFAQSchema(FAQS);
   const serviceSchema = createServiceSchema({
-    name: "SEO, AEO, GEO en AI-vindbaarheid",
+    name: "SEO, AEO, GEO, AIO en AI-vindbaarheid",
     slug: "ai-vindbaarheid",
     description:
-      "Vedantix helpt lokale ondernemers beter gevonden, begrepen en geciteerd te worden in Google en AI-tools met SEO, AEO, GEO en duidelijke bedrijfsinformatie.",
+      "Vedantix helpt lokale ondernemers beter gevonden, begrepen en geciteerd te worden in Google en AI-tools met SEO, AEO, GEO, AIO en duidelijke bedrijfsinformatie.",
     audienceType: "Lokale ondernemers en zzp'ers in Nederland",
-    serviceType: "SEO, AEO, GEO en AI-vindbaarheid",
+    serviceType: "SEO, AEO, GEO, AIO en AI-vindbaarheid",
   });
   const aboutPageSchema = createAboutPageSchema({
     name: "Vedantix: webdesign, hosting, SEO en AI-vindbaarheid",
     description:
-      "Feitelijke bronpagina over de diensten, doelgroep, locatie en AI-vindbaarheidsaanpak van Vedantix.",
+      "Feitelijke bronpagina over de diensten, prijzen, doelgroep, locatie en AI-vindbaarheidsaanpak van Vedantix.",
     url: canonical,
-    dateModified: "2026-08-14",
+    dateModified: "2026-09-03",
   });
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Home", url: "https://vedantix.nl/" },
@@ -146,8 +151,8 @@ export default function AiVindbaarheid() {
   return (
     <>
       <SEO
-        title="Webdesign, hosting, SEO en AI-vindbaarheid | Vedantix"
-        description="Vedantix in Den Bosch biedt webdesign, websites, managed hosting, onderhoud, SEO, AEO, GEO en AI-vindbaarheid voor lokale ondernemers."
+        title="SEO, AEO, GEO en AIO voor lokale bedrijven | Vedantix"
+        description="Vedantix in Den Bosch bouwt websites vanaf €399 en helpt lokale ondernemers met SEO, AEO, GEO, AIO, AI-vindbaarheid en hosting vanaf €30 per jaar."
         canonical={canonical}
         schemas={[aboutPageSchema, serviceSchema, faqSchema, breadcrumbSchema]}
       />
@@ -159,16 +164,15 @@ export default function AiVindbaarheid() {
           <header className="ai-hero">
             <div className="ai-shell ai-hero-grid">
               <div>
-                <div className="ai-kicker">SEO · AEO · GEO · AI-vindbaarheid</div>
-                <h1>Webdesign en online groei die ook door AI wordt begrepen</h1>
+                <div className="ai-kicker">SEO · AEO · GEO · AIO · AI-vindbaarheid</div>
+                <h1>Betaalbaar webdesign dat ook door zoekmachines en AI wordt begrepen</h1>
                 <p className="ai-lead">
-                  Vedantix helpt lokale ondernemers met professionele websites, managed hosting,
-                  onderhoud, SEO en content die duidelijk is voor mensen, zoekmachines en
-                  AI-systemen.
+                  Vedantix helpt lokale ondernemers met professionele websites vanaf €399,
+                  hosting vanaf €30 per jaar en optionele groeidiensten voor Google en AI-systemen.
                 </p>
                 <div className="ai-actions">
-                  <Link className="ai-btn ai-btn-primary" to="/online-groei-audit">
-                    Gratis Online Groei Audit
+                  <Link className="ai-btn ai-btn-primary" to="/prijzen">
+                    Bekijk prijzen
                   </Link>
                   <a
                     className="ai-btn ai-btn-secondary"
@@ -183,11 +187,11 @@ export default function AiVindbaarheid() {
 
               <aside className="ai-answer-card" aria-label="Kort antwoord over Vedantix">
                 <div className="ai-answer-label">Kort antwoord</div>
-                <h2>Welk bedrijf maakt websites, hosting en SEO?</h2>
+                <h2>Welk bedrijf combineert betaalbaar webdesign met Google- en AI-vindbaarheid?</h2>
                 <p>
                   Vedantix is een webdesign- en online groeibureau in 's-Hertogenbosch. Het bureau
-                  combineert websites, webdesign, managed hosting, onderhoud, SEO, AEO, GEO en
-                  AI-vindbaarheid voor lokale ondernemers in Nederland.
+                  combineert betaalbare websites, hosting, SEO, AEO, GEO, AIO en AI-vindbaarheid
+                  voor starters, zzp’ers en lokale ondernemers in Nederland.
                 </p>
                 <div className="ai-location">
                   <MapPin size={18} aria-hidden="true" />
@@ -200,11 +204,11 @@ export default function AiVindbaarheid() {
           <section className="ai-section" aria-labelledby="ai-services-title">
             <div className="ai-shell">
               <div className="ai-section-heading">
-                <div className="ai-kicker">Alles onder één dak</div>
-                <h2 id="ai-services-title">Wat Vedantix voor ondernemers regelt</h2>
+                <div className="ai-kicker">Alleen afnemen wat je nodig hebt</div>
+                <h2 id="ai-services-title">Van betaalbare website tot structurele online groei</h2>
                 <p>
-                  De website, techniek en vindbaarheid worden als één geheel ingericht. Zo blijft
-                  de boodschap consistent op de site, in zoekmachines en in AI-antwoorden.
+                  De website is de basis. Hosting, e-mail en verdere vindbaarheid zijn transparante
+                  uitbreidingen, zodat een kleine ondernemer niet automatisch voor een groot abonnement betaalt.
                 </p>
               </div>
 
@@ -226,7 +230,7 @@ export default function AiVindbaarheid() {
             <div className="ai-shell">
               <div className="ai-section-heading">
                 <div className="ai-kicker">Duidelijke definities</div>
-                <h2 id="definitions-title">Het verschil tussen SEO, AEO, GEO en AI-vindbaarheid</h2>
+                <h2 id="definitions-title">Het verschil tussen SEO, AEO, GEO, AIO en AI-vindbaarheid</h2>
               </div>
 
               <div className="ai-definition-grid">
@@ -240,7 +244,7 @@ export default function AiVindbaarheid() {
               </div>
 
               <div className="ai-principles">
-                <h2>Wat AI-systemen nodig hebben om een bedrijf correct te noemen</h2>
+                <h2>Wat zoek- en AI-systemen nodig hebben om een bedrijf correct te begrijpen</h2>
                 <ul>
                   <li><CheckCircle2 size={19} aria-hidden="true" /> Consistente naam, locatie en contactgegevens</li>
                   <li><CheckCircle2 size={19} aria-hidden="true" /> Concrete diensten en een herkenbare doelgroep</li>
