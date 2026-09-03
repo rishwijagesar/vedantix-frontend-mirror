@@ -1,4 +1,13 @@
-import type { BillingItem, CompanyProfile, CreditNote, Invoice, Quote } from "./sales-billing-data";
+import {
+  BILLING_TYPE_LABELS,
+  buildPaymentBreakdown,
+  type BillingItem,
+  type BillingType,
+  type CompanyProfile,
+  type CreditNote,
+  type Invoice,
+  type Quote,
+} from "./sales-billing-data";
 
 type BillingDocument = Quote | Invoice | CreditNote;
 type DocumentKind = "QUOTE" | "INVOICE" | "CREDIT";
@@ -18,6 +27,7 @@ type CustomerSnapshot = {
 };
 
 const euro = new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" });
+const billingTypes: BillingType[] = ["ONE_TIME", "MONTHLY", "YEARLY"];
 
 function esc(value: unknown) {
   return String(value ?? "")
@@ -48,7 +58,7 @@ function vedantixLogoSvg() {
   </svg>`;
 }
 
-function vatRows(items: BillingItem[], totalEx: number, documentDiscount: number) {
+function vatRows(items: BillingItem[], totalEx: number) {
   if (!items.length) return [];
   const itemNet = items.reduce((sum, item) => sum + Number(item.line_total_ex_vat), 0);
   const ratio = itemNet > 0 ? Math.max(0, totalEx) / itemNet : 1;
@@ -61,7 +71,33 @@ function vatRows(items: BillingItem[], totalEx: number, documentDiscount: number
     current.vat += base * rate / 100;
     groups.set(rate, current);
   }
-  return [...groups.entries()].sort(([a], [b]) => a - b).map(([rate, values]) => ({ rate, base: values.base, vat: values.vat, documentDiscount }));
+  return [...groups.entries()].sort(([a], [b]) => a - b).map(([rate, values]) => ({ rate, base: values.base, vat: values.vat }));
+}
+
+function quoteCostOverview(items: BillingItem[], quote: Quote) {
+  const breakdown = buildPaymentBreakdown(items, Number(quote.total_ex_vat), Number(quote.vat_total));
+  const labels: Record<BillingType, { title: string; suffix: string }> = {
+    ONE_TIME: { title: "Eenmalig bij start", suffix: "" },
+    MONTHLY: { title: "Daarna per maand", suffix: " p/m" },
+    YEARLY: { title: "Daarnaast per jaar", suffix: " p/j" },
+  };
+
+  const rows = billingTypes
+    .filter((type) => breakdown[type].itemCount > 0)
+    .map((type) => {
+      const part = breakdown[type];
+      return `<div class="cost-card">
+        <span>${labels[type].title}</span>
+        <strong>${euro.format(part.inclVat)}${labels[type].suffix}</strong>
+        <small>${euro.format(part.exVat)} excl. btw · ${euro.format(part.vat)} btw</small>
+      </div>`;
+    }).join("");
+
+  return `<section class="cost-overview">
+    <h3>Kostenoverzicht</h3>
+    <div class="cost-grid">${rows || `<div class="cost-card"><span>Geen kosten</span><strong>${euro.format(0)}</strong></div>`}</div>
+    ${Number(quote.document_discount_ex_vat) > 0 ? `<p class="discount-note">De algemene korting is naar rato verdeeld over de betaalmomenten.</p>` : ""}
+  </section>`;
 }
 
 export function billingDocumentFilename(kind: DocumentKind, document: BillingDocument) {
@@ -83,7 +119,7 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
   const lineDiscount = isCredit ? 0 : Number((document as Quote | Invoice).line_discount_ex_vat || 0);
   const documentDiscount = isCredit ? 0 : Number((document as Quote | Invoice).document_discount_ex_vat || 0);
   const subtotal = isCredit ? Math.abs(totalEx) : Number((document as Quote | Invoice).subtotal_ex_vat || 0);
-  const vatGroups = vatRows(items, totalEx, documentDiscount);
+  const vatGroups = vatRows(items, totalEx);
   const customerAddress = addressLines(customer);
   const companyAddress = addressLines(company);
   const title = isQuote ? "Offerte" : isInvoice ? "Factuur" : "Creditnota";
@@ -91,12 +127,22 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
 
   const itemRows = items.length ? items.map((item) => `<tr>
       <td><strong>${esc(item.description)}</strong>${item.code ? `<div class="muted">${esc(item.code)}</div>` : ""}</td>
+      <td>${esc(BILLING_TYPE_LABELS[(item.billing_type || "ONE_TIME") as BillingType])}</td>
       <td class="num">${Number(item.quantity).toLocaleString("nl-NL")}</td>
       <td class="num">${euro.format(Number(item.unit_price_ex_vat))}</td>
       <td class="num">${Number(item.vat_rate).toLocaleString("nl-NL")}%</td>
       <td class="num">${item.line_discount_ex_vat ? `− ${euro.format(Number(item.line_discount_ex_vat))}` : "—"}</td>
       <td class="num strong">${euro.format(Number(item.line_total_ex_vat))}</td>
-    </tr>`).join("") : `<tr><td colspan="6">${isCredit ? `Volledige creditering van factuur ${esc((document as CreditNote).invoice_number || "oorspronkelijke factuur")}` : "Geen regels"}</td></tr>`;
+    </tr>`).join("") : `<tr><td colspan="7">${isCredit ? `Volledige creditering van factuur ${esc((document as CreditNote).invoice_number || "oorspronkelijke factuur")}` : "Geen regels"}</td></tr>`;
+
+  const normalSummary = `<section class="summary">
+      <div class="sum-row"><span>Subtotaal excl. btw</span><strong>${euro.format(subtotal)}</strong></div>
+      ${lineDiscount ? `<div class="sum-row discount"><span>Regelkortingen</span><strong>− ${euro.format(lineDiscount)}</strong></div>` : ""}
+      ${documentDiscount ? `<div class="sum-row discount"><span>Algemene korting</span><strong>− ${euro.format(documentDiscount)}</strong></div>` : ""}
+      <div class="sum-row"><span>Totaal excl. btw</span><strong>${euro.format(totalEx)}</strong></div>
+      ${vatGroups.length ? vatGroups.map(v=>`<div class="sum-row vat-line"><span>BTW ${v.rate.toLocaleString("nl-NL")}% over ${euro.format(v.base)}</span><strong>${euro.format(v.vat)}</strong></div>`).join("") : `<div class="sum-row"><span>BTW</span><strong>${euro.format(vatTotal)}</strong></div>`}
+      <div class="sum-row total"><span>${isCredit ? "Te crediteren" : "Totaal incl. btw"}</span><strong>${euro.format(totalIncl)}</strong></div>
+    </section>`;
 
   return `<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>${esc(title)} ${esc(number)}</title>
   <style>
@@ -107,6 +153,7 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
     .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.meta div{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px}.meta span{display:block;color:#64748b;font-size:10px}.meta strong{font-size:11px}
     .intro{margin:18px 0 20px;color:#334155}.items{width:100%;border-collapse:collapse;margin-top:10px}.items th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;border-bottom:1px solid #cbd5e1;padding:9px 7px}.items td{border-bottom:1px solid #e2e8f0;padding:10px 7px;vertical-align:top}.num{text-align:right!important;white-space:nowrap}.strong{font-weight:700}
     .summary{width:48%;margin:22px 0 0 auto}.sum-row{display:flex;justify-content:space-between;padding:5px 0;color:#475569}.sum-row.total{border-top:2px solid #0f172a;margin-top:7px;padding-top:11px;color:#0f172a;font-size:16px;font-weight:800}.sum-row.discount{color:#0f766e}.vat-line{font-size:10px;color:#64748b}
+    .cost-overview{margin-top:24px;border-top:2px solid #0f172a;padding-top:16px}.cost-overview h3{font-size:13px;margin:0 0 10px}.cost-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.cost-card{border:1px solid #e2e8f0;border-radius:10px;padding:12px;background:#f8fafc}.cost-card span{display:block;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.05em}.cost-card strong{display:block;font-size:17px;margin-top:4px}.cost-card small{display:block;color:#64748b;margin-top:3px}.discount-note{font-size:10px;color:#64748b;margin:8px 0 0}
     .notes{margin-top:28px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}.notes h4{margin:0 0 6px}.footer{display:flex;justify-content:space-between;gap:18px;border-top:1px solid #e2e8f0;margin-top:28px;padding-top:14px;color:#64748b;font-size:9.5px}.footer strong{color:#334155}
     .printbar{position:fixed;top:12px;right:12px;display:flex;gap:8px}.printbar button{border:0;background:#0f172a;color:white;padding:10px 14px;border-radius:9px;font-weight:700;cursor:pointer}.printbar .secondary{background:white;color:#0f172a;border:1px solid #cbd5e1}@media print{.printbar{display:none}.page{max-width:none}}
   </style></head><body><div class="printbar"><button class="secondary" onclick="window.close()">Sluiten</button><button onclick="window.print()">Opslaan als PDF / printen</button></div><main class="page">
@@ -115,15 +162,8 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
       <div class="block"><h3>Aan</h3><strong>${esc(customer.company_name || "Klant")}</strong>${customer.contact_name ? `<div>${esc(customer.contact_name)}</div>` : ""}${customerAddress.map((x)=>`<div>${esc(x)}</div>`).join("")}${customer.email ? `<div>${esc(customer.email)}</div>` : ""}
       <div class="meta"><div><span>Datum</span><strong>${dateNl(docDate)}</strong></div>${isQuote ? `<div><span>Geldig tot</span><strong>${dateNl((document as Quote).valid_until)}</strong></div>` : ""}${isInvoice ? `<div><span>Vervaldatum</span><strong>${dateNl((document as Invoice).due_date)}</strong></div><div><span>Betalingskenmerk</span><strong>${esc((document as Invoice).payment_reference || number || "—")}</strong></div>` : ""}</div></div></section>
     ${isQuote && (document as Quote).intro_text ? `<div class="intro">${esc((document as Quote).intro_text).replaceAll("\n","<br>")}</div>` : ""}
-    <table class="items"><thead><tr><th>Omschrijving</th><th class="num">Aantal</th><th class="num">Prijs excl.</th><th class="num">BTW</th><th class="num">Korting</th><th class="num">Totaal excl.</th></tr></thead><tbody>${itemRows}</tbody></table>
-    <section class="summary">
-      <div class="sum-row"><span>Subtotaal excl. btw</span><strong>${euro.format(subtotal)}</strong></div>
-      ${lineDiscount ? `<div class="sum-row discount"><span>Regelkortingen</span><strong>− ${euro.format(lineDiscount)}</strong></div>` : ""}
-      ${documentDiscount ? `<div class="sum-row discount"><span>Algemene korting</span><strong>− ${euro.format(documentDiscount)}</strong></div>` : ""}
-      <div class="sum-row"><span>Totaal excl. btw</span><strong>${euro.format(totalEx)}</strong></div>
-      ${vatGroups.length ? vatGroups.map(v=>`<div class="sum-row vat-line"><span>BTW ${v.rate.toLocaleString("nl-NL")}% over ${euro.format(v.base)}</span><strong>${euro.format(v.vat)}</strong></div>`).join("") : `<div class="sum-row"><span>BTW</span><strong>${euro.format(vatTotal)}</strong></div>`}
-      <div class="sum-row total"><span>${isCredit ? "Te crediteren" : "Totaal incl. btw"}</span><strong>${euro.format(totalIncl)}</strong></div>
-    </section>
+    <table class="items"><thead><tr><th>Omschrijving</th><th>Termijn</th><th class="num">Aantal</th><th class="num">Prijs excl.</th><th class="num">BTW</th><th class="num">Korting</th><th class="num">Totaal excl.</th></tr></thead><tbody>${itemRows}</tbody></table>
+    ${isQuote ? quoteCostOverview(items, document as Quote) : normalSummary}
     ${(isQuote && ((document as Quote).notes || (document as Quote).terms)) || (isInvoice && (document as Invoice).notes) || (isCredit && (document as CreditNote).reason) ? `<section class="notes"><h4>${isCredit ? "Reden creditnota" : "Opmerkingen"}</h4><div>${esc(isQuote ? ((document as Quote).notes || (document as Quote).terms) : isInvoice ? (document as Invoice).notes : (document as CreditNote).reason).replaceAll("\n","<br>")}</div></section>` : ""}
     <footer class="footer"><div><strong>${esc(company.trade_name || "Vedantix")}</strong><br>${esc(company.website || "vedantix.nl")} · ${esc(company.email || "")}</div><div>${company.kvk_number ? `KVK ${esc(company.kvk_number)}<br>` : ""}${company.vat_number ? `BTW-ID ${esc(company.vat_number)}<br>` : ""}${company.iban ? `IBAN ${esc(company.iban)}` : ""}</div>${isInvoice && company.default_payment_term_days ? `<div>Betaling binnen ${esc(company.default_payment_term_days)} dagen.</div>` : ""}</footer>
   </main></body></html>`;
