@@ -151,6 +151,7 @@ export type Quote = {
   sent_at: string | null;
   accepted_at: string | null;
   rejected_at: string | null;
+  billing_activated_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -159,6 +160,9 @@ export type Invoice = {
   id: string;
   invoice_number: string | null;
   source_quote_id: string | null;
+  subscription_id: string | null;
+  billing_period_start: string | null;
+  billing_period_end: string | null;
   customer_id: string;
   status: InvoiceStatus;
   invoice_date: string | null;
