@@ -71,7 +71,7 @@ async function proxyPublicVedantixApi(request: Request): Promise<Response> {
   const upstream = await fetch(upstreamUrl, {
     method,
     headers: buildProxyRequestHeaders(request),
-    body: hasBody ? request.body : undefined,
+    body: hasBody ? request.body : null,
     redirect: "manual",
   });
 
