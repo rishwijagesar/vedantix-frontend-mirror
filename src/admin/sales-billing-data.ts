@@ -128,6 +128,7 @@ export type CreditNote = {
   id: string;
   credit_number: string | null;
   invoice_id: string;
+  invoice_number: string | null;
   customer_id: string;
   status: "DRAFT" | "FINALIZED" | "SENT";
   credit_date: string | null;

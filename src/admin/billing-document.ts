@@ -96,7 +96,7 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
       <td class="num">${Number(item.vat_rate).toLocaleString("nl-NL")}%</td>
       <td class="num">${item.line_discount_ex_vat ? `− ${euro.format(Number(item.line_discount_ex_vat))}` : "—"}</td>
       <td class="num strong">${euro.format(Number(item.line_total_ex_vat))}</td>
-    </tr>`).join("") : `<tr><td colspan="6">${isCredit ? `Volledige creditering van factuur ${esc((document as CreditNote).invoice_id)}` : "Geen regels"}</td></tr>`;
+    </tr>`).join("") : `<tr><td colspan="6">${isCredit ? `Volledige creditering van factuur ${esc((document as CreditNote).invoice_number || "oorspronkelijke factuur")}` : "Geen regels"}</td></tr>`;
 
   return `<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>${esc(title)} ${esc(number)}</title>
   <style>
