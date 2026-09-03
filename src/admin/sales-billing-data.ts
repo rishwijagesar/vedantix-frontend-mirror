@@ -5,6 +5,12 @@ export type BillingType = "ONE_TIME" | "MONTHLY" | "YEARLY";
 export type QuoteStatus = "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED" | "EXPIRED";
 export type InvoiceStatus = "DRAFT" | "FINALIZED" | "SENT" | "PARTIALLY_PAID" | "PAID" | "OVERDUE" | "CREDITED";
 
+export const BILLING_TYPE_LABELS: Record<BillingType, string> = {
+  ONE_TIME: "Eenmalig",
+  MONTHLY: "Maandelijks",
+  YEARLY: "Jaarlijks",
+};
+
 export type CompanyProfile = {
   id: boolean;
   trade_name: string;
@@ -54,6 +60,7 @@ export type BillingItem = {
   catalog_product_id: string | null;
   code: string | null;
   description: string;
+  billing_type: BillingType;
   quantity: number;
   unit_price_ex_vat: number;
   vat_rate: number;
@@ -64,7 +71,61 @@ export type BillingItem = {
   line_total_ex_vat: number;
   line_vat: number;
   line_total_incl_vat: number;
+  created_at?: string;
+  updated_at?: string;
 };
+
+export type PaymentBreakdownPart = {
+  exVat: number;
+  vat: number;
+  inclVat: number;
+  itemCount: number;
+};
+
+export type PaymentBreakdown = Record<BillingType, PaymentBreakdownPart>;
+
+const billingTypes: BillingType[] = ["ONE_TIME", "MONTHLY", "YEARLY"];
+const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+
+export function buildPaymentBreakdown(
+  items: BillingItem[],
+  totalExVat: number,
+  vatTotal: number,
+): PaymentBreakdown {
+  const result: PaymentBreakdown = {
+    ONE_TIME: { exVat: 0, vat: 0, inclVat: 0, itemCount: 0 },
+    MONTHLY: { exVat: 0, vat: 0, inclVat: 0, itemCount: 0 },
+    YEARLY: { exVat: 0, vat: 0, inclVat: 0, itemCount: 0 },
+  };
+
+  if (!items.length) return result;
+
+  const netBeforeDocumentDiscount = items.reduce((sum, item) => sum + Number(item.line_total_ex_vat || 0), 0);
+  const ratio = netBeforeDocumentDiscount > 0 ? Math.max(0, Number(totalExVat || 0)) / netBeforeDocumentDiscount : 1;
+
+  for (const item of items) {
+    const type = (item.billing_type || "ONE_TIME") as BillingType;
+    const base = round2(Number(item.line_total_ex_vat || 0) * ratio);
+    const vat = round2(base * Number(item.vat_rate || 0) / 100);
+    result[type].exVat = round2(result[type].exVat + base);
+    result[type].vat = round2(result[type].vat + vat);
+    result[type].itemCount += 1;
+  }
+
+  const activeTypes = billingTypes.filter((type) => result[type].itemCount > 0);
+  const correctionType = activeTypes[activeTypes.length - 1] || "ONE_TIME";
+  const currentEx = round2(billingTypes.reduce((sum, type) => sum + result[type].exVat, 0));
+  const currentVat = round2(billingTypes.reduce((sum, type) => sum + result[type].vat, 0));
+
+  result[correctionType].exVat = round2(result[correctionType].exVat + round2(Number(totalExVat || 0) - currentEx));
+  result[correctionType].vat = round2(result[correctionType].vat + round2(Number(vatTotal || 0) - currentVat));
+
+  for (const type of billingTypes) {
+    result[type].inclVat = round2(result[type].exVat + result[type].vat);
+  }
+
+  return result;
+}
 
 export type Quote = {
   id: string;
@@ -238,7 +299,16 @@ export async function deleteQuote(id: string) {
 }
 
 export async function addQuoteItem(quoteId: string, input: {
-  position?: number; catalog_product_id?: string | null; code?: string | null; description: string; quantity?: number; unit_price_ex_vat: number; vat_rate?: number; discount_type?: DiscountType; discount_value?: number;
+  position?: number;
+  catalog_product_id?: string | null;
+  code?: string | null;
+  description: string;
+  billing_type?: BillingType;
+  quantity?: number;
+  unit_price_ex_vat: number;
+  vat_rate?: number;
+  discount_type?: DiscountType;
+  discount_value?: number;
 }) {
   const { data, error } = await supabase.from("quote_items").insert({ quote_id: quoteId, ...input }).select("*").single();
   fail(error);
@@ -294,7 +364,16 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function addInvoiceItem(invoiceId: string, input: {
-  position?: number; catalog_product_id?: string | null; code?: string | null; description: string; quantity?: number; unit_price_ex_vat: number; vat_rate?: number; discount_type?: DiscountType; discount_value?: number;
+  position?: number;
+  catalog_product_id?: string | null;
+  code?: string | null;
+  description: string;
+  billing_type?: BillingType;
+  quantity?: number;
+  unit_price_ex_vat: number;
+  vat_rate?: number;
+  discount_type?: DiscountType;
+  discount_value?: number;
 }) {
   const { data, error } = await supabase.from("invoice_items").insert({ invoice_id: invoiceId, ...input }).select("*").single();
   fail(error);
