@@ -12,13 +12,12 @@ type Check = {
 
 const allowedOrigins = new Set([
   "https://vedantix-migration-test.lovable.app",
-  "https://vedantix-control-center-test.lovable.app",
-  "https://admin.vedantix.nl",
+  "https://vedantix.nl",
 ]);
 
 function responseHeaders(request: Request) {
   const origin = request.headers.get("Origin");
-  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix-control-center-test.lovable.app";
+  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix-migration-test.lovable.app";
   return {
     "content-type": "application/json; charset=utf-8",
     "access-control-allow-origin": allowOrigin,
