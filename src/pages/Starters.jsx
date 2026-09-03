@@ -15,9 +15,9 @@ const SUGGESTIONS = {
 };
 
 const PACKAGES = [
-  { id: "starter", name: "Starter", price: 399, pages: "1 pagina", features: ["1-pagina website", "Mobielvriendelijk", "Contactformulier", "Hosting 1 jaar", "SSL", "48u levering"] },
-  { id: "business", name: "Business", price: 799, pages: "Tot 5 pagina's", features: ["Tot 5 pagina's", "Mobielvriendelijk design", "Contactformulier + Maps", "Hosting 1 jaar", "SSL", "SEO basis", "48u levering", "1x gratis aanpassing"] },
-  { id: "premium", name: "Premium", price: 1499, pages: "Tot 10 pagina's", features: ["Tot 10 pagina's", "Custom design op maat", "Geavanceerde functies", "Hosting 1 jaar", "SSL", "Volledige SEO", "Blog / nieuws", "3x gratis aanpassingen", "48u levering"] },
+  { id: "starter", name: "Starter", price: 399, pages: "1 pagina", features: ["1-pagina website", "Mobielvriendelijk", "Contactformulier", "Technische SEO-basis", "Hosting vanaf €30/jaar", "SSL", "48u levering"] },
+  { id: "business", name: "Growth", price: 599, pages: "Tot 5 pagina's", features: ["Tot 5 pagina's", "Mobielvriendelijk design", "Contactformulier + Maps", "SEO + lokale SEO + AEO-basis", "Hosting vanaf €30/jaar", "SSL", "48u levering", "1x gratis aanpassing"] },
+  { id: "premium", name: "Pro", price: 999, pages: "Tot 10 pagina's", features: ["Tot 10 pagina's", "Custom design op maat", "Geavanceerde functies", "Uitgebreide SEO + AEO + GEO/AIO-basis", "Hosting vanaf €30/jaar", "SSL", "Blog / nieuws", "3x gratis aanpassingen", "48u levering"] },
 ];
 
 // Clean domain input — strip spaces, dots, extensions, special chars
@@ -198,7 +198,7 @@ export default function Starters() {
   };
 
   const totalExtras = selectedFeatures.length * 75;
-  const basePrice = PACKAGES.find(p => p.id === selectedPackage)?.price || 799;
+  const basePrice = PACKAGES.find(p => p.id === selectedPackage)?.price || 599;
   const totalPrice = basePrice + totalExtras;
 
   if (submitted) {
@@ -399,7 +399,8 @@ export default function Starters() {
               </div>
             )}
 
-            <h3 style={{ fontWeight: 700, marginBottom: 16 }}>Kies je basispakket</h3>
+            <h3 style={{ fontWeight: 700, marginBottom: 6 }}>Kies je basispakket</h3>
+            <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: 16 }}>Alle pakketten zijn eenmalig, zonder verplicht maandabonnement. Hosting vanaf €30 per jaar, zakelijke e-mail vanaf €30 per jaar per mailbox. Doorlopende groei is optioneel: Zichtbaarheid Basis €49/maand, Google Groei €99/maand, Google + AI Groei €149/maand.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 32 }}>
               {PACKAGES.map(pkg => (
                 <div key={pkg.id} className={`pkg-card ${selectedPackage===pkg.id?"selected":""}`} onClick={() => setSelectedPackage(pkg.id)}>

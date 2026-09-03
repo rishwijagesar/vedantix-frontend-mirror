@@ -25,7 +25,7 @@ const TEMPLATES = [
       },
       premium: {
         pages: ["Home", "Over ons", "Diensten", "Portfolio", "Blog", "Team", "Contact", "FAQ", "Vacatures", "Partners"],
-        features: ["Alles van Business", "Portfolio galerij", "Blog / nieuws", "Team pagina", "Vacatures", "Partners sectie"],
+        features: ["Alles van Growth", "Portfolio galerij", "Blog / nieuws", "Team pagina", "Vacatures", "Partners sectie"],
       },
     },
     mockup: { nav: "#0a1628", hero: "#1a73e8", sec1: "#f7f9fc", sec2: "#fff", footer: "#0a1628" },
@@ -49,7 +49,7 @@ const TEMPLATES = [
       },
       premium: {
         pages: ["Home", "Menu", "Reserveren", "Galerij", "Evenementen", "Over ons", "Team", "Blog", "Contact", "Cadeaubon"],
-        features: ["Alles van Business", "Evenementen pagina", "Team introductie", "Blog / recepten", "Cadeaubon aanvragen"],
+        features: ["Alles van Growth", "Evenementen pagina", "Team introductie", "Blog / recepten", "Cadeaubon aanvragen"],
       },
     },
     mockup: { nav: "#78350f", hero: "#d97706", sec1: "#fef3c7", sec2: "#fff", footer: "#78350f" },
@@ -73,7 +73,7 @@ const TEMPLATES = [
       },
       premium: {
         pages: ["Home", "Portfolio", "Categorieën", "Diensten", "Tarieven", "Blog", "Over mij", "Testimonials", "Boeken", "Press"],
-        features: ["Alles van Business", "Portfolio per categorie", "Blog / behind the scenes", "Testimonials", "Press kit pagina"],
+        features: ["Alles van Growth", "Portfolio per categorie", "Blog / behind the scenes", "Testimonials", "Press kit pagina"],
       },
     },
     mockup: { nav: "#1e1b4b", hero: "#7c3aed", sec1: "#f5f3ff", sec2: "#fff", footer: "#1e1b4b" },
@@ -97,7 +97,7 @@ const TEMPLATES = [
       },
       premium: {
         pages: ["Home", "Lessen", "Lesrooster", "Pakketten", "Blog", "Recepten", "Over mij", "Team", "Testimonials", "Contact"],
-        features: ["Alles van Business", "Blog / voedingstips", "Receptenpagina", "Team overzicht", "Video sectie"],
+        features: ["Alles van Growth", "Blog / voedingstips", "Receptenpagina", "Team overzicht", "Video sectie"],
       },
     },
     mockup: { nav: "#064e3b", hero: "#10b981", sec1: "#f0fdf4", sec2: "#fff", footer: "#064e3b" },
@@ -121,7 +121,7 @@ const TEMPLATES = [
       },
       premium: {
         pages: ["Home", "Diensten", "Projecten", "Over ons", "Team", "Blog", "Vacatures", "Werkgebied", "Reviews", "Contact"],
-        features: ["Alles van Business", "Team pagina", "Blog / nieuws", "Vacatures", "Uitgebreid werkgebied", "Partner logo's"],
+        features: ["Alles van Growth", "Team pagina", "Blog / nieuws", "Vacatures", "Uitgebreid werkgebied", "Partner logo's"],
       },
     },
     mockup: { nav: "#0c4a6e", hero: "#0369a1", sec1: "#f0f9ff", sec2: "#fff", footer: "#0c4a6e" },
@@ -145,7 +145,7 @@ const TEMPLATES = [
       },
       premium: {
         pages: ["Home", "Behandelingen", "Afspraak", "Galerij", "Team", "Cadeaubon", "Blog", "Over ons", "Reviews", "Contact"],
-        features: ["Alles van Business", "Team & specialisten", "Cadeaubon aanvragen", "Before/after galerij", "Blog / beauty tips"],
+        features: ["Alles van Growth", "Team & specialisten", "Cadeaubon aanvragen", "Before/after galerij", "Blog / beauty tips"],
       },
     },
     mockup: { nav: "#831843", hero: "#db2777", sec1: "#fdf2f8", sec2: "#fff", footer: "#831843" },
@@ -154,8 +154,8 @@ const TEMPLATES = [
 
 const PACKAGE_INFO = {
   starter: { label: "Starter", price: "€399", color: "#6b7280", pages: "1 pagina" },
-  business: { label: "Business", price: "€799", color: "#1a73e8", pages: "Tot 5 pagina's", hot: true },
-  premium: { label: "Premium", price: "€1499", color: "#8b5cf6", pages: "Tot 10 pagina's" },
+  business: { label: "Growth", price: "€599", color: "#1a73e8", pages: "Tot 5 pagina's", hot: true },
+  premium: { label: "Pro", price: "€999", color: "#8b5cf6", pages: "Tot 10 pagina's" },
 };
 
 const PAGE_STYLES = `
@@ -514,11 +514,11 @@ function TemplateModal({ activeTemplate, selectedPkg, setSelectedPkg, onClose })
 
   const lockedPages =
     selectedPkg === "starter"
-      ? activeTemplate.packages.business.pages.slice(1).map((page) => ({ page, label: "Business+" }))
+      ? activeTemplate.packages.business.pages.slice(1).map((page) => ({ page, label: "Growth+" }))
       : selectedPkg === "business"
         ? activeTemplate.packages.premium.pages
             .slice(activeTemplate.packages.business.pages.length)
-            .map((page) => ({ page, label: "Premium" }))
+            .map((page) => ({ page, label: "Pro" }))
         : [];
 
   return (
@@ -786,7 +786,7 @@ export default function Templates() {
               </h1>
 
               <p className="hero-text">
-                Elk template past zich aan aan jouw pakket. Starter krijgt 1 pagina, Business tot 5, Premium tot 10.
+                Elk template past zich aan aan jouw pakket. Starter krijgt 1 pagina, Growth tot 5, Pro tot 10. Alle pakketten zijn eenmalig, zonder verplicht maandabonnement.
               </p>
 
               <div className="package-tab-row">
