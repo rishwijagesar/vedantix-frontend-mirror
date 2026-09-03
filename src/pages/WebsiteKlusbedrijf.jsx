@@ -447,7 +447,7 @@ export default function WebsiteKlusbedrijf() {
               <div className="klus-secondary-highlight-box">
                 <strong>Vanaf</strong>
                 <p>
-                  Eenmalig vanaf €1.295 of beheerd vanaf €99 per maand plus bouw en inrichting.
+                  Eenmalig vanaf €399. Geen verplicht maandabonnement. Hosting vanaf €30 per jaar en zakelijke e-mail vanaf €30 per jaar per mailbox.
                 </p>
               </div>
             </div>
