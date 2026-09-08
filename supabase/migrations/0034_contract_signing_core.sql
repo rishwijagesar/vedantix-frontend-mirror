@@ -137,49 +137,29 @@ revoke all on public.contract_sequences, public.contract_templates, public.contr
 revoke insert,update,delete on public.contract_sequences, public.contract_templates, public.contract_template_versions, public.contracts, public.contract_signatures, public.contract_signing_challenges, public.contract_signing_sessions, public.contract_events from authenticated;
 grant select on public.contract_templates, public.contract_template_versions, public.contracts, public.contract_signatures, public.contract_events to authenticated;
 
-drop policy if exists contract_templates_staff_read on public.contract_templates;
 create policy contract_templates_staff_read on public.contract_templates for select to authenticated using (public.is_staff());
-drop policy if exists contract_template_versions_staff_read on public.contract_template_versions;
 create policy contract_template_versions_staff_read on public.contract_template_versions for select to authenticated using (public.is_staff());
-drop policy if exists contracts_staff_read on public.contracts;
 create policy contracts_staff_read on public.contracts for select to authenticated using (public.is_staff());
-drop policy if exists contract_signatures_staff_read on public.contract_signatures;
 create policy contract_signatures_staff_read on public.contract_signatures for select to authenticated using (public.is_staff());
-drop policy if exists contract_events_staff_read on public.contract_events;
 create policy contract_events_staff_read on public.contract_events for select to authenticated using (public.is_staff());
 
 create or replace function public.allocate_contract_number()
-returns text
-language plpgsql
-security definer
-set search_path=''
-as $$
-declare
-  v_year integer:=extract(year from current_date)::integer;
-  v_number integer;
+returns text language plpgsql security definer set search_path='' as $$
+declare v_year integer:=extract(year from current_date)::integer; v_number integer;
 begin
   if not public.is_staff(array['ADMIN','OPERATOR']) then raise exception 'Not authorized'; end if;
   insert into public.contract_sequences(sequence_year,next_number) values(v_year,2)
   on conflict(sequence_year) do update set next_number=public.contract_sequences.next_number+1
   returning next_number-1 into v_number;
   return format('CON-%s-%s',v_year,lpad(v_number::text,4,'0'));
-end;
-$$;
+end; $$;
 revoke all on function public.allocate_contract_number() from public,anon,authenticated;
 grant execute on function public.allocate_contract_number() to authenticated;
 
 create or replace function public.save_contract_template_version(
-  p_template_id uuid,
-  p_title text,
-  p_intro_text text,
-  p_clauses jsonb,
-  p_variables_schema jsonb default '{}'::jsonb
+  p_template_id uuid,p_title text,p_intro_text text,p_clauses jsonb,p_variables_schema jsonb default '{}'::jsonb
 )
-returns integer
-language plpgsql
-security definer
-set search_path=''
-as $$
+returns integer language plpgsql security definer set search_path='' as $$
 declare v_version integer;
 begin
   if not public.is_staff(array['ADMIN']) then raise exception 'Admin role required'; end if;
@@ -190,27 +170,15 @@ begin
   values(p_template_id,v_version,p_title,nullif(btrim(p_intro_text),''),p_clauses,coalesce(p_variables_schema,'{}'::jsonb),auth.uid());
   update public.contract_templates set current_version=v_version,updated_at=now() where id=p_template_id;
   return v_version;
-end;
-$$;
+end; $$;
 revoke all on function public.save_contract_template_version(uuid,text,text,jsonb,jsonb) from public,anon,authenticated;
 grant execute on function public.save_contract_template_version(uuid,text,text,jsonb,jsonb) to authenticated;
 
 create or replace function public.create_contract_from_template(
-  p_customer_id uuid,
-  p_template_id uuid,
-  p_source_quote_id uuid default null
+  p_customer_id uuid,p_template_id uuid,p_source_quote_id uuid default null
 )
-returns uuid
-language plpgsql
-security definer
-set search_path=''
-as $$
-declare
-  t public.contract_templates%rowtype;
-  v public.contract_template_versions%rowtype;
-  q public.quotes%rowtype;
-  v_id uuid;
-  v_number text;
+returns uuid language plpgsql security definer set search_path='' as $$
+declare t public.contract_templates%rowtype; v public.contract_template_versions%rowtype; q public.quotes%rowtype; v_id uuid; v_number text;
 begin
   if not public.is_staff(array['ADMIN','OPERATOR']) then raise exception 'Not authorized'; end if;
   select * into t from public.contract_templates where id=p_template_id and active=true;
@@ -225,18 +193,14 @@ begin
     if q.status<>'ACCEPTED' then raise exception 'Only accepted quotes can be linked'; end if;
   end if;
   v_number:=public.allocate_contract_number();
-  insert into public.contracts(
-    contract_number,customer_id,source_quote_id,template_id,template_version,title,project_name,
-    variables,clauses,template_snapshot,company_snapshot,customer_snapshot,created_by
-  ) values (
+  insert into public.contracts(contract_number,customer_id,source_quote_id,template_id,template_version,title,project_name,variables,clauses,template_snapshot,company_snapshot,customer_snapshot,created_by)
+  values(
     v_number,p_customer_id,p_source_quote_id,t.id,v.version_no,v.title,
     case when p_source_quote_id is not null then q.title else null end,
     jsonb_build_object(
       'project_scope',case when p_source_quote_id is not null then coalesce(q.intro_text,q.title,'') else '' end,
       'price_terms',case when p_source_quote_id is not null then format('Volgens offerte %s, totaal EUR %s incl. btw.',q.quote_number,q.total_incl_vat) else '' end,
-      'delivery_target','',
-      'revisions_included','3',
-      'maintenance_terms',''
+      'delivery_target','','revisions_included','3','maintenance_terms',''
     ),
     v.clauses,
     jsonb_build_object('template_id',t.id,'code',t.code,'name',t.name,'version',v.version_no,'title',v.title,'intro_text',v.intro_text,'variables_schema',v.variables_schema),
@@ -245,53 +209,30 @@ begin
   insert into public.contract_events(contract_id,event_type,actor_role,actor_name,metadata)
   values(v_id,'CONTRACT_CREATED','VEDANTIX',auth.uid()::text,jsonb_build_object('template_version',v.version_no,'source_quote_id',p_source_quote_id));
   return v_id;
-end;
-$$;
+end; $$;
 revoke all on function public.create_contract_from_template(uuid,uuid,uuid) from public,anon,authenticated;
 grant execute on function public.create_contract_from_template(uuid,uuid,uuid) to authenticated;
 
 create or replace function public.update_contract_draft(
-  p_contract_id uuid,
-  p_title text,
-  p_project_name text,
-  p_variables jsonb,
-  p_clauses jsonb
+  p_contract_id uuid,p_title text,p_project_name text,p_variables jsonb,p_clauses jsonb
 )
-returns void
-language plpgsql
-security definer
-set search_path=''
-as $$
+returns void language plpgsql security definer set search_path='' as $$
 begin
   if not public.is_staff(array['ADMIN','OPERATOR']) then raise exception 'Not authorized'; end if;
   if jsonb_typeof(p_variables)<>'object' or jsonb_typeof(p_clauses)<>'array' then raise exception 'Invalid contract content'; end if;
   update public.contracts set
-    title=coalesce(nullif(btrim(p_title),''),title),
-    project_name=nullif(btrim(coalesce(p_project_name,'')),''),
-    variables=p_variables,
-    clauses=p_clauses,
-    company_snapshot=public.snapshot_company_profile(),
-    customer_snapshot=public.snapshot_customer(customer_id),
-    updated_at=now()
+    title=coalesce(nullif(btrim(p_title),''),title),project_name=nullif(btrim(coalesce(p_project_name,'')),''),
+    variables=p_variables,clauses=p_clauses,company_snapshot=public.snapshot_company_profile(),customer_snapshot=public.snapshot_customer(customer_id),updated_at=now()
   where id=p_contract_id and status='DRAFT';
   if not found then raise exception 'Draft contract not found'; end if;
-  insert into public.contract_events(contract_id,event_type,actor_role,actor_name)
-  values(p_contract_id,'CONTRACT_UPDATED','VEDANTIX',auth.uid()::text);
-end;
-$$;
+  insert into public.contract_events(contract_id,event_type,actor_role,actor_name) values(p_contract_id,'CONTRACT_UPDATED','VEDANTIX',auth.uid()::text);
+end; $$;
 revoke all on function public.update_contract_draft(uuid,text,text,jsonb,jsonb) from public,anon,authenticated;
 grant execute on function public.update_contract_draft(uuid,text,text,jsonb,jsonb) to authenticated;
 
 create or replace function public.finalize_contract(p_contract_id uuid)
-returns jsonb
-language plpgsql
-security definer
-set search_path=''
-as $$
-declare
-  c public.contracts%rowtype;
-  v_payload text;
-  v_hash text;
+returns jsonb language plpgsql security definer set search_path='' as $$
+declare c public.contracts%rowtype; v_payload text; v_hash text;
 begin
   if not public.is_staff(array['ADMIN','OPERATOR']) then raise exception 'Not authorized'; end if;
   select * into c from public.contracts where id=p_contract_id for update;
@@ -308,42 +249,24 @@ begin
   insert into public.contract_events(contract_id,event_type,actor_role,actor_name,metadata)
   values(c.id,'CONTRACT_FINALIZED','VEDANTIX',auth.uid()::text,jsonb_build_object('document_hash',v_hash));
   return jsonb_build_object('contract_id',c.id,'document_hash',v_hash);
-end;
-$$;
+end; $$;
 revoke all on function public.finalize_contract(uuid) from public,anon,authenticated;
 grant execute on function public.finalize_contract(uuid) to authenticated;
 
 create or replace function public.void_contract(p_contract_id uuid,p_reason text default null)
-returns void
-language plpgsql
-security definer
-set search_path=''
-as $$;
--- placeholder body replaced below
-$$;
-
-create or replace function public.void_contract(p_contract_id uuid,p_reason text default null)
-returns void
-language plpgsql
-security definer
-set search_path=''
-as $$
+returns void language plpgsql security definer set search_path='' as $$
 begin
   if not public.is_staff(array['ADMIN']) then raise exception 'Admin role required'; end if;
   update public.contracts set status='VOID',voided_at=now(),updated_at=now() where id=p_contract_id and status<>'COMPLETED';
   if not found then raise exception 'Contract cannot be voided'; end if;
   insert into public.contract_events(contract_id,event_type,actor_role,actor_name,metadata)
   values(p_contract_id,'VOIDED','VEDANTIX',auth.uid()::text,jsonb_build_object('reason',nullif(btrim(coalesce(p_reason,'')),'')));
-end;
-$$;
+end; $$;
 revoke all on function public.void_contract(uuid,text) from public,anon,authenticated;
 grant execute on function public.void_contract(uuid,text) to authenticated;
 
 create or replace function public.protect_contract_snapshot()
-returns trigger
-language plpgsql
-set search_path=''
-as $$
+returns trigger language plpgsql set search_path='' as $$
 begin
   if old.status<>'DRAFT' and (
     old.customer_id is distinct from new.customer_id or old.source_quote_id is distinct from new.source_quote_id or
@@ -353,26 +276,22 @@ begin
     old.template_snapshot is distinct from new.template_snapshot or old.company_snapshot is distinct from new.company_snapshot or
     old.customer_snapshot is distinct from new.customer_snapshot or old.document_hash is distinct from new.document_hash
   ) then raise exception 'Finalized contract content is immutable'; end if;
-  new.updated_at:=now();
-  return new;
-end;
-$$;
+  new.updated_at:=now(); return new;
+end; $$;
 drop trigger if exists protect_contract_snapshot_trigger on public.contracts;
 create trigger protect_contract_snapshot_trigger before update on public.contracts for each row execute function public.protect_contract_snapshot();
 
 create or replace function public.protect_contract_signature()
-returns trigger language plpgsql set search_path='' as $$
-begin raise exception 'Contract signatures are immutable'; end; $$;
+returns trigger language plpgsql set search_path='' as $$ begin raise exception 'Contract signatures are immutable'; end; $$;
 drop trigger if exists protect_contract_signature_update on public.contract_signatures;
 create trigger protect_contract_signature_update before update or delete on public.contract_signatures for each row execute function public.protect_contract_signature();
 
 create or replace function public.protect_contract_event()
-returns trigger language plpgsql set search_path='' as $$
-begin raise exception 'Contract audit events are append-only'; end; $$;
+returns trigger language plpgsql set search_path='' as $$ begin raise exception 'Contract audit events are append-only'; end; $$;
 drop trigger if exists protect_contract_event_update on public.contract_events;
 create trigger protect_contract_event_update before update or delete on public.contract_events for each row execute function public.protect_contract_event();
 
--- Starter B2B template. Deliberately marked as a legal concept: have a Dutch ICT lawyer review before treating it as the master agreement.
+-- Starter B2B template. This is a legal concept, not a promise of enforceability; review the master once with a Dutch ICT lawyer.
 insert into public.contract_templates(code,name,description,current_version)
 values('WEBSITE_B2B','Websiteontwikkeling B2B','Juridisch concept voor zakelijke website-opdrachten. Laat de masterversie éénmalig reviewen door een Nederlandse ICT-jurist of advocaat.',1)
 on conflict(code) do nothing;
@@ -391,12 +310,11 @@ jsonb_build_array(
  jsonb_build_object('key','third_parties','title','8. Hosting, domeinen en diensten van derden','locked_core',true,'body','Voor hosting, domeinregistratie, e-mail, betaalproviders, analyse-, AI- en andere diensten van derden kunnen aanvullende voorwaarden van die leveranciers gelden. Vedantix is niet aansprakelijk voor een storing of wijziging bij een derde die buiten de redelijke invloedssfeer van Vedantix ligt, maar zal zich redelijk inspannen om gevolgen te beperken.'),
  jsonb_build_object('key','ip','title','9. Intellectuele eigendom','locked_core',true,'body','Na volledige betaling verkrijgt Opdrachtgever de overeengekomen gebruiks- en/of overdrachtsrechten op specifiek voor Opdrachtgever vervaardigde eindresultaten voor zover die rechten bij Vedantix berusten. Reeds bestaande of generieke code, componenten, methoden, tooling, templates, knowhow en herbruikbare onderdelen van Vedantix blijven van Vedantix. Rechten van derden en open-sourcelicenties blijven onverkort gelden.'),
  jsonb_build_object('key','privacy','title','10. Privacy en beveiliging','locked_core',true,'body','Partijen verwerken persoonsgegevens overeenkomstig toepasselijke privacywetgeving. Indien Vedantix voor Opdrachtgever persoonsgegevens verwerkt in de zin van de AVG, sluiten partijen waar nodig een afzonderlijke verwerkersovereenkomst. Beide partijen nemen passende technische en organisatorische maatregelen binnen hun eigen verantwoordelijkheid.'),
- jsonb_build_object('key','liability','title','11. Aansprakelijkheid','locked_core',true,'body','Voor zover wettelijk toegestaan is Vedantix alleen aansprakelijk voor aantoonbare directe schade die het gevolg is van een toerekenbare tekortkoming. Aansprakelijkheid voor indirecte schade, gevolgschade, gederfde winst en gemiste besparingen is uitgesloten voor zover rechtsgeldig. Een eventuele aansprakelijkheidslimiet dient in de definitieve masterovereenkomst juridisch te worden gevalideerd. Uitsluitingen gelden niet waar beperking wettelijk niet is toegestaan, waaronder bij opzet of bewuste roekeloosheid waar toepasselijk.'),
- jsonb_build_object('key','force_majeure','title','12. Overmacht','locked_core',true,'body','Geen partij is gehouden tot nakoming voor zover deze redelijkerwijs wordt verhinderd door een omstandigheid buiten haar macht. Duurt de overmacht langdurig voort, dan bespreken partijen een redelijke oplossing en kunnen zij de getroffen werkzaamheden beëindigen voor zover voortzetting niet redelijk is.'),
- jsonb_build_object('key','termination','title','13. Opschorting en beëindiging','locked_core',true,'body','Bij een wezenlijke tekortkoming krijgt de tekortschietende partij, voor zover redelijk en wettelijk vereist, gelegenheid om binnen een passende termijn alsnog na te komen. Reeds uitgevoerde werkzaamheden en gemaakte, niet-restitueerbare kosten blijven verschuldigd. Bij beëindiging werken partijen redelijk mee aan overdracht van overeengekomen klantmaterialen nadat openstaande bedragen zijn voldaan.'),
- jsonb_build_object('key','confidentiality','title','14. Geheimhouding','locked_core',true,'body','Partijen behandelen vertrouwelijke bedrijfs-, technische en klantinformatie die zij in het kader van de opdracht ontvangen vertrouwelijk en gebruiken deze uitsluitend voor uitvoering van de overeenkomst, tenzij openbaarmaking wettelijk verplicht is.'),
- jsonb_build_object('key','esign','title','15. Elektronische communicatie en ondertekening','locked_core',true,'body','Partijen stemmen ermee in dat deze overeenkomst elektronisch kan worden aangeboden, aanvaard en ondertekend. Vedantix legt voor bewijsdoeleinden onder meer de definitieve documenthash, verificatiemomenten, ondertekeningstijdstippen en technische auditgegevens vast.'),
- jsonb_build_object('key','law','title','16. Toepasselijk recht en geschillen','locked_core',true,'body','Op deze overeenkomst is Nederlands recht van toepassing. Partijen proberen een geschil eerst in overleg op te lossen. Indien dat niet lukt, wordt het geschil voorgelegd aan de volgens de wet bevoegde Nederlandse rechter, tenzij partijen rechtsgeldig schriftelijk anders zijn overeengekomen.')
+ jsonb_build_object('key','liability','title','11. Aansprakelijkheid','locked_core',true,'body','Voor zover wettelijk toegestaan is Vedantix alleen aansprakelijk voor aantoonbare directe schade die het gevolg is van een toerekenbare tekortkoming. Aansprakelijkheid voor indirecte schade, gevolgschade, gederfde winst en gemiste besparingen is uitgesloten voor zover rechtsgeldig. Een eventuele aansprakelijkheidslimiet dient in de definitieve masterovereenkomst juridisch te worden gevalideerd. Uitsluitingen gelden niet waar beperking wettelijk niet is toegestaan.'),
+ jsonb_build_object('key','termination','title','12. Overmacht, opschorting en beëindiging','locked_core',true,'body','Geen partij is gehouden tot nakoming voor zover deze redelijkerwijs wordt verhinderd door een omstandigheid buiten haar macht. Bij een wezenlijke tekortkoming krijgt de tekortschietende partij, voor zover redelijk en wettelijk vereist, gelegenheid om alsnog na te komen. Reeds uitgevoerde werkzaamheden en niet-restitueerbare kosten blijven verschuldigd.'),
+ jsonb_build_object('key','confidentiality','title','13. Geheimhouding','locked_core',true,'body','Partijen behandelen vertrouwelijke bedrijfs-, technische en klantinformatie die zij in het kader van de opdracht ontvangen vertrouwelijk en gebruiken deze uitsluitend voor uitvoering van de overeenkomst, tenzij openbaarmaking wettelijk verplicht is.'),
+ jsonb_build_object('key','esign','title','14. Elektronische communicatie en ondertekening','locked_core',true,'body','Partijen stemmen ermee in dat deze overeenkomst elektronisch kan worden aangeboden, aanvaard en ondertekend. Vedantix legt voor bewijsdoeleinden onder meer de definitieve documenthash, verificatiemomenten, ondertekeningstijdstippen en technische auditgegevens vast.'),
+ jsonb_build_object('key','law','title','15. Toepasselijk recht en geschillen','locked_core',true,'body','Op deze overeenkomst is Nederlands recht van toepassing. Partijen proberen een geschil eerst in overleg op te lossen. Indien dat niet lukt, wordt het geschil voorgelegd aan de volgens de wet bevoegde Nederlandse rechter, tenzij partijen rechtsgeldig schriftelijk anders zijn overeengekomen.')
 ),
 jsonb_build_object(
  'project_scope',jsonb_build_object('label','Projectscope','type','textarea','required',true),
