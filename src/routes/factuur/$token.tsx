@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Download } from "lucide-react";
 import PublicInvoice from "@/pages/PublicInvoice";
+import { billingPdfUrl } from "@/lib/billing-pdf";
 
 export const Route = createFileRoute("/factuur/$token")({
   head: () => ({
@@ -14,5 +16,10 @@ export const Route = createFileRoute("/factuur/$token")({
 
 function InvoiceRoute() {
   const { token } = Route.useParams();
-  return <PublicInvoice token={token}/>;
+  return <>
+    <PublicInvoice token={token}/>
+    <a href={billingPdfUrl("invoice", token)} className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-lg print:hidden" aria-label="Download factuur als PDF">
+      <Download size={16}/> Download PDF
+    </a>
+  </>;
 }
