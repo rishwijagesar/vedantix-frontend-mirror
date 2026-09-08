@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Building2, FileText, Package, ReceiptText, RefreshCw, Repeat2, Users } from "lucide-react";
+import { ArrowLeft, Building2, FileText, Link2, Package, ReceiptText, RefreshCw, Repeat2, Users } from "lucide-react";
 import { listCustomers, updateCustomer, type Customer } from "./control-center-data";
 import { BillingDashboardCards, CatalogModule, CompanyProfileModule, InvoicesModule, QuotesModule } from "./SalesBillingModules";
 import { SubscriptionsModule } from "./RecurringBillingModule";
+import PublicQuoteLinksModule from "./PublicQuoteLinksModule";
 
-type Section = "overview" | "quotes" | "invoices" | "subscriptions" | "catalog" | "customers" | "company";
+type Section = "overview" | "quotes" | "quote-links" | "invoices" | "subscriptions" | "catalog" | "customers" | "company";
 type BillingCustomer = Customer & { address_line1?: string | null; address_line2?: string | null; postal_code?: string | null; city?: string | null; country?: string | null; kvk_number?: string | null; vat_number?: string | null };
 
 const sections = [
   { id: "overview" as const, label: "Overzicht", icon: ReceiptText },
   { id: "quotes" as const, label: "Offertes", icon: FileText },
+  { id: "quote-links" as const, label: "Klantlinks", icon: Link2 },
   { id: "invoices" as const, label: "Facturen", icon: ReceiptText },
   { id: "subscriptions" as const, label: "Abonnementen", icon: Repeat2 },
   { id: "catalog" as const, label: "Catalogus", icon: Package },
@@ -28,6 +30,7 @@ export default function SalesBillingApp() {
   const title = {
     overview: ["Sales & Billing", "Offertes, facturen, abonnementen, betalingen en documentgeneratie."],
     quotes: ["Offertes", "Maak en beheer Vedantix-offertes vanuit je klanten en catalogus."],
+    "quote-links": ["Klantlinks", "Deel beveiligde offertelinks en laat klanten zelf accepteren of afwijzen."],
     invoices: ["Facturen", "Finaliseer facturen, volg betalingen en maak creditnota’s."],
     subscriptions: ["Abonnementen", "Beheer maand- en jaarabonnementen en hun automatische factuurmomenten."],
     catalog: ["Catalogus", "Beheer pakketten, losse diensten, prijzen en btw."],
@@ -44,8 +47,9 @@ export default function SalesBillingApp() {
     </aside>
     <div className="min-w-0 flex-1"><header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur md:px-7"><div><span className="text-xs font-medium uppercase tracking-[.16em] text-slate-400">Vedantix Operations</span><strong className="block text-sm md:hidden">Sales & Billing</strong></div><div className="flex gap-2"><a href="/admin" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 md:hidden">Control Center</a><button type="button" onClick={loadCustomers} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700"><RefreshCw size={14} className={loading?"animate-spin":""}/> Vernieuwen</button></div></header>
       <main className="mx-auto max-w-7xl p-4 md:p-7"><div className="mb-7"><span className="text-xs font-semibold uppercase tracking-[.16em] text-slate-400">Vedantix Admin</span><h1 className="mt-1 text-3xl font-bold tracking-tight">{title[0]}</h1><p className="mt-2 text-sm text-slate-500">{title[1]}</p></div>
-        {section==="overview"?<div className="space-y-6"><BillingDashboardCards/><div className="grid gap-5 lg:grid-cols-4"><button onClick={()=>setSection("quotes")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><FileText className="mb-4"/><strong className="block text-lg">Nieuwe offerte</strong><span className="text-sm text-slate-500">Klant selecteren, pakket toevoegen, korting en btw automatisch.</span></button><button onClick={()=>setSection("invoices")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><ReceiptText className="mb-4"/><strong className="block text-lg">Facturen</strong><span className="text-sm text-slate-500">Concept, finaliseren, betaald markeren en crediteren.</span></button><button onClick={()=>setSection("subscriptions")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Repeat2 className="mb-4"/><strong className="block text-lg">Abonnementen</strong><span className="text-sm text-slate-500">Maand- en jaarfacturen automatisch laten ontstaan.</span></button><button onClick={()=>setSection("company")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Building2 className="mb-4"/><strong className="block text-lg">Bedrijfsgegevens</strong><span className="text-sm text-slate-500">KVK, BTW-ID, IBAN en contactgegevens instellen.</span></button></div></div>:null}
+        {section==="overview"?<div className="space-y-6"><BillingDashboardCards/><div className="grid gap-5 lg:grid-cols-4"><button onClick={()=>setSection("quotes")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><FileText className="mb-4"/><strong className="block text-lg">Nieuwe offerte</strong><span className="text-sm text-slate-500">Klant selecteren, pakket toevoegen, korting en btw automatisch.</span></button><button onClick={()=>setSection("invoices")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><ReceiptText className="mb-4"/><strong className="block text-lg">Facturen</strong><span className="text-sm text-slate-500">Concept, finaliseren, betaald markeren en crediteren.</span></button><button onClick={()=>setSection("subscriptions")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Repeat2 className="mb-4"/><strong className="block text-lg">Abonnementen</strong><span className="text-sm text-slate-500">Maand- en jaarfacturen automatisch laten ontstaan.</span></button><button onClick={()=>setSection("quote-links")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Link2 className="mb-4"/><strong className="block text-lg">Klantlinks</strong><span className="text-sm text-slate-500">Deel offertes veilig en registreer akkoord of afwijzing.</span></button></div></div>:null}
         {section==="quotes"?<QuotesModule customers={customers}/>:null}
+        {section==="quote-links"?<PublicQuoteLinksModule customers={customers}/>:null}
         {section==="invoices"?<InvoicesModule customers={customers}/>:null}
         {section==="subscriptions"?<SubscriptionsModule customers={customers}/>:null}
         {section==="catalog"?<CatalogModule/>:null}
