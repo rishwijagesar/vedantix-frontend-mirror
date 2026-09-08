@@ -1,0 +1,6 @@
+{
+  "platform": "lovable-mirror",
+  "application": "vedantix",
+  "commerce": "sales-billing-v1",
+  "release_marker": "VEDANTIX_LOVABLE_COMMERCE_READY"
+}
