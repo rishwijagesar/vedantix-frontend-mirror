@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Building2, FileText, Link2, Package, ReceiptText, RefreshCw, Repeat2, Users, WalletCards } from "lucide-react";
+import { ArrowLeft, Building2, FileText, Link2, Mail, Package, ReceiptText, RefreshCw, Repeat2, Users, WalletCards } from "lucide-react";
 import { listCustomers, updateCustomer, type Customer } from "./control-center-data";
 import { BillingDashboardCards, CatalogModule, CompanyProfileModule, InvoicesModule, QuotesModule } from "./SalesBillingModules";
 import { SubscriptionsModule } from "./RecurringBillingModule";
 import PublicQuoteLinksModule from "./PublicQuoteLinksModule";
 import { PaymentsModule } from "./PaymentsModule";
+import BillingEmailModule from "./BillingEmailModule";
 import { refreshOverdueInvoices } from "./payments-data";
 
-type Section = "overview" | "quotes" | "quote-links" | "invoices" | "payments" | "subscriptions" | "catalog" | "customers" | "company";
+type Section = "overview" | "quotes" | "quote-links" | "invoices" | "payments" | "email" | "subscriptions" | "catalog" | "customers" | "company";
 type BillingCustomer = Customer & { address_line1?: string | null; address_line2?: string | null; postal_code?: string | null; city?: string | null; country?: string | null; kvk_number?: string | null; vat_number?: string | null };
 
 const sections = [
@@ -16,6 +17,7 @@ const sections = [
   { id: "quote-links" as const, label: "Klantlinks", icon: Link2 },
   { id: "invoices" as const, label: "Facturen", icon: ReceiptText },
   { id: "payments" as const, label: "Betalingen", icon: WalletCards },
+  { id: "email" as const, label: "E-mail & reminders", icon: Mail },
   { id: "subscriptions" as const, label: "Abonnementen", icon: Repeat2 },
   { id: "catalog" as const, label: "Catalogus", icon: Package },
   { id: "customers" as const, label: "Klantgegevens", icon: Users },
@@ -30,10 +32,7 @@ export default function SalesBillingApp() {
   async function loadCustomers() {
     setLoading(true);
     try {
-      // Keep overdue statuses current whenever Sales & Billing is opened/refreshed.
-      // During a staged database rollout an older environment may not have the RPC yet,
-      // so customer loading remains available while the migration is being applied.
-      try { await refreshOverdueInvoices(); } catch { /* migration rollout compatibility */ }
+      try { await refreshOverdueInvoices(); } catch { /* staged migration compatibility */ }
       setCustomers((await listCustomers()) as BillingCustomer[]);
     } finally {
       setLoading(false);
@@ -47,6 +46,7 @@ export default function SalesBillingApp() {
     "quote-links": ["Klantlinks", "Deel beveiligde offertelinks en laat klanten zelf accepteren of afwijzen."],
     invoices: ["Facturen", "Finaliseer facturen, volg betaalstatus en maak creditnota’s."],
     payments: ["Betalingen", "Registreer deelbetalingen, bekijk de volledige historie en volg achterstallige facturen."],
+    email: ["E-mail & reminders", "Verstuur offertes en facturen via Migadu en beheer automatische betaalherinneringen."],
     subscriptions: ["Abonnementen", "Beheer maand- en jaarabonnementen en hun automatische factuurmomenten."],
     catalog: ["Catalogus", "Beheer pakketten, losse diensten, prijzen en btw."],
     customers: ["Klantgegevens", "Factuur- en offertegegevens per klant."],
@@ -58,15 +58,16 @@ export default function SalesBillingApp() {
       <div className="mb-7"><strong className="block text-sm">Vedantix</strong><span className="text-xs text-slate-400">Control Center · Sales & Billing</span></div>
       <a href="/admin" className="mb-5 flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 text-sm text-slate-300 hover:bg-white/10 hover:text-white"><ArrowLeft size={16}/> Control Center</a>
       <nav className="space-y-1">{sections.map(item=>{const Icon=item.icon;const active=section===item.id;return <button key={item.id} type="button" onClick={()=>setSection(item.id)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm ${active?"bg-white text-slate-950":"text-slate-300 hover:bg-white/10 hover:text-white"}`}><Icon size={17}/>{item.label}</button>})}</nav>
-      <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-slate-400">Facturen, terugkerende kosten en losse betalingen worden als afzonderlijke boekingen bijgehouden.</div>
+      <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-slate-400">Offertes, facturen, betalingen en klantcommunicatie blijven als afzonderlijke auditbare stappen beschikbaar.</div>
     </aside>
     <div className="min-w-0 flex-1"><header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur md:px-7"><div><span className="text-xs font-medium uppercase tracking-[.16em] text-slate-400">Vedantix Operations</span><strong className="block text-sm md:hidden">Sales & Billing</strong></div><div className="flex gap-2"><a href="/admin" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 md:hidden">Control Center</a><button type="button" onClick={loadCustomers} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700"><RefreshCw size={14} className={loading?"animate-spin":""}/> Vernieuwen</button></div></header>
       <main className="mx-auto max-w-7xl p-4 md:p-7"><div className="mb-7"><span className="text-xs font-semibold uppercase tracking-[.16em] text-slate-400">Vedantix Admin</span><h1 className="mt-1 text-3xl font-bold tracking-tight">{title[0]}</h1><p className="mt-2 text-sm text-slate-500">{title[1]}</p></div>
-        {section==="overview"?<div className="space-y-6"><BillingDashboardCards/><div className="grid gap-5 lg:grid-cols-3 xl:grid-cols-5"><button onClick={()=>setSection("quotes")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><FileText className="mb-4"/><strong className="block text-lg">Nieuwe offerte</strong><span className="text-sm text-slate-500">Klant selecteren, pakket toevoegen, korting en btw automatisch.</span></button><button onClick={()=>setSection("invoices")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><ReceiptText className="mb-4"/><strong className="block text-lg">Facturen</strong><span className="text-sm text-slate-500">Concept, finaliseren en crediteren.</span></button><button onClick={()=>setSection("payments")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><WalletCards className="mb-4"/><strong className="block text-lg">Betalingen</strong><span className="text-sm text-slate-500">Deelbetalingen, historie en achterstallige facturen.</span></button><button onClick={()=>setSection("subscriptions")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Repeat2 className="mb-4"/><strong className="block text-lg">Abonnementen</strong><span className="text-sm text-slate-500">Maand- en jaarfacturen automatisch laten ontstaan.</span></button><button onClick={()=>setSection("quote-links")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Link2 className="mb-4"/><strong className="block text-lg">Klantlinks</strong><span className="text-sm text-slate-500">Deel offertes veilig en registreer akkoord of afwijzing.</span></button></div></div>:null}
+        {section==="overview"?<div className="space-y-6"><BillingDashboardCards/><div className="grid gap-5 lg:grid-cols-3 xl:grid-cols-6"><button onClick={()=>setSection("quotes")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><FileText className="mb-4"/><strong className="block text-lg">Nieuwe offerte</strong><span className="text-sm text-slate-500">Klant selecteren, pakket toevoegen, korting en btw automatisch.</span></button><button onClick={()=>setSection("invoices")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><ReceiptText className="mb-4"/><strong className="block text-lg">Facturen</strong><span className="text-sm text-slate-500">Concept, finaliseren en crediteren.</span></button><button onClick={()=>setSection("payments")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><WalletCards className="mb-4"/><strong className="block text-lg">Betalingen</strong><span className="text-sm text-slate-500">Deelbetalingen, historie en achterstallige facturen.</span></button><button onClick={()=>setSection("email")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Mail className="mb-4"/><strong className="block text-lg">E-mail</strong><span className="text-sm text-slate-500">Offertes, facturen en betaalherinneringen via Migadu.</span></button><button onClick={()=>setSection("subscriptions")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Repeat2 className="mb-4"/><strong className="block text-lg">Abonnementen</strong><span className="text-sm text-slate-500">Maand- en jaarfacturen automatisch laten ontstaan.</span></button><button onClick={()=>setSection("quote-links")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Link2 className="mb-4"/><strong className="block text-lg">Klantlinks</strong><span className="text-sm text-slate-500">Deel offertes veilig en registreer akkoord of afwijzing.</span></button></div></div>:null}
         {section==="quotes"?<QuotesModule customers={customers}/>:null}
         {section==="quote-links"?<PublicQuoteLinksModule customers={customers}/>:null}
         {section==="invoices"?<InvoicesModule customers={customers}/>:null}
         {section==="payments"?<PaymentsModule customers={customers}/>:null}
+        {section==="email"?<BillingEmailModule customers={customers}/>:null}
         {section==="subscriptions"?<SubscriptionsModule customers={customers}/>:null}
         {section==="catalog"?<CatalogModule/>:null}
         {section==="customers"?<BillingCustomers customers={customers} onChanged={loadCustomers}/>:null}
