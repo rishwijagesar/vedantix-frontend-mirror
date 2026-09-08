@@ -1,8 +1,8 @@
-const LEGACY_PREVIEW_MESSAGE =
-  "Deze oude klantpreview gebruikt de voormalige Vedantix provisioning-backend niet meer. Vraag Vedantix om een nieuwe previewlink.";
+const PREVIEW_MESSAGE =
+  "Deze oude klantpreview is niet meer gekoppeld aan de voormalige provisioning-backend. Vraag Vedantix om een nieuwe previewlink.";
 
 function unavailable() {
-  throw new Error(LEGACY_PREVIEW_MESSAGE);
+  throw new Error(PREVIEW_MESSAGE);
 }
 
 export async function resolveCustomerPreview() {
