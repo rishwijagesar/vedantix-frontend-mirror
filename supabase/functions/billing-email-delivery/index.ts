@@ -22,21 +22,33 @@ type VaultCredentials = {
   alert_to: string | null;
   alert_from: string | null;
 };
+type Attachment = { filename: string; mimeType: string; bytes: Uint8Array };
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
+const billingPdfEndpoint = "https://zxnexwqvoznmirajhgxj.supabase.co/functions/v1/billing-pdf";
 
-function utf8Base64(value: string) {
-  const bytes = encoder.encode(value);
+function bytesBase64(bytes: Uint8Array) {
   let binary = "";
-  for (const byte of bytes) binary += String.fromCharCode(byte);
+  const chunkSize = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    const chunk = bytes.subarray(offset, Math.min(offset + chunkSize, bytes.length));
+    binary += String.fromCharCode(...chunk);
+  }
   return btoa(binary);
 }
 
-function foldBase64(value: string) {
-  const encoded = utf8Base64(value);
+function foldEncodedBase64(encoded: string) {
   return encoded.match(/.{1,76}/g)?.join("\r\n") ?? encoded;
+}
+
+function utf8Base64(value: string) {
+  return bytesBase64(encoder.encode(value));
+}
+
+function foldBase64(value: string) {
+  return foldEncodedBase64(utf8Base64(value));
 }
 
 function escapeHtml(value: unknown) {
@@ -46,6 +58,10 @@ function escapeHtml(value: unknown) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function safeFilename(value: unknown) {
+  return String(value || "document").replace(/[^A-Za-z0-9._-]/g, "-").replace(/-+/g, "-");
 }
 
 class SmtpConnection {
@@ -115,10 +131,27 @@ function messageHtml(message: BillingMessage) {
     ? `<a href="${escapeHtml(message.action_url)}" style="display:inline-block;margin-top:24px;background:#0f172a;color:#fff;text-decoration:none;padding:13px 20px;border-radius:10px;font-weight:700">${message.message_type === "QUOTE" ? "Bekijk en reageer op offerte" : "Bekijk factuur"}</a>`
     : "";
   const body = escapeHtml(message.body_text).replace(/\n/g, "<br>");
-  return `<!doctype html><html><body style="margin:0;background:#f1f5f9;font-family:Arial,sans-serif;color:#0f172a"><div style="max-width:640px;margin:0 auto;padding:32px 16px"><div style="background:#0f172a;color:#fff;padding:20px 24px;border-radius:16px 16px 0 0"><div style="font-size:21px;font-weight:800">Vedantix</div><div style="margin-top:4px;color:#94a3b8;font-size:13px">Websites & online groei</div></div><div style="background:#fff;padding:28px 24px;border-radius:0 0 16px 16px;box-shadow:0 8px 30px rgba(15,23,42,.08)"><div style="font-size:15px;line-height:1.75">${body}</div>${button}<div style="margin-top:30px;padding-top:18px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12px;line-height:1.6">Vedantix · info@vedantix.nl · +31 6 26 21 99 89<br>Dit bericht is automatisch verstuurd vanuit het Vedantix Control Center.</div></div></div></body></html>`;
+  return `<!doctype html><html><body style="margin:0;background:#f1f5f9;font-family:Arial,sans-serif;color:#0f172a"><div style="max-width:640px;margin:0 auto;padding:32px 16px"><div style="background:#0f172a;color:#fff;padding:20px 24px;border-radius:16px 16px 0 0"><div style="font-size:21px;font-weight:800">Vedantix</div><div style="margin-top:4px;color:#94a3b8;font-size:13px">Websites & online groei</div></div><div style="background:#fff;padding:28px 24px;border-radius:0 0 16px 16px;box-shadow:0 8px 30px rgba(15,23,42,.08)"><div style="font-size:15px;line-height:1.75">${body}</div>${button}<div style="margin-top:24px;color:#64748b;font-size:12px">De PDF-versie van het document is als bijlage toegevoegd.</div><div style="margin-top:30px;padding-top:18px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12px;line-height:1.6">Vedantix · info@vedantix.nl · +31 6 26 21 99 89<br>Dit bericht is automatisch verstuurd vanuit het Vedantix Control Center.</div></div></div></body></html>`;
 }
 
-async function sendSmtpMail(args: { user: string; password: string; from: string; recipient: string; subject: string; html: string }) {
+async function pdfAttachment(message: BillingMessage): Promise<Attachment> {
+  if (!message.action_url) throw new Error("Document action URL ontbreekt; PDF-bijlage kan niet worden opgebouwd.");
+  const match = message.action_url.match(/\/(offerte|factuur)\/([0-9a-f-]{36})(?:[/?#]|$)/i);
+  if (!match) throw new Error("Documenttoken ontbreekt in action URL.");
+  const kind = match[1].toLowerCase() === "offerte" ? "quote" : "invoice";
+  const token = match[2];
+  const response = await fetch(`${billingPdfEndpoint}?kind=${kind}&token=${encodeURIComponent(token)}`, {
+    headers: { accept: "application/pdf" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error(`PDF-generatie mislukt (HTTP ${response.status}).`);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  if (bytes.length < 100 || String.fromCharCode(...bytes.slice(0, 4)) !== "%PDF") throw new Error("PDF-generatie gaf geen geldig PDF-bestand terug.");
+  const number = kind === "quote" ? message.metadata?.quote_number : message.metadata?.invoice_number;
+  return { filename: `Vedantix-${safeFilename(number || kind)}.pdf`, mimeType: "application/pdf", bytes };
+}
+
+async function sendSmtpMail(args: { user: string; password: string; from: string; recipient: string; subject: string; html: string; attachment: Attachment }) {
   const { smtp } = await connectSmtp();
   try {
     const authPayload = utf8Base64(`\u0000${args.user}\u0000${args.password}`);
@@ -126,7 +159,10 @@ async function sendSmtpMail(args: { user: string; password: string; from: string
     await smtp.command(`MAIL FROM:<${args.from}>`, [250]);
     await smtp.command(`RCPT TO:<${args.recipient}>`, [250, 251]);
     await smtp.command("DATA", [354]);
+
     const messageId = `<${crypto.randomUUID()}@vedantix.nl>`;
+    const boundary = `vedantix-${crypto.randomUUID()}`;
+    const attachmentBase64 = foldEncodedBase64(bytesBase64(args.attachment.bytes));
     const data = [
       `From: Vedantix <${args.from}>`,
       `To: ${args.recipient}`,
@@ -134,13 +170,24 @@ async function sendSmtpMail(args: { user: string; password: string; from: string
       `Date: ${new Date().toUTCString()}`,
       `Message-ID: ${messageId}`,
       "MIME-Version: 1.0",
+      `Content-Type: multipart/mixed; boundary="${boundary}"`,
+      "",
+      `--${boundary}`,
       "Content-Type: text/html; charset=UTF-8",
       "Content-Transfer-Encoding: base64",
       "",
       foldBase64(args.html),
+      `--${boundary}`,
+      `Content-Type: ${args.attachment.mimeType}; name="${args.attachment.filename}"`,
+      "Content-Transfer-Encoding: base64",
+      `Content-Disposition: attachment; filename="${args.attachment.filename}"`,
+      "",
+      attachmentBase64,
+      `--${boundary}--`,
       ".",
       "",
     ].join("\r\n");
+
     await smtp.writeData(data, [250]);
     await smtp.command("QUIT", [221]);
   } finally {
@@ -193,9 +240,10 @@ Deno.serve(async (request: Request) => {
   const results: Array<Record<string, unknown>> = [];
   for (const message of (messages ?? []) as BillingMessage[]) {
     try {
-      await sendSmtpMail({ user: smtpUser, password: smtpPassword, from: smtpFrom, recipient: message.recipient_email, subject: message.subject, html: messageHtml(message) });
+      const attachment = await pdfAttachment(message);
+      await sendSmtpMail({ user: smtpUser, password: smtpPassword, from: smtpFrom, recipient: message.recipient_email, subject: message.subject, html: messageHtml(message), attachment });
       const now = new Date().toISOString();
-      await admin.from("billing_email_outbox").update({ status: "SENT", processed_at: now, error_message: null, attempt_count: Number(message.attempt_count || 0) + 1 }).eq("id", message.id);
+      await admin.from("billing_email_outbox").update({ status: "SENT", processed_at: now, error_message: null, attempt_count: Number(message.attempt_count || 0) + 1, metadata: { ...message.metadata, pdf_attachment: attachment.filename } }).eq("id", message.id);
 
       if (message.message_type === "QUOTE" && message.quote_id) {
         const { data: quote } = await admin.from("quotes").select("status,sent_at").eq("id", message.quote_id).maybeSingle();
@@ -212,7 +260,7 @@ Deno.serve(async (request: Request) => {
         await admin.from("invoices").update({ reminder_count: reminderNumber, last_reminder_at: now, updated_at: now }).eq("id", message.invoice_id);
       }
 
-      results.push({ id: message.id, status: "SENT", type: message.message_type, recipient: message.recipient_email });
+      results.push({ id: message.id, status: "SENT", type: message.message_type, recipient: message.recipient_email, attachment: attachment.filename });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       await admin.from("billing_email_outbox").update({ status: "FAILED", processed_at: new Date().toISOString(), error_message: errorMessage.slice(0, 1000), attempt_count: Number(message.attempt_count || 0) + 1 }).eq("id", message.id);
