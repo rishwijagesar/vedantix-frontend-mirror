@@ -59,6 +59,75 @@ where i.amount_paid > 0
     select 1 from public.invoice_payments p where p.invoice_id = i.id
   );
 
+-- Compatibility guard for the older Facturen UI, which still writes amount_paid directly.
+-- An increase is converted into a ledger event. A decrease must be handled by voiding a payment,
+-- otherwise accounting history could be silently rewritten.
+create or replace function public.capture_legacy_invoice_amount_paid()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_delta numeric(12,2);
+begin
+  if coalesce(current_setting('vedantix.payment_sync', true), '0') = '1' then
+    return new;
+  end if;
+
+  if new.amount_paid is not distinct from old.amount_paid then
+    return new;
+  end if;
+
+  if not public.is_staff(array['ADMIN','OPERATOR']) then
+    raise exception 'Not authorized';
+  end if;
+
+  if new.amount_paid < old.amount_paid then
+    raise exception 'Paid amount cannot be reduced directly; void the payment instead';
+  end if;
+
+  if old.invoice_number is null or old.status = 'DRAFT' then
+    raise exception 'Payments can only be registered on finalized invoices';
+  end if;
+
+  if new.amount_paid > old.total_incl_vat + 0.01 then
+    raise exception 'Payment exceeds invoice total';
+  end if;
+
+  v_delta := round(new.amount_paid - old.amount_paid, 2);
+  if v_delta > 0 then
+    insert into public.invoice_payments (
+      invoice_id,
+      amount,
+      payment_date,
+      method,
+      reference,
+      notes,
+      created_by
+    ) values (
+      old.id,
+      v_delta,
+      current_date,
+      'OTHER',
+      new.payment_reference,
+      'Automatisch vastgelegd via bestaande Facturen-actie.',
+      auth.uid()
+    );
+  end if;
+
+  return new;
+end;
+$$;
+
+revoke all on function public.capture_legacy_invoice_amount_paid() from public, anon, authenticated;
+
+drop trigger if exists capture_legacy_invoice_amount_paid_trigger on public.invoices;
+create trigger capture_legacy_invoice_amount_paid_trigger
+before update of amount_paid on public.invoices
+for each row
+execute function public.capture_legacy_invoice_amount_paid();
+
 create or replace function public.sync_invoice_payment_status(p_invoice_id uuid)
 returns text
 language plpgsql
@@ -106,12 +175,14 @@ begin
     v_status := 'FINALIZED';
   end if;
 
+  perform set_config('vedantix.payment_sync', '1', true);
   update public.invoices
   set amount_paid = round(v_paid, 2),
       status = v_status,
       paid_at = case when v_status = 'PAID' then coalesce(v_last_payment_at, now()) else null end,
       updated_at = now()
   where id = p_invoice_id;
+  perform set_config('vedantix.payment_sync', '0', true);
 
   return v_status;
 end;
