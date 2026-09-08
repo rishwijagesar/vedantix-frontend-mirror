@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Building2, FileText, Link2, Mail, Package, ReceiptText, RefreshCw, Repeat2, Users, WalletCards } from "lucide-react";
+import { ArrowLeft, Building2, CreditCard, FileText, Link2, Mail, Package, ReceiptText, RefreshCw, Repeat2, Users, WalletCards } from "lucide-react";
 import { listCustomers, updateCustomer, type Customer } from "./control-center-data";
 import { BillingDashboardCards, CatalogModule, CompanyProfileModule, InvoicesModule, QuotesModule } from "./SalesBillingModules";
 import { SubscriptionsModule } from "./RecurringBillingModule";
 import PublicQuoteLinksModule from "./PublicQuoteLinksModule";
 import { PaymentsModule } from "./PaymentsModule";
 import BillingEmailModule from "./BillingEmailModule";
+import MolliePaymentsModule from "./MolliePaymentsModule";
 import { refreshOverdueInvoices } from "./payments-data";
 
-type Section = "overview" | "quotes" | "quote-links" | "invoices" | "payments" | "email" | "subscriptions" | "catalog" | "customers" | "company";
+type Section = "overview" | "quotes" | "quote-links" | "invoices" | "payments" | "online-payments" | "email" | "subscriptions" | "catalog" | "customers" | "company";
 type BillingCustomer = Customer & { address_line1?: string | null; address_line2?: string | null; postal_code?: string | null; city?: string | null; country?: string | null; kvk_number?: string | null; vat_number?: string | null };
 
 const sections = [
@@ -17,6 +18,7 @@ const sections = [
   { id: "quote-links" as const, label: "Klantlinks", icon: Link2 },
   { id: "invoices" as const, label: "Facturen", icon: ReceiptText },
   { id: "payments" as const, label: "Betalingen", icon: WalletCards },
+  { id: "online-payments" as const, label: "Online betalen", icon: CreditCard },
   { id: "email" as const, label: "E-mail & reminders", icon: Mail },
   { id: "subscriptions" as const, label: "Abonnementen", icon: Repeat2 },
   { id: "catalog" as const, label: "Catalogus", icon: Package },
@@ -46,6 +48,7 @@ export default function SalesBillingApp() {
     "quote-links": ["Klantlinks", "Deel beveiligde offertelinks en laat klanten zelf accepteren of afwijzen."],
     invoices: ["Facturen", "Finaliseer facturen, volg betaalstatus en maak creditnota’s."],
     payments: ["Betalingen", "Registreer deelbetalingen, bekijk de volledige historie en volg achterstallige facturen."],
+    "online-payments": ["Online betalen", "Beheer Mollie/iDEAL en volg hosted checkout-betalingen zonder API-keys in de browser."],
     email: ["E-mail & reminders", "Verstuur offertes en facturen via Migadu en beheer automatische betaalherinneringen."],
     subscriptions: ["Abonnementen", "Beheer maand- en jaarabonnementen en hun automatische factuurmomenten."],
     catalog: ["Catalogus", "Beheer pakketten, losse diensten, prijzen en btw."],
@@ -62,11 +65,12 @@ export default function SalesBillingApp() {
     </aside>
     <div className="min-w-0 flex-1"><header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur md:px-7"><div><span className="text-xs font-medium uppercase tracking-[.16em] text-slate-400">Vedantix Operations</span><strong className="block text-sm md:hidden">Sales & Billing</strong></div><div className="flex gap-2"><a href="/admin" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 md:hidden">Control Center</a><button type="button" onClick={loadCustomers} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700"><RefreshCw size={14} className={loading?"animate-spin":""}/> Vernieuwen</button></div></header>
       <main className="mx-auto max-w-7xl p-4 md:p-7"><div className="mb-7"><span className="text-xs font-semibold uppercase tracking-[.16em] text-slate-400">Vedantix Admin</span><h1 className="mt-1 text-3xl font-bold tracking-tight">{title[0]}</h1><p className="mt-2 text-sm text-slate-500">{title[1]}</p></div>
-        {section==="overview"?<div className="space-y-6"><BillingDashboardCards/><div className="grid gap-5 lg:grid-cols-3 xl:grid-cols-6"><button onClick={()=>setSection("quotes")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><FileText className="mb-4"/><strong className="block text-lg">Nieuwe offerte</strong><span className="text-sm text-slate-500">Klant selecteren, pakket toevoegen, korting en btw automatisch.</span></button><button onClick={()=>setSection("invoices")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><ReceiptText className="mb-4"/><strong className="block text-lg">Facturen</strong><span className="text-sm text-slate-500">Concept, finaliseren en crediteren.</span></button><button onClick={()=>setSection("payments")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><WalletCards className="mb-4"/><strong className="block text-lg">Betalingen</strong><span className="text-sm text-slate-500">Deelbetalingen, historie en achterstallige facturen.</span></button><button onClick={()=>setSection("email")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Mail className="mb-4"/><strong className="block text-lg">E-mail</strong><span className="text-sm text-slate-500">Offertes, facturen en betaalherinneringen via Migadu.</span></button><button onClick={()=>setSection("subscriptions")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Repeat2 className="mb-4"/><strong className="block text-lg">Abonnementen</strong><span className="text-sm text-slate-500">Maand- en jaarfacturen automatisch laten ontstaan.</span></button><button onClick={()=>setSection("quote-links")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Link2 className="mb-4"/><strong className="block text-lg">Klantlinks</strong><span className="text-sm text-slate-500">Deel offertes veilig en registreer akkoord of afwijzing.</span></button></div></div>:null}
+        {section==="overview"?<div className="space-y-6"><BillingDashboardCards/><div className="grid gap-5 lg:grid-cols-3 xl:grid-cols-4"><button onClick={()=>setSection("quotes")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><FileText className="mb-4"/><strong className="block text-lg">Nieuwe offerte</strong><span className="text-sm text-slate-500">Klant selecteren, pakket toevoegen, korting en btw automatisch.</span></button><button onClick={()=>setSection("invoices")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><ReceiptText className="mb-4"/><strong className="block text-lg">Facturen</strong><span className="text-sm text-slate-500">Concept, finaliseren en crediteren.</span></button><button onClick={()=>setSection("payments")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><WalletCards className="mb-4"/><strong className="block text-lg">Betalingen</strong><span className="text-sm text-slate-500">Deelbetalingen, historie en achterstallige facturen.</span></button><button onClick={()=>setSection("online-payments")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><CreditCard className="mb-4"/><strong className="block text-lg">Online betalen</strong><span className="text-sm text-slate-500">Mollie/iDEAL checkout en paymentstatus.</span></button><button onClick={()=>setSection("email")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Mail className="mb-4"/><strong className="block text-lg">E-mail</strong><span className="text-sm text-slate-500">Offertes, facturen en betaalherinneringen via Migadu.</span></button><button onClick={()=>setSection("subscriptions")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Repeat2 className="mb-4"/><strong className="block text-lg">Abonnementen</strong><span className="text-sm text-slate-500">Maand- en jaarfacturen automatisch laten ontstaan.</span></button><button onClick={()=>setSection("quote-links")} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"><Link2 className="mb-4"/><strong className="block text-lg">Klantlinks</strong><span className="text-sm text-slate-500">Deel offertes veilig en registreer akkoord of afwijzing.</span></button></div></div>:null}
         {section==="quotes"?<QuotesModule customers={customers}/>:null}
         {section==="quote-links"?<PublicQuoteLinksModule customers={customers}/>:null}
         {section==="invoices"?<InvoicesModule customers={customers}/>:null}
         {section==="payments"?<PaymentsModule customers={customers}/>:null}
+        {section==="online-payments"?<MolliePaymentsModule/>:null}
         {section==="email"?<BillingEmailModule customers={customers}/>:null}
         {section==="subscriptions"?<SubscriptionsModule customers={customers}/>:null}
         {section==="catalog"?<CatalogModule/>:null}
