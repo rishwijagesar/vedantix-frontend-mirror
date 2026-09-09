@@ -1,17 +1,20 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+const STAGING_ORIGIN = "https://dhnczzdgsgc436kkidetyxg45u0zxukp.lambda-url.eu-west-1.on.aws";
 const allowedOrigins = new Set([
   "https://vedantix-migration-test.lovable.app",
+  STAGING_ORIGIN,
   "https://vedantix.nl",
 ]);
 const LIVE_MARKER_URL = "https://vedantix.nl/.well-known/vedantix-release.json";
-const PREVIEW_MARKER_URL = "https://vedantix-migration-test.lovable.app/.well-known/vedantix-release.json";
-const EXPECTED_MARKER = "VEDANTIX_LOVABLE_COMMERCE_READY";
+const STAGING_MARKER_URL = `${STAGING_ORIGIN}/.well-known/vedantix-release.json`;
+const EXPECTED_MARKER = "VEDANTIX_AWS_SERVERLESS_COMMERCE_READY";
+const EXPECTED_PLATFORM = "aws-lambda";
 
 function headersFor(request: Request) {
   const origin = request.headers.get("Origin");
-  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix-migration-test.lovable.app";
+  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : STAGING_ORIGIN;
   return {
     "content-type": "application/json; charset=utf-8",
     "access-control-allow-origin": allowOrigin,
@@ -31,7 +34,11 @@ async function readMarker(url: string) {
     });
     const payload = response.ok ? await response.json().catch(() => null) : null;
     return {
-      ok: Boolean(response.ok && payload?.release_marker === EXPECTED_MARKER && payload?.platform === "lovable-mirror"),
+      ok: Boolean(
+        response.ok &&
+        payload?.release_marker === EXPECTED_MARKER &&
+        payload?.platform === EXPECTED_PLATFORM
+      ),
       http_status: response.status,
       marker: payload?.release_marker ?? null,
       platform: payload?.platform ?? null,
@@ -88,7 +95,7 @@ Deno.serve(async (request: Request) => {
   const action = body.action || "status";
 
   const admin = createClient(supabaseUrl, serviceRole, { auth: { persistSession: false } });
-  const [live, preview] = await Promise.all([readMarker(LIVE_MARKER_URL), readMarker(PREVIEW_MARKER_URL)]);
+  const [live, staging] = await Promise.all([readMarker(LIVE_MARKER_URL), readMarker(STAGING_MARKER_URL)]);
   const checkedAt = new Date().toISOString();
 
   const { data: emailConfig } = await admin
@@ -105,24 +112,27 @@ Deno.serve(async (request: Request) => {
 
   const details = {
     live,
-    preview,
+    staging,
     billing: emailConfig ?? null,
     mollie: paymentConfig ? { ...paymentConfig, key_present: Boolean(mollieKeyPresent) } : null,
   };
 
   await admin.from("commerce_production_activation").update({
     live_marker_ok: live.ok,
-    preview_marker_ok: preview.ok,
+    staging_marker_ok: staging.ok,
+    preview_marker_ok: staging.ok,
     last_checked_at: checkedAt,
     last_check_details: details,
   }).eq("id", true);
 
   if (action === "activate") {
-    if (!live.ok) {
+    if (!live.ok || !staging.ok) {
       return new Response(JSON.stringify({
         ok: false,
         activated: false,
-        error: "vedantix.nl draait nog niet op de gevalideerde Lovable-release.",
+        error: !staging.ok
+          ? "De AWS staging-release is nog niet gevalideerd."
+          : "vedantix.nl draait nog niet op de gevalideerde AWS serverless-release.",
         ...details,
       }), { status: 409, headers });
     }
@@ -159,7 +169,7 @@ Deno.serve(async (request: Request) => {
 
   return new Response(JSON.stringify({
     ok: true,
-    ready_for_activation: live.ok && preview.ok,
+    ready_for_activation: live.ok && staging.ok,
     activated: Boolean(emailConfig?.delivery_enabled && emailConfig?.reminders_enabled),
     ...details,
   }), { status: 200, headers });
