@@ -17,7 +17,7 @@ export type ProductionReadiness = {
   mollie_unchanged?: boolean;
   error?: string;
   live: ReadinessTarget;
-  preview: ReadinessTarget;
+  staging: ReadinessTarget;
   billing: { delivery_enabled: boolean; reminders_enabled: boolean } | null;
   mollie: { enabled: boolean; mode: "TEST" | "LIVE"; credentials_configured: boolean; key_present: boolean } | null;
 };

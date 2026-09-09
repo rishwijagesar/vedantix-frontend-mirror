@@ -1,0 +1,108 @@
+name: AWS Lambda deploy
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: eu-west-1
+  ECR_REPOSITORY: vedantix-frontend
+  STAGING_FUNCTION: vedantix-web-staging
+  PRODUCTION_FUNCTION: vedantix-web-production
+  STAGING_URL: https://dhnczzdgsgc436kkidetyxg45u0zxukp.lambda-url.eu-west-1.on.aws
+  PRODUCTION_URL: https://lv2vr7a3tkzb7knkq6ricyowuy0igyag.lambda-url.eu-west-1.on.aws
+  LIVE_URL: https://vedantix.nl
+  EXPECTED_PLATFORM: aws-lambda
+  EXPECTED_MARKER: VEDANTIX_AWS_SERVERLESS_COMMERCE_READY
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve deploy commit
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "DEPLOY_SHA=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+          else
+            echo "DEPLOY_SHA=${{ github.sha }}" >> "$GITHUB_ENV"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::381492205513:role/vedantix-frontend-github-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push immutable image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          set -euo pipefail
+          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$DEPLOY_SHA"
+          docker build --platform linux/amd64 -f Dockerfile.aws -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
+          docker tag "$IMAGE_URI" "$ECR_REGISTRY/$ECR_REPOSITORY:staging-latest"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:staging-latest"
+          echo "IMAGE_URI=$IMAGE_URI" >> "$GITHUB_ENV"
+          echo "ECR_REGISTRY=$ECR_REGISTRY" >> "$GITHUB_ENV"
+
+      - name: Deploy staging Lambda
+        run: |
+          set -euo pipefail
+          aws lambda update-function-code --function-name "$STAGING_FUNCTION" --image-uri "$IMAGE_URI" >/dev/null
+          aws lambda wait function-updated --function-name "$STAGING_FUNCTION"
+
+      - name: Smoke test staging
+        run: |
+          set -euo pipefail
+          marker="$(curl --fail --silent --show-error "$STAGING_URL/.well-known/vedantix-release.json")"
+          echo "$marker" | jq -e --arg p "$EXPECTED_PLATFORM" --arg m "$EXPECTED_MARKER" '.platform == $p and .release_marker == $m' >/dev/null
+          for path in / /prijzen /online-groei-audit /admin; do
+            code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$STAGING_URL$path")"
+            test "$code" = "200"
+          done
+
+      - name: Promote same image to production Lambda
+        run: |
+          set -euo pipefail
+          aws lambda update-function-code --function-name "$PRODUCTION_FUNCTION" --image-uri "$IMAGE_URI" >/dev/null
+          aws lambda wait function-updated --function-name "$PRODUCTION_FUNCTION"
+
+      - name: Smoke test production origin and live domain
+        run: |
+          set -euo pipefail
+          for base in "$PRODUCTION_URL" "$LIVE_URL"; do
+            marker="$(curl --fail --silent --show-error "$base/.well-known/vedantix-release.json")"
+            echo "$marker" | jq -e --arg p "$EXPECTED_PLATFORM" --arg m "$EXPECTED_MARKER" '.platform == $p and .release_marker == $m' >/dev/null
+            for path in / /prijzen /online-groei-audit /admin; do
+              code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$base$path")"
+              test "$code" = "200"
+            done
+          done
+
+      - name: Mark successful production image
+        run: |
+          set -euo pipefail
+          docker pull "$IMAGE_URI"
+          docker tag "$IMAGE_URI" "$ECR_REGISTRY/$ECR_REPOSITORY:production-latest"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:production-latest"
