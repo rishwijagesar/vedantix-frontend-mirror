@@ -1,0 +1,65 @@
+name: AWS Lambda staging
+
+on:
+  push:
+    branches:
+      - chatgpt-aws-lambda-production
+      - main
+    paths:
+      - "src/**"
+      - "public/**"
+      - "package.json"
+      - "bun.lock*"
+      - "vite.config.ts"
+      - "Dockerfile.aws"
+      - ".github/workflows/aws-lambda-staging.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: eu-west-1
+  ECR_REPOSITORY: vedantix-frontend
+  LAMBDA_FUNCTION: vedantix-web-staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::381492205513:role/vedantix-frontend-github-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Lambda image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker build --platform linux/amd64 -f Dockerfile.aws -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
+          docker tag "$IMAGE_URI" "$ECR_REGISTRY/$ECR_REPOSITORY:staging-latest"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:staging-latest"
+          echo "IMAGE_URI=$IMAGE_URI" >> "$GITHUB_ENV"
+
+      - name: Update staging Lambda when provisioned
+        run: |
+          set -euo pipefail
+          if aws lambda get-function --function-name "$LAMBDA_FUNCTION" >/dev/null 2>&1; then
+            aws lambda update-function-code --function-name "$LAMBDA_FUNCTION" --image-uri "$IMAGE_URI" >/dev/null
+            aws lambda wait function-updated --function-name "$LAMBDA_FUNCTION"
+            echo "Updated $LAMBDA_FUNCTION"
+          else
+            echo "$LAMBDA_FUNCTION is not provisioned yet; image push completed."
+          fi
