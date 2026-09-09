@@ -1,4 +1,4 @@
-# Centrale Vedantix-accounts — voorbereid, nog niet geactiveerd
+# Centrale Vedantix-accounts — rechten geïnstalleerd, login nog niet geactiveerd
 
 Nature Healing gebruikt Lovable Cloud, met onderliggend project
 `arzfwbyomqvvtpswbyzl`. Dit is op 9 september 2026 bevestigd via de gekoppelde
@@ -8,15 +8,32 @@ Dit project verschijnt niet in de eigen Supabase-projectlijst. Er is dus geen
 nieuwe Supabase-projectkoppeling nodig om de bestaande database te inspecteren.
 
 Vedantix heeft een eigen, beheerbaar project `zxnexwqvoznmirajhgxj`. De bestaande
-Nature Healing Edge Function moet via een ondersteunde Lovable Cloud-deploymentroute
-worden toegevoegd. Die deployment en de Auth/SMTP-configuratie zijn nog niet
-uitgevoerd of end-to-end getest. SQL-toegang alleen bewijst die mogelijkheden niet.
+Nature Healing-serverkoppeling is nog niet gedeployd. Op 9 september bevestigde
+Lovable dat dit TanStack Start-project geen nieuwe Edge Functions ondersteunt.
+De aangevraagde ondersteunde serverroute kon daarna niet worden gebouwd: Lovable
+weigerde de vervolgaanvraag wegens een leeg creditsaldo. Er is niets gepubliceerd.
+De connector ververste wel de gegenereerde databasetypen en paste
+`TreatmentDetail.tsx` daarop aan in de private Lovable-versie; dit is geen wijziging
+aan de live AWS-website. De bestaande Edge Function-code is een geteste
+implementatie, maar geen werkende deployment voor dit Cloud-project.
+
+De centrale migration `20260909105333_central_site_auth` is via Supabase toegepast.
+Het bestand in `supabase/migrations/` is een export van die bestaande, gecontroleerde
+migrationrecord, geen verzonnen nieuwe versie. Nature Healing staat inactief;
+`info@vedantix.nl` is actief platformbeheerder. Er zijn nog geen klantlidmaatschappen.
+
+De Supabase-dashboardlogin is gelukt. Custom Auth SMTP stond uit. Afzendernaam,
+afzendadres en Migadu-host zijn voorbereid, maar niet opgeslagen: automatische
+browserveiligheidscontrole blokkeerde het beveiligde SMTP-inlogformulier als mogelijk
+onveilig. De onvolledige instellingen zijn geannuleerd. SMTP moet rechtstreeks door
+de eigenaar worden ingesteld. Templates, redirectinstellingen en de nieuwe frontend
+zijn nog niet geactiveerd. Er zijn geen herstel- of uitnodigingsmails verstuurd.
 
 ## Ontwerp
 
 Een persoon heeft één account in Vedantix Auth, met e-mailadres als gebruikersnaam
 en een eigen wachtwoord. `info@vedantix.nl` bestaat daar al als bevestigde actieve
-interne admin. De SQL-proposal maakt deze bestaande gebruiker platformbeheerder
+interne admin. De toegepaste migration maakt deze bestaande gebruiker platformbeheerder
 van klantwebsites. Er worden geen wachtwoorden ingesteld of gekopieerd.
 
 `site_auth_memberships` kent een gebruiker beheerrechten op een bepaalde website
@@ -44,10 +61,10 @@ van deze eerste koppeling. Wachtwoordherstel wijzigt het gedeelde accountwachtwo
    een volledige opname van policies, rollen, uitnodigingen en herstelinstellingen.
    Controleer ook conceptcontent en privégegevens. Het bestaande klantaccount is
    nog niet e-mailbevestigd; bevestig het niet administratief om onboarding over te slaan.
-2. Genereer een migration met de beschikbare Supabase CLI (`supabase migration new`,
-   eerst de help raadplegen) uit `db/proposals/central-site-auth.sql`. Pas deze toe op
-   Vedantix. Nature Healing staat standaard **inactief**. De testfixture en assertions
-   horen uitsluitend in een transactie die wordt teruggedraaid.
+2. Reeds uitgevoerd: centrale migration `20260909105333_central_site_auth`.
+   Niet opnieuw toepassen. Nature Healing staat **inactief**. De testfixture en
+   assertions zijn na installatie in een transactie uitgevoerd en teruggedraaid;
+   daarna is gecontroleerd dat alle tijdelijke gebruikers weg zijn.
 3. Publiceer de Vedantix `AdminAuthGate` op het eigen domein en configureer Auth:
    - Email/password ingeschakeld; publieke registratie uit. Bestaande staff-uitnodigingen
      controleren voor deze wijziging; nieuwe accounts via de beheerde uitnodigingsroute.
@@ -66,9 +83,13 @@ van deze eerste koppeling. Wachtwoordherstel wijzigt het gedeelde accountwachtwo
    - Controleer overige ingeschakelde systeemmails op Vedantix-branding, eigen
      links en juiste afzender. Verwijder pas ongebruikte oude redirects nadat alle
      actieve staff-loginroutes zijn gecontroleerd.
-4. Deploy `site-admin` uit de Nature Healing-PR op de **Nature Healing-backend**.
-   De lokale JWT-gateway staat uit omdat de functie centrale JWTs zelf controleert.
-   De service-role key blijft uitsluitend in de lokale Edge Function-omgeving.
+4. Maak de ondersteunde TanStack Start serveradapter op basis van de geteste
+   `site-admin`-handler zodra de Lovable-bouwroute beschikbaar is. Gebruik de veilige
+   serverintegratie met de bestaande Nature Healing-database, met dezelfde centrale
+   identiteits- en rechtencontrole. Verifieer de runtime-credentials en een stabiel
+   API-adres vóór enige publicatie of wijziging van de AWS-client. Een preview-URL
+   is geen productie-API. Beheersleutels blijven uitsluitend servermatig.
+   Gebruik niet langer de onbewezen `/functions/v1/site-admin`-route als activatiebewijs.
 5. Test eerst met afzonderlijke testaccounts: platformbeheerder, klant A, klant B,
    gebruiker zonder lidmaatschap, ingetrokken lidmaatschap en anonieme bezoeker.
    Test opslaan van secties, conceptbehandelingen, verwijderen en media-upload.
@@ -95,10 +116,14 @@ lidmaatschap nodig. Wachtwoorden van oude klantaccounts worden niet uitgelezen.
 
 ## Validatie en terugval
 
-De SQL is uitgevoerd met tijdelijke fixtures en volledig teruggedraaid. Controles
+De migration is geïnstalleerd. De assertions zijn daarna uitgevoerd met tijdelijke
+fixtures en volledig teruggedraaid. Controles
 voor eigen/andere/inactieve/onbekende website, zichtbaarheid, zelfpromotie, ingetrokken
 klantrechten, ingetrokken platformrechten en anonieme toegang slaagden.
-De gewijzigde frontend en gateway krijgen afzonderlijke tests in de gekoppelde PR.
+De security-advisor vond geen meldingen voor de nieuwe tabellen of functies.
+Bestaande meldingen over andere onderdelen en uitgeschakelde wachtwoordlekcontrole
+zijn niet door deze wijziging opgelost. De gewijzigde frontend en gateway hebben
+afzonderlijke tests in de gekoppelde PR (21 tests geslaagd).
 Echte mailbezorging en de koppeling met de oude database zijn nog niet getest.
 
 Bij terugval eerst CMS-wijzigingen pauzeren, de vorige frontend-build herstellen,

@@ -84,3 +84,4 @@ do $$ begin
 end $$;
 insert into public.site_auth_sites(slug, name, origin, active)
 values ('naturehealing', 'Nature Healing', 'https://naturehealing.nl', false);
+

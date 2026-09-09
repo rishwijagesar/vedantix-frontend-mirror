@@ -1,4 +1,4 @@
--- Run inside a transaction, after central-site-auth.sql; always ROLLBACK.
+-- Run inside a transaction, after the installed central_site_auth migration; always ROLLBACK.
 -- No passwords, emails, or committed fixture users are created.
 insert into auth.users(id) values
   ('11111111-1111-4111-8111-111111111111'),
