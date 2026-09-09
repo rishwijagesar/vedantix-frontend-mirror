@@ -5,7 +5,7 @@
     <p style="font-weight:bold;letter-spacing:2px;color:#126354">VEDANTIX</p>
     <h1 style="font-size:26px">Stel een nieuw wachtwoord in</h1>
     <p>Je hebt een nieuw wachtwoord aangevraagd voor je beheeraccount.</p>
-    <p><a href="{{ .RedirectTo }}#token_hash={{ .TokenHash }}&amp;type=recovery" style="display:inline-block;padding:14px 20px;background:#126354;color:white;text-decoration:none;border-radius:8px">Nieuw wachtwoord kiezen</a></p>
+    <p><a href="{{ if .RedirectTo }}{{ .RedirectTo }}{{ else }}https://vedantix.nl/admin?recover=1{{ end }}#token_hash={{ .TokenHash }}&amp;type=recovery" style="display:inline-block;padding:14px 20px;background:#126354;color:white;text-decoration:none;border-radius:8px">Nieuw wachtwoord kiezen</a></p>
     <p>Dit wachtwoord gebruik je voor alle websites waarvoor je beheerrechten hebt.</p>
     <p>Heb je dit niet aangevraagd? Dan hoef je niets te doen. Je wachtwoord blijft hetzelfde.</p>
     <p>Vragen? Neem contact op via info@vedantix.nl.</p>
