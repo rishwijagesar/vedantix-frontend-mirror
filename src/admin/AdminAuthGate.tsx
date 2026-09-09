@@ -91,6 +91,7 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Normal admin access uses password auth; email is only used for account recovery.
   async function signIn(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
