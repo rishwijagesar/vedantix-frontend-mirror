@@ -36,9 +36,12 @@ export async function getPaymentProviderConfig(): Promise<PaymentProviderConfig>
 }
 
 export async function setPaymentProviderEnabled(enabled: boolean): Promise<PaymentProviderConfig> {
-  const { data, error } = await supabase.from("payment_provider_config").update({ enabled, updated_at: new Date().toISOString() }).eq("id", true).select("*").single();
-  fail(error);
-  return data as PaymentProviderConfig;
+  const { data, error } = await supabase.functions.invoke("mollie-credentials", {
+    body: { action: "set_enabled", enabled },
+  });
+  if (error) throw error;
+  if (!data?.ok || !data?.config) throw new Error(data?.error || "Mollie-checkout kon niet worden gewijzigd.");
+  return data.config as PaymentProviderConfig;
 }
 
 export async function listPaymentRequests(limit = 100): Promise<PaymentRequest[]> {
