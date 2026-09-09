@@ -127,11 +127,16 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
     setBusy(true);
     setMessage("");
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-        redirectTo: `${window.location.origin}/admin`,
-      });
+      const { data, error } = await withTimeout(
+        supabase.functions.invoke("admin-password-reset", {
+          body: { email: normalizedEmail },
+        }),
+      );
       if (error) throw error;
-      setMessage("Als dit account bestaat, ontvang je een e-mail om je wachtwoord opnieuw in te stellen.");
+      setMessage(
+        data?.message ||
+          "Als dit account bestaat en geautoriseerd is, ontvang je een e-mail om je wachtwoord opnieuw in te stellen.",
+      );
     } catch (error) {
       console.error("Admin password reset request failed", error);
       setMessage("Wachtwoord herstellen is tijdelijk niet beschikbaar. Probeer het later opnieuw.");
