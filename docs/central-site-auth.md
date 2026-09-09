@@ -104,11 +104,11 @@ van deze eerste koppeling. Wachtwoordherstel wijzigt het gedeelde accountwachtwo
    gebruiker zonder lidmaatschap, ingetrokken lidmaatschap en anonieme bezoeker.
    Test opslaan van secties, conceptbehandelingen, verwijderen en media-upload.
    Controleer dat andere klantdata en interne Vedantix-data onbereikbaar zijn.
-   De poging tot de volledige productie-inlogtest is door automatische
-   goedkeuringscontrole vóór uitvoering geweigerd: tijdelijke Auth-accounts,
-   beheerrechten en siteactivatie waren volgens de controle niet specifiek
-   geautoriseerd. Vraag hiervoor concrete toestemming; probeer de geweigerde
-   aanroep niet opnieuw via een andere route.
+   De eigenaar heeft de tijdelijke account-/rechtenmutaties expliciet goedgekeurd.
+   Daarna zijn 28 productie-API-controles geslaagd met één tijdelijk account,
+   inclusief wachtwoordherstel zonder mail en volledige opruiming. Zie het rapport
+   onder `docs/verification/2026-09-09-central-auth.json`. Echte mailbezorging en
+   browseronboarding moeten nog worden gecontroleerd.
 6. Test echte herstel- en uitnodigingsmails: afzender, SPF/DKIM, onderwerp, linkdomein,
    eerste gebruik, tweede gebruik en verlopen token. Test info@vedantix.nl zonder
    diens wachtwoord buiten het inlogformulier te delen.
@@ -146,8 +146,8 @@ ongeldig token, verkeerde Origin en toegestane/geweigerde preflight. Vijftien
 geïsoleerde Cloud-database-/uploadcontroles slagen met tijdelijke uitgeschakelde
 secties, conceptbehandelingen en één PNG; alle fixtures en media zijn verwijderd.
 Alleen het tijdelijke lokale testscript verving de autorisatieafhankelijkheid;
-de productiecode bevat geen autorisatie-omweg. Dit bewijst nog geen complete
-login met een echt Auth-account. Echte mailbezorging is nog niet getest.
+de productiecode bevat geen autorisatie-omweg. De aanvullende productietest hieronder
+controleert een echt tijdelijk Auth-account. Echte mailbezorging is nog niet getest.
 
 De staff-recursieregressietest controleert anonieme toegang, een niet-staffgebruiker,
 onzichtbaarheid van staff/invites/CRM/facturen/contracten, de bestaande eigenaar,
@@ -155,14 +155,32 @@ een tijdelijke operator, verkeerde rollen en ingetrokken operatorrechten.
 De assertions staan in `db/proposals/staff-role-lookup.assertions.sql` en draaien
 uitsluitend binnen een teruggedraaide transactie. Alle controles slagen.
 
-De geblokkeerde volledige test heeft geen testaccount of lidmaatschap aangemaakt.
-Zijn tijdelijke Edge Function is eerst uitgeschakeld en vervolgens verwijderd;
-de functielijst en de schone database zijn gecontroleerd. Nature Healing blijft
-inactief en de echte eigenaar blijft actief. Na expliciete toestemming kan één
-tijdelijk account de keten testen: eerst geen rechten, daarna sitebeheer, intrekking,
-platformbeheer en intrekking, met korte tijdelijke Nature Healing-activatie. Geen
-bestaande wachtwoorden wijzigen of klantmails versturen; verwijder het testaccount,
-alle testrechten en eventuele testdata en herstel de oorspronkelijke sitestatus.
+De eerste productietest werd vóór uitvoering door automatische goedkeuringscontrole
+geblokkeerd. De eigenaar heeft daarna expliciet toestemming gegeven voor één
+tijdelijk account, site-/platformrechten, korte Nature Healing-activatie en opruiming.
+De uitgevoerde testfunctie had een geheime eenmalige toegangssleutel en vervaltijd.
+De servicekey, wachtwoorden en herstelcode bleven uitsluitend servermatig.
+
+Alle 28 API-controles slaagden: echte email/password-authenticatie, bevestigde
+identiteit, weigering zonder rechten en bij inactieve site, CMS-lezen door proxy én
+Cloud-adapter, afscherming van interne staff/CRM/facturen/contracten, andere-site-
+weigering, directe intrekking van klant- en platformrechten met hetzelfde JWT en
+wachtwoordherstel. Alleen voor het testaccount is een herstelcode gegenereerd,
+zonder mail te versturen. Eerste gebruik slaagt, hergebruik faalt, het oude
+wachtwoord wordt geweigerd en het nieuwe wachtwoord werkt.
+
+Alle negen opruimcontroles slagen. Het account, de sessies en tijdelijke rechten
+zijn verwijderd, de oorspronkelijke sitestatus is teruggezet en de testfunctie
+is eerst uitgeschakeld en daarna verwijderd. Een aparte SQL-controle bevestigt:
+Nature Healing inactief, nul fixtures, nul klantlidmaatschappen, één bestaande
+platformbeheerder en de echte eigenaar nog actief. Het JSON-rapport bevat geen
+tokens of wachtwoorden. Dit verifieert de API-keten; mailbezorging en browseronboarding
+zijn nog geen afgeronde controles.
+
+De Cloud-publicatie had een dubbel inlogscherm zonder herstelknop. Zijn `/admin`
+verwijst nu naar `https://naturehealing.nl/admin`, met de bestaande zichtbare link
+naar `/admin/forgot-password`. Doorverwijzing en herstelformulier zijn live in de
+browser gecontroleerd. De centrale loginvlag op Nature Healing blijft voorlopig uit.
 
 Bij terugval eerst CMS-wijzigingen pauzeren, de vorige frontend-build herstellen,
 en de eerder vastgelegde lokale policies/rollen terugzetten. Laat centrale accounts
