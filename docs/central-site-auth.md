@@ -1,9 +1,16 @@
 # Centrale Vedantix-accounts — voorbereid, nog niet geactiveerd
 
-Nature Healing gebruikt nu project `arzfwbyomqvvtpswbyzl`. Vedantix heeft een eigen,
-beheerbaar project `zxnexwqvoznmirajhgxj`. De gekoppelde Supabase-toegang kan het
-Nature Healing-project momenteel niet beheren. De huidige mailinstellingen van
-dat project konden daardoor ook niet worden gecontroleerd.
+Nature Healing gebruikt Lovable Cloud, met onderliggend project
+`arzfwbyomqvvtpswbyzl`. Dit is op 9 september 2026 bevestigd via de gekoppelde
+Lovable-databasestatus en bestaande media-URL's. De database is via
+`lovable_query_database` bereikbaar; gebruikersrollen en RLS zijn uitgelezen.
+Dit project verschijnt niet in de eigen Supabase-projectlijst. Er is dus geen
+nieuwe Supabase-projectkoppeling nodig om de bestaande database te inspecteren.
+
+Vedantix heeft een eigen, beheerbaar project `zxnexwqvoznmirajhgxj`. De bestaande
+Nature Healing Edge Function moet via een ondersteunde Lovable Cloud-deploymentroute
+worden toegevoegd. Die deployment en de Auth/SMTP-configuratie zijn nog niet
+uitgevoerd of end-to-end getest. SQL-toegang alleen bewijst die mogelijkheden niet.
 
 ## Ontwerp
 
@@ -30,9 +37,13 @@ van deze eerste koppeling. Wachtwoordherstel wijzigt het gedeelde accountwachtwo
 
 ## Activatievolgorde
 
-1. Zorg voor legitieme beheertoegang tot Nature Healing project `arzfwbyomqvvtpswbyzl`.
-   Leg bestaande RLS-policies, gebruikersrollen en herstelinstellingen vast. Controleer
-   ook conceptcontent en privégegevens. Geen accountmigratie op basis van alleen publieke data.
+1. Gebruik de bestaande Lovable-koppeling voor Nature Healing project
+   `b1d4590e-b32a-4d79-be6e-4b6542b07bc3`. De SQL-toegang is bevestigd.
+   De relevante CMS-/storage-policies staan als momentopname in de Nature Healing-PR,
+   `docs/nature-healing-cloud-policies.json`. Maak vlak voor omschakeling opnieuw
+   een volledige opname van policies, rollen, uitnodigingen en herstelinstellingen.
+   Controleer ook conceptcontent en privégegevens. Het bestaande klantaccount is
+   nog niet e-mailbevestigd; bevestig het niet administratief om onboarding over te slaan.
 2. Genereer een migration met de beschikbare Supabase CLI (`supabase migration new`,
    eerst de help raadplegen) uit `db/proposals/central-site-auth.sql`. Pas deze toe op
    Vedantix. Nature Healing staat standaard **inactief**. De testfixture en assertions
@@ -97,4 +108,5 @@ inhoud en uploads in dezelfde klantdatabase blijven, hoeft CMS-data niet terugge
 
 Referenties: [Supabase SMTP](https://supabase.com/docs/guides/auth/auth-smtp),
 [e-mailtemplates](https://supabase.com/docs/guides/auth/auth-email-templates),
-[uitnodigingen](https://supabase.com/docs/reference/javascript/auth-admin-inviteuserbyemail).
+[uitnodigingen](https://supabase.com/docs/reference/javascript/auth-admin-inviteuserbyemail),
+[Lovable Cloud versus eigen Supabase](https://docs.lovable.dev/integrations/supabase).
