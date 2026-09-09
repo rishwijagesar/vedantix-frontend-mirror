@@ -1,0 +1,10 @@
+node_modules
+.output
+dist
+.git
+.github
+*.log
+.env
+.env.*
+coverage
+supabase/.temp
