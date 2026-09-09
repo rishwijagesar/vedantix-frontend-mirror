@@ -46,7 +46,7 @@ Deno.serve(async (request: Request) => {
 
   const { data: row } = await admin
     .from("payment_requests")
-    .select("id,invoice_id,amount,currency,provider_payment_id,status")
+    .select("id,invoice_id,amount,currency,provider_payment_id,status,metadata")
     .eq("provider_payment_id", paymentId)
     .maybeSingle();
   if (!row) return new Response(JSON.stringify({ ok: true, ignored: true }), { status: 200, headers: jsonHeaders });
@@ -67,7 +67,11 @@ Deno.serve(async (request: Request) => {
     status,
     webhook_received_at: new Date().toISOString(),
     provider_paid_at: mollie.paidAt || null,
-    metadata: { mollie_mode: mollie.mode || null, method: mollie.method || null },
+    metadata: {
+      ...(row.metadata && typeof row.metadata === "object" ? row.metadata : {}),
+      mollie_mode: mollie.mode || null,
+      method: mollie.method || null,
+    },
   }).eq("id", row.id);
 
   if (status === "PAID") {
