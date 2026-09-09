@@ -42,13 +42,14 @@ export default function MolliePaymentsModule() {
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formElement = event.currentTarget;
     setBusy(true); setError(null); setMessage(null);
     try {
-      const form = new FormData(event.currentTarget);
+      const form = new FormData(formElement);
       const apiKey = String(form.get("api_key") || "").trim();
       if (!apiKey) throw new Error("Vul een Mollie API-key in.");
       const result = await saveMollieCredentials(apiKey, mode);
-      event.currentTarget.reset();
+      formElement.reset();
       setMessage(`Mollie ${mode === "TEST" ? "test" : "live"}-key geverifieerd voor ${result.profile?.name || "het profiel"}.`);
       await load();
     } catch (e) { setError(e instanceof Error ? e.message : "Opslaan mislukt."); }
