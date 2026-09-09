@@ -12,6 +12,7 @@ on:
       - "bun.lock*"
       - "vite.config.ts"
       - "Dockerfile.aws"
+      - ".dockerignore"
       - ".github/workflows/aws-lambda-staging.yml"
   workflow_dispatch:
 
