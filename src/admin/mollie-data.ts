@@ -66,3 +66,19 @@ export async function testMollieCredentials() {
   if (!data?.ok) throw new Error(data?.error || "Mollie-verbinding kon niet worden getest.");
   return data;
 }
+
+export async function startMollieTestPayment() {
+  const { data, error } = await supabase.functions.invoke("mollie-test-payment", { body: {} });
+  if (error) throw error;
+  if (!data?.ok || !data?.checkout_url) throw new Error(data?.error || "Mollie-testbetaling kon niet worden gestart.");
+  return data as {
+    ok: true;
+    test: true;
+    amount: string;
+    invoice_id: string;
+    invoice_number: string;
+    payment_request_id: string;
+    checkout_url: string;
+    status: string;
+  };
+}

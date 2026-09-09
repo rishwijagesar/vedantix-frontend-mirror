@@ -103,8 +103,8 @@ export default function AdminAuthGate({ children }: { children: ReactNode }) {
         if (error) throw new Error("Inloggen is niet gelukt. Controleer je e-mailadres en wachtwoord.");
         setPassword("");
       } else if (state === "request") {
-        const { error } = await withTimeout(supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
-          redirectTo: `${window.location.origin}/admin?recover=1`,
+        const { error } = await withTimeout(supabase.functions.invoke("admin-password-reset", {
+          body: { email: email.trim().toLowerCase() },
         }));
         if (error) throw new Error("De herstelmail kon niet worden aangevraagd. Probeer het later opnieuw.");
         setMessage("Als er een account met dit e-mailadres bestaat, ontvang je een herstelmail.");

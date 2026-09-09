@@ -5,6 +5,7 @@ import {
   listPaymentRequests,
   saveMollieCredentials,
   setPaymentProviderEnabled,
+  startMollieTestPayment,
   testMollieCredentials,
   type PaymentProviderConfig,
   type PaymentRequest,
@@ -42,13 +43,14 @@ export default function MolliePaymentsModule() {
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formElement = event.currentTarget;
     setBusy(true); setError(null); setMessage(null);
     try {
-      const form = new FormData(event.currentTarget);
+      const form = new FormData(formElement);
       const apiKey = String(form.get("api_key") || "").trim();
       if (!apiKey) throw new Error("Vul een Mollie API-key in.");
       const result = await saveMollieCredentials(apiKey, mode);
-      event.currentTarget.reset();
+      formElement.reset();
       setMessage(`Mollie ${mode === "TEST" ? "test" : "live"}-key geverifieerd voor ${result.profile?.name || "het profiel"}.`);
       await load();
     } catch (e) { setError(e instanceof Error ? e.message : "Opslaan mislukt."); }
@@ -63,6 +65,17 @@ export default function MolliePaymentsModule() {
       setMessage(`Mollie-verbinding werkt. iDEAL ${ideal ? "is beschikbaar" : "is nog niet actief op dit profiel"}.`);
     } catch (e) { setError(e instanceof Error ? e.message : "Test mislukt."); }
     finally { setBusy(false); }
+  }
+
+  async function startTestPayment() {
+    setBusy(true); setError(null); setMessage(null);
+    try {
+      const result = await startMollieTestPayment();
+      window.location.assign(result.checkout_url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Testbetaling kon niet worden gestart.");
+      setBusy(false);
+    }
   }
 
   async function toggle() {
@@ -98,6 +111,7 @@ export default function MolliePaymentsModule() {
         <div className="rounded-2xl border border-slate-200 p-4">
           <div className="flex items-center gap-2"><CreditCard size={18}/><strong className="text-sm">Status</strong></div>
           <div className="mt-4 space-y-3 text-sm"><div className="flex justify-between"><span className="text-slate-500">Credentials</span><strong>{config?.credentials_configured ? "Geconfigureerd" : "Niet ingesteld"}</strong></div><div className="flex justify-between"><span className="text-slate-500">Modus</span><strong>{config?.mode || "—"}</strong></div><div className="flex justify-between"><span className="text-slate-500">Checkout</span><strong>{config?.enabled ? "Beschikbaar" : "Uitgeschakeld"}</strong></div></div>
+          {config?.mode === "TEST" && config?.credentials_configured ? <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-3"><p className="text-xs leading-5 text-amber-800">Veilige interne test. Maakt een testfactuur van €1 aan en opent Mollie TEST. Dit schakelt online betalen voor echte facturen niet in.</p><button type="button" disabled={busy} onClick={startTestPayment} className="mt-3 w-full rounded-xl border border-amber-300 bg-white px-4 py-2.5 text-sm font-semibold text-amber-900 disabled:opacity-50">{busy ? "Testbetaling starten…" : "Testbetaling van €1 starten"}</button></div> : null}
           <button type="button" disabled={busy} onClick={toggle} className={`mt-5 w-full rounded-xl px-4 py-2.5 text-sm font-semibold ${config?.enabled ? "border border-red-200 text-red-700" : "bg-slate-950 text-white"}`}>{config?.enabled ? "Online betalen uitschakelen" : "Online betalen inschakelen"}</button>
         </div>
       </div>
