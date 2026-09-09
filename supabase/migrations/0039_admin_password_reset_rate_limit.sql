@@ -1,4 +1,5 @@
 -- Rate-limit public admin recovery requests while only allowing active staff accounts.
+-- Recovery delivery itself is handled by the dedicated Migadu-backed Edge Function.
 create table if not exists public.admin_password_reset_requests (
   id uuid primary key default gen_random_uuid(),
   email text not null,
