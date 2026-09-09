@@ -51,7 +51,7 @@ export default function MolliePaymentsModule() {
       if (!apiKey) throw new Error("Vul een Mollie API-key in.");
       const result = await saveMollieCredentials(apiKey, mode);
       formElement.reset();
-      setMessage(`Mollie ${mode === "TEST" ? "test" : "live"}-key geverifieerd voor ${result.profile?.name || "het profiel"}.`);
+      setMessage(`Mollie ${mode === "TEST" ? "test" : "live"}-key geverifieerd voor ${result.profile?.name || "het profiel"}. Online betalen blijft uit totdat je het expliciet inschakelt.`);
       await load();
     } catch (e) { setError(e instanceof Error ? e.message : "Opslaan mislukt."); }
     finally { setBusy(false); }
@@ -82,13 +82,18 @@ export default function MolliePaymentsModule() {
     if (!config) return;
     setBusy(true); setError(null); setMessage(null);
     try {
-      if (!config.credentials_configured && !config.enabled) throw new Error("Sla eerst een geldige Mollie API-key op.");
+      if (!config.enabled && config.mode !== "LIVE") {
+        throw new Error("Echte online betalingen kunnen alleen met een geverifieerde Mollie LIVE-key worden ingeschakeld.");
+      }
+      if (!config.credentials_configured && !config.enabled) throw new Error("Sla eerst een geldige Mollie LIVE-key op.");
       const next = await setPaymentProviderEnabled(!config.enabled);
       setConfig(next);
-      setMessage(next.enabled ? "Online betalen is ingeschakeld." : "Online betalen is uitgeschakeld.");
+      setMessage(next.enabled ? "Online betalen is ingeschakeld voor echte facturen." : "Online betalen is uitgeschakeld.");
     } catch (e) { setError(e instanceof Error ? e.message : "Wijzigen mislukt."); }
     finally { setBusy(false); }
   }
+
+  const liveActivationReady = Boolean(config?.mode === "LIVE" && config?.credentials_configured);
 
   return <div className="space-y-5">
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -111,8 +116,9 @@ export default function MolliePaymentsModule() {
         <div className="rounded-2xl border border-slate-200 p-4">
           <div className="flex items-center gap-2"><CreditCard size={18}/><strong className="text-sm">Status</strong></div>
           <div className="mt-4 space-y-3 text-sm"><div className="flex justify-between"><span className="text-slate-500">Credentials</span><strong>{config?.credentials_configured ? "Geconfigureerd" : "Niet ingesteld"}</strong></div><div className="flex justify-between"><span className="text-slate-500">Modus</span><strong>{config?.mode || "—"}</strong></div><div className="flex justify-between"><span className="text-slate-500">Checkout</span><strong>{config?.enabled ? "Beschikbaar" : "Uitgeschakeld"}</strong></div></div>
-          {config?.mode === "TEST" && config?.credentials_configured ? <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-3"><p className="text-xs leading-5 text-amber-800">Veilige interne test. Maakt een testfactuur van €1 aan en opent Mollie TEST. Dit schakelt online betalen voor echte facturen niet in.</p><button type="button" disabled={busy} onClick={startTestPayment} className="mt-3 w-full rounded-xl border border-amber-300 bg-white px-4 py-2.5 text-sm font-semibold text-amber-900 disabled:opacity-50">{busy ? "Testbetaling starten…" : "Testbetaling van €1 starten"}</button></div> : null}
-          <button type="button" disabled={busy} onClick={toggle} className={`mt-5 w-full rounded-xl px-4 py-2.5 text-sm font-semibold ${config?.enabled ? "border border-red-200 text-red-700" : "bg-slate-950 text-white"}`}>{config?.enabled ? "Online betalen uitschakelen" : "Online betalen inschakelen"}</button>
+          {config?.mode === "TEST" && config?.credentials_configured ? <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-3"><p className="text-xs leading-5 text-amber-800">TEST is gevalideerd. Gebruik de interne €1-test hieronder voor controles. Voor echte klantbetalingen moet je eerst een Mollie LIVE-key opslaan.</p><button type="button" disabled={busy} onClick={startTestPayment} className="mt-3 w-full rounded-xl border border-amber-300 bg-white px-4 py-2.5 text-sm font-semibold text-amber-900 disabled:opacity-50">{busy ? "Testbetaling starten…" : "Testbetaling van €1 starten"}</button></div> : null}
+          {!config?.enabled && !liveActivationReady ? <p className="mt-4 text-xs leading-5 text-slate-500">Online betalen voor echte facturen blijft geblokkeerd totdat een geldige <strong>LIVE</strong>-key is opgeslagen en geverifieerd.</p> : null}
+          <button type="button" disabled={busy || (!config?.enabled && !liveActivationReady)} onClick={toggle} className={`mt-5 w-full rounded-xl px-4 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${config?.enabled ? "border border-red-200 text-red-700" : "bg-slate-950 text-white"}`}>{config?.enabled ? "Online betalen uitschakelen" : "Online betalen inschakelen"}</button>
         </div>
       </div>
     </section>
