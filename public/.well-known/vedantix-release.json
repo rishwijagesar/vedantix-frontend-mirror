@@ -1,6 +1,6 @@
 {
-  "platform": "lovable-mirror",
+  "platform": "aws-lambda",
   "application": "vedantix",
   "commerce": "sales-billing-v1",
-  "release_marker": "VEDANTIX_LOVABLE_COMMERCE_READY"
+  "release_marker": "VEDANTIX_AWS_SERVERLESS_COMMERCE_READY"
 }
