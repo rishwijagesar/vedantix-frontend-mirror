@@ -1,0 +1,60 @@
+{
+  "verified_on": "2026-09-09",
+  "scope": "Production Auth/API integration using one expressly authorized disposable account; no customer emails",
+  "status": 200,
+  "result": {
+    "passed": true,
+    "checks": [
+      "Site starts inactive",
+      "Temporary verified fixture created",
+      "Email/password login",
+      "Server identity verification",
+      "No site membership denied (HTTP 403)",
+      "Fixture membership created",
+      "Inactive site denied (HTTP 403)",
+      "Temporary site activation",
+      "Member reads sections through both servers (HTTP 200)",
+      "Member reads treatments through both servers (HTTP 200)",
+      "Other site denied",
+      "Internal staff_users hidden",
+      "Internal staff_invites hidden",
+      "Internal customers hidden",
+      "Internal invoices hidden",
+      "Internal contracts hidden",
+      "Fixture membership revoked",
+      "Revoked membership denied with same JWT (HTTP 403)",
+      "Temporary platform fixture",
+      "Platform administrator reads through both servers (HTTP 200)",
+      "Platform fixture revoked",
+      "Revoked platform rights denied with same JWT (HTTP 403)",
+      "Fixture recovery token generated without email",
+      "Recovery token accepted for fixture",
+      "Fixture password reset",
+      "Recovery token cannot be reused",
+      "Previous fixture password rejected",
+      "New fixture password accepted"
+    ],
+    "failed": null,
+    "cleanup": [
+      "Site state restored",
+      "site_auth_memberships rights removed",
+      "site_auth_platform_admins rights removed",
+      "Fixture sessions revoked",
+      "Fixture user deleted",
+      "User absence confirmed",
+      "site_auth_memberships cleanup confirmed",
+      "site_auth_platform_admins cleanup confirmed",
+      "Nature Healing inactive confirmed"
+    ]
+  },
+  "email_delivery_tested": false,
+  "browser_end_to_end_tested": false,
+  "independent_cleanup_verification": {
+    "nature_active": false,
+    "memberships": 0,
+    "platform_admins": 1,
+    "fixtures": 0,
+    "owner_active": true,
+    "temporary_function_deleted": true
+  }
+}

@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><title>Activeer je Vedantix-beheeraccount</title></head>
+<body style="margin:0;background:#f6f7f9;font-family:Arial,sans-serif;color:#172033">
+  <main style="max-width:520px;margin:40px auto;padding:32px;background:white;border-radius:16px">
+    <p style="font-weight:bold;letter-spacing:2px;color:#126354">VEDANTIX</p>
+    <h1 style="font-size:26px">Je beheeraccount staat klaar</h1>
+    <p>Je bent uitgenodigd om je website te beheren. Kies zelf een uniek wachtwoord voor je account.</p>
+    <p><a href="{{ if .RedirectTo }}{{ .RedirectTo }}{{ else }}{{ .SiteURL }}{{ end }}#token_hash={{ .TokenHash }}&amp;type=invite" style="display:inline-block;padding:14px 20px;background:#126354;color:white;text-decoration:none;border-radius:8px">Account activeren</a></p>
+    <p>Je account geeft alleen toegang tot websites waarvoor je beheerrechten hebt gekregen.</p>
+    <p>Vragen? Neem contact op via info@vedantix.nl.</p>
+  </main>
+</body></html>
