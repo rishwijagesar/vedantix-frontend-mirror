@@ -22,11 +22,9 @@ alter table public.online_growth_audits enable row level security;
 revoke all on public.online_growth_audits from anon, authenticated;
 
 do $$ begin
-  if exists (select 1 from pg_roles where rolname='authenticated') then
-    create policy online_growth_audits_staff_select on public.online_growth_audits
-      for select to authenticated
-      using (public.is_staff(auth.uid()));
-  end if;
+  create policy online_growth_audits_staff_select on public.online_growth_audits
+    for select to authenticated
+    using (public.is_staff(array['ADMIN','OPERATOR']::text[]));
 exception when duplicate_object then null;
 end $$;
 
