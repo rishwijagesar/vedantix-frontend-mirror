@@ -61,3 +61,14 @@ restore origin request policy `b689b0a8-53d0-40ab-baf2-68738e2966ac`. To roll ba
 application code, deploy the previous immutable image. Retained hashed assets
 support either release. Scores are individual lab measurements and may vary;
 report all final categories and any observed errors rather than promising 100.
+
+
+## Follow-up: unstable script execution (10 September 2026)
+
+Report `1d8dbmxydm` measured 70 mobile / 82 desktop, with mobile TBT 1,942 ms despite a fast 1.76 s LCP. Do not treat the previous 97/100 run as a stable guarantee.
+
+- Replace the Jotform browser runtime with native review cards and a keyboard-accessible dialog. The verified review text, author, photo, rating and Google feedback URL are retained. `/api/public-reviews` reads the same fixed public Jotform feed as data, validates links/ratings and caches it for an hour. A verified snapshot stays visible if the provider fails. No provider script is evaluated on our server. Existing Jotform review sync was configured as manual; updates to that feed are picked up by the cache.
+- Run Meta Pixel in Partytown 0.14.4. Initial PageView remains in the worker bootstrap (also executed by its ordinary-script fallback); subsequent public route views are forwarded. Admin/customer portal exclusions stay in place. The same-origin script proxy only permits the fixed Meta host and library/config paths and never forwards user cookies. Config responses are not cached.
+- Serve versioned Partytown assets through the existing private S3/CloudFront asset path. The deployment still verifies exact file bytes, including the legitimate worker sandbox HTML.
+- Split homepage hydration with Suspense boundaries while retaining all server-rendered content; move footer CSS out of inline HTML and namespace hero animations. Fix the router compatibility wrapper adding a second question mark to query strings (which would duplicate the initial tracked page).
+- CI checks provider parsing, URL validation, caching, offline fallback and proxy restrictions. Final live browser and repeated PageSpeed results are recorded in the pull request.

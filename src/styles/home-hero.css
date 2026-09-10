@@ -137,15 +137,15 @@
   background:#22c55e;
   border-radius:50%;
   flex-shrink:0;
-  animation:pulse 2s infinite;
+  animation:hero-status-pulse 2s infinite;
 }
 
-@keyframes pulse{
+@keyframes hero-status-pulse{
   0%,100%{opacity:1}
   50%{opacity:.35}
 }
 
-@keyframes float{
+@keyframes hero-mockup-float{
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-8px)}
 }
@@ -269,7 +269,7 @@
   z-index:1;
   width:100%;
   max-width:370px;
-  animation:float 5s ease-in-out infinite;
+  animation:hero-mockup-float 5s ease-in-out infinite;
   align-self:flex-end;
 }
 
@@ -787,3 +787,5 @@
     font-weight:900;
   }
 }
+
+@media(prefers-reduced-motion:reduce){.hero-eyebrow::before,.hero-mockup{animation:none}}

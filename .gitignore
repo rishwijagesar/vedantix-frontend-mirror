@@ -30,3 +30,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# Generated, versioned worker assets copied from the locked dependency.
+public/assets/partytown-*/
