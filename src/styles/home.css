@@ -52,6 +52,24 @@ body{margin:0;padding:0}
   min-height:120px;
 }
 
+/* Stable Jotform hooks: readable even when the widget updates its generated classes. */
+.vedantix-reviews .jf-reviews-header-card{
+  background:#fff !important;
+  color:#0f172a !important;
+}
+.vedantix-reviews .jf-reviews-count{
+  color:#475569 !important;
+}
+.vedantix-reviews .jf-google-reviews-cta{
+  background:#1d4ed8 !important;
+  border-color:#1d4ed8 !important;
+  color:#fff !important;
+}
+.vedantix-reviews .jf-google-reviews-cta:focus-visible{
+  outline:3px solid #0f172a;
+  outline-offset:3px;
+}
+
 .section-header{
   max-width:760px;
   margin-bottom:48px;

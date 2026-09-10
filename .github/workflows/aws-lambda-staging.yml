@@ -12,6 +12,10 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: vedantix-production-deploy
+  cancel-in-progress: false
+
 env:
   AWS_REGION: eu-west-1
   ECR_REPOSITORY: vedantix-frontend
@@ -19,6 +23,7 @@ env:
   PRODUCTION_FUNCTION: vedantix-web-production-private
   STAGING_URL: https://dhnczzdgsgc436kkidetyxg45u0zxukp.lambda-url.eu-west-1.on.aws
   LIVE_URL: https://vedantix.nl
+  ASSET_BUCKET: vedantix.nl-bucket
   EXPECTED_PLATFORM: aws-lambda
   EXPECTED_MARKER: VEDANTIX_AWS_SERVERLESS_COMMERCE_READY
 
@@ -65,6 +70,24 @@ jobs:
           echo "IMAGE_URI=$IMAGE_URI" >> "$GITHUB_ENV"
           echo "ECR_REGISTRY=$ECR_REGISTRY" >> "$GITHUB_ENV"
 
+      - name: Publish immutable assets before changing the application
+        run: |
+          set -euo pipefail
+          # Keep both the running release and the new release available to open tabs.
+          previous_image="$(aws lambda get-function --function-name "$PRODUCTION_FUNCTION" --query 'Code.ResolvedImageUri' --output text)"
+          docker pull "$previous_image"
+          previous_container="$(docker create "$previous_image")"
+          current_container="$(docker create "$IMAGE_URI")"
+          trap 'docker rm "$previous_container" "$current_container" >/dev/null' EXIT
+          mkdir -p "$RUNNER_TEMP/vedantix-previous" "$RUNNER_TEMP/vedantix-current"
+          docker cp "$previous_container:/app/.output/public/." "$RUNNER_TEMP/vedantix-previous/"
+          docker cp "$current_container:/app/.output/public/." "$RUNNER_TEMP/vedantix-current/"
+          for release in previous current; do
+            test -d "$RUNNER_TEMP/vedantix-$release/assets"
+            aws s3 sync "$RUNNER_TEMP/vedantix-$release/assets/" "s3://$ASSET_BUCKET/assets/" \
+              --cache-control 'public,max-age=31536000,immutable' --only-show-errors
+          done
+
       - name: Deploy staging Lambda
         run: |
           set -euo pipefail
@@ -96,6 +119,13 @@ jobs:
             code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$LIVE_URL$path")"
             test "$code" = "200"
           done
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify every production asset
+        run: node scripts/smoke-assets.mjs "$LIVE_URL" "$RUNNER_TEMP/vedantix-current"
 
       - name: Mark successful production image
         run: |
