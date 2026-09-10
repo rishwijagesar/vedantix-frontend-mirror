@@ -60,12 +60,12 @@ body{margin:0;padding:0}
 .vedantix-reviews .jf-reviews-count{
   color:#475569 !important;
 }
-.vedantix-reviews .jf-google-reviews-cta{
+.vedantix-reviews button.jf-google-reviews-cta{
   background:#1d4ed8 !important;
   border-color:#1d4ed8 !important;
   color:#fff !important;
 }
-.vedantix-reviews .jf-google-reviews-cta:focus-visible{
+.vedantix-reviews button.jf-google-reviews-cta:focus-visible{
   outline:3px solid #0f172a;
   outline-offset:3px;
 }
