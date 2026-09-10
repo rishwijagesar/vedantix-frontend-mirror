@@ -4,6 +4,8 @@ export type CustomerStatus = "LEAD" | "ACTIVE" | "PAUSED" | "ARCHIVED";
 export type DomainStatus = "UNKNOWN" | "HEALTHY" | "WARNING" | "ERROR";
 export type WebsiteStatus = "DRAFT" | "READY" | "LIVE" | "PAUSED" | "ERROR" | "ARCHIVED";
 
+const INTERNAL_MOLLIE_TEST_CUSTOMER = "__VEDANTIX_MOLLIE_TEST__";
+
 export type Customer = {
   id: string;
   company_name: string;
@@ -85,7 +87,7 @@ function throwIfError(error: { message: string } | null) {
 
 export async function getOverview(): Promise<Overview> {
   const [customers, domains, websites, alerts, latestMonitoring] = await Promise.all([
-    supabase.from("customers").select("id", { count: "exact", head: true }),
+    supabase.from("customers").select("id", { count: "exact", head: true }).neq("company_name", INTERNAL_MOLLIE_TEST_CUSTOMER),
     supabase.from("domains").select("id", { count: "exact", head: true }),
     supabase.from("websites").select("id", { count: "exact", head: true }),
     supabase.from("monitoring_alerts").select("id", { count: "exact", head: true }).in("status", ["OPEN", "ACKNOWLEDGED"]),
@@ -124,7 +126,11 @@ export async function listMonitoringAlerts(): Promise<MonitoringAlert[]> {
 }
 
 export async function listCustomers(): Promise<Customer[]> {
-  const { data, error } = await supabase.from("customers").select("*").order("company_name");
+  const { data, error } = await supabase
+    .from("customers")
+    .select("*")
+    .neq("company_name", INTERNAL_MOLLIE_TEST_CUSTOMER)
+    .order("company_name");
   throwIfError(error);
   return (data ?? []) as Customer[];
 }
