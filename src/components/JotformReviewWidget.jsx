@@ -32,7 +32,7 @@ export default function JotformReviewWidget() {
                 load();
               }
             },
-            { rootMargin: "200px" },
+            { rootMargin: "0px" },
           )
         : null;
     if (observer) observer.observe(container);

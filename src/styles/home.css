@@ -12,6 +12,12 @@ body{margin:0;padding:0}
 
 .anchor-section{scroll-margin-top:100px}
 
+/* Keep all content in the HTML; defer offscreen section layout and painting. */
+.home-page main > .section-shell{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 750px;
+}
+
 .section-wrap{
   width:100%;
   max-width:1160px;
