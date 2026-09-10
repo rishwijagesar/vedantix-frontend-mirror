@@ -56,7 +56,7 @@ type BillingCustomer = Customer & {
 const sections = [
   { id: "overview" as const, label: "Overzicht", icon: ReceiptText },
   { id: "quotes" as const, label: "Offertes", icon: FileText },
-  { id: "quote-links" as const, label: "Klantlinks", icon: Link2 },
+  { id: "quote-links" as const, label: "Offertelinks", icon: Link2 },
   { id: "contracts" as const, label: "Contracten", icon: FileSignature },
   { id: "invoices" as const, label: "Facturen", icon: ReceiptText },
   { id: "payments" as const, label: "Betalingen", icon: WalletCards },
@@ -72,7 +72,7 @@ const sections = [
 const titles: Record<Section, [string, string]> = {
   overview: ["Sales & Billing", "Offertes, contracten, facturen, abonnementen, betalingen en documentgeneratie."],
   quotes: ["Offertes", "Maak en beheer Vedantix-offertes vanuit je klanten en catalogus."],
-  "quote-links": ["Klantlinks", "Deel beveiligde offertelinks en laat klanten zelf accepteren of afwijzen."],
+  "quote-links": ["Offertelinks", "Deel beveiligde offertelinks en laat klanten zelf accepteren of afwijzen."],
   contracts: ["Contracten", "Maak versioned overeenkomsten, laat beide partijen elektronisch tekenen en bewaar een audit trail."],
   invoices: ["Facturen", "Finaliseer facturen, volg betaalstatus en maak creditnota’s."],
   payments: ["Betalingen", "Registreer deelbetalingen, bekijk de volledige historie en volg achterstallige facturen."],
@@ -125,6 +125,7 @@ export default function SalesBillingApp() {
               const active = section === item.id;
               return <button key={item.id} type="button" onClick={() => setSection(item.id)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm ${active ? "bg-white text-slate-950" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}><Icon size={17}/>{item.label}</button>;
             })}
+            <a href="/admin/previews" className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-300 hover:bg-white/10 hover:text-white"><Link2 size={17}/>Website previews</a>
           </nav>
           <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-slate-400">Offertes, contracten, facturen, betalingen en klantcommunicatie blijven als afzonderlijke auditbare stappen beschikbaar.</div>
         </aside>
@@ -151,7 +152,8 @@ export default function SalesBillingApp() {
                   <DashboardAction icon={Mail} title="E-mail" description="Offertes, facturen en betaalherinneringen via Migadu." onClick={() => setSection("email")} />
                   <DashboardAction icon={ShieldCheck} title="Productie readiness" description="Controleer AWS release en commerce-activatie." onClick={() => setSection("production")} />
                   <DashboardAction icon={Repeat2} title="Abonnementen" description="Maand- en jaarfacturen automatisch laten ontstaan." onClick={() => setSection("subscriptions")} />
-                  <DashboardAction icon={Link2} title="Klantlinks" description="Deel offertes veilig en registreer akkoord of afwijzing." onClick={() => setSection("quote-links")} />
+                  <DashboardAction icon={Link2} title="Offertelinks" description="Deel offertes veilig en registreer akkoord of afwijzing." onClick={() => setSection("quote-links")} />
+                  <DashboardAction icon={Link2} title="Website previews" description="Maak tijdelijke, intrekbare klantlinks voor websitepreviews." onClick={() => window.location.assign("/admin/previews")} />
                 </div>
               </div>
             ) : null}
