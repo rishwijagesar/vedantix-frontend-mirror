@@ -71,13 +71,27 @@ jobs:
           aws lambda update-function-code --function-name "$STAGING_FUNCTION" --image-uri "$IMAGE_URI" >/dev/null
           aws lambda wait function-updated --function-name "$STAGING_FUNCTION"
 
-      - name: Smoke test staging
+      - name: Smoke test staging with SigV4
         run: |
           set -euo pipefail
-          marker="$(curl --fail --silent --show-error "$STAGING_URL/.well-known/vedantix-release.json")"
+          signed_get() {
+            curl --fail --silent --show-error \
+              --aws-sigv4 "aws:amz:${AWS_REGION}:lambda" \
+              --user "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" \
+              -H "x-amz-security-token: ${AWS_SESSION_TOKEN}" \
+              "$1"
+          }
+          signed_code() {
+            curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+              --aws-sigv4 "aws:amz:${AWS_REGION}:lambda" \
+              --user "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" \
+              -H "x-amz-security-token: ${AWS_SESSION_TOKEN}" \
+              "$1"
+          }
+          marker="$(signed_get "$STAGING_URL/.well-known/vedantix-release.json")"
           echo "$marker" | jq -e --arg p "$EXPECTED_PLATFORM" --arg m "$EXPECTED_MARKER" '.platform == $p and .release_marker == $m' >/dev/null
           for path in / /prijzen /online-groei-audit /admin; do
-            code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$STAGING_URL$path")"
+            code="$(signed_code "$STAGING_URL$path")"
             test "$code" = "200"
           done
 
