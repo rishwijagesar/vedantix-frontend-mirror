@@ -89,7 +89,7 @@ export function useLocation() {
   const location = useTanstackLocation();
   return {
     pathname: location.pathname,
-    search: location.searchStr ? `?${location.searchStr}` : "",
+    search: location.searchStr || "",
     hash: location.hash ? `#${location.hash}` : "",
     state: location.state,
     key: location.href,
@@ -151,3 +151,4 @@ function navigateOnMount(run: () => void) {
 }
 
 export { Outlet } from "@tanstack/react-router";
+

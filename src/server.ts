@@ -1,3 +1,5 @@
+import { publicReviews } from "./lib/public-reviews.server.js";
+import { metaPixelProxy } from "./lib/meta-pixel-proxy.server.js";
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
@@ -45,6 +47,9 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const pathname = new URL(request.url).pathname;
+      if (pathname === "/api/public-reviews") return publicReviews(request);
+      if (pathname.startsWith("/integrations/meta-pixel/")) return metaPixelProxy(request);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
@@ -57,3 +62,4 @@ export default {
     }
   },
 };
+

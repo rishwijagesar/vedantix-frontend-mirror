@@ -26,5 +26,9 @@ jobs:
         continue-on-error: true
         run: bun run lint
 
+      - name: Performance integration checks
+        run: bun scripts/check-performance-integrations.mjs
+
       - name: Production build
         run: bun run build
+

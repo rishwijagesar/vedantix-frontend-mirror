@@ -4,8 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
+    "dev": "partytown copylib public/assets/partytown-0.14.4 && vite dev",
+    "build": "partytown copylib public/assets/partytown-0.14.4 && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@qwik.dev/partytown": "0.14.4",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",

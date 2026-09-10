@@ -33,7 +33,7 @@ await Promise.all(
       });
       assert.equal(response.status, 200, `${path}: HTTP ${response.status}`);
       assert(
-        !response.headers.get("content-type")?.includes("text/html"),
+        file.endsWith(".html") || !response.headers.get("content-type")?.includes("text/html"),
         `${path}: HTML fallback`,
       );
       assert.equal(

@@ -1,348 +1,6 @@
 import { Link } from "@/lib/router-compat";
 
-const FOOTER_STYLES = `
-  .big-footer {
-    position: relative;
-    overflow: hidden;
-    background:
-      radial-gradient(circle at 18% 0%, rgba(99,102,241,0.10), transparent 24%),
-      radial-gradient(circle at 85% 10%, rgba(59,130,246,0.07), transparent 22%),
-      linear-gradient(180deg, #08101d 0%, #050b16 100%);
-    color: rgba(255,255,255,0.72);
-    border-top: 1px solid rgba(255,255,255,0.05);
-  }
-
-  .big-footer::before {
-    content: "";
-    position: absolute;
-    top: -120px;
-    left: -140px;
-    width: 360px;
-    height: 220px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-    transform: rotate(-14deg);
-    border-radius: 28px;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.9;
-  }
-
-  .big-footer::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(135deg, rgba(255,255,255,0.02), transparent 30%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .big-footer__inner {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 52px 24px 24px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .big-footer__grid {
-    display: grid;
-    grid-template-columns: 1.1fr 0.82fr 0.9fr 0.9fr 1.08fr;
-    gap: 30px;
-    align-items: start;
-    padding-bottom: 34px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
-
-  .big-footer__brand {
-    max-width: 330px;
-    text-align: left;
-  }
-
-  .big-footer__brand-name {
-    font-size: 1.7rem;
-    font-weight: 900;
-    color: #fff;
-    letter-spacing: -0.7px;
-    margin-bottom: 18px;
-    text-align: left;
-  }
-
-  .big-footer__brand-heading {
-    margin: 0 0 10px;
-    color: rgba(255,255,255,0.9);
-    font-size: 1rem;
-    font-weight: 850;
-    line-height: 1.45;
-    text-align: left;
-  }
-
-  .big-footer__brand-text {
-    font-size: 0.92rem;
-    line-height: 1.8;
-    color: rgba(255,255,255,0.58);
-    margin-bottom: 22px;
-    text-align: left;
-  }
-
-  .big-footer__socials {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 14px;
-    margin-top: 4px;
-  }
-
-  .big-footer__social {
-    width: 42px;
-    height: 42px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background:
-      radial-gradient(circle at 30% 30%, rgba(168,85,247,0.18), rgba(99,102,241,0.08) 60%, rgba(255,255,255,0.02) 100%);
-    border: 1px solid rgba(167,139,250,0.18);
-    color: #f8fafc;
-    text-decoration: none;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.02) inset,
-      0 0 18px rgba(139,92,246,0.12),
-      0 8px 18px rgba(0,0,0,0.22);
-    transition:
-      transform 0.22s ease,
-      box-shadow 0.22s ease,
-      border-color 0.22s ease,
-      background 0.22s ease;
-  }
-
-  .big-footer__social:hover {
-    transform: translateY(-2px) scale(1.04);
-    border-color: rgba(196,181,253,0.32);
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.03) inset,
-      0 0 26px rgba(139,92,246,0.22),
-      0 12px 24px rgba(0,0,0,0.28);
-    background:
-      radial-gradient(circle at 30% 30%, rgba(192,132,252,0.26), rgba(99,102,241,0.12) 60%, rgba(255,255,255,0.03) 100%);
-  }
-
-  .big-footer__social:active {
-    transform: translateY(0) scale(1.01);
-  }
-
-  .big-footer__social svg {
-    width: 17px;
-    height: 17px;
-    fill: currentColor;
-  }
-
-  .big-footer__col {
-    text-align: left;
-  }
-
-  .big-footer__col-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 1.3px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.9);
-    margin-bottom: 16px;
-    text-align: left;
-  }
-
-  .big-footer__links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    text-align: left;
-  }
-
-  .big-footer__links li {
-    width: 100%;
-    text-align: left;
-  }
-
-  .big-footer__links a {
-    display: block;
-    width: 100%;
-    color: rgba(255,255,255,0.58);
-    text-decoration: none;
-    font-size: 0.92rem;
-    line-height: 1.55;
-    text-align: left;
-    transition: color 0.2s ease, transform 0.2s ease;
-  }
-
-  .big-footer__links a:hover {
-    color: #93c5fd;
-    transform: translateX(2px);
-  }
-
-  .big-footer__contact-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    align-items: flex-start;
-  }
-
-  .big-footer__contact-item {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 16px 1fr;
-    column-gap: 10px;
-    align-items: start;
-    font-size: 0.92rem;
-    line-height: 1.65;
-    color: rgba(255,255,255,0.6);
-    text-align: left;
-  }
-
-  .big-footer__contact-icon {
-    width: 16px;
-    height: 16px;
-    color: rgba(255,255,255,0.4);
-    margin-top: 4px;
-  }
-
-  .big-footer__contact-icon svg {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
-    display: block;
-  }
-
-  .big-footer__contact-item a {
-    color: rgba(255,255,255,0.62);
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .big-footer__contact-item a:hover {
-    color: #93c5fd;
-  }
-
-  .big-footer__company-meta {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    text-align: left;
-  }
-
-  .big-footer__company-line {
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.46);
-    line-height: 1.6;
-    text-align: left;
-  }
-
-  .big-footer__company-line strong {
-    color: rgba(255,255,255,0.78);
-    font-weight: 600;
-  }
-
-  .big-footer__cta {
-    margin-top: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 42px;
-    padding: 0 16px;
-    border-radius: 10px;
-    background: #f8fafc;
-    color: #0f172a;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 850;
-    box-shadow: 0 14px 28px rgba(0,0,0,0.18);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .big-footer__cta:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 34px rgba(0,0,0,0.22);
-  }
-
-  .big-footer__bottom {
-    padding-top: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 18px;
-    flex-wrap: wrap;
-  }
-
-  .big-footer__copyright {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.38);
-  }
-
-  .big-footer__bottom-links {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .big-footer__bottom-links a {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.42);
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .big-footer__bottom-links a:hover {
-    color: #93c5fd;
-  }
-
-  @media (max-width: 980px) {
-    .big-footer__grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 34px;
-    }
-
-    .big-footer::before {
-      width: 300px;
-      height: 180px;
-      top: -95px;
-      left: -120px;
-    }
-  }
-
-  @media (max-width: 680px) {
-    .big-footer__inner {
-      padding: 52px 20px 24px;
-    }
-
-    .big-footer__grid {
-      grid-template-columns: 1fr;
-      gap: 30px;
-      padding-bottom: 28px;
-    }
-
-    .big-footer__bottom {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .big-footer::before {
-      width: 240px;
-      height: 150px;
-      top: -80px;
-      left: -90px;
-      transform: rotate(-16deg);
-    }
-  }
-`;
+import "../styles/footer.css";
 
 function IconInstagram() {
   return (
@@ -395,8 +53,6 @@ function IconMail() {
 export default function BigFooter() {
   return (
     <>
-      <style>{FOOTER_STYLES}</style>
-
       <footer className="big-footer">
         <div className="big-footer__inner">
           <div className="big-footer__grid">
@@ -411,10 +67,20 @@ export default function BigFooter() {
               </p>
 
               <ul className="big-footer__links" aria-label="Vedantix diensten">
-                <li><Link to="/voorwie">Websites voor lokale ondernemers</Link></li>
-                <li><Link to="/groeimodel">SEO en online zichtbaarheid</Link></li>
-                <li><Link to="/ai-vindbaarheid">SEO, AEO, GEO en AI-vindbaarheid</Link></li>
-                <li><Link to="/prijzen">Hosting en onderhoud</Link></li>
+                <li>
+                  <Link to="/voorwie">Websites voor lokale ondernemers</Link>
+                </li>
+                <li>
+                  <Link to="/groeimodel">SEO en online zichtbaarheid</Link>
+                </li>
+                <li>
+                  <Link to="/ai-vindbaarheid">
+                    SEO, AEO, GEO en AI-vindbaarheid
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/prijzen">Hosting en onderhoud</Link>
+                </li>
               </ul>
 
               <div className="big-footer__socials">
@@ -451,41 +117,97 @@ export default function BigFooter() {
             <div className="big-footer__col">
               <div className="big-footer__col-title">Pagina's</div>
               <ul className="big-footer__links">
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/prijzen">Prijzen</Link></li>
-                <li><Link to="/voorwie">Voor Wie</Link></li>
-                <li><Link to="/proces">Proces</Link></li>
-                <li><Link to="/groeimodel">Waarom Vedantix</Link></li>
-                <li><Link to="/resultaten">Resultaten</Link></li>
-                <li><Link to="/online-groei-audit">Online Groei Audit</Link></li>
-                <li><Link to="/ai-vindbaarheid">AI-vindbaarheid</Link></li>
-                <li><Link to="/faq">FAQ</Link></li>
-                <li><Link to="/contact">Contact</Link></li>
-                <li><Link to="/blog">Blog</Link></li>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/prijzen">Prijzen</Link>
+                </li>
+                <li>
+                  <Link to="/voorwie">Voor Wie</Link>
+                </li>
+                <li>
+                  <Link to="/proces">Proces</Link>
+                </li>
+                <li>
+                  <Link to="/groeimodel">Waarom Vedantix</Link>
+                </li>
+                <li>
+                  <Link to="/resultaten">Resultaten</Link>
+                </li>
+                <li>
+                  <Link to="/online-groei-audit">Online Groei Audit</Link>
+                </li>
+                <li>
+                  <Link to="/ai-vindbaarheid">AI-vindbaarheid</Link>
+                </li>
+                <li>
+                  <Link to="/faq">FAQ</Link>
+                </li>
+                <li>
+                  <Link to="/contact">Contact</Link>
+                </li>
+                <li>
+                  <Link to="/blog">Blog</Link>
+                </li>
               </ul>
             </div>
 
             <div className="big-footer__col">
               <div className="big-footer__col-title">Diensten</div>
               <ul className="big-footer__links">
-                <li><Link to="/voorwie">Website laten maken</Link></li>
-                <li><Link to="/groeimodel">SEO optimalisatie</Link></li>
-                <li><Link to="/blog/beter-gevonden-in-google-lokale-ondernemer">Lokale vindbaarheid</Link></li>
-                <li><Link to="/prijzen">Website onderhoud</Link></li>
-                <li><Link to="/prijzen">Hosting</Link></li>
-                <li><Link to="/ai-vindbaarheid">AEO, GEO en AI-vindbaarheid</Link></li>
+                <li>
+                  <Link to="/voorwie">Website laten maken</Link>
+                </li>
+                <li>
+                  <Link to="/groeimodel">SEO optimalisatie</Link>
+                </li>
+                <li>
+                  <Link to="/blog/beter-gevonden-in-google-lokale-ondernemer">
+                    Lokale vindbaarheid
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/prijzen">Website onderhoud</Link>
+                </li>
+                <li>
+                  <Link to="/prijzen">Hosting</Link>
+                </li>
+                <li>
+                  <Link to="/ai-vindbaarheid">AEO, GEO en AI-vindbaarheid</Link>
+                </li>
               </ul>
             </div>
 
             <div className="big-footer__col">
               <div className="big-footer__col-title">Branches</div>
               <ul className="big-footer__links">
-                <li><Link to="/website/personal-trainer">Website voor personal trainers</Link></li>
-                <li><Link to="/website/fysiotherapeut">Website voor fysiotherapeuten</Link></li>
-                <li><Link to="/website/coach">Website voor coaches</Link></li>
-                <li><Link to="/website/schoonheidssalon">Website voor salons</Link></li>
-                <li><Link to="/website/kapper">Website voor kappers</Link></li>
-                <li><Link to="/website/installateur">Website voor installateurs</Link></li>
+                <li>
+                  <Link to="/website/personal-trainer">
+                    Website voor personal trainers
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/website/fysiotherapeut">
+                    Website voor fysiotherapeuten
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/website/coach">Website voor coaches</Link>
+                </li>
+                <li>
+                  <Link to="/website/schoonheidssalon">
+                    Website voor salons
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/website/kapper">Website voor kappers</Link>
+                </li>
+                <li>
+                  <Link to="/website/installateur">
+                    Website voor installateurs
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -494,7 +216,9 @@ export default function BigFooter() {
 
               <ul className="big-footer__contact-list">
                 <li className="big-footer__contact-item">
-                  <span className="big-footer__contact-icon"><IconLocation /></span>
+                  <span className="big-footer__contact-icon">
+                    <IconLocation />
+                  </span>
                   <a
                     href="https://www.google.com/maps/search/?api=1&query=Neercanne+6%2C+5235+HB%2C+%27s-Hertogenbosch"
                     target="_blank"
@@ -504,11 +228,15 @@ export default function BigFooter() {
                   </a>
                 </li>
                 <li className="big-footer__contact-item">
-                  <span className="big-footer__contact-icon"><IconPhone /></span>
+                  <span className="big-footer__contact-icon">
+                    <IconPhone />
+                  </span>
                   <a href="tel:+31626219989">+31 6 26 21 99 89</a>
                 </li>
                 <li className="big-footer__contact-item">
-                  <span className="big-footer__contact-icon"><IconMail /></span>
+                  <span className="big-footer__contact-icon">
+                    <IconMail />
+                  </span>
                   <a href="mailto:info@vedantix.nl">info@vedantix.nl</a>
                 </li>
               </ul>

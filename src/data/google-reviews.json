@@ -1,0 +1,24 @@
+{
+  "businessName": "Vedantix",
+  "overallRating": 5,
+  "totalReviews": 1,
+  "reviews": [
+    {
+      "name": "Kadjal Gangabisoensingh",
+      "photo": "https://lh3.googleusercontent.com/a-/ALV-UjX4z3wACAN50Go7UZDm6O8KBca6CT3strU2Yi7pEyNK3d3W0Kaa=s120-c-rp-mo-br100",
+      "url": "https://www.google.com/maps/contrib/107142601754893302134?hl=en",
+      "rating": 5,
+      "text": "Ik ben tevreden met de website. Alles werkt goed en de e-mailadressen zijn netjes geregeld. Het maandelijkse onderhoud is fijn, ik hoef me nergens zorgen over te maken. Wordt snel en goed geholpen.",
+      "language": "nl",
+      "published": "2026-06-04 12:43:38",
+      "last_edited": "2026-06-04 12:43:38",
+      "images": null,
+      "source": "Google",
+      "response": null
+    }
+  ],
+  "shareFeedbackUrl": "https://search.google.com/local/writereview?placeid=ChIJ7bPrYo7vxkcRhojYqY8WjUU",
+  "headerTitle": "Wat mijn klanten zeggen",
+  "buttonText": "Share your feedback",
+  "minimumRating": 4
+}
