@@ -2,195 +2,221 @@
 
 ## Doel
 
-Het Control Center wordt de interne operationele beheeromgeving van Vedantix. Het vervangt niet de publieke website en is bewust losgekoppeld van de oude Base44-admin/backend.
+Het Control Center is de interne operationele beheeromgeving van Vedantix voor klanten, websites, domeinen, monitoring, offertes, contracten, facturen, betalingen en klantcommunicatie. Het is onderdeel van dezelfde applicatie als de publieke Vedantix-site, maar adminroutes zijn met Supabase Auth en staff-autorisatie afgeschermd.
 
-Beoogde productie-URL: `https://admin.vedantix.nl`.
+Huidige admin-URL: `https://vedantix.nl/admin`.
 
 ## Vaste Vedantix-stack
 
-| Verantwoordelijkheid | Standaard |
+| Verantwoordelijkheid | Huidige standaard |
 | --- | --- |
 | Source control | GitHub |
-| Publieke websitehosting | Lovable |
-| Admin-app hosting | Lovable |
+| CI/CD | GitHub Actions + AWS OIDC |
+| Publieke websitehosting | AWS CloudFront + private Lambda |
+| Admin-app hosting | Dezelfde AWS serverless runtime |
+| Staging | AWS Lambda Function URL met `AWS_IAM` |
 | Database / auth | Supabase/PostgreSQL |
-| DNS | Los van hosting; Cloudflare-ready |
+| Serverless businesslogic | Supabase Edge Functions + RPC's |
+| DNS | AWS Route 53 waar Vedantix dit beheert |
 | Zakelijke e-mail | Migadu |
-| Monitoring/automatisering | Vedantix Control Center |
+| Online betalingen | Mollie |
+| Statische klantwebsites | S3 + CloudFront waar passend |
+| Monitoring/automatisering | Vedantix Control Center + Supabase/AWS jobs |
 
-Belangrijk principe: websitehosting, DNS en e-mail blijven afzonderlijke lagen. Een website-migratie mag geen MX/SPF/DKIM/DMARC-records wijzigen tenzij dat expliciet onderdeel van de opdracht is.
+Websitehosting, DNS en e-mail blijven afzonderlijke lagen. Een website-migratie mag geen MX/SPF/DKIM/DMARC-records wijzigen tenzij dat expliciet onderdeel van de opdracht is.
 
-## Fase 1 - Core operations
+## AWS request- en releasepad
 
-Eerste modules:
+Productie:
 
-1. Customers
-2. Domains
-3. Websites
+```text
+Internet
+  -> Route 53
+  -> CloudFront
+  -> SigV4 Origin Access Control
+  -> vedantix-web-production-private
+```
+
+De productie-Lambda Function URL gebruikt `AWS_IAM` en weigert directe publieke requests. CloudFront is de publieke ingang.
+
+Staging:
+
+```text
+GitHub Actions OIDC
+  -> SigV4 request
+  -> vedantix-web-staging (AWS_IAM)
+```
+
+Release:
+
+```text
+main CI
+  -> immutable Docker image
+  -> ECR
+  -> staging
+  -> signed smoke tests
+  -> dezelfde image naar productie
+  -> CloudFront/live-domain smoke tests
+  -> production-latest tag
+```
+
+De oude S3-origin van Vedantix blijft voorlopig als rollbackorigin aanwezig. Voor structurele originwijzigingen wordt eerst een CloudFront-configsnapshot in de private backupbucket opgeslagen.
+
+## Core operations
 
 ### Customers
 
-De klant is de centrale eigenaar van alle andere resources.
-
-Minimumvelden:
-
-- bedrijfsnaam;
-- contactpersoon;
-- e-mail;
-- telefoon;
-- status;
-- interne notities.
+De klant is de centrale eigenaar van operationele en commerciële resources. Onder andere worden bedrijfsnaam, contactpersoon, e-mail, telefoon, status, adres, KVK-nummer en BTW-ID vastgelegd.
 
 ### Domains
 
-Per domein bewaren we:
+Per domein bewaren en controleren we onder andere:
 
 - klant;
 - domeinnaam;
 - registrar;
 - DNS-provider;
 - e-mailprovider;
-- verloopdatum / auto-renew indien beschikbaar;
 - status;
-- laatste DNS-snapshot.
+- DNS-/mailhealth;
+- relevante operationele metadata.
 
-Bij iedere toekomstige website-cutover geldt:
+Bij website-cutovers geldt:
 
-1. DNS snapshot maken;
-2. bestaande MX/TXT/DKIM/DMARC records identificeren;
-3. mailrecords beschermen;
-4. uitsluitend website-records wijzigen;
-5. na cutover website + mail opnieuw controleren.
+1. bestaande DNS-config inventariseren;
+2. MX/TXT/DKIM/DMARC expliciet beschermen;
+3. uitsluitend noodzakelijke webrecords wijzigen;
+4. na cutover website én mail opnieuw controleren;
+5. rollbackgegevens beschikbaar houden totdat de nieuwe route bewezen stabiel is.
 
 ### Websites
 
-Per website bewaren we:
+Per website kunnen onder andere worden bewaard:
 
 - klant;
 - gekoppeld domein;
 - GitHub repository + branch;
-- Lovable project ID;
+- hosting-/providerreferenties;
 - preview-URL;
 - productie-URL;
-- hostingprovider;
 - status;
 - laatste deployment.
 
-## Fase 2 - Domain & Email Operations
+Een historisch `lovable_project_id`-veld kan voor compatibiliteit blijven bestaan. Het is geen indicatie dat de huidige Vedantix-productie door Lovable wordt gehost.
 
-Modules:
+## Website previews
 
-- DNS Inspector;
-- Migadu diagnostics;
-- MX/SPF/DKIM/DMARC checks;
-- SSL checks;
-- domein-expiry monitoring;
-- launch checklist;
-- rollbackstatus.
+Customer Preview v2 gebruikt een capability-token bovenop `websites.preview_url`:
 
-Een domein krijgt een operationele status op basis van afzonderlijke health checks in `domain_checks`.
+```text
+Control Center
+  -> website.preview_url
+  -> intrekbare/vervalbare token
+  -> https://vedantix.nl/preview/<token>
+  -> klantpreview
+```
 
-## Fase 3 - Visibility & Monitoring
+Previewlinks zijn willekeurig, tijdelijk, intrekbaar, `noindex` en `no-referrer`. Open-count en laatste openingsmoment worden bijgehouden. Als een externe previewhost iframe-embedding beperkt, heeft de klant een expliciete knop om de preview in een nieuw tabblad te openen.
 
-Automatische controles:
+## Domain & Email Operations
 
-- HTTP health;
-- SSL;
-- robots.txt;
-- sitemap.xml;
-- llms.txt;
-- `.well-known/llms.txt`;
-- structured data;
-- belangrijke SEO/AEO/GEO-signalen;
-- performance-baseline.
+De omgeving controleert onder andere:
 
-## Fase 4 - Commercial operations
+- DNS;
+- MX;
+- SPF;
+- DKIM;
+- DMARC;
+- HTTPS/websitehealth;
+- operationele alerts.
 
-Later toevoegen:
+Websitehealth gebruikt een HEAD-gebaseerde probe zodat de monitor alleen bereikbaarheid/status controleert en niet afhankelijk is van responsebody-decodering.
 
-- abonnementen;
-- facturen;
-- betalingen;
-- supporttickets;
-- wijzigingsverzoeken;
-- documenten;
-- klantportaal.
+## Visibility & Audit
 
-Deze modules worden pas gebouwd wanneer het bedrijfsproces er daadwerkelijk behoefte aan heeft.
+De Online Groei Audit draait serverless en is niet meer afhankelijk van de oude `api.vedantix.nl`/App Runner-backend. De audit rapporteert alleen gegevens die daadwerkelijk gemeten of afgeleid kunnen worden en verzint geen externe PageSpeed-, review-, backlink- of Analytics-data.
+
+## Commercial operations
+
+Het Control Center ondersteunt momenteel:
+
+- productcatalogus;
+- offertes;
+- beveiligde offertelinks en acceptatie/afwijzing;
+- versioned contracttemplates;
+- elektronische ondertekening en audit trail;
+- contract-PDF en signing certificate;
+- facturen en creditnota's;
+- deelbetalingen en immutable payment ledger;
+- terugkerende facturatie;
+- e-maildelivery en betaalherinneringen via Migadu;
+- Mollie hosted checkout en webhooks;
+- betaalresultaatpagina met server-side statuscontrole.
+
+Een volledig getekend contract met een gekoppelde geaccepteerde offerte kan de facturatie gecontroleerd klaarzetten. Eenmalige posten worden een DRAFT-factuur; terugkerende posten worden abonnementen met automatische finalisatie uit. Er wordt door deze overdracht niets automatisch naar de klant gemaild.
 
 ## Security
 
-De admin-app mag niet publiek bruikbaar worden voordat authenticatie en autorisatie zijn ingericht.
+Huidige uitgangspunten:
 
-Doelmodel:
+- Supabase Auth voor adminlogin;
+- e-mail + wachtwoord als standaard login;
+- staffrollen `ADMIN`, `OPERATOR`, `READ_ONLY` waar van toepassing;
+- RLS op operationele tabellen;
+- muterende RPC's voeren aanvullende staffchecks uit;
+- provider-secrets uitsluitend server-side/Vault;
+- productie- en staging-Lambda Function URLs gebruiken `AWS_IAM`;
+- CloudFront ondertekent productie-originrequests via OAC;
+- GitHub deployt met tijdelijke OIDC-credentials, niet met een vaste AWS access key;
+- contract-/payment-auditdata wordt append-only opgeslagen waar bewijs/integriteit dat vereist;
+- geen DNS-, e-mail-, contract-, factuur- of betaalactie zonder de daarvoor bedoelde geautoriseerde flow.
 
-- Supabase Auth;
-- RLS op alle operationele tabellen;
-- standaard geen publieke policies;
-- admin-/staffrollen;
-- audit trail voor geautomatiseerde en handmatige wijzigingen;
-- provider-secrets uitsluitend server-side opslaan;
-- geen DNS- of e-mailwijziging zonder expliciete bevestiging en auditrecord.
+Bekend open securitypunt: Supabase Leaked Password Protection moet in de Supabase Auth-instellingen nog handmatig worden ingeschakeld; de gekoppelde beheerconnector exposeert hiervoor momenteel geen mutation.
 
 ## Integraties
 
-Geplande providers:
+Actief/relevant:
 
 - GitHub;
-- Lovable;
+- AWS;
+- Supabase;
 - Migadu;
-- DNS-provider, bij voorkeur Cloudflare waar passend;
-- later Search Console / analytics;
-- later facturatieprovider.
+- Mollie;
+- DNS-provider(s) per domein;
+- externe preview-/klantwebsiteproviders waar nodig.
 
-`integrations` bevat alleen providerreferenties en metadata. API tokens/secrets worden niet als plaintext records in deze tabel opgeslagen.
+Lovable kan nog als historische migratie-/buildcompatibiliteit en bij specifieke preview-/klantprojecten voorkomen. Het is niet de productiehosting van `vedantix.nl`.
 
 ## Automatiseringsprincipe
 
-Automatiseringen zijn controleerbare runs, geen verborgen achtergrondmagie.
+Automatisering blijft controleerbaar en auditbaar. Financiële/juridische workflows maken waar mogelijk eerst een concept of expliciete tussenstatus voordat een extern effect optreedt.
 
-Elke run krijgt:
+Voorbeelden:
 
-- type;
-- gekoppelde klant/domein/website;
-- input;
-- status;
-- output;
-- foutmelding;
-- start/eindtijd.
+- contract COMPLETED + gekoppelde geaccepteerde offerte → facturatie klaarzetten;
+- factuur versturen → Migadu delivery;
+- open factuur → Mollie hosted checkout;
+- Mollie webhook → payment ledger + factuurstatus;
+- vervallen factuur → reminderflow;
+- monitoringrun → checks + alerts.
 
-Daarmee kan het Control Center later rapporteren wat het zelfstandig heeft gecontroleerd of uitgevoerd.
+## Productiestatus september 2026
 
-## Eerste releasecriteria
+De kernomgeving is operationeel:
 
-Control Center v0.1 is klaar wanneer:
+- `vedantix.nl` draait via CloudFront + private AWS Lambda;
+- staging en productie Function URLs zijn `AWS_IAM`-afgeschermd;
+- staging wordt met SigV4 gesmoketest;
+- GitHub CI/CD promoveert exact dezelfde immutable image;
+- Supabase Auth + staffautorisatie actief;
+- Customers, Domains en Websites operationeel;
+- Customer Preview v2 actief;
+- Online Groei Audit serverless;
+- contract/e-sign/PDF-flow actief;
+- Sales & Billing actief;
+- Migadu delivery/reminders actief;
+- Mollie LIVE + iDEAL/webhookflow actief;
+- domein-, DNS- en mailmonitoring actief;
+- dure legacy AWS-runtime (ECS/RDS/ELB/App Runner) verwijderd.
 
-- authenticatie actief is;
-- Customers CRUD werkt;
-- Domains CRUD werkt;
-- Websites CRUD werkt;
-- relaties correct worden opgeslagen;
-- RLS actief en getest is;
-- nul demo-data aanwezig is;
-- een domein een read-only DNS-healthscan kan krijgen;
-- een website aan een Lovable-project en GitHub-repo gekoppeld kan worden.
-
-## Bootstrapstatus augustus 2026
-
-Voor de eerste admin-activatie mag `/admin` tijdelijk op de bestaande Lovable mirror-testhost draaien. Dit verandert niet de live AWS-hosting van `vedantix.nl`.
-
-Huidige technische status:
-
-- Supabase Auth + staff allowlist actief;
-- rollen `ADMIN`, `OPERATOR`, `READ_ONLY`;
-- RLS op alle operationele tabellen;
-- security advisors zonder findings;
-- Customers, Domains en Websites CRUD-laag aanwezig;
-- `domain-health-scan` Edge Function actief met JWT-verificatie;
-- A/AAAA, MX, SPF, DMARC en per-domein DKIM-selectors worden gecontroleerd;
-- `domain_latest_checks` gebruikt alleen de nieuwste healthstatus per checktype;
-- Vedantix staat als eerste echte klant in de database;
-- `vedantix.nl` staat geregistreerd met Route 53, Migadu, Lovable en pre-cutover AWS/CloudFront rollbackgegevens;
-- Migadu DKIM-selectors voor `vedantix.nl`: `key1`, `key2`, `key3`.
-
-Na bootstrap hoort het Control Center alsnog als aparte app/repository op `admin.vedantix.nl` te draaien.
+De resterende werkzaamheden zijn vooral eerste echte klantvalidatie, juridisch review van de B2B-mastertemplate, handmatig inschakelen van Supabase leaked-password protection en het gefaseerd verwijderen van legacy archiefdata na de recoveryperiode.
