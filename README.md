@@ -1,24 +1,81 @@
-# Vedantix Frontend Mirror
+# Vedantix
 
-Gebruik de gekoppelde GitHub-repository rishwijagesar/vedantix, branch main, als de enige source of truth voor dit project. Dit is een migratie van de bestaande Vedantix-code van Base44 naar Lovable, GEEN redesign en GEEN nieuwe versie. Neem de bestaande frontendcode, componenten, pagina's, CSS, assets, content, routes, responsive gedrag en layout zo letterlijk mogelijk over uit de repository. De gerenderde publieke website moet visueel gelijk blijven aan de huidige versie. Verwijder of isoleer alleen Base44-specifieke backend/admin-afhankelijkheden die niet nodig zijn voor de publieke frontend, zoals @base44/sdk, @base44/vite-plugin, oude admin/CRM/backendfuncties en Base44-auth. Neem /admin en het oude klantenportaal/backoffice niet mee. Voeg nog geen Supabase/database toe. Behoud alle publieke routes en redirects uit src/App.jsx. Gebruik NIET https://vedantix.nl om een nieuw ontwerp te genereren; gebruik de daadwerkelijke GitHub-code. Begin met het importeren/overnemen van de repo-code en maak die bouwbaar in Lovable zonder zichtbare frontendwijzigingen. Publiceer niets naar productie en wijzig de GitHub main branch niet.
+Vedantix is de publieke website en het interne Control Center voor klanten, websites, domeinen, monitoring, offertes, contracten, facturen, betalingen en klantcommunicatie.
 
-This project was built with [Lovable](https://lovable.dev).
+## Source of truth
 
-## Build with Lovable
+Deze repository (`rishwijagesar/vedantix-frontend-mirror`) is de huidige source of truth. Wijzigingen gaan via branch → pull request → CI → merge naar `main`.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/1a802d37-67b8-4407-98f6-913af6f7a354).
+Lovable is historisch gebruikt voor de migratie van de frontend en enkele build-/toolingcomponenten zijn nog compatibel met Lovable. Dat betekent niet dat Lovable de productiehosting is.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+## Productiearchitectuur
+
+```text
+GitHub main
+  -> CI
+  -> immutable Docker image
+  -> Amazon ECR
+  -> staging Lambda
+  -> signed staging smoke tests
+  -> private production Lambda
+  -> CloudFront
+  -> https://vedantix.nl
+```
+
+De productie-Lambda Function URL gebruikt `AWS_IAM` en is niet rechtstreeks publiek bereikbaar. CloudFront ondertekent origin requests met SigV4 via Origin Access Control. Staging gebruikt eveneens `AWS_IAM`; GitHub Actions test staging met tijdelijke OIDC-credentials en SigV4.
+
+De oude S3-origin blijft voorlopig beschikbaar als rollbackroute. Zie `docs/aws-serverless-runtime.md`.
+
+## Backend en operationele diensten
+
+- **Database & Auth:** Supabase/PostgreSQL
+- **Serverless backend:** Supabase Edge Functions en database-RPC's
+- **Zakelijke e-mail:** Migadu
+- **Online betalingen:** Mollie
+- **DNS / CDN / webhosting:** AWS Route 53, CloudFront en Lambda; S3 voor statische klantwebsites en rollback/assets waar passend
+- **Source control / release:** GitHub + GitHub Actions + AWS OIDC
+
+API-keys en andere gevoelige credentials horen uitsluitend server-side/Vault opgeslagen te worden en nooit in browsercode of GitHub.
+
+## Belangrijke productflows
+
+Het Control Center ondersteunt onder andere:
+
+- klantenbeheer;
+- domein-, DNS-, e-mail- en websitehealth;
+- beveiligde websitepreviewlinks;
+- Online Groei Audit;
+- offertes en beveiligde offertelinks;
+- versioned B2B-contracten en elektronische ondertekening;
+- contract-PDF en signing certificate;
+- facturen, creditnota's en deelbetalingen;
+- terugkerende facturatie;
+- Migadu factuur-/offertemail en herinneringen;
+- Mollie hosted checkout, webhooks en payment ledger;
+- geverifieerde betaalresultaatpagina's.
+
+Financiële en juridische stappen blijven controleerbaar. Een contract of offerte kan een factuurconcept klaarzetten, maar documenten of betalingen worden niet stilzwijgend naar klanten verstuurd zonder de daarvoor bedoelde actie.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+De CI gebruikt Bun. Lokaal kan de applicatie met de bestaande package scripts worden gebouwd en gestart.
 
 ```sh
 git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+cd vedantix-frontend-mirror
+bun install
+bun run dev
 ```
+
+Voor een productiecontrole:
+
+```sh
+bun run lint
+bun run build
+```
+
+## Deployment
+
+Een geslaagde CI-run op `main` triggert de AWS deploymentworkflow. Die bouwt één immutable image, test die eerst op staging en promoveert daarna exact dezelfde image naar productie. Productie wordt na promotie via `https://vedantix.nl` gesmoketest en de bijbehorende assets worden gecontroleerd.
+
+Wijzig productie-infrastructuur niet buiten deze flow om zonder rollbacksnapshot en expliciete verificatie van de live site.
