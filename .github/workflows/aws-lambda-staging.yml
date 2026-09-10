@@ -16,9 +16,8 @@ env:
   AWS_REGION: eu-west-1
   ECR_REPOSITORY: vedantix-frontend
   STAGING_FUNCTION: vedantix-web-staging
-  PRODUCTION_FUNCTION: vedantix-web-production
+  PRODUCTION_FUNCTION: vedantix-web-production-private
   STAGING_URL: https://dhnczzdgsgc436kkidetyxg45u0zxukp.lambda-url.eu-west-1.on.aws
-  PRODUCTION_URL: https://lv2vr7a3tkzb7knkq6ricyowuy0igyag.lambda-url.eu-west-1.on.aws
   LIVE_URL: https://vedantix.nl
   EXPECTED_PLATFORM: aws-lambda
   EXPECTED_MARKER: VEDANTIX_AWS_SERVERLESS_COMMERCE_READY
@@ -82,22 +81,20 @@ jobs:
             test "$code" = "200"
           done
 
-      - name: Promote same image to production Lambda
+      - name: Promote same image to private production Lambda
         run: |
           set -euo pipefail
           aws lambda update-function-code --function-name "$PRODUCTION_FUNCTION" --image-uri "$IMAGE_URI" >/dev/null
           aws lambda wait function-updated --function-name "$PRODUCTION_FUNCTION"
 
-      - name: Smoke test production origin and live domain
+      - name: Smoke test production through CloudFront
         run: |
           set -euo pipefail
-          for base in "$PRODUCTION_URL" "$LIVE_URL"; do
-            marker="$(curl --fail --silent --show-error "$base/.well-known/vedantix-release.json")"
-            echo "$marker" | jq -e --arg p "$EXPECTED_PLATFORM" --arg m "$EXPECTED_MARKER" '.platform == $p and .release_marker == $m' >/dev/null
-            for path in / /prijzen /online-groei-audit /admin; do
-              code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$base$path")"
-              test "$code" = "200"
-            done
+          marker="$(curl --fail --silent --show-error "$LIVE_URL/.well-known/vedantix-release.json")"
+          echo "$marker" | jq -e --arg p "$EXPECTED_PLATFORM" --arg m "$EXPECTED_MARKER" '.platform == $p and .release_marker == $m' >/dev/null
+          for path in / /prijzen /online-groei-audit /admin; do
+            code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$LIVE_URL$path")"
+            test "$code" = "200"
           done
 
       - name: Mark successful production image
