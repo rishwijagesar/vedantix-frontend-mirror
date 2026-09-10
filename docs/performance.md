@@ -32,9 +32,21 @@ origin and its CloudFront read policy were already configured.
   bucket-policy, user/account or application permission changes.
 - Group the used Lucide icons into one browser chunk to reduce small requests;
   route components and admin modules remain lazy.
-- Load the existing Jotform reviews when within 200px of the viewport. Keep its
+- Load the existing Jotform reviews when they enter the viewport. Keep its
   content and behavior, and improve contrast using its stable CSS hooks.
 - Verify all production asset response codes and SHA-256 bytes after deployment.
+- Let the browser defer layout/painting of offscreen homepage content sections.
+- Preserve React/TanStack-owned head nodes during client navigation. The legacy
+  SEO effect removed route metadata outside React and caused `removeChild` errors.
+  It now only adds missing metadata and cleans up the nodes it created. A React 19
+  navigation regression check confirms route metadata survives, canonical links
+  update, and unmounting removes owned metadata without errors.
+
+After the asset cutover, the first measurement (`27xkiux169`, 14:04 CEST) was
+96 mobile / 98 desktop performance, with 100 accessibility, 100 best practices,
+100 SEO and 3/3 agentic on both. No failed first-party asset requests. Remaining
+long tasks include Facebook Pixel and the review widget; the earlier 99 baseline
+included missing application scripts and is not a valid performance comparison.
 
 ## Cutover and rollback
 
