@@ -2,7 +2,7 @@ import { partytownSnippet } from "@qwik.dev/partytown/integration";
 
 const pixelId = import.meta.env["VITE_META_PIXEL_ID"] || "2100259704034137";
 export const analyticsWorkerSnippet =
-  `window.__vedantixInitialPixelHref=location.pathname+location.search;` +
+  `if (!window.__vedantixAnalyticsWorkerStarted) { window.__vedantixAnalyticsWorkerStarted=true; window.__vedantixInitialPixelHref=location.pathname+location.search;` +
   partytownSnippet({
     lib: "/assets/partytown-0.14.4/",
     forward: ["fbq", "vedantixInitializePixel"],
@@ -15,7 +15,7 @@ export const analyticsWorkerSnippet =
       }
       return url;
     },
-  });
+  }) + "}";
 
 // Keep initialization and the initial PageView in the same script so Partytown's
 // ordinary-script fallback also records that visit. SPA visits are forwarded.

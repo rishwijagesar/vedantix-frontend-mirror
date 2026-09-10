@@ -114,10 +114,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:locale", content: "nl_NL" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      scripts: [
-        { children: analyticsWorkerSnippet },
-        { type: "text/partytown", children: pixelWorkerBootstrap },
-      ],
       links: [
         {
           rel: "stylesheet",
@@ -145,6 +141,8 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="nl">
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: analyticsWorkerSnippet }} />
+        <script type="text/partytown" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: pixelWorkerBootstrap }} />
       </head>
       <body>
         {children}
