@@ -145,6 +145,8 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="nl">
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: analyticsWorkerSnippet }} />
+        <script type="text/partytown" dangerouslySetInnerHTML={{ __html: pixelWorkerBootstrap }} />
       </head>
       <body>
         {children}
