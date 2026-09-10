@@ -8,7 +8,7 @@ const allowedOrigins = new Set([
 
 function headersFor(request: Request) {
   const origin = request.headers.get("Origin");
-  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix-migration-test.lovable.app";
+  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix.nl";
   return {
     "content-type": "application/json; charset=utf-8",
     "access-control-allow-origin": allowOrigin,
@@ -55,7 +55,23 @@ Deno.serve(async (request: Request) => {
   const available = Boolean(config?.enabled && config?.credentials_configured && eligible);
 
   if (body.action === "status") {
-    return new Response(JSON.stringify({ ok: true, available, mode: config?.mode || "TEST", outstanding: amountValue(outstanding) }), { status: 200, headers });
+    const { data: latestPayment } = await admin
+      .from("payment_requests")
+      .select("status")
+      .eq("invoice_id", invoice.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    return new Response(JSON.stringify({
+      ok: true,
+      available,
+      mode: config?.mode || "TEST",
+      outstanding: amountValue(outstanding),
+      invoice_number: invoice.invoice_number,
+      invoice_status: invoice.status,
+      payment_status: latestPayment?.status || null,
+    }), { status: 200, headers });
   }
   if (!available) return new Response(JSON.stringify({ error: "Online betalen is momenteel niet beschikbaar." }), { status: 409, headers });
 
@@ -72,7 +88,7 @@ Deno.serve(async (request: Request) => {
   }
 
   const redirectOrigin = origin && allowedOrigins.has(origin) ? origin : "https://vedantix.nl";
-  const redirectUrl = `${redirectOrigin}/factuur/${publicToken}?payment=return`;
+  const redirectUrl = `${redirectOrigin}/betaling/resultaat/${publicToken}`;
   const webhookUrl = `${supabaseUrl}/functions/v1/mollie-webhook`;
 
   const { data: requestRow, error: insertError } = await admin
