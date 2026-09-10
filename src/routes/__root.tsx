@@ -114,10 +114,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:locale", content: "nl_NL" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      scripts: [
-        { children: analyticsWorkerSnippet },
-        { type: "text/partytown", children: pixelWorkerBootstrap },
-      ],
       links: [
         {
           rel: "stylesheet",
