@@ -1,6 +1,6 @@
 import { partytownSnippet } from "@qwik.dev/partytown/integration";
 
-const pixelId = import.meta.env.VITE_META_PIXEL_ID || "2100259704034137";
+const pixelId = import.meta.env["VITE_META_PIXEL_ID"] || "2100259704034137";
 export const analyticsWorkerSnippet =
   `window.__vedantixInitialPixelHref=location.pathname+location.search;` +
   partytownSnippet({
