@@ -1,4 +1,5 @@
 import LegalPageLayout from "../components/LegalPageLayout";
+import CookieSettingsButton from "../components/CookieSettingsButton";
 import { createBreadcrumbSchema } from "../utils/schema";
 
 const canonical = "https://vedantix.nl/privacy";
@@ -57,16 +58,22 @@ const sections = [
     content: (
       <>
         <p>
-          Vedantix kan cookies en vergelijkbare technologie gebruiken om websites goed te
-          laten werken, prestaties te meten en marketingcampagnes te optimaliseren.
-          Wanneer toestemming wettelijk vereist is, vragen wij die toestemming voordat
-          niet-noodzakelijke tracking wordt geplaatst.
+          Vedantix gebruikt noodzakelijke opslag om de website en privacyvoorkeuren goed te
+          laten werken. Marketingtracking wordt niet gestart voordat je daar actief
+          toestemming voor hebt gegeven.
         </p>
         <p>
-          Marketing- en conversiedata kan worden gebruikt om campagnes te meten, dubbele
-          conversies te voorkomen en relevantere advertenties te tonen. Waar mogelijk
-          beperken wij de gegevens en gebruiken wij beveiligde overdracht.
+          Na toestemming kan Vedantix Meta Pixel gebruiken om paginabezoeken,
+          advertentiecampagnes en conversies te meten. Meta kan daarbij cookies en andere
+          online identifiers gebruiken. Weiger je marketingtracking, dan blijft de website
+          normaal bruikbaar en wordt Meta Pixel niet geladen.
         </p>
+        <p>
+          Je kunt je toestemming op ieder moment intrekken. Na intrekking stopt Vedantix
+          verdere marketingtracking en verwijderen we waar mogelijk de bijbehorende
+          first-party Meta-cookies uit je browser.
+        </p>
+        <CookieSettingsButton />
       </>
     ),
   },
@@ -173,7 +180,7 @@ export default function Privacy() {
       intro="Hoe Vedantix persoonsgegevens verwerkt bij websites, hosting, AI-diensten, marketing, analytics en klantrelaties."
       description="Lees het privacybeleid van Vedantix over persoonsgegevens, cookies, tracking, Meta Ads conversiedata, analytics, bewaartermijnen en AVG-rechten."
       canonical={canonical}
-      updatedAt="1 juni 2026"
+      updatedAt="11 september 2026"
       schemas={[breadcrumbSchema]}
       sections={sections}
     >
