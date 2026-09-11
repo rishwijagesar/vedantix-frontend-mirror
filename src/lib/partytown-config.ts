@@ -1,8 +1,7 @@
 import { partytownSnippet } from "@qwik.dev/partytown/integration";
 
-const pixelId = import.meta.env["VITE_META_PIXEL_ID"] || "2100259704034137";
 export const analyticsWorkerSnippet =
-  `if (!window.__vedantixAnalyticsWorkerStarted) { window.__vedantixAnalyticsWorkerStarted=true; window.__vedantixInitialPixelHref=location.pathname+location.search;` +
+  `if (!window.__vedantixAnalyticsWorkerStarted) { window.__vedantixAnalyticsWorkerStarted=true;` +
   partytownSnippet({
     lib: "/assets/partytown-0.14.4/",
     forward: ["fbq", "vedantixInitializePixel"],
@@ -17,8 +16,8 @@ export const analyticsWorkerSnippet =
     },
   }) + "}";
 
-// Keep initialization and the initial PageView in the same script so Partytown's
-// ordinary-script fallback also records that visit. SPA visits are forwarded.
+// This script only defines the Meta initializer. It deliberately does not load
+// Meta or emit PageView until the browser has explicit marketing consent.
 export const pixelWorkerBootstrap = `
 window.vedantixInitializePixel = function(pixelId) {
   if (window.__vedantixPixelInitialized) return;
@@ -29,8 +28,4 @@ window.vedantixInitializePixel = function(pixelId) {
   (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', pixelId);
   window.__vedantixPixelInitialized = true;
-};
-if (!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/klantenportaal')) {
-  vedantixInitializePixel(${JSON.stringify(pixelId)});
-  fbq('track', 'PageView');
-}`;
+};`;
