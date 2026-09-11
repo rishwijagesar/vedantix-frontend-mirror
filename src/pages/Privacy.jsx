@@ -91,9 +91,9 @@ const sections = [
           <li>Meta Platforms</li>
           <li>OpenAI</li>
           <li>AWS</li>
-          <li>Stripe</li>
+          <li>Supabase</li>
+          <li>Mollie</li>
           <li>Migadu</li>
-          <li>Google Analytics</li>
         </ul>
       </>
     ),
