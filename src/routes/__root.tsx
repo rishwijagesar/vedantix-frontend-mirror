@@ -17,6 +17,7 @@ import { Suspense, useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import MetaPixel from "@/components/MetaPixel";
+import CookieConsent from "@/components/CookieConsent";
 import BigFooter from "@/components/BigFooter";
 
 function NotFoundComponent() {
@@ -162,6 +163,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {!isAdmin ? <MetaPixel /> : null}
+      {!isAdmin ? <CookieConsent /> : null}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       {!isAdmin ? (
