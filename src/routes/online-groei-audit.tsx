@@ -1,5 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import AuditFunnelTracker from "@/components/AuditFunnelTracker";
 import Page from "@/pages/OnlineGrowthAudit";
+
+function OnlineGrowthAuditRoute() {
+  return (
+    <>
+      <AuditFunnelTracker />
+      <Page />
+    </>
+  );
+}
 
 export const Route = createFileRoute("/online-groei-audit")({
   head: () => ({
@@ -12,5 +22,5 @@ export const Route = createFileRoute("/online-groei-audit")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Page,
+  component: OnlineGrowthAuditRoute,
 });
