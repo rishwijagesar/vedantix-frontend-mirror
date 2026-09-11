@@ -1,4 +1,5 @@
 const FUNNEL_NAME = "online_growth_audit";
+const MAX_BODY_LENGTH = 256;
 
 export const AUDIT_FUNNEL_EVENTS = new Set([
   "PAGE_VIEW",
@@ -26,7 +27,7 @@ function isSameOrigin(request) {
   if (!origin) return false;
 
   try {
-    return new URL(origin).host === new URL(request.url).host;
+    return new URL(origin).origin === new URL(request.url).origin;
   } catch {
     return false;
   }
@@ -41,14 +42,16 @@ export async function auditFunnel(request) {
     return emptyResponse(403);
   }
 
-  const contentLength = Number(request.headers.get("content-length") || "0");
-  if (Number.isFinite(contentLength) && contentLength > 256) {
+  const declaredLength = Number(request.headers.get("content-length") || "0");
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_LENGTH) {
     return emptyResponse(413);
   }
 
   let payload;
   try {
-    payload = await request.json();
+    const rawBody = await request.text();
+    if (rawBody.length > MAX_BODY_LENGTH) return emptyResponse(413);
+    payload = JSON.parse(rawBody);
   } catch {
     return emptyResponse(400);
   }
