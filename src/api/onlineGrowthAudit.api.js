@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { AUDIT_FUNNEL_EVENTS, trackAuditFunnel } from "@/lib/audit-funnel";
 
 async function invoke(body) {
   const { data, error } = await supabase.functions.invoke("online-growth-audit", { body });
@@ -19,7 +20,9 @@ async function invoke(body) {
 }
 
 export async function startOnlineGrowthAudit(payload) {
-  return invoke({ action: "start", request: payload });
+  const data = await invoke({ action: "start", request: payload });
+  trackAuditFunnel(AUDIT_FUNNEL_EVENTS.AUDIT_STARTED);
+  return data;
 }
 
 export async function fetchOnlineGrowthAudit(auditId) {
@@ -33,6 +36,7 @@ export async function rerunOnlineGrowthAudit(auditId) {
 export async function downloadOnlineGrowthAuditPdf(auditId) {
   const data = await invoke({ action: "pdf", auditId });
   const blob = data instanceof Blob ? data : new Blob([data], { type: "application/pdf" });
+  trackAuditFunnel(AUDIT_FUNNEL_EVENTS.PDF_DOWNLOADED);
   return {
     blob,
     filename: `Vedantix-Online-Groei-Audit-${String(auditId).slice(0, 8)}.pdf`,
