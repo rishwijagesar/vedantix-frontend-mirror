@@ -30,12 +30,12 @@ export default function CookieConsent() {
     setIsOpen(false);
 
     if (nextChoice === "denied") {
-      window.fbq?.("consent", "revoke");
       clearMetaTrackingCookies();
 
-      // If Meta was already loaded during this browser session, reload once so
-      // no third-party marketing runtime remains active after consent withdrawal.
+      // Only revoke an already active Meta session. On a first refusal we never
+      // touch fbq, so no marketing command is queued before consent exists.
       if (previousChoice === "granted") {
+        window.fbq?.("consent", "revoke");
         window.location.reload();
       }
     }
