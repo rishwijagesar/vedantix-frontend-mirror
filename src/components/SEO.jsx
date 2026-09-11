@@ -34,15 +34,20 @@ export default function SEO({
                   : {}),
               }
             : null;
-      if (
-        identity &&
-        Array.from(head.querySelectorAll(tagName)).some((element) =>
-          Object.entries(identity).every(
-            ([name, value]) => element.getAttribute(name) === value,
-          ),
-        )
-      )
-        return;
+      const alreadyExists =
+        tagName === "script" && attributes.type === "application/ld+json"
+          ? Array.from(
+              head.querySelectorAll('script[type="application/ld+json"]'),
+            ).some((element) => element.textContent === textContent)
+          : identity
+            ? Array.from(head.querySelectorAll(tagName)).some((element) =>
+                Object.entries(identity).every(
+                  ([name, value]) => element.getAttribute(name) === value,
+                ),
+              )
+            : false;
+
+      if (alreadyExists) return;
 
       const element = document.createElement(tagName);
       element.setAttribute("data-vedantix-seo", "true");
