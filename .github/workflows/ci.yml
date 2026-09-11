@@ -29,6 +29,9 @@ jobs:
       - name: Performance integration checks
         run: bun scripts/check-performance-integrations.mjs
 
+      - name: Marketing consent checks
+        run: bun scripts/check-marketing-consent.mjs
+
       - name: Production build
         run: bun run build
 
