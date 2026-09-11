@@ -19,21 +19,23 @@ assert.equal(
   403,
 );
 
-assert.equal(
-  (
-    await auditFunnel(
-      new Request(endpoint, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          origin: "https://example.com",
-        },
-        body: JSON.stringify({ event: "PAGE_VIEW" }),
-      }),
-    )
-  ).status,
-  403,
-);
+for (const origin of ["https://example.com", "http://vedantix.nl"]) {
+  assert.equal(
+    (
+      await auditFunnel(
+        new Request(endpoint, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            origin,
+          },
+          body: JSON.stringify({ event: "PAGE_VIEW" }),
+        }),
+      )
+    ).status,
+    403,
+  );
+}
 
 assert.equal(
   (
@@ -65,6 +67,22 @@ assert.equal(
     )
   ).status,
   400,
+);
+
+assert.equal(
+  (
+    await auditFunnel(
+      new Request(endpoint, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: "https://vedantix.nl",
+        },
+        body: JSON.stringify({ event: "PAGE_VIEW", padding: "x".repeat(300) }),
+      }),
+    )
+  ).status,
+  413,
 );
 
 const originalInfo = console.info;
@@ -109,5 +127,9 @@ for (const eventName of [
 ]) {
   assert.match(trackerSource, new RegExp(eventName));
 }
+
+const apiSource = fs.readFileSync("src/api/onlineGrowthAudit.api.js", "utf8");
+assert.match(apiSource, /AUDIT_STARTED/);
+assert.match(apiSource, /PDF_DOWNLOADED/);
 
 console.log("Audit funnel privacy checks passed.");
