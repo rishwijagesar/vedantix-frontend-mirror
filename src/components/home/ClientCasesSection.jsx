@@ -1,21 +1,10 @@
+import { fetchPublicCases, safeWebsiteUrl, safeLogoUrl } from "../../lib/public-content";
+import { usePublicContent } from "../../lib/use-public-content";
 import { useEffect, useRef, useState } from "react";
 
-const CLIENT_CASES = [
-  {
-    name: "Horeca Topper",
-    logo: "/logos/horeca-topper.svg",
-    website: "https://www.horeca-topper.nl/",
-    domainLabel: "horeca-topper.nl",
-    branch: "Horeca / dienstverlening",
-    status: "Live",
-    summary:
-      "Een sterkere online basis met duidelijke structuur, mobiele zichtbaarheid en een uitstraling die sneller vertrouwen geeft.",
-    outcome:
-      "Meer vertrouwen, duidelijkere contactmomenten en een betere basis voor aanvragen en online zichtbaarheid.",
-  },
-];
-
-export default function ClientCasesSection() {
+export default function ClientCasesSection({ initialCases = null, placement = "home" }) {
+  const { data } = usePublicContent(fetchPublicCases, initialCases);
+  const clients = data.filter(c => placement === "home" ? c.show_on_home : c.show_on_results).map(c => ({ ...c, logo: safeLogoUrl(c.logo), website: safeWebsiteUrl(c.website), domainLabel: safeWebsiteUrl(c.website) ? new URL(c.website).hostname.replace(/^www\./, "") : "" }));
   const trackRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -41,7 +30,7 @@ export default function ClientCasesSection() {
       el.removeEventListener("scroll", updateScrollState);
       window.removeEventListener("resize", updateScrollState);
     };
-  }, []);
+  }, [clients.length]);
 
   const scrollByAmount = (direction) => {
     const el = trackRef.current;
@@ -54,6 +43,8 @@ export default function ClientCasesSection() {
       behavior: "smooth",
     });
   };
+
+  if (!clients.length) return null;
 
   return (
     <section style={styles.section}>
@@ -101,14 +92,18 @@ export default function ClientCasesSection() {
         </div>
 
         <div ref={trackRef} style={styles.carousel} aria-label="Klantcases">
-          {CLIENT_CASES.map((client) => (
-            <article key={client.name} style={styles.card}>
+          {clients.map((client) => (
+            <article key={client.id} style={styles.card}>
               <div style={styles.logoWrap}>
-                <img
+                {client.logo ? <img
+                  loading="lazy"
+                  decoding="async"
+                  width="60"
+                  height="60"
                   src={client.logo}
                   alt={`${client.name} logo`}
                   style={styles.logo}
-                />
+                /> : <strong aria-hidden="true">{client.name.slice(0, 2).toUpperCase()}</strong>}
               </div>
 
               <div style={styles.metaRow}>
@@ -118,22 +113,22 @@ export default function ClientCasesSection() {
 
               <h3 style={styles.cardTitle}>{client.name}</h3>
 
-              <a
+              {client.website ? <a
                 href={client.website}
                 target="_blank"
                 rel="noreferrer"
                 style={styles.domainLink}
               >
                 {client.domainLabel}
-              </a>
+              </a> : null}
 
               <p style={styles.summary}>{client.summary}</p>
 
-              <div style={styles.outcomeBox}>
+              {client.outcome ? <div style={styles.outcomeBox}>
                 {client.outcome}
-              </div>
+              </div> : null}
 
-              <div style={styles.cardFooter}>
+              {client.website ? <div style={styles.cardFooter}>
                 <a
                   href={client.website}
                   target="_blank"
@@ -142,7 +137,7 @@ export default function ClientCasesSection() {
                 >
                   Bekijk website
                 </a>
-              </div>
+              </div> : null}
             </article>
           ))}
         </div>

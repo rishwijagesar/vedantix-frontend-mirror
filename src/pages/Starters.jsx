@@ -1,3 +1,5 @@
+import { fetchPublicCatalog } from "../lib/public-content";
+import { usePublicContent } from "../lib/use-public-content";
 import { useState } from "react";
 
 const SUGGESTIONS = {
@@ -14,10 +16,10 @@ const SUGGESTIONS = {
   overig: { label: "Anders", icon: "💼", suggestions: ["Diensten overzicht", "Contactformulier", "Over ons pagina", "Veelgestelde vragen (FAQ)", "Reviews & testimonials"] },
 };
 
-const PACKAGES = [
-  { id: "starter", name: "Starter", price: 399, pages: "1 pagina", features: ["1-pagina website", "Mobielvriendelijk", "Contactformulier", "Technische SEO-basis", "Hosting vanaf €30/jaar", "SSL", "48u levering"] },
-  { id: "business", name: "Growth", price: 599, pages: "Tot 5 pagina's", features: ["Tot 5 pagina's", "Mobielvriendelijk design", "Contactformulier + Maps", "SEO + lokale SEO + AEO-basis", "Hosting vanaf €30/jaar", "SSL", "48u levering", "1x gratis aanpassing"] },
-  { id: "premium", name: "Pro", price: 999, pages: "Tot 10 pagina's", features: ["Tot 10 pagina's", "Custom design op maat", "Geavanceerde functies", "Uitgebreide SEO + AEO + GEO/AIO-basis", "Hosting vanaf €30/jaar", "SSL", "Blog / nieuws", "3x gratis aanpassingen", "48u levering"] },
+const PACKAGE_DETAILS = [
+  { id: "starter", name: "Starter", pages: "1 pagina", features: ["1-pagina website", "Mobielvriendelijk", "Contactformulier", "Technische SEO-basis", "Hosting apart te kiezen", "SSL", "48u levering"] },
+  { id: "business", name: "Growth", pages: "Tot 5 pagina's", features: ["Tot 5 pagina's", "Mobielvriendelijk design", "Contactformulier + Maps", "SEO + lokale SEO + AEO-basis", "Hosting apart te kiezen", "SSL", "48u levering", "1x gratis aanpassing"] },
+  { id: "premium", name: "Pro", pages: "Tot 10 pagina's", features: ["Tot 10 pagina's", "Custom design op maat", "Geavanceerde functies", "Uitgebreide SEO + AEO + GEO/AIO-basis", "Hosting apart te kiezen", "SSL", "Blog / nieuws", "3x gratis aanpassingen", "48u levering"] },
 ];
 
 // Clean domain input — strip spaces, dots, extensions, special chars
@@ -157,7 +159,16 @@ function WAWidget() {
 
 
 export default function Starters() {
-  const urlParams = new URLSearchParams(window.location.search);
+  const { data: products, loading: pricesLoading, error: pricesError } = usePublicContent(fetchPublicCatalog);
+  const codes = { starter: "STARTER", business: "GROWTH", premium: "PRO" };
+  const PACKAGES = PACKAGE_DETAILS.flatMap(details => {
+    const product = products.find(p => p.code === codes[details.id]);
+    return product ? [{ ...details, name: product.name, price: Number(product.price_ex_vat), priceIncl: Number(product.price_incl_vat) }] : [];
+  });
+  const extraPrice = products.find(p => p.code === "CONFIGURATOR_EXTRA")?.price_ex_vat ?? null;
+  const priceLabel = value => value === null ? "Op aanvraag" : new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(value);
+
+  const urlParams = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
   const urlPakket = urlParams.get("pakket");
   const urlTemplate = urlParams.get("template");
 
@@ -168,7 +179,7 @@ export default function Starters() {
   const [branche, setBranche] = useState("");
   const [bedrijfsnaam, setBedrijfsnaam] = useState("");
   const [selectedFeatures, setSelectedFeatures] = useState([]);
-  const [selectedPackage, setSelectedPackage] = useState(urlPakket && PACKAGES.find(p => p.id === urlPakket) ? urlPakket : "business");
+  const [selectedPackage, setSelectedPackage] = useState(urlPakket && PACKAGE_DETAILS.find(p => p.id === urlPakket) ? urlPakket : "business");
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ naam: "", email: "", telefoon: "", bericht: "" });
 
@@ -197,9 +208,9 @@ export default function Starters() {
     setSelectedFeatures(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
   };
 
-  const totalExtras = selectedFeatures.length * 75;
-  const basePrice = PACKAGES.find(p => p.id === selectedPackage)?.price || 599;
-  const totalPrice = basePrice + totalExtras;
+  const totalExtras = selectedFeatures.length === 0 ? 0 : extraPrice === null ? null : selectedFeatures.length * Number(extraPrice);
+  const basePrice = PACKAGES.find(p => p.id === selectedPackage)?.price ?? null;
+  const totalPrice = basePrice === null || totalExtras === null ? null : Math.round((basePrice + totalExtras) * 100) / 100;
 
   if (submitted) {
     return (
@@ -211,9 +222,9 @@ export default function Starters() {
           <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 12, padding: 20, marginBottom: 24 }}>
             <p style={{ fontWeight: 700, color: "#0369a1", marginBottom: 8 }}>Jouw samenvatting:</p>
             {cleanedDomain && <p style={{ color: "#0c4a6e", fontSize: "0.9rem" }}>🌐 Domein: {cleanedDomain}.nl</p>}
-            <p style={{ color: "#0c4a6e", fontSize: "0.9rem" }}>📦 {PACKAGES.find(p=>p.id===selectedPackage)?.name} pakket — €{basePrice}</p>
-            {selectedFeatures.length > 0 && <p style={{ color: "#0c4a6e", fontSize: "0.9rem" }}>➕ {selectedFeatures.length} extra functies — €{totalExtras}</p>}
-            <p style={{ color: "#0c4a6e", fontSize: "1rem", fontWeight: 800, marginTop: 8 }}>Totaal: €{totalPrice}</p>
+            <p style={{ color: "#0c4a6e", fontSize: "0.9rem" }}>📦 {PACKAGES.find(p=>p.id===selectedPackage)?.name} pakket — {priceLabel(basePrice)}</p>
+            {selectedFeatures.length > 0 && <p style={{ color: "#0c4a6e", fontSize: "0.9rem" }}>➕ {selectedFeatures.length} extra functies — {priceLabel(totalExtras)}</p>}
+            <p style={{ color: "#0c4a6e", fontSize: "1rem", fontWeight: 800, marginTop: 8 }}>Totaal: {priceLabel(totalPrice)}</p>
           </div>
           <a href="/" style={{ background: "#1a73e8", color: "#fff", padding: "12px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, display: "inline-block" }}>Terug naar home</a>
         </div>
@@ -388,7 +399,7 @@ export default function Starters() {
                 <p style={{ fontWeight: 700, color: "#0369a1", marginBottom: 4 }}>
                   💡 Aanbevolen voor {SUGGESTIONS[branche]?.icon} {SUGGESTIONS[branche]?.label}
                 </p>
-                <p style={{ color: "#0c4a6e", fontSize: "0.85rem", marginBottom: 16 }}>Elke extra functie kost +€75. Klik aan wat je wil.</p>
+                <p style={{ color: "#0c4a6e", fontSize: "0.85rem", marginBottom: 16 }}>Elke extra functie kost {priceLabel(extraPrice)} excl. btw. Klik aan wat je wil.</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                   {currentSuggestions.map(f => (
                     <button key={f} className={`feat-chip ${selectedFeatures.includes(f) ? "selected" : ""}`} onClick={() => toggleFeature(f)}>
@@ -400,16 +411,16 @@ export default function Starters() {
             )}
 
             <h3 style={{ fontWeight: 700, marginBottom: 6 }}>Kies je basispakket</h3>
-            <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: 16 }}>Alle pakketten zijn eenmalig, zonder verplicht maandabonnement. Hosting vanaf €30 per jaar, zakelijke e-mail vanaf €30 per jaar per mailbox. Doorlopende groei is optioneel: Zichtbaarheid Basis €49/maand, Google Groei €99/maand, Google + AI Groei €149/maand.</p>
+            <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: 16 }}>De bedragen hieronder zijn exclusief btw. Hosting, e-mail en groeidiensten zijn apart te kiezen. Bekijk de actuele tarieven en bedragen inclusief btw op de prijzenpagina.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 32 }}>
-              {PACKAGES.map(pkg => (
+              {pricesLoading ? <p>Actuele prijzen laden…</p> : null}{pricesError ? <p role="alert">De actuele prijzen zijn tijdelijk niet beschikbaar. Vraag een offerte aan.</p> : null}{PACKAGES.map(pkg => (
                 <div key={pkg.id} className={`pkg-card ${selectedPackage===pkg.id?"selected":""}`} onClick={() => setSelectedPackage(pkg.id)}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                     <div>
                       <span style={{ fontWeight: 800, fontSize: "1.1rem" }}>{pkg.name}</span>
                       <span style={{ color: "#6b7280", fontSize: "0.88rem", marginLeft: 8 }}>{pkg.pages}</span>
                     </div>
-                    <span style={{ fontWeight: 900, fontSize: "1.3rem", color: "#1a73e8" }}>€{pkg.price}</span>
+                    <span style={{ fontWeight: 900, fontSize: "1.3rem", color: "#1a73e8" }}>{priceLabel(pkg.price)} <small>excl. btw · {priceLabel(pkg.priceIncl)} incl. btw</small></span>
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {pkg.features.map(f => <span key={f} style={{ background: "#f3f4f6", color: "#374151", padding: "3px 10px", borderRadius: 100, fontSize: "0.78rem" }}>✓ {f}</span>)}
@@ -423,16 +434,16 @@ export default function Starters() {
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", marginBottom: 12 }}>Jouw configuratie:</p>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                 <span>{PACKAGES.find(p=>p.id===selectedPackage)?.name} pakket</span>
-                <span style={{ fontWeight: 700 }}>€{basePrice}</span>
+                <span style={{ fontWeight: 700 }}>{priceLabel(basePrice)}</span>
               </div>
               {selectedFeatures.map(f => (
                 <div key={f} style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: "0.88rem", color: "rgba(255,255,255,0.65)" }}>
-                  <span>+ {f}</span><span>€75</span>
+                  <span>+ {f}</span><span>{priceLabel(extraPrice)}</span>
                 </div>
               ))}
               <div style={{ borderTop: "1px solid rgba(255,255,255,0.15)", paddingTop: 12, marginTop: 8, display: "flex", justifyContent: "space-between", fontSize: "1.2rem", fontWeight: 900 }}>
                 <span>Totaal</span>
-                <span style={{ color: "#00c2ff" }}>€{totalPrice}</span>
+                <span style={{ color: "#00c2ff" }}>{priceLabel(totalPrice)}</span>
               </div>
             </div>
 
@@ -454,9 +465,9 @@ export default function Starters() {
               {urlTemplate && <p style={{ color: "#1e3a8a", fontSize: "0.9rem" }}>🎨 Template: <strong>{urlTemplate}</strong></p>}
               {cleanedDomain && <p style={{ color: "#1e3a8a", fontSize: "0.9rem" }}>🌐 Domein: <strong>{cleanedDomain}.nl</strong></p>}
               {branche && <p style={{ color: "#1e3a8a", fontSize: "0.9rem" }}>🏢 Branche: <strong>{SUGGESTIONS[branche]?.label}</strong></p>}
-              <p style={{ color: "#1e3a8a", fontSize: "0.9rem" }}>📦 Pakket: <strong>{PACKAGES.find(p=>p.id===selectedPackage)?.name} (€{basePrice})</strong></p>
+              <p style={{ color: "#1e3a8a", fontSize: "0.9rem" }}>📦 Pakket: <strong>{PACKAGES.find(p=>p.id===selectedPackage)?.name} ({priceLabel(basePrice)})</strong></p>
               {selectedFeatures.length > 0 && <p style={{ color: "#1e3a8a", fontSize: "0.9rem" }}>➕ Extra's: <strong>{selectedFeatures.join(", ")}</strong></p>}
-              <p style={{ color: "#1e40af", fontWeight: 800, fontSize: "1rem", marginTop: 8 }}>Totaal: €{totalPrice}</p>
+              <p style={{ color: "#1e40af", fontWeight: 800, fontSize: "1rem", marginTop: 8 }}>Totaal: {priceLabel(totalPrice)}</p>
             </div>
 
             <form onSubmit={e => { e.preventDefault(); setSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>

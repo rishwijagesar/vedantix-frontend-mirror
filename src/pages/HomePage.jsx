@@ -270,7 +270,7 @@ export default function HomePage() {
           </div>
           <div className="hero-stats">
             <div className="stat"><strong>48u</strong><span>Gemiddelde levertijd</span></div>
-            <div className="stat"><strong>€399</strong><span>Vanaf prijs</span></div>
+            <div className="stat"><strong>Bekijk prijzen</strong><span>Vanaf prijs</span></div>
             <div className="stat"><strong>100%</strong><span>Inclusief hosting</span></div>
             <div className="stat"><strong>24/7</strong><span>Online bereikbaar</span></div>
           </div>
@@ -321,7 +321,7 @@ export default function HomePage() {
         <div className="pricing-grid">
           <div className="p-card">
             <div className="p-name">Starter</div>
-            <div className="p-price"><sup>€</sup>399</div>
+            <div className="p-price"><a href="/prijzen">Actuele prijs</a></div>
             <div className="p-desc">Eenmalig — ideaal voor starters</div>
             <ul className="p-list">
               <li>1-pagina professionele website</li><li>Mobielvriendelijk design</li>
@@ -333,7 +333,7 @@ export default function HomePage() {
           <div className="p-card hot">
             <div className="hot-badge">MEEST GEKOZEN</div>
             <div className="p-name">Business</div>
-            <div className="p-price"><sup>€</sup>799</div>
+            <div className="p-price"><a href="/prijzen">Actuele prijs</a></div>
             <div className="p-desc">Eenmalig — voor groeiende bedrijven</div>
             <ul className="p-list">
               <li>Tot 5 pagina's</li><li>Mobielvriendelijk design</li>
@@ -345,7 +345,7 @@ export default function HomePage() {
           </div>
           <div className="p-card">
             <div className="p-name">Premium</div>
-            <div className="p-price"><sup>€</sup>1499</div>
+            <div className="p-price"><a href="/prijzen">Actuele prijs</a></div>
             <div className="p-desc">Eenmalig — voor serieuze ondernemers</div>
             <ul className="p-list">
               <li>Tot 10 pagina's</li><li>Custom design op maat</li>
@@ -430,7 +430,7 @@ function ContactForm() {
         <input type="text" placeholder="Bedrijfsnaam"/>
       </div>
       <input type="email" placeholder="E-mailadres" required/>
-      <select><option value="">Welk pakket interesseert u?</option><option>Starter — €399</option><option>Business — €799</option><option>Premium — €1499</option><option>Anders / Weet ik nog niet</option></select>
+      <select><option value="">Welk pakket interesseert u?</option><option>Starter — Bekijk prijzen</option><option>Business — Bekijk prijzen</option><option>Premium — Bekijk prijzen</option><option>Anders / Weet ik nog niet</option></select>
       <textarea placeholder="Vertel kort over uw bedrijf en wat u zoekt..."/>
       <button type="submit" className="btn-send">Offerte aanvragen →</button>
     </form>

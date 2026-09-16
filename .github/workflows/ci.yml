@@ -71,5 +71,8 @@ jobs:
           name: invoice-payment-preview
           path: tmp/invoice-payment/*
 
+      - name: Public catalog and client case regression tests
+        run: bun test scripts/public-content.test.tsx
+
       - name: Production build
         run: bun run build

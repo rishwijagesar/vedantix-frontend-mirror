@@ -9,7 +9,7 @@ const FAQS = [
     id: 1,
     question: "Wat kost een website bij Vedantix?",
     answer:
-      "Een professionele website begint bij €399 eenmalig. Growth kost €599 en Pro €999. Er is geen verplicht maandabonnement. Hosting, zakelijke e-mail en groeidiensten kies je los wanneer je ze nodig hebt.",
+      "De actuele prijzen van Starter, Growth en Pro vind je op onze prijzenpagina. Er is geen verplicht maandabonnement. Hosting, zakelijke e-mail en groeidiensten kies je los wanneer je ze nodig hebt.",
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const FAQS = [
     id: 4,
     question: "Moet ik een maandabonnement afsluiten?",
     answer:
-      "Nee. De website betaal je eenmalig en er is geen verplicht maandabonnement. Hosting kost vanaf €30 per jaar. Wil je dat Vedantix structureel aan SEO, lokale vindbaarheid of AI-vindbaarheid werkt, dan kun je optioneel een groeipakket kiezen.",
+      "Nee. De website betaal je eenmalig en er is geen verplicht maandabonnement. Het actuele hostingtarief staat op de prijzenpagina. Wil je dat Vedantix structureel aan SEO, lokale vindbaarheid of AI-vindbaarheid werkt, dan kun je optioneel een groeipakket kiezen.",
   },
   {
     id: 5,
@@ -39,13 +39,13 @@ const FAQS = [
     id: 6,
     question: "Wat kost hosting bij Vedantix?",
     answer:
-      "Voor een normale Vedantix-bedrijfswebsite kost hosting €30 per jaar. Een domeinnaam, zakelijke mailboxen en uitzonderlijk zwaar gebruik kunnen apart worden berekend wanneer dat van toepassing is.",
+      "Het actuele tarief voor hosting staat op onze prijzenpagina. Een domeinnaam, zakelijke mailboxen en uitzonderlijk zwaar gebruik kunnen apart worden berekend wanneer dat van toepassing is.",
   },
   {
     id: 7,
     question: "Wat kost een zakelijk e-mailadres?",
     answer:
-      "Een zakelijke mailbox op je eigen domeinnaam kost vanaf €30 per jaar per mailbox. Zo kun je bijvoorbeeld werken met info@jouwbedrijf.nl of afspraken@jouwbedrijf.nl.",
+      "Het actuele tarief per zakelijke mailbox staat op de prijzenpagina. Zo kun je bijvoorbeeld werken met info@jouwbedrijf.nl of afspraken@jouwbedrijf.nl.",
   },
   {
     id: 8,
@@ -388,7 +388,7 @@ export default function FAQ() {
     <>
       <SEO
         title="FAQ | Prijzen, hosting, SEO en AI-vindbaarheid | Vedantix"
-        description="Veelgestelde vragen over Vedantix websites vanaf €399, hosting vanaf €30 per jaar, SEO, AEO, GEO/AIO, oplevering en uitbreidingen."
+        description="Veelgestelde vragen over Vedantix websites, actuele prijzen, hosting, SEO, AEO, GEO/AIO, oplevering en uitbreidingen."
         canonical={canonical}
         schemas={[faqSchema, breadcrumbSchema]}
       />
@@ -466,7 +466,7 @@ export default function FAQ() {
             <section className="faq-cta" aria-labelledby="faq-cta-title">
               <h2 id="faq-cta-title">Klaar om je website te laten maken?</h2>
               <p>
-                Start met een professionele website vanaf €399 en voeg hosting of online
+                Start met een professioneel websitepakket en voeg hosting of online
                 groei alleen toe wanneer jouw bedrijf dat nodig heeft.
               </p>
 

@@ -1,3 +1,4 @@
+import CatalogPrice from "../components/CatalogPrice";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@/lib/router-compat";
 import NavBar from "../components/NavBar";
@@ -153,9 +154,9 @@ const TEMPLATES = [
 ];
 
 const PACKAGE_INFO = {
-  starter: { label: "Starter", price: "€399", color: "#6b7280", pages: "1 pagina" },
-  business: { label: "Growth", price: "€599", color: "#1a73e8", pages: "Tot 5 pagina's", hot: true },
-  premium: { label: "Pro", price: "€999", color: "#8b5cf6", pages: "Tot 10 pagina's" },
+  starter: { label: "Starter", price: <CatalogPrice code="STARTER"/>, color: "#6b7280", pages: "1 pagina" },
+  business: { label: "Growth", price: <CatalogPrice code="GROWTH"/>, color: "#1a73e8", pages: "Tot 5 pagina's", hot: true },
+  premium: { label: "Pro", price: <CatalogPrice code="PRO"/>, color: "#8b5cf6", pages: "Tot 10 pagina's" },
 };
 
 const PAGE_STYLES = `

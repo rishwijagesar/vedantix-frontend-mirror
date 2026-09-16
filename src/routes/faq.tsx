@@ -3,7 +3,7 @@ import Page from "@/pages/FAQ";
 
 const title = "FAQ | Prijzen, hosting, SEO en AI-vindbaarheid | Vedantix";
 const description =
-  "Veelgestelde vragen over Vedantix websites vanaf \u20ac399, hosting vanaf \u20ac30 per jaar, SEO, AEO, GEO/AIO, oplevering en uitbreidingen.";
+  "Veelgestelde vragen over Vedantix websites, hosting, SEO, AEO, GEO/AIO, oplevering en uitbreidingen.";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({

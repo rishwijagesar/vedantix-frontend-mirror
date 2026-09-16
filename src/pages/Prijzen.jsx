@@ -1,3 +1,5 @@
+import { fetchPublicCatalog } from "../lib/public-content";
+import { usePublicContent } from "../lib/use-public-content";
 import { Link } from "@/lib/router-compat";
 import {
   ArrowDown,
@@ -23,14 +25,13 @@ import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 import "../styles/prijzen.css";
 
-const WEBSITE_PACKAGES = [
+const WEBSITE_PACKAGE_DETAILS = [
   {
     code: "STARTER",
     label: "Starter",
     eyebrow: "Snel professioneel online",
     description: "Voor starters en zzp'ers die een sterke onepage website nodig hebben.",
     pages: "1 pagina",
-    price: 399,
     featured: false,
     features: [
       "Responsive ontwerp voor mobiel, tablet en desktop",
@@ -44,7 +45,6 @@ const WEBSITE_PACKAGES = [
     eyebrow: "Beste prijs-kwaliteit",
     description: "Voor lokale bedrijven met meerdere diensten die beter gevonden willen worden.",
     pages: "Tot 5 pagina's",
-    price: 599,
     featured: true,
     features: [
       "SEO- en lokale vindbaarheidsbasis",
@@ -58,7 +58,6 @@ const WEBSITE_PACKAGES = [
     eyebrow: "Voor serieuze online groei",
     description: "Voor bedrijven die meer inhoud, maatwerk en Google- én AI-vindbaarheid willen.",
     pages: "Tot 10 pagina's",
-    price: 999,
     featured: false,
     features: [
       "Uitgebreidere SEO en lokale structuur",
@@ -107,109 +106,11 @@ const COMPARISON_ROWS = [
   },
 ];
 
-const GROWTH_PLANS = [
-  {
-    name: "Zichtbaarheid Basis",
-    price: 49,
-    description: "Voor ondernemers die hun website technisch gezond en meetbaar willen houden.",
-    note: "Technische checks, bezoekersinzichten en kleine SEO-verbeteringen.",
-  },
-  {
-    name: "Google Groei",
-    price: 99,
-    description: "Voor bedrijven die structureel beter zichtbaar willen worden in Google en lokaal zoeken.",
-    note: "SEO, lokale optimalisatie, contentverbeteringen en rapportage.",
-    featured: true,
-  },
-  {
-    name: "Google + AI Groei",
-    price: 149,
-    description: "Voor bedrijven die naast Google ook beter begrepen en gevonden willen worden door AI-tools.",
-    note: "SEO + AEO + GEO/AIO, structured data, AI-zichtbaarheidschecks en contentverbetering.",
-  },
-];
-
-const HOSTING_OPTIONS = [
-  {
-    period: "1 jaar",
-    price: 30,
-    description: "€2,50 per maand omgerekend.",
-  },
-  {
-    period: "3 jaar",
-    price: 85,
-    description: "Iets voordeliger en drie jaar geregeld.",
-    featured: true,
-  },
-  {
-    period: "5 jaar",
-    price: 135,
-    description: "De laagste prijs per jaar.",
-  },
-];
-
-const ADD_ONS = [
-  {
-    title: "Zakelijke e-mail",
-    price: "€30 per jaar / mailbox",
-    text: "Een professioneel e-mailadres op je eigen domeinnaam.",
-    icon: Mail,
-  },
-  {
-    title: "SEO Start",
-    price: "€149 eenmalig",
-    text: "Extra optimalisatie van titels, teksten, diensten en technische Google-signalen.",
-    icon: Search,
-  },
-  {
-    title: "AEO Start",
-    price: "€99 eenmalig",
-    text: "FAQ-, antwoord- en structured-data optimalisatie zodat systemen je informatie beter kunnen gebruiken.",
-    icon: MessageCircle,
-  },
-  {
-    title: "GEO + AIO Start",
-    price: "€199 eenmalig",
-    text: "Content en structuur verbeteren voor moderne AI-zoek- en antwoordplatformen.",
-    icon: Sparkles,
-  },
-  {
-    title: "Bezoekersinzichten",
-    price: "€49 eenmalig",
-    text: "Analytics inrichten zodat je ziet hoeveel bezoekers en aanvragen je krijgt.",
-    icon: BarChart3,
-  },
-  {
-    title: "Online afspraken",
-    price: "Vanaf €149",
-    text: "Laat klanten rechtstreeks een afspraak of intake aanvragen.",
-    icon: CalendarCheck2,
-  },
-  {
-    title: "Extra pagina",
-    price: "Vanaf €99",
-    text: "Voor een extra dienst, locatie, product of campagnepagina.",
-    icon: FilePlus2,
-  },
-  {
-    title: "Teksten laten schrijven",
-    price: "Vanaf €99",
-    text: "Duidelijke webteksten die vertrouwen opbouwen en aanzetten tot contact.",
-    icon: PenLine,
-  },
-  {
-    title: "Ondersteuning achteraf",
-    price: "Vanaf €35",
-    text: "Losse hulp bij wijzigingen, vragen of technische verbeteringen.",
-    icon: Headphones,
-  },
-];
-
-const PRICE_FAQS = [
+const BASE_PRICE_FAQS = [
   {
     question: "Wat kost een website bij Vedantix?",
     answer:
-      "Een professionele website begint bij €399 eenmalig. Growth kost €599 en Pro €999. Er is geen verplicht maandabonnement. Hosting, e-mail en eventuele groeidiensten kies je apart.",
+      "De actuele pakketprijzen staan op deze pagina. Hosting, e-mail en eventuele groeidiensten kies je apart.",
   },
   {
     question: "Wat is het verschil tussen SEO, AEO, GEO en AIO?",
@@ -222,9 +123,9 @@ const PRICE_FAQS = [
       "Iedere Vedantix-website krijgt een technisch sterke basis. Growth en Pro krijgen meer SEO, structured data en antwoordgerichte optimalisatie. Uitgebreide of doorlopende SEO, AEO en GEO/AIO kun je los of als groeipakket afnemen.",
   },
   {
-    question: "Kost hosting echt maar €30 per jaar?",
+    question: "Wat kost hosting?",
     answer:
-      "Ja. Voor een normale Vedantix-bedrijfswebsite kost hosting €30 per jaar. Een domeinnaam, zakelijke mailboxen of uitzonderlijk zwaar gebruik kunnen apart worden berekend als dat van toepassing is.",
+      "Bekijk de actuele hostingtarieven op deze pagina. Domeinnamen, mailboxen en uitzonderlijk zwaar gebruik kunnen apart worden berekend.",
   },
   {
     question: "Kan Vedantix garanderen dat ik bovenaan Google of in ChatGPT kom?",
@@ -234,7 +135,7 @@ const PRICE_FAQS = [
   {
     question: "Zijn de prijzen inclusief btw?",
     answer:
-      "Ja. De genoemde websiteprijzen op deze pagina zijn inclusief btw. Eventuele externe kosten of maatwerk bespreken we vooraf.",
+      "De hoofdprijzen zijn exclusief btw. Het bedrag inclusief btw staat er ook bij. Eventuele externe kosten of maatwerk bespreken we vooraf.",
   },
   {
     question: "Kan ik later uitbreidingen toevoegen?",
@@ -247,13 +148,14 @@ function currency(value) {
   return new Intl.NumberFormat("nl-NL", {
     style: "currency",
     currency: "EUR",
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
   }).format(Number(value || 0));
 }
 
 function packageWhatsapp(pkg) {
   return `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent(
-    `Hallo Vedantix, ik wil graag meer weten over het ${pkg.label}-websitepakket van ${currency(pkg.price)}.`
+    `Hallo Vedantix, ik wil graag meer weten over het ${pkg.label}-websitepakket van ${currency(pkg.price)} excl. btw ${pkg.suffix}.`
   )}`;
 }
 
@@ -263,7 +165,39 @@ function addonWhatsapp(title) {
   )}`;
 }
 
-export default function Prijzen() {
+export default function Prijzen({ initialProducts = null }) {
+  const { data: products, loading, error } = usePublicContent(fetchPublicCatalog, initialProducts);
+  const suffix = type => type === "MONTHLY" ? "per maand" : type === "YEARLY" ? "per jaar" : "eenmalig";
+  const WEBSITE_PACKAGES = products.filter(p => p.category.toUpperCase() === "WEBSITE").map(p => {
+    const details = WEBSITE_PACKAGE_DETAILS.find(d => d.code === p.code);
+    return {
+      ...details, code: p.code, label: p.name.split(/[—–]/)[0].trim(),
+      description: p.description || details?.description || "", eyebrow: details?.eyebrow || "Website op maat",
+      pages: details?.pages || "Op maat", features: details?.features || [p.description || "Professionele website"],
+      price: Number(p.price_ex_vat), priceIncl: Number(p.price_incl_vat), suffix: suffix(p.billing_type), oneTime: p.billing_type === "ONE_TIME",
+    };
+  });
+  const GROWTH_PLANS = products.filter(p => p.category.toUpperCase() === "GROWTH").map(p => ({
+    name: p.name, price: Number(p.price_ex_vat), priceIncl: Number(p.price_incl_vat),
+    note: p.description, featured: p.code === "GOOGLE_GROWTH", suffix: suffix(p.billing_type),
+  }));
+  const HOSTING_OPTIONS = products.filter(p => p.category.toUpperCase() === "HOSTING").map(p => ({
+    code: p.code, period: `${Number(p.duration_years || 1)} jaar`, price: Number(p.price_ex_vat),
+    priceIncl: Number(p.price_incl_vat), description: p.description, featured: Number(p.duration_years) === 3,
+  }));
+  const addonIcons = { EMAIL: Mail, SEO_START: Search, AEO_START: MessageCircle, GEO_AIO_START: Sparkles, ANALYTICS: BarChart3, APPOINTMENTS: CalendarCheck2, EXTRA_PAGE: FilePlus2, COPYWRITING: PenLine, SUPPORT: Headphones };
+  const ADD_ONS = products.filter(p => !["WEBSITE","GROWTH","HOSTING"].includes(p.category.toUpperCase())).map(p => ({
+    title: p.name, price: `${p.from_price ? "Vanaf " : ""}${currency(p.price_ex_vat)} ${suffix(p.billing_type)}`,
+    priceIncl: Number(p.price_incl_vat), text: p.description, icon: addonIcons[p.code] || Sparkles,
+  }));
+  const lowest = WEBSITE_PACKAGES.length ? Math.min(...WEBSITE_PACKAGES.map(p => p.price)) : null;
+  const yearlyHosting = products.find(p => p.code === "HOSTING_YEAR");
+  const heading = lowest === null ? "Een professionele website voor jouw bedrijf." : `Een professionele website vanaf ${currency(lowest)}.`;
+  const PRICE_FAQS = BASE_PRICE_FAQS.map(faq => {
+    if (faq.question === "Wat kost een website bij Vedantix?" && WEBSITE_PACKAGES.length) return { ...faq, answer: WEBSITE_PACKAGES.map(p => `${p.label}: ${currency(p.price)} excl. btw (${currency(p.priceIncl)} incl. btw), ${p.suffix}.`).join(" ") + " Hosting, e-mail en groeidiensten kies je apart." };
+    if (faq.question === "Wat kost hosting?" && yearlyHosting) return { ...faq, answer: `Jaarlijkse hosting kost ${currency(yearlyHosting.price_ex_vat)} excl. btw (${currency(yearlyHosting.price_incl_vat)} incl. btw). Domeinnamen en mailboxen staan los van hosting.` };
+    return faq;
+  });
   const canonical = "https://vedantix.nl/prijzen";
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Home", url: "https://vedantix.nl/" },
@@ -274,8 +208,8 @@ export default function Prijzen() {
   return (
     <>
       <SEO
-        title="Website vanaf €399 | Hosting €30 per jaar | Vedantix"
-        description="Professionele websites vanaf €399 eenmalig. Hosting vanaf €30 per jaar. Kies extra SEO, AEO, GEO/AIO en online groei alleen wanneer je die nodig hebt."
+        title={lowest === null ? "Websiteprijzen en pakketten | Vedantix" : `Website vanaf ${currency(lowest)} excl. btw | Vedantix`}
+        description="Bekijk de actuele prijzen voor websites, hosting, SEO en online groei. Kies het pakket dat past bij jouw bedrijf."
         canonical={canonical}
         schemas={[breadcrumbSchema, faqSchema]}
       />
@@ -291,7 +225,7 @@ export default function Prijzen() {
                 <div className="pricing-eyebrow">
                   <span /> Geen bureauprijzen. Wel een professionele basis.
                 </div>
-                <h1 id="pricing-title">Een professionele website vanaf €399.</h1>
+                <h1 id="pricing-title">{heading}</h1>
                 <p>
                   Betaal je website één keer. Geen verplicht maandabonnement. Wil je daarna
                   actiever groeien in Google of AI-platformen? Dan kies je alleen de zichtbaarheid
@@ -299,6 +233,8 @@ export default function Prijzen() {
                 </p>
               </header>
 
+              {loading ? <p role="status">Actuele prijzen laden…</p> : null}
+              {error ? <p role="alert">De prijzen zijn tijdelijk niet beschikbaar. Neem contact op voor een offerte.</p> : null}
               <div className="pricing-package-grid">
                 {WEBSITE_PACKAGES.map((pkg) => (
                   <article
@@ -319,13 +255,14 @@ export default function Prijzen() {
                     <p className="pricing-card-description">{pkg.description}</p>
 
                     <div className="pricing-cost-box">
-                      <span>Je betaalt één keer</span>
+                      <span>Prijs exclusief btw</span>
                       <div className="pricing-main-price">
-                        {currency(pkg.price)} <small>eenmalig</small>
+                        {currency(pkg.price)} <small>{pkg.suffix}</small>
                       </div>
+                      <div className="pricing-zero-cost">{currency(pkg.priceIncl)} inclusief btw</div>
                       <div className="pricing-zero-cost">
                         <CheckCircle2 size={16} aria-hidden="true" />
-                        Daarna €0 verplicht per maand
+                        {pkg.oneTime ? "Geen verplicht maandabonnement" : `Facturatie ${pkg.suffix}`}
                       </div>
                     </div>
 
@@ -350,9 +287,9 @@ export default function Prijzen() {
               </div>
 
               <div className="pricing-hero-footer">
-                <span>Alle getoonde websiteprijzen zijn inclusief btw</span>
+                <span>Hoofdprijzen exclusief btw; bedragen inclusief btw staan erbij</span>
                 <span className="pricing-footer-divider" aria-hidden="true" />
-                <span>Hosting vanaf €30 per jaar</span>
+                {yearlyHosting ? <span>Hosting {currency(yearlyHosting.price_ex_vat)} excl. btw per jaar</span> : null}
                 <a href="#vindbaarheid">
                   Bekijk vindbaarheid <ArrowDown size={15} aria-hidden="true" />
                 </a>
@@ -449,7 +386,7 @@ export default function Prijzen() {
                       <tr key={row.label}>
                         <td>{row.label}</td>
                         {WEBSITE_PACKAGES.map((pkg) => (
-                          <td key={`${row.label}-${pkg.code}`}>{row.values[pkg.code]}</td>
+                          <td key={`${row.label}-${pkg.code}`}>{row.values[pkg.code] || "Op aanvraag"}</td>
                         ))}
                       </tr>
                     ))}
@@ -457,7 +394,7 @@ export default function Prijzen() {
                       <td>Prijs</td>
                       {WEBSITE_PACKAGES.map((pkg) => (
                         <td key={`price-${pkg.code}`}>
-                          <strong>{currency(pkg.price)} eenmalig</strong>
+                          <strong>{currency(pkg.price)} {pkg.suffix}</strong><small> excl. btw</small>
                         </td>
                       ))}
                     </tr>
@@ -499,7 +436,7 @@ export default function Prijzen() {
                     >
                       {plan.featured ? <span>Meest gekozen</span> : null}
                       <strong>{plan.name}</strong>
-                      <b>{currency(plan.price)}/m</b>
+                      <b>{currency(plan.price)} {plan.suffix} excl. btw</b><small>{currency(plan.priceIncl)} incl. btw</small>
                       <small>{plan.note}</small>
                     </a>
                   ))}
@@ -531,13 +468,13 @@ export default function Prijzen() {
                     <a
                       className={option.featured ? "featured" : ""}
                       href={addonWhatsapp(`Website Hosting voor ${option.period}`)}
-                      key={option.period}
+                      key={option.code}
                       target="_blank"
                       rel="noreferrer"
                     >
                       {option.featured ? <span>Voordelig</span> : null}
                       <strong>{option.period}</strong>
-                      <b>{currency(option.price)}</b>
+                      <b>{currency(option.price)} excl. btw</b><small>{currency(option.priceIncl)} incl. btw</small>
                       <small>{option.description}</small>
                     </a>
                   ))}
@@ -555,7 +492,7 @@ export default function Prijzen() {
                     return (
                       <article key={addon.title}>
                         <span className="pricing-icon"><Icon size={20} aria-hidden="true" /></span>
-                        <strong>{addon.price}</strong>
+                        <strong>{addon.price} excl. btw</strong><small>{currency(addon.priceIncl)} incl. btw</small>
                         <h3>{addon.title}</h3>
                         <p>{addon.text}</p>
                         <a href={addonWhatsapp(addon.title)} target="_blank" rel="noreferrer">

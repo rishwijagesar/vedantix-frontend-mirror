@@ -447,7 +447,7 @@ export default function WebsiteSalon() {
               <div className="salon-secondary-highlight-box">
                 <strong>Vanaf</strong>
                 <p>
-                  Eenmalig vanaf €399. Geen verplicht maandabonnement. Hosting vanaf €30 per jaar en zakelijke e-mail vanaf €30 per jaar per mailbox.
+                  Bekijk de actuele website-, hosting- en e-mailtarieven op onze prijzenpagina.
                 </p>
               </div>
             </div>

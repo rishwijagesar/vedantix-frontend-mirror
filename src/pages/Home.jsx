@@ -283,7 +283,7 @@ function CompareList({ title, items, variant }) {
   );
 }
 
-export default function Home() {
+export default function Home({ initialCases = null }) {
   const meetingUrl = `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent(
     "Hallo Vedantix, ik wil graag een kennismaking plannen over online groei.",
   )}`;
@@ -591,7 +591,7 @@ export default function Home() {
             </section>
           </Suspense>
 
-          <ClientCasesSection />
+          <ClientCasesSection initialCases={initialCases} />
 
           <Suspense fallback={null}>
             <section

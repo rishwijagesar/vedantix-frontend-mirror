@@ -1,3 +1,4 @@
+import ClientCasesSection from "../components/home/ClientCasesSection";
 import {
   ArrowRight,
   BarChart3,
@@ -343,7 +344,7 @@ const FAQS = [
   },
 ];
 
-export default function Resultaten() {
+export default function Resultaten({ initialCases = null }) {
   const canonical = "https://vedantix.nl/resultaten";
   const faqSchema = createFAQSchema(FAQS);
   const serviceSchema = createServiceSchema({
@@ -440,51 +441,7 @@ export default function Resultaten() {
             </div>
           </section>
 
-          <section className="results-section results-case" aria-labelledby="case-title">
-            <div className="results-panel">
-              <div className="results-section-label">Voorbeeldcase</div>
-              <h2 id="case-title">Jitan Sports</h2>
-              <p>
-                Voor Jitan Sports draait online groei om vertrouwen, duidelijke diensten,
-                lokale zichtbaarheid en laagdrempelige contactmomenten.
-              </p>
-              <ul className="results-case-list">
-                <li>
-                  <CheckCircle2 size={18} aria-hidden="true" />
-                  <span>Heldere positionering rondom personal training, massage en begeleiding.</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={18} aria-hidden="true" />
-                  <span>CTA’s ingericht op proefles, WhatsApp en direct contact.</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={18} aria-hidden="true" />
-                  <span>Structuur gericht op vertrouwen, lokale vindbaarheid en conversie.</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="results-panel">
-              <div className="results-section-label">Waarom dit werkt</div>
-              <h2>Een website moet keuzes makkelijker maken</h2>
-              <p>
-                Bezoekers vergelijken snel. Ze willen weten of een bedrijf professioneel is,
-                of de dienst past bij hun vraag en hoe ze eenvoudig contact opnemen.
-              </p>
-              <p style={{ marginTop: 14 }}>
-                Daarom verbeteren we niet alleen de vormgeving, maar ook de route van bezoeker
-                naar aanvraag.
-              </p>
-              <div className="results-actions" style={{ marginTop: 22 }}>
-                <a href="/online-groei-audit" className="results-primary">
-                  Vraag jouw audit aan
-                </a>
-                <Link to="/website/personal-trainer" className="results-secondary">
-                  Bekijk branchevoorbeeld
-                </Link>
-              </div>
-            </div>
-          </section>
+          <ClientCasesSection initialCases={initialCases} placement="results" />
 
           <section className="results-section" aria-labelledby="results-faq-title">
             <div className="results-section-header center">
