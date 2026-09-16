@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { AUDIT_FUNNEL_EVENTS, trackAuditFunnel } from "@/lib/audit-funnel";
 
+const PAGESPEED_RETRY_MS = 15 * 60 * 1000;
+
 async function readFunctionError(error, fallback) {
   let message = error?.message || fallback;
   try {
@@ -33,6 +35,14 @@ async function enrichPageSpeed(auditId) {
   return data;
 }
 
+function needsPageSpeedEnrichment(results) {
+  const pageSpeed = results?.pageSpeed;
+  if (!pageSpeed?.status) return true;
+  if (pageSpeed.status !== "FAILED") return false;
+  const measuredAt = Date.parse(pageSpeed.measuredAt || "");
+  return !Number.isFinite(measuredAt) || Date.now() - measuredAt >= PAGESPEED_RETRY_MS;
+}
+
 async function enrichCompletedAudit(data) {
   if (!data?.auditId || data?.status !== "COMPLETED") return data;
   await enrichPageSpeed(data.auditId);
@@ -47,7 +57,7 @@ export async function startOnlineGrowthAudit(payload) {
 
 export async function fetchOnlineGrowthAudit(auditId) {
   let data = await invoke({ action: "get", auditId });
-  if (data?.status === "COMPLETED" && data?.results && !data.results.pageSpeed?.status) {
+  if (data?.status === "COMPLETED" && data?.results && needsPageSpeedEnrichment(data.results)) {
     await enrichPageSpeed(auditId);
     data = await invoke({ action: "get", auditId });
   }
@@ -62,7 +72,7 @@ export async function rerunOnlineGrowthAudit(auditId) {
 export async function downloadOnlineGrowthAuditPdf(auditId) {
   // Ensure older completed audits are enriched before the PDF is generated.
   const current = await invoke({ action: "get", auditId });
-  if (current?.status === "COMPLETED" && current?.results && !current.results.pageSpeed?.status) {
+  if (current?.status === "COMPLETED" && current?.results && needsPageSpeedEnrichment(current.results)) {
     await enrichPageSpeed(auditId);
   }
 
