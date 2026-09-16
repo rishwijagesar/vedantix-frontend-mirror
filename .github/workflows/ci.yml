@@ -74,14 +74,6 @@ jobs:
           bun scripts/check-document-previews.ts
           pdftoppm -png -r 85 -singlefile tmp/invoice-payment/documents/voorwaarden.pdf tmp/invoice-payment/documents/voorwaarden
           pdftoppm -png -r 85 -singlefile tmp/invoice-payment/documents/concept-contract.pdf tmp/invoice-payment/documents/concept-contract
-          echo "TERMS_PREVIEW_BEGIN"
-          base64 -w0 tmp/invoice-payment/documents/voorwaarden.png
-          echo ""
-          echo "TERMS_PREVIEW_END"
-          echo "CONTRACT_PREVIEW_BEGIN"
-          base64 -w0 tmp/invoice-payment/documents/concept-contract.png
-          echo ""
-          echo "CONTRACT_PREVIEW_END"
 
       - uses: actions/upload-artifact@v4
         with:

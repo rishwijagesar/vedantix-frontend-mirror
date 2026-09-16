@@ -4,9 +4,21 @@ import { createBreadcrumbSchema } from "../utils/schema";
 
 const canonical = "https://vedantix.nl/terms";
 
+function renderBlocks(blocks) {
+  const elements = [];
+  for (let index = 0; index < blocks.length; index++) {
+    const block = blocks[index];
+    if (block.kind === "p") { elements.push(<p key={index}>{block.text}</p>); continue; }
+    const start = index, items = [block.text];
+    while (blocks[index + 1]?.kind === "li") items.push(blocks[++index].text);
+    elements.push(<ul key={start}>{items.map((text, itemIndex) => <li key={itemIndex}>{text}</li>)}</ul>);
+  }
+  return elements;
+}
+
 const sections = GENERAL_TERMS.sections.map(section => ({
   title: section.title, shortTitle: section.shortTitle,
-  content: <>{section.blocks.map((block, index) => block.kind === "li" ? <p key={index}>• {block.text}</p> : <p key={index}>{block.text}</p>)}</>,
+  content: <>{renderBlocks(section.blocks)}</>,
 }));
 
 export default function Voorwaarden() {
