@@ -40,5 +40,8 @@ jobs:
       - name: Audit funnel admin access checks
         run: bun scripts/check-audit-funnel-admin.mjs
 
+      - name: Lead pipeline checks
+        run: bun scripts/check-lead-pipeline.mjs
+
       - name: Production build
         run: bun run build
