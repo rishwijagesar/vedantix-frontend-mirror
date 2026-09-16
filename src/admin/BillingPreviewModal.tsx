@@ -1,6 +1,18 @@
 import { Download, X } from "lucide-react";
 import { useMemo, useRef } from "react";
 
+function hideUnusedLineDiscountColumn(source: string) {
+  return source.replace(/<table class="items">[\s\S]*?<\/table>/, (table) => {
+    const hasActualLineDiscount = /<td class="num">−\s*[^<]+<\/td>/.test(table);
+    if (hasActualLineDiscount) return table;
+
+    return table
+      .replace('<th class="num">Korting</th>', "")
+      .replaceAll('<td class="num">—</td>', "")
+      .replaceAll('colspan="7"', 'colspan="6"');
+  });
+}
+
 function customerPricePresentation(source: string) {
   if (!source) return source;
 
@@ -25,6 +37,10 @@ function customerPricePresentation(source: string) {
       return `<div class="cost-card"><span>${title}</span><strong>${exText}${suffix}</strong><small>excl. btw · ${vatText} btw · ${inclAmount}${suffix} incl. btw</small></div>`;
     },
   );
+
+  // Toon de kortingskolom alleen als er op minstens één regel echt korting is
+  // toegepast. Een algemene documentkorting blijft apart in de samenvatting.
+  html = hideUnusedLineDiscountColumn(html);
 
   return html.replace(
     "</style>",
