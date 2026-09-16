@@ -17,3 +17,13 @@ verify_jwt = false
 
 [functions.customer-preview]
 verify_jwt = false
+
+# Public invoice endpoints authenticate using an unguessable invoice token.
+[functions.invoice-payment-qr]
+verify_jwt = false
+
+[functions.billing-pdf]
+verify_jwt = false
+
+[functions.mollie-payment]
+verify_jwt = false

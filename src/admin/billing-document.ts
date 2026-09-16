@@ -1,3 +1,4 @@
+import { invoiceOutstanding, invoicePaymentDescription, invoicePaymentReference, invoicePaymentUrl, invoiceQrUrl, isInvoicePayable } from "../lib/invoice-payment";
 import {
   BILLING_TYPE_LABELS,
   buildPaymentBreakdown,
@@ -125,6 +126,20 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
   const title = isQuote ? "Offerte" : isInvoice ? "Factuur" : "Creditnota";
   const accent = String(company.accent_hex || "#3b82f6");
 
+  const invoice = document as Invoice;
+  const paymentUrl = isInvoice && isInvoicePayable(invoice) ? invoicePaymentUrl(invoice.public_token) : null;
+  const paymentSection = paymentUrl ? `<section class="invoice-payment" id="betalen">
+    <div class="payment-copy"><h3>Factuur betalen</h3>
+      <p>Openstaand: <strong>${euro.format(invoiceOutstanding(invoice))}</strong></p>
+      <p><strong>Factuurnummer:</strong> ${esc(invoice.invoice_number)}<br>
+      <strong>Omschrijving:</strong> ${esc(invoicePaymentDescription(invoice))}</p>
+      <a class="payment-button" href="${esc(paymentUrl)}" target="_blank" rel="noopener noreferrer">Betaal factuur online</a>
+      <p class="payment-hint">Klik op de knop of scan de QR-code met je telefooncamera.</p>
+      ${company.iban ? `<p class="payment-hint">Liever overmaken? IBAN ${esc(company.iban)}<br>Vermeld: ${esc(invoicePaymentReference(invoice))}</p>` : ""}
+    </div>
+    <a class="payment-qr" href="${esc(paymentUrl)}" target="_blank" rel="noopener noreferrer"><img src="${esc(invoiceQrUrl(invoice.public_token))}" width="140" height="140" alt="Scan om factuur ${esc(invoice.invoice_number)} te betalen" referrerpolicy="no-referrer"><span>Scan om te betalen</span></a>
+  </section>` : "";
+
   const itemRows = items.length ? items.map((item) => `<tr>
       <td><strong>${esc(item.description)}</strong>${item.code ? `<div class="muted">${esc(item.code)}</div>` : ""}</td>
       <td>${esc(BILLING_TYPE_LABELS[(item.billing_type || "ONE_TIME") as BillingType])}</td>
@@ -155,15 +170,17 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
     .summary{width:48%;margin:22px 0 0 auto}.sum-row{display:flex;justify-content:space-between;padding:5px 0;color:#475569}.sum-row.total{border-top:2px solid #0f172a;margin-top:7px;padding-top:11px;color:#0f172a;font-size:16px;font-weight:800}.sum-row.discount{color:#0f766e}.vat-line{font-size:10px;color:#64748b}
     .cost-overview{margin-top:24px;border-top:2px solid #0f172a;padding-top:16px}.cost-overview h3{font-size:13px;margin:0 0 10px}.cost-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.cost-card{border:1px solid #e2e8f0;border-radius:10px;padding:12px;background:#f8fafc}.cost-card span{display:block;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.05em}.cost-card strong{display:block;font-size:17px;margin-top:4px}.cost-card small{display:block;color:#64748b;margin-top:3px}.discount-note{font-size:10px;color:#64748b;margin:8px 0 0}
     .notes{margin-top:28px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}.notes h4{margin:0 0 6px}.footer{display:flex;justify-content:space-between;gap:18px;border-top:1px solid #e2e8f0;margin-top:28px;padding-top:14px;color:#64748b;font-size:9.5px}.footer strong{color:#334155}
+    .invoice-payment{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:24px;padding:18px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;break-inside:avoid;page-break-inside:avoid}.invoice-payment h3{margin:0 0 8px;font-size:15px}.invoice-payment p{margin:6px 0;overflow-wrap:anywhere}.payment-copy{min-width:0;flex:1}.payment-button{display:inline-block;background:#1d4ed8;color:white!important;text-decoration:none;font-weight:700;border-radius:7px;padding:10px 16px;margin:7px 0;print-color-adjust:exact;-webkit-print-color-adjust:exact}.payment-hint{font-size:10px;color:#475569}.payment-qr{flex:0 0 140px;text-align:center;text-decoration:none;color:#334155;font-size:10px}.payment-qr img{display:block;width:140px;height:140px;background:white}.payment-qr span{display:block;margin-top:4px}
     .printbar{position:fixed;top:12px;right:12px;display:flex;gap:8px}.printbar button{border:0;background:#0f172a;color:white;padding:10px 14px;border-radius:9px;font-weight:700;cursor:pointer}.printbar .secondary{background:white;color:#0f172a;border:1px solid #cbd5e1}@media print{.printbar{display:none}.page{max-width:none}}
   </style></head><body><div class="printbar"><button class="secondary" onclick="window.close()">Sluiten</button><button onclick="window.print()">Opslaan als PDF / printen</button></div><main class="page">
     <section class="top"><div>${vedantixLogoSvg()}</div><div class="doc-title"><h1>${title}</h1><div class="doc-no">${esc(number || "Concept")}</div><div class="accent"></div></div></section>
     <section class="grid"><div class="block"><h3>Van</h3><strong>${esc(company.trade_name || "Vedantix")}</strong>${company.legal_name ? `<div>${esc(company.legal_name)}</div>` : ""}${companyAddress.map((x)=>`<div>${esc(x)}</div>`).join("")}<div>${esc(company.email || "")}</div>${company.phone ? `<div>${esc(company.phone)}</div>` : ""}</div>
       <div class="block"><h3>Aan</h3><strong>${esc(customer.company_name || "Klant")}</strong>${customer.contact_name ? `<div>${esc(customer.contact_name)}</div>` : ""}${customerAddress.map((x)=>`<div>${esc(x)}</div>`).join("")}${customer.email ? `<div>${esc(customer.email)}</div>` : ""}
-      <div class="meta"><div><span>Datum</span><strong>${dateNl(docDate)}</strong></div>${isQuote ? `<div><span>Geldig tot</span><strong>${dateNl((document as Quote).valid_until)}</strong></div>` : ""}${isInvoice ? `<div><span>Vervaldatum</span><strong>${dateNl((document as Invoice).due_date)}</strong></div><div><span>Betalingskenmerk</span><strong>${esc((document as Invoice).payment_reference || number || "—")}</strong></div>` : ""}</div></div></section>
+      <div class="meta"><div><span>Datum</span><strong>${dateNl(docDate)}</strong></div>${isQuote ? `<div><span>Geldig tot</span><strong>${dateNl((document as Quote).valid_until)}</strong></div>` : ""}${isInvoice ? `<div><span>Vervaldatum</span><strong>${dateNl((document as Invoice).due_date)}</strong></div><div><span>Betalingskenmerk</span><strong>${esc(invoicePaymentReference(invoice) || "—")}</strong></div>` : ""}</div></div></section>
     ${isQuote && (document as Quote).intro_text ? `<div class="intro">${esc((document as Quote).intro_text).replaceAll("\n","<br>")}</div>` : ""}
     <table class="items"><thead><tr><th>Omschrijving</th><th>Termijn</th><th class="num">Aantal</th><th class="num">Prijs excl.</th><th class="num">BTW</th><th class="num">Korting</th><th class="num">Totaal excl.</th></tr></thead><tbody>${itemRows}</tbody></table>
     ${isQuote ? quoteCostOverview(items, document as Quote) : normalSummary}
+    ${paymentSection}
     ${(isQuote && ((document as Quote).notes || (document as Quote).terms)) || (isInvoice && (document as Invoice).notes) || (isCredit && (document as CreditNote).reason) ? `<section class="notes"><h4>${isCredit ? "Reden creditnota" : "Opmerkingen"}</h4><div>${esc(isQuote ? ((document as Quote).notes || (document as Quote).terms) : isInvoice ? (document as Invoice).notes : (document as CreditNote).reason).replaceAll("\n","<br>")}</div></section>` : ""}
     <footer class="footer"><div><strong>${esc(company.trade_name || "Vedantix")}</strong><br>${esc(company.website || "vedantix.nl")} · ${esc(company.email || "")}</div><div>${company.kvk_number ? `KVK ${esc(company.kvk_number)}<br>` : ""}${company.vat_number ? `BTW-ID ${esc(company.vat_number)}<br>` : ""}${company.iban ? `IBAN ${esc(company.iban)}` : ""}</div>${isInvoice && company.default_payment_term_days ? `<div>Betaling binnen ${esc(company.default_payment_term_days)} dagen.</div>` : ""}</footer>
   </main></body></html>`;

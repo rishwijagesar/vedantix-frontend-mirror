@@ -1,6 +1,8 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+import { invoiceOutstanding, invoicePaymentDescription, invoicePaymentReference, isInvoicePayable } from "../_shared/invoice-payment.ts";
+
 const allowedOrigins = new Set([
   "https://vedantix-migration-test.lovable.app",
   "https://vedantix.nl",
@@ -44,13 +46,16 @@ Deno.serve(async (request: Request) => {
 
   const { data: invoice, error: invoiceError } = await admin
     .from("invoices")
-    .select("id,invoice_number,status,total_incl_vat,amount_paid,public_token")
+    .select("id,invoice_number,title,payment_reference,status,is_active,total_incl_vat,amount_paid,public_token")
     .eq("public_token", publicToken)
     .maybeSingle();
   if (invoiceError || !invoice || !invoice.invoice_number) return new Response(JSON.stringify({ error: "Invoice not found" }), { status: 404, headers });
 
-  const outstanding = Math.max(0, Number(invoice.total_incl_vat || 0) - Number(invoice.amount_paid || 0));
-  const eligible = ["SENT", "PARTIALLY_PAID", "OVERDUE"].includes(String(invoice.status)) && outstanding > 0.009;
+  const outstanding = invoiceOutstanding(invoice);
+  const eligible = isInvoicePayable(invoice);
+  const description = invoicePaymentDescription(invoice);
+  const paymentReference = invoicePaymentReference(invoice);
+  const invoiceMetadata = { invoice_number: invoice.invoice_number, payment_reference: paymentReference, description };
   const { data: config } = await admin.from("payment_provider_config").select("enabled,mode,credentials_configured").eq("id", true).maybeSingle();
   const available = Boolean(config?.enabled && config?.credentials_configured && eligible);
 
@@ -70,6 +75,8 @@ Deno.serve(async (request: Request) => {
       outstanding: amountValue(outstanding),
       invoice_number: invoice.invoice_number,
       invoice_status: invoice.status,
+      description,
+      payment_reference: paymentReference,
       payment_status: latestPayment?.status || null,
     }), { status: 200, headers });
   }
@@ -100,7 +107,7 @@ Deno.serve(async (request: Request) => {
       currency: "EUR",
       status: "CREATING",
       redirect_url: redirectUrl,
-      metadata: { invoice_number: invoice.invoice_number },
+      metadata: invoiceMetadata,
     })
     .select("id")
     .single();
@@ -108,7 +115,7 @@ Deno.serve(async (request: Request) => {
 
   const { data: apiKey, error: keyError } = await admin.rpc("get_mollie_api_key");
   if (keyError || !apiKey) {
-    await admin.from("payment_requests").update({ status: "FAILED", metadata: { error: "provider_credentials_missing" } }).eq("id", requestRow.id);
+    await admin.from("payment_requests").update({ status: "FAILED", metadata: { ...invoiceMetadata, error: "provider_credentials_missing" } }).eq("id", requestRow.id);
     return new Response(JSON.stringify({ error: "Payment provider is not configured" }), { status: 503, headers });
   }
 
@@ -121,12 +128,13 @@ Deno.serve(async (request: Request) => {
     },
     body: JSON.stringify({
       amount: { currency: "EUR", value: amountValue(outstanding) },
-      description: `Factuur ${invoice.invoice_number} - Vedantix`,
+      description,
+      locale: "nl_NL",
       redirectUrl,
       webhookUrl,
       metadata: {
         invoice_id: invoice.id,
-        invoice_number: invoice.invoice_number,
+        ...invoiceMetadata,
         payment_request_id: requestRow.id,
       },
     }),
@@ -134,7 +142,7 @@ Deno.serve(async (request: Request) => {
   const mollie = await mollieResponse.json().catch(() => ({}));
 
   if (!mollieResponse.ok || !mollie?.id || !mollie?._links?.checkout?.href) {
-    await admin.from("payment_requests").update({ status: "FAILED", metadata: { error: mollie?.detail || mollie?.title || "mollie_create_failed" } }).eq("id", requestRow.id);
+    await admin.from("payment_requests").update({ status: "FAILED", metadata: { ...invoiceMetadata, error: mollie?.detail || mollie?.title || "mollie_create_failed" } }).eq("id", requestRow.id);
     return new Response(JSON.stringify({ error: "Mollie payment could not be created" }), { status: 502, headers });
   }
 
@@ -144,7 +152,7 @@ Deno.serve(async (request: Request) => {
     status: mappedStatus,
     checkout_url: mollie._links.checkout.href,
     provider_created_at: mollie.createdAt || null,
-    metadata: { invoice_number: invoice.invoice_number, mollie_mode: mollie.mode || config?.mode || "TEST" },
+    metadata: { ...invoiceMetadata, mollie_mode: mollie.mode || config?.mode || "TEST" },
   }).eq("id", requestRow.id);
 
   return new Response(JSON.stringify({ ok: true, reused: false, payment_request_id: requestRow.id, checkout_url: mollie._links.checkout.href, status: mappedStatus }), { status: 201, headers });
