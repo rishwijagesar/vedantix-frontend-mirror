@@ -1,13 +1,15 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -35,6 +37,8 @@ jobs:
       - name: Audit funnel privacy checks
         run: bun scripts/check-audit-funnel.mjs
 
+      - name: Audit funnel admin access checks
+        run: bun scripts/check-audit-funnel-admin.mjs
+
       - name: Production build
         run: bun run build
-
