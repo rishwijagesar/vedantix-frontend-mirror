@@ -1,8 +1,40 @@
 import { Download, X } from "lucide-react";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+
+function customerPricePresentation(source: string) {
+  if (!source) return source;
+
+  let html = source
+    .replace(
+      '<div class="sum-row"><span>Totaal excl. btw</span>',
+      '<div class="sum-row agreed"><span>Afgesproken bedrag excl. btw</span>',
+    )
+    .replace(
+      '<div class="sum-row total"><span>Totaal incl. btw</span>',
+      '<div class="sum-row payable"><span>Te betalen incl. btw</span>',
+    );
+
+  // In offertes zijn betaalmomenten ook primair excl. btw: dat is het bedrag
+  // dat commercieel wordt afgesproken. Het incl.-btw bedrag blijft eronder
+  // zichtbaar zodat de klant ook direct weet wat uiteindelijk wordt betaald.
+  html = html.replace(
+    /<div class="cost-card">\s*<span>(.*?)<\/span>\s*<strong>(.*?)<\/strong>\s*<small>(.*?) excl\. btw · (.*?) btw<\/small>\s*<\/div>/g,
+    (_match, title: string, inclText: string, exText: string, vatText: string) => {
+      const suffix = inclText.endsWith(" p/m") ? " p/m" : inclText.endsWith(" p/j") ? " p/j" : "";
+      const inclAmount = suffix ? inclText.slice(0, -suffix.length) : inclText;
+      return `<div class="cost-card"><span>${title}</span><strong>${exText}${suffix}</strong><small>excl. btw · ${vatText} btw · ${inclAmount}${suffix} incl. btw</small></div>`;
+    },
+  );
+
+  return html.replace(
+    "</style>",
+    `.sum-row.agreed{border-top:2px solid #0f172a;margin-top:7px;padding-top:11px;color:#0f172a;font-size:16px;font-weight:800}.sum-row.payable{border-top:1px solid #cbd5e1;margin-top:7px;padding-top:9px;color:#0f172a;font-size:13px;font-weight:700}</style>`,
+  );
+}
 
 export default function BillingPreviewModal({ open, html, title, onClose }: { open: boolean; html: string; title: string; onClose: () => void }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const customerHtml = useMemo(() => customerPricePresentation(html), [html]);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-sm" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
@@ -14,7 +46,7 @@ export default function BillingPreviewModal({ open, html, title, onClose }: { op
             <button type="button" onClick={onClose} className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"><X size={16} /></button>
           </div>
         </div>
-        <iframe ref={frameRef} title={title} srcDoc={html} className="min-h-0 flex-1 bg-slate-100" />
+        <iframe ref={frameRef} title={title} srcDoc={customerHtml} className="min-h-0 flex-1 bg-slate-100" />
       </div>
     </div>
   );
