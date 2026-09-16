@@ -54,7 +54,7 @@ jobs:
           deno-version: v2.x
 
       - name: Invoice payment and PDF regression tests
-        run: deno test --no-check --allow-env --allow-write=tmp/invoice-payment supabase/functions/_tests/invoice-payment.test.ts -- --preview
+        run: deno test --node-modules-dir=auto --no-check --allow-env --allow-write=tmp/invoice-payment supabase/functions/_tests/invoice-payment.test.ts -- --preview
 
       - name: Invoice print preview regression tests
         run: bun test scripts/invoice-payment.test.ts
