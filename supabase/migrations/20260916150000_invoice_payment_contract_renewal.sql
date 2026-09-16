@@ -31,13 +31,8 @@ declare
   v_reminder date;
   v_cancellation_deadline date;
 begin
-  if not public.is_staff(array['ADMIN','OPERATOR']) then
-    raise exception 'Not authorized';
-  end if;
-
-  if p_service_start_date is null then
-    raise exception 'Service start date is required';
-  end if;
+  if not public.is_staff(array['ADMIN','OPERATOR']) then raise exception 'Not authorized'; end if;
+  if p_service_start_date is null then raise exception 'Service start date is required'; end if;
 
   p_renewal_reminder_days := greatest(0, least(coalesce(p_renewal_reminder_days,14),120));
   p_cancellation_notice_days := greatest(0, least(coalesce(p_cancellation_notice_days,31),365));
@@ -47,9 +42,10 @@ begin
   if i.status not in ('FINALIZED','SENT','PARTIALLY_PAID','PAID','OVERDUE') then
     raise exception 'Invoice must be finalized before annual billing can be activated';
   end if;
-  if not exists(select 1 from public.invoice_items where invoice_id=i.id and billing_type='YEARLY') then
-    raise exception 'Invoice has no yearly items';
-  end if;
+  if not exists(
+    select 1 from public.invoice_items
+    where invoice_id=i.id and (billing_type='YEARLY' or code in ('HOSTING_YEAR','EMAIL'))
+  ) then raise exception 'Invoice has no yearly items'; end if;
 
   select * into v_existing
   from public.subscriptions
@@ -92,7 +88,7 @@ begin
   select v_subscription_id,position,catalog_product_id,code,description,quantity,
          unit_price_ex_vat,vat_rate,discount_type,discount_value
   from public.invoice_items
-  where invoice_id=i.id and billing_type='YEARLY'
+  where invoice_id=i.id and (billing_type='YEARLY' or code in ('HOSTING_YEAR','EMAIL'))
   order by position,id;
 
   return jsonb_build_object(
@@ -109,12 +105,7 @@ $$;
 revoke all on function public.activate_invoice_yearly_billing(uuid,date,boolean,integer,integer) from public,anon,authenticated;
 grant execute on function public.activate_invoice_yearly_billing(uuid,date,boolean,integer,integer) to authenticated;
 
--- Mail hosting is a yearly managed service, matching web hosting.
+-- Mail hosting is a yearly managed service for future quotes/invoices.
 update public.product_catalog
-set billing_type='YEARLY', updated_at=now()
-where code='EMAIL' and billing_type<>'YEARLY';
-
--- Correct the non-financial term label on existing mail-hosting invoice rows.
-update public.invoice_items
 set billing_type='YEARLY', updated_at=now()
 where code='EMAIL' and billing_type<>'YEARLY';
