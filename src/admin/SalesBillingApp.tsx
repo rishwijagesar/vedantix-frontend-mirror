@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { listCustomers, type Customer } from "./control-center-data";
 import { BillingDashboardCards, CompanyProfileModule, QuotesModule } from "./SalesBillingModules";
-import { CatalogModuleV2, InvoicesModuleV2 } from "./CatalogInvoiceModulesV2";
+import { InvoicesModuleV2 } from "./CatalogInvoiceModulesV2";
+import CatalogModuleV3 from "./CatalogModuleV3";
 import { SubscriptionsModule } from "./RecurringBillingModule";
 import PublicQuoteLinksModule from "./PublicQuoteLinksModule";
 import { PaymentsModule } from "./PaymentsModule";
@@ -82,7 +83,7 @@ const titles: Record<Section, [string, string]> = {
   email: ["E-mail & reminders", "Verstuur offertes en facturen via Migadu en beheer automatische betaalherinneringen."],
   production: ["Productie readiness", "Valideer de AWS serverless productie-release voordat klantcommunicatie en betalingen actief zijn."],
   subscriptions: ["Abonnementen", "Beheer maand- en jaarabonnementen en hun automatische factuurmomenten."],
-  catalog: ["Catalogus", "Beheer pakketten en diensten met prijzen excl. btw; btw wordt automatisch berekend."],
+  catalog: ["Catalogus", "Beheer pakketten en diensten met prijzen excl. btw; de incl.-btw prijs wordt direct herberekend."],
   customers: ["Klantgegevens", "Factuur-, offerte- en contractgegevens per klant, inclusief IBAN."],
   company: ["Bedrijfsprofiel", "Vedantix-gegevens die op nieuwe documenten worden vastgelegd."],
 };
@@ -169,7 +170,7 @@ export default function SalesBillingApp() {
             {section === "email" ? <BillingEmailModule customers={customers}/> : null}
             {section === "production" ? <ProductionReadinessModule/> : null}
             {section === "subscriptions" ? <SubscriptionsModule customers={customers}/> : null}
-            {section === "catalog" ? <CatalogModuleV2/> : null}
+            {section === "catalog" ? <CatalogModuleV3/> : null}
             {section === "customers" ? <BillingCustomersModule customers={customers} onChanged={loadCustomers}/> : null}
             {section === "company" ? <CompanyProfileModule/> : null}
           </main>
