@@ -83,5 +83,9 @@ jobs:
       - name: Public catalog and client case regression tests
         run: bun test scripts/public-content.test.tsx
 
+      - name: Contract prefill regression tests
+        run: bun test scripts/contract-prefill.test.ts
+
       - name: Production build
         run: bun run build
+
