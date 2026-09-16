@@ -11,6 +11,7 @@ function BillingPage() {
 }
 
 export const Route = createFileRoute("/admin_/billing")({
+  validateSearch: (search: Record<string, unknown>): { section?: string } => ({ section: typeof search.section === "string" ? search.section : undefined }),
   head: () => ({
     meta: [
       { title: "Sales & Billing | Vedantix Control Center" },
