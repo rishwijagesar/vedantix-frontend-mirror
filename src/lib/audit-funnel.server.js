@@ -1,5 +1,6 @@
 const FUNNEL_NAME = "online_growth_audit";
 const MAX_BODY_LENGTH = 256;
+const SMOKE_TEST_EVENT = "SMOKE_TEST";
 
 export const AUDIT_FUNNEL_EVENTS = new Set([
   "PAGE_VIEW",
@@ -10,6 +11,7 @@ export const AUDIT_FUNNEL_EVENTS = new Set([
   "PDF_DOWNLOADED",
   "PLANNING_CLICK",
   "WHATSAPP_CLICK",
+  SMOKE_TEST_EVENT,
 ]);
 
 function emptyResponse(status, headers = {}) {
@@ -70,6 +72,12 @@ export async function auditFunnel(request) {
   const event = typeof payload.event === "string" ? payload.event.trim().toUpperCase() : "";
   if (!AUDIT_FUNNEL_EVENTS.has(event)) {
     return emptyResponse(400);
+  }
+
+  // Deployment smoke tests validate that the endpoint is reachable through the
+  // same production path as visitors, but do not contaminate conversion counts.
+  if (event === SMOKE_TEST_EVENT) {
+    return emptyResponse(204);
   }
 
   console.info(
