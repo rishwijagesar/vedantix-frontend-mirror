@@ -43,5 +43,8 @@ jobs:
       - name: Lead pipeline checks
         run: bun scripts/check-lead-pipeline.mjs
 
+      - name: PageSpeed integration checks
+        run: bun scripts/check-pagespeed-integration.mjs
+
       - name: Production build
         run: bun run build
