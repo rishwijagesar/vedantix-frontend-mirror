@@ -1,3 +1,4 @@
+import { useSearchParams } from "@/lib/router-compat";
 import { useEffect, useState, type ComponentType } from "react";
 import {
   ArrowLeft,
@@ -99,7 +100,14 @@ function DashboardAction({ icon: Icon, title, description, onClick }: { icon: Co
 }
 
 export default function SalesBillingApp() {
-  const [section, setSection] = useState<Section>("overview");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedSection = searchParams.get("section");
+  const section: Section = sections.some(item => item.id === requestedSection) ? requestedSection as Section : "overview";
+  function setSection(next: Section) {
+    const params = new URLSearchParams(searchParams);
+    if (next === "overview") params.delete("section"); else params.set("section", next);
+    setSearchParams(params);
+  }
   const [customers, setCustomers] = useState<BillingCustomer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -139,6 +147,13 @@ export default function SalesBillingApp() {
             <div className="flex gap-2"><a href="/admin" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 md:hidden">Control Center</a><button type="button" onClick={() => void loadCustomers()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700"><RefreshCw size={14} className={loading ? "animate-spin" : ""}/> Vernieuwen</button></div>
           </header>
 
+          <nav aria-label="Sales & Billing onderdelen" className="border-b border-slate-200 bg-white px-4 py-3 md:hidden">
+            <label className="block text-xs font-semibold text-slate-500" htmlFor="billing-section">Onderdeel</label>
+            <select id="billing-section" value={section} onChange={event => setSection(event.target.value as Section)} className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold">
+              {sections.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}
+            </select>
+          </nav>
+
           <main className="mx-auto max-w-7xl p-4 md:p-7">
             <div className="mb-7"><span className="text-xs font-semibold uppercase tracking-[.16em] text-slate-400">Vedantix Admin</span><h1 className="mt-1 text-3xl font-bold tracking-tight">{title[0]}</h1><p className="mt-2 text-sm text-slate-500">{title[1]}</p></div>
 
@@ -148,7 +163,7 @@ export default function SalesBillingApp() {
                 <div className="grid gap-5 lg:grid-cols-3 xl:grid-cols-4">
                   <DashboardAction icon={Plus} title="Nieuwe klant" description="Leg klantgegevens vast en start daarna direct met contract of factuur." onClick={() => setSection("customers")} />
                   <DashboardAction icon={FileText} title="Nieuwe offerte" description="Klant selecteren, pakket toevoegen, korting en btw automatisch." onClick={() => setSection("quotes")} />
-                  <DashboardAction icon={FileSignature} title="Nieuw contract" description="Met of zonder offerte, versiebeheer en elektronische ondertekening." onClick={() => setSection("contracts")} />
+                  <DashboardAction icon={FileSignature} title="Contracten" description="Contracten bekijken, downloaden, aanmaken en ondertekenen." onClick={() => setSection("contracts")} />
                   <DashboardAction icon={ReceiptText} title="Nieuwe factuur" description="Direct factureren of vanuit een geaccepteerde offerte." onClick={() => setSection("invoices")} />
                   <DashboardAction icon={WalletCards} title="Betalingen" description="Deelbetalingen, historie en achterstallige facturen." onClick={() => setSection("payments")} />
                   <DashboardAction icon={CreditCard} title="Online betalen" description="Mollie/iDEAL checkout en paymentstatus." onClick={() => setSection("online-payments")} />
