@@ -17,7 +17,8 @@ import {
   WalletCards,
 } from "lucide-react";
 import { listCustomers, type Customer } from "./control-center-data";
-import { BillingDashboardCards, CatalogModule, CompanyProfileModule, InvoicesModule, QuotesModule } from "./SalesBillingModules";
+import { BillingDashboardCards, CompanyProfileModule, QuotesModule } from "./SalesBillingModules";
+import { CatalogModuleV2, InvoicesModuleV2 } from "./CatalogInvoiceModulesV2";
 import { SubscriptionsModule } from "./RecurringBillingModule";
 import PublicQuoteLinksModule from "./PublicQuoteLinksModule";
 import { PaymentsModule } from "./PaymentsModule";
@@ -51,6 +52,7 @@ type BillingCustomer = Customer & {
   country?: string | null;
   kvk_number?: string | null;
   vat_number?: string | null;
+  iban?: string | null;
 };
 
 const sections = [
@@ -74,14 +76,14 @@ const titles: Record<Section, [string, string]> = {
   quotes: ["Offertes", "Maak en beheer Vedantix-offertes vanuit je klanten en catalogus."],
   "quote-links": ["Offertelinks", "Deel beveiligde offertelinks en laat klanten zelf accepteren of afwijzen."],
   contracts: ["Contracten", "Maak versioned overeenkomsten, laat beide partijen elektronisch tekenen en bewaar een audit trail."],
-  invoices: ["Facturen", "Finaliseer facturen, volg betaalstatus en maak creditnota’s."],
+  invoices: ["Facturen", "Maak concepten met actuele catalogusprijzen, finaliseer facturen en beheer actieve/inactieve records."],
   payments: ["Betalingen", "Registreer deelbetalingen, bekijk de volledige historie en volg achterstallige facturen."],
   "online-payments": ["Online betalen", "Beheer Mollie/iDEAL en volg hosted checkout-betalingen zonder API-keys in de browser."],
   email: ["E-mail & reminders", "Verstuur offertes en facturen via Migadu en beheer automatische betaalherinneringen."],
   production: ["Productie readiness", "Valideer de AWS serverless productie-release voordat klantcommunicatie en betalingen actief zijn."],
   subscriptions: ["Abonnementen", "Beheer maand- en jaarabonnementen en hun automatische factuurmomenten."],
-  catalog: ["Catalogus", "Beheer pakketten, losse diensten, prijzen en btw."],
-  customers: ["Klantgegevens", "Factuur-, offerte- en contractgegevens per klant."],
+  catalog: ["Catalogus", "Beheer pakketten en diensten met prijzen excl. btw; btw wordt automatisch berekend."],
+  customers: ["Klantgegevens", "Factuur-, offerte- en contractgegevens per klant, inclusief IBAN."],
   company: ["Bedrijfsprofiel", "Vedantix-gegevens die op nieuwe documenten worden vastgelegd."],
 };
 
@@ -161,13 +163,13 @@ export default function SalesBillingApp() {
             {section === "quotes" ? <QuotesModule customers={customers}/> : null}
             {section === "quote-links" ? <PublicQuoteLinksModule customers={customers}/> : null}
             {section === "contracts" ? <ContractsModule customers={customers}/> : null}
-            {section === "invoices" ? <InvoicesModule customers={customers}/> : null}
+            {section === "invoices" ? <InvoicesModuleV2 customers={customers}/> : null}
             {section === "payments" ? <PaymentsModule customers={customers}/> : null}
             {section === "online-payments" ? <MolliePaymentsModule/> : null}
             {section === "email" ? <BillingEmailModule customers={customers}/> : null}
             {section === "production" ? <ProductionReadinessModule/> : null}
             {section === "subscriptions" ? <SubscriptionsModule customers={customers}/> : null}
-            {section === "catalog" ? <CatalogModule/> : null}
+            {section === "catalog" ? <CatalogModuleV2/> : null}
             {section === "customers" ? <BillingCustomersModule customers={customers} onChanged={loadCustomers}/> : null}
             {section === "company" ? <CompanyProfileModule/> : null}
           </main>

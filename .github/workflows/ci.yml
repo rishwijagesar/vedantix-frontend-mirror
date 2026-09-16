@@ -46,5 +46,8 @@ jobs:
       - name: PageSpeed integration checks
         run: bun scripts/check-pagespeed-integration.mjs
 
+      - name: Billing first-customer checks
+        run: bun scripts/check-billing-first-customer.mjs
+
       - name: Production build
         run: bun run build

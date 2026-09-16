@@ -10,6 +10,7 @@ type BillingCustomer = Customer & {
   country?: string | null;
   kvk_number?: string | null;
   vat_number?: string | null;
+  iban?: string | null;
 };
 
 type CustomerFormValues = {
@@ -24,11 +25,16 @@ type CustomerFormValues = {
   country: string;
   kvk_number: string | null;
   vat_number: string | null;
+  iban: string | null;
 };
 
 function value(form: FormData, key: string) {
   const raw = String(form.get(key) || "").trim();
   return raw || null;
+}
+
+function normalizeIban(raw: string | null) {
+  return raw ? raw.replace(/\s+/g, "").toUpperCase() : null;
 }
 
 function readCustomerForm(form: FormData): CustomerFormValues {
@@ -37,6 +43,11 @@ function readCustomerForm(form: FormData): CustomerFormValues {
 
   const email = value(form, "email");
   if (email && !/^\S+@\S+\.\S+$/.test(email)) throw new Error("Vul een geldig e-mailadres in.");
+
+  const iban = normalizeIban(value(form, "iban"));
+  if (iban && !/^[A-Z]{2}[0-9A-Z]{13,32}$/.test(iban)) {
+    throw new Error("Vul een geldig IBAN-rekeningnummer in.");
+  }
 
   return {
     company_name: companyName,
@@ -50,11 +61,12 @@ function readCustomerForm(form: FormData): CustomerFormValues {
     country: String(form.get("country") || "Nederland").trim() || "Nederland",
     kvk_number: value(form, "kvk_number"),
     vat_number: value(form, "vat_number"),
+    iban,
   };
 }
 
 const inputClass = "mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100";
-const fields: Array<{ label: string; name: keyof CustomerFormValues; type?: string }> = [
+const fields: Array<{ label: string; name: keyof CustomerFormValues; type?: string; placeholder?: string }> = [
   { label: "Bedrijfsnaam", name: "company_name" },
   { label: "Contactpersoon", name: "contact_name" },
   { label: "E-mail", name: "email", type: "email" },
@@ -66,6 +78,7 @@ const fields: Array<{ label: string; name: keyof CustomerFormValues; type?: stri
   { label: "Land", name: "country" },
   { label: "KVK-nummer", name: "kvk_number" },
   { label: "BTW-ID", name: "vat_number" },
+  { label: "IBAN-rekeningnummer", name: "iban", placeholder: "NL00BANK0123456789" },
 ];
 
 function CustomerForm({
@@ -89,12 +102,13 @@ function CustomerForm({
       }}
       className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3"
     >
-      {fields.map(({ label, name, type }) => (
+      {fields.map(({ label, name, type, placeholder }) => (
         <label key={name} className="text-sm font-medium text-slate-700">
           {label}{name === "company_name" ? " *" : ""}
           <input
             name={name}
             type={type || "text"}
+            placeholder={placeholder}
             defaultValue={String(initial?.[name] ?? (name === "country" ? "Nederland" : ""))}
             required={name === "company_name"}
             className={inputClass}
@@ -191,7 +205,7 @@ export default function BillingCustomersModule({ customers, onChanged }: { custo
             <button key={customer.id} type="button" onClick={() => setSelected(customer)} className="flex w-full items-center justify-between rounded-xl border border-slate-100 px-4 py-3 text-left transition hover:bg-slate-50">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="rounded-lg bg-slate-100 p-2 text-slate-600"><UserRound size={16}/></span>
-                <div className="min-w-0"><strong className="block truncate text-sm">{customer.company_name}</strong><span className="block truncate text-xs text-slate-400">{customer.email || "Geen e-mail"} · {customer.city || "adres nog niet compleet"}</span></div>
+                <div className="min-w-0"><strong className="block truncate text-sm">{customer.company_name}</strong><span className="block truncate text-xs text-slate-400">{customer.email || "Geen e-mail"} · {customer.city || "adres nog niet compleet"}{customer.iban ? ` · ${customer.iban}` : ""}</span></div>
               </div>
               <span className="ml-3 shrink-0 text-xs font-semibold text-slate-500">Bewerken →</span>
             </button>
