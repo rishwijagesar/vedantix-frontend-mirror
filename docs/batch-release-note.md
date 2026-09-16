@@ -1,0 +1,1 @@
+The production workflow is intentionally manual so multiple validated merges can be released together.
