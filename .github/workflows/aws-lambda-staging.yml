@@ -111,25 +111,12 @@ jobs:
               -H "x-amz-security-token: ${AWS_SESSION_TOKEN}" \
               "$1"
           }
-          signed_post_code() {
-            curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
-              --aws-sigv4 "aws:amz:${AWS_REGION}:lambda" \
-              --user "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" \
-              -H "x-amz-security-token: ${AWS_SESSION_TOKEN}" \
-              -H "Origin: $2" \
-              -H "Content-Type: application/json" \
-              -X POST \
-              --data '{"event":"SMOKE_TEST"}' \
-              "$1"
-          }
           marker="$(signed_get "$STAGING_URL/.well-known/vedantix-release.json")"
           echo "$marker" | jq -e --arg p "$EXPECTED_PLATFORM" --arg m "$EXPECTED_MARKER" '.platform == $p and .release_marker == $m' >/dev/null
           for path in / /prijzen /online-groei-audit /admin; do
             code="$(signed_code "$STAGING_URL$path")"
             test "$code" = "200"
           done
-          funnel_code="$(signed_post_code "$STAGING_URL/api/funnel/online-growth-audit" "$STAGING_URL")"
-          test "$funnel_code" = "204"
 
       - name: Promote same image to private production Lambda
         run: |
@@ -152,6 +139,7 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{"event":"SMOKE_TEST"}' \
             "$LIVE_URL/api/funnel/online-growth-audit")"
+          echo "Audit funnel CloudFront smoke returned HTTP $funnel_code"
           test "$funnel_code" = "204"
 
       - uses: actions/setup-node@v4
