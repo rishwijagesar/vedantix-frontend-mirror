@@ -65,7 +65,6 @@ jobs:
           sudo apt-get install -y -qq poppler-utils zbar-tools > /dev/null
           pdftoppm -png -r 110 -singlefile tmp/invoice-payment/invoice-payment.pdf tmp/invoice-payment/invoice-payment
           test "$(zbarimg --quiet --raw tmp/invoice-payment/invoice-payment.png)" = "https://vedantix.nl/factuur/00000000-0000-4000-8000-000000000001#betalen"
-          python3 -c "import base64; print('INVOICE_PREVIEW_PNG=' + base64.b64encode(open('tmp/invoice-payment/invoice-payment.png','rb').read()).decode())"
 
       - uses: actions/upload-artifact@v4
         with:
