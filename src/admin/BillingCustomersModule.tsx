@@ -1,3 +1,4 @@
+import CustomerDocumentsPanel from "./CustomerDocumentsPanel";
 import { useState, type FormEvent } from "react";
 import { Plus, UserRound } from "lucide-react";
 import { createCustomer, updateCustomer, type Customer } from "./control-center-data";
@@ -188,6 +189,7 @@ export default function BillingCustomersModule({ customers, onChanged }: { custo
         {error ? <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div> : null}
         {message ? <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{message}</div> : null}
         <CustomerForm initial={selected} submitLabel="Klantgegevens opslaan" onSubmit={save} onCancel={() => setSelected(null)} busy={busy} />
+        <CustomerDocumentsPanel key={selected.id} customerId={selected.id}/>
       </section>
     );
   }

@@ -54,7 +54,7 @@ jobs:
           deno-version: v2.x
 
       - name: Invoice payment and PDF regression tests
-        run: deno test --node-modules-dir=auto --no-check --allow-env --allow-write=tmp/invoice-payment supabase/functions/_tests/invoice-payment.test.ts -- --preview
+        run: deno test --node-modules-dir=auto --no-check --allow-env --allow-write=tmp/invoice-payment supabase/functions/_tests/invoice-payment.test.ts supabase/functions/_tests/billing-documents.test.ts -- --preview
 
       - name: Invoice print preview regression tests
         run: bun test scripts/invoice-payment.test.ts
@@ -65,6 +65,23 @@ jobs:
           sudo apt-get install -y -qq poppler-utils zbar-tools > /dev/null
           pdftoppm -png -r 110 -singlefile tmp/invoice-payment/invoice-payment.pdf tmp/invoice-payment/invoice-payment
           test "$(zbarimg --quiet --raw tmp/invoice-payment/invoice-payment.png)" = "https://vedantix.nl/factuur/00000000-0000-4000-8000-000000000001#betalen"
+
+      - name: Verify document bundle and exact terms text
+        run: |
+          unzip -t tmp/invoice-payment/documents/dossier.zip
+          pdftotext tmp/invoice-payment/documents/voorwaarden.pdf tmp/invoice-payment/documents/voorwaarden.txt
+          pdftotext tmp/invoice-payment/documents/concept-contract.pdf tmp/invoice-payment/documents/concept-contract.txt
+          bun scripts/check-document-previews.ts
+          pdftoppm -png -r 85 -singlefile tmp/invoice-payment/documents/voorwaarden.pdf tmp/invoice-payment/documents/voorwaarden
+          pdftoppm -png -r 85 -singlefile tmp/invoice-payment/documents/concept-contract.pdf tmp/invoice-payment/documents/concept-contract
+          echo "TERMS_PREVIEW_BEGIN"
+          base64 -w0 tmp/invoice-payment/documents/voorwaarden.png
+          echo ""
+          echo "TERMS_PREVIEW_END"
+          echo "CONTRACT_PREVIEW_BEGIN"
+          base64 -w0 tmp/invoice-payment/documents/concept-contract.png
+          echo ""
+          echo "CONTRACT_PREVIEW_END"
 
       - uses: actions/upload-artifact@v4
         with:

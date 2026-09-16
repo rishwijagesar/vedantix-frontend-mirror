@@ -23,3 +23,12 @@ for(const [path,flag] of [["/","show_on_home"],["/resultaten","show_on_results"]
   for(const c of cases.filter(c=>c[flag])) assert(html.includes(c.name),path+" missing published case "+c.name);
 }
 console.log("Production public catalog amounts/VAT and published customer cases verified.");
+
+const documentsEndpoint="https://zxnexwqvoznmirajhgxj.supabase.co/functions/v1/billing-documents";
+const terms=await fetch(documentsEndpoint+"?mode=terms");
+assert.equal(terms.status,200);
+assert((terms.headers.get("content-type")||"").includes("application/pdf"));
+assert((await terms.arrayBuffer()).byteLength>1000);
+const denied=await fetch(documentsEndpoint,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({kind:"bundle",customer_id:"00000000-0000-4000-8000-000000000001"})});
+assert.equal(denied.status,401);
+console.log("Live terms PDF and private document access denial verified.");

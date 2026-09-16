@@ -27,3 +27,7 @@ verify_jwt = false
 
 [functions.mollie-payment]
 verify_jwt = false
+
+# Public terms; customer documents validate the user's JWT and staff role in the handler.
+[functions.billing-documents]
+verify_jwt = false
