@@ -31,3 +31,8 @@ verify_jwt = false
 # Public terms; customer documents validate the user's JWT and staff role in the handler.
 [functions.billing-documents]
 verify_jwt = false
+
+
+# Custom getUser JWT validation and ADMIN authorization in the handler.
+[functions.ebookhouden-admin]
+verify_jwt = false

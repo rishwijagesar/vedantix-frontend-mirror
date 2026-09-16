@@ -86,6 +86,10 @@ jobs:
       - name: Contract prefill regression tests
         run: bun test scripts/contract-prefill.test.ts
 
+      - name: e-Boekhouden setup security and API tests
+        run: bun test scripts/ebookhouden.test.ts
+
       - name: Production build
         run: bun run build
+
 
