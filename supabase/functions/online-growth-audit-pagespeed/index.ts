@@ -8,6 +8,7 @@ const ALLOWED_ORIGINS = new Set([
 ]);
 const API_ENDPOINT = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
 const CATEGORIES = ["performance", "accessibility", "best-practices", "seo"];
+const FAILED_RETRY_MS = 15 * 60 * 1000;
 const METRIC_IDS = {
   fcp: "first-contentful-paint",
   lcp: "largest-contentful-paint",
@@ -34,6 +35,7 @@ function json(request: Request, body: unknown, status = 200) {
 }
 
 function categoryScore(value: unknown) {
+  if (value === null || value === undefined) return null;
   const numeric = Number(value);
   return Number.isFinite(numeric) ? Math.round(numeric * 100) : null;
 }
@@ -41,7 +43,7 @@ function categoryScore(value: unknown) {
 function auditMetric(audits: Record<string, any>, id: string) {
   const audit = audits?.[id];
   if (!audit) return null;
-  const numericValue = Number(audit.numericValue);
+  const numericValue = audit.numericValue === null || audit.numericValue === undefined ? NaN : Number(audit.numericValue);
   return {
     value: Number.isFinite(numericValue) ? numericValue : null,
     displayValue: typeof audit.displayValue === "string" ? audit.displayValue : null,
@@ -163,7 +165,9 @@ function enrichResults(results: any, pageSpeed: any) {
         confidence: "LOW",
         totalChecks: 0,
         measuredChecks: 0,
-        summary: "Google PageSpeed Insights was tijdelijk niet beschikbaar.",
+        summary: pageSpeed.requiresApiKey
+          ? "Google PageSpeed Insights heeft zijn anonieme quota bereikt; configureer de Vedantix PageSpeed API-key voor betrouwbare automatische metingen."
+          : "Google PageSpeed Insights was tijdelijk niet beschikbaar.",
         recommendations: ["Voer de audit later opnieuw uit voor een nieuwe PageSpeed-meting."],
         evidenceItems: [],
       }
@@ -232,6 +236,12 @@ function enrichResults(results: any, pageSpeed: any) {
   };
 }
 
+function failedMeasurementIsFresh(pageSpeed: any) {
+  if (pageSpeed?.status !== "FAILED") return false;
+  const measuredAt = Date.parse(pageSpeed?.measuredAt || "");
+  return Number.isFinite(measuredAt) && Date.now() - measuredAt < FAILED_RETRY_MS;
+}
+
 Deno.serve(async (request: Request) => {
   const headers = cors(request);
   const origin = request.headers.get("origin") || "";
@@ -261,9 +271,9 @@ Deno.serve(async (request: Request) => {
   if (auditError) return json(request, { error: auditError.message }, 500);
   if (!audit || audit.status !== "COMPLETED" || !audit.results) return json(request, { error: "Audit is nog niet klaar voor PageSpeed." }, 409);
 
-  const existingStatus = audit.results?.pageSpeed?.status;
-  if (["COMPLETED", "PARTIAL", "FAILED"].includes(existingStatus)) {
-    return json(request, { ok: true, cached: true, status: existingStatus });
+  const existingPageSpeed = audit.results?.pageSpeed;
+  if (["COMPLETED", "PARTIAL"].includes(existingPageSpeed?.status) || failedMeasurementIsFresh(existingPageSpeed)) {
+    return json(request, { ok: true, cached: true, status: existingPageSpeed.status });
   }
 
   const targetUrl = String(audit.results?.finalUrl || audit.request?.websiteUrl || "");
@@ -278,6 +288,7 @@ Deno.serve(async (request: Request) => {
   const errors = settled
     .filter((item): item is PromiseRejectedResult => item.status === "rejected")
     .map((item) => item.reason instanceof Error ? item.reason.message : String(item.reason));
+  const hasConfiguredApiKey = Boolean(Deno.env.get("PAGESPEED_API_KEY"));
 
   const pageSpeed = {
     status: mobile && desktop ? "COMPLETED" : mobile || desktop ? "PARTIAL" : "FAILED",
@@ -286,6 +297,7 @@ Deno.serve(async (request: Request) => {
     mobile,
     desktop,
     errors,
+    requiresApiKey: !hasConfiguredApiKey && errors.some((message) => /http 429|quota exceeded/i.test(message)),
   };
   const nextResults = enrichResults(audit.results, pageSpeed);
   const { error: updateError } = await db
@@ -297,6 +309,7 @@ Deno.serve(async (request: Request) => {
   return json(request, {
     ok: true,
     status: pageSpeed.status,
+    requiresApiKey: pageSpeed.requiresApiKey,
     overallScore: nextResults.overallScore,
     performanceScore: nextResults.scores?.find((entry: any) => entry?.key === "performance")?.score ?? null,
   });
