@@ -26,6 +26,8 @@ env:
   ASSET_BUCKET: vedantix.nl-bucket
   EXPECTED_PLATFORM: aws-lambda
   EXPECTED_MARKER: VEDANTIX_AWS_SERVERLESS_COMMERCE_READY
+  AUDIT_FUNNEL_URL: https://zxnexwqvoznmirajhgxj.supabase.co/functions/v1/audit-funnel
+  SUPABASE_PUBLISHABLE_KEY: sb_publishable_QlxkbMaJ9IEBAPr9y0d1HQ_xh8Z6oEu
 
 jobs:
   deploy:
@@ -53,35 +55,20 @@ jobs:
           role-to-assume: arn:aws:iam::381492205513:role/vedantix-frontend-github-deploy
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Diagnose live CloudFront methods
-        continue-on-error: true
+      - name: Smoke test audit funnel through Supabase
         run: |
-          set -uo pipefail
-          distribution_id="$(aws cloudformation describe-stacks \
-            --region "$AWS_REGION" \
-            --stack-name vedantix-site \
-            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue | [0]" \
-            --output text 2>/dev/null || true)"
-
-          if [ -n "$distribution_id" ] && [ "$distribution_id" != "None" ]; then
-            echo "Resolved CloudFront distribution from CloudFormation stack vedantix-site: $distribution_id"
-          else
-            distribution_id="$(aws cloudfront list-distributions \
-              --query "DistributionList.Items[?contains(Aliases.Items, 'vedantix.nl')].Id | [0]" \
-              --output text 2>/dev/null || true)"
+          set -u
+          funnel_code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            -X POST \
+            -H "Origin: $LIVE_URL" \
+            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{"event":"SMOKE_TEST"}' \
+            "$AUDIT_FUNNEL_URL" || true)"
+          echo "Audit funnel Supabase smoke returned HTTP $funnel_code"
+          if [ "$funnel_code" != "204" ]; then
+            echo "::warning::Audit funnel Supabase smoke returned HTTP $funnel_code. Core site deployment will continue because telemetry is non-critical."
           fi
-
-          if [ -z "$distribution_id" ] || [ "$distribution_id" = "None" ]; then
-            echo "::warning::Could not resolve the CloudFront distribution for vedantix.nl with the deploy role."
-            exit 0
-          fi
-
-          aws cloudfront get-distribution --id "$distribution_id" \
-            --query '{domain:Distribution.DomainName,aliases:Distribution.DistributionConfig.Aliases.Items,status:Distribution.Status}' \
-            --output json || true
-          aws cloudfront get-distribution-config --id "$distribution_id" \
-            --query '{targetOrigin:DistributionConfig.DefaultCacheBehavior.TargetOriginId,allowedMethods:DistributionConfig.DefaultCacheBehavior.AllowedMethods.Items,cachedMethods:DistributionConfig.DefaultCacheBehavior.AllowedMethods.CachedMethods.Items,cachePolicyId:DistributionConfig.DefaultCacheBehavior.CachePolicyId,originRequestPolicyId:DistributionConfig.DefaultCacheBehavior.OriginRequestPolicyId}' \
-            --output json || true
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -163,16 +150,6 @@ jobs:
             code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$LIVE_URL$path")"
             test "$code" = "200"
           done
-          funnel_code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
-            -X POST \
-            -H "Origin: $LIVE_URL" \
-            -H "Content-Type: application/json" \
-            --data '{"event":"SMOKE_TEST"}' \
-            "$LIVE_URL/api/funnel/online-growth-audit")"
-          echo "Audit funnel CloudFront diagnostic returned HTTP $funnel_code"
-          if [ "$funnel_code" != "204" ]; then
-            echo "::warning::Audit funnel POST is not available through CloudFront yet (HTTP $funnel_code). Core site smoke tests passed; funnel telemetry remains best-effort until CloudFront allows POST."
-          fi
 
       - uses: actions/setup-node@v4
         with:

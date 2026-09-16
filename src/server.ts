@@ -1,6 +1,5 @@
 import { publicReviews } from "./lib/public-reviews.server.js";
 import { metaPixelProxy } from "./lib/meta-pixel-proxy.server.js";
-import { auditFunnel } from "./lib/audit-funnel.server.js";
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
@@ -50,7 +49,6 @@ export default {
     try {
       const pathname = new URL(request.url).pathname;
       if (pathname === "/api/public-reviews") return publicReviews(request);
-      if (pathname === "/api/funnel/online-growth-audit") return auditFunnel(request);
       if (pathname.startsWith("/integrations/meta-pixel/")) return metaPixelProxy(request);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

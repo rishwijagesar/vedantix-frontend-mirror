@@ -1,133 +1,54 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { auditFunnel } from "../src/lib/audit-funnel.server.js";
-
-const endpoint = "https://vedantix.nl/api/funnel/online-growth-audit";
-
-assert.equal((await auditFunnel(new Request(endpoint))).status, 405);
-
-assert.equal(
-  (
-    await auditFunnel(
-      new Request(endpoint, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ event: "PAGE_VIEW" }),
-      }),
-    )
-  ).status,
-  403,
-);
-
-for (const origin of ["https://example.com", "http://vedantix.nl"]) {
-  assert.equal(
-    (
-      await auditFunnel(
-        new Request(endpoint, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            origin,
-          },
-          body: JSON.stringify({ event: "PAGE_VIEW" }),
-        }),
-      )
-    ).status,
-    403,
-  );
-}
-
-assert.equal(
-  (
-    await auditFunnel(
-      new Request(endpoint, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          origin: "https://vedantix.nl",
-        },
-        body: JSON.stringify({ event: "PAGE_VIEW", email: "should-not-be-accepted@example.com" }),
-      }),
-    )
-  ).status,
-  400,
-);
-
-assert.equal(
-  (
-    await auditFunnel(
-      new Request(endpoint, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          origin: "https://vedantix.nl",
-        },
-        body: JSON.stringify({ event: "UNKNOWN_EVENT" }),
-      }),
-    )
-  ).status,
-  400,
-);
-
-assert.equal(
-  (
-    await auditFunnel(
-      new Request(endpoint, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          origin: "https://vedantix.nl",
-        },
-        body: JSON.stringify({ event: "PAGE_VIEW", padding: "x".repeat(300) }),
-      }),
-    )
-  ).status,
-  413,
-);
-
-const originalInfo = console.info;
-const logged = [];
-console.info = (value) => logged.push(String(value));
-try {
-  const smokeResponse = await auditFunnel(
-    new Request(endpoint, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        origin: "https://vedantix.nl",
-      },
-      body: JSON.stringify({ event: "SMOKE_TEST" }),
-    }),
-  );
-  assert.equal(smokeResponse.status, 204);
-  assert.equal(logged.length, 0);
-
-  const response = await auditFunnel(
-    new Request(endpoint, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        origin: "https://vedantix.nl",
-      },
-      body: JSON.stringify({ event: "RESULT_VIEWED" }),
-    }),
-  );
-  assert.equal(response.status, 204);
-} finally {
-  console.info = originalInfo;
-}
-
-assert.equal(logged.length, 1);
-const eventLog = JSON.parse(logged[0]);
-assert.deepEqual(Object.keys(eventLog).sort(), ["event", "funnel", "kind", "timestamp"]);
-assert.equal(eventLog.kind, "vedantix_funnel");
-assert.equal(eventLog.funnel, "online_growth_audit");
-assert.equal(eventLog.event, "RESULT_VIEWED");
 
 const clientSource = fs.readFileSync("src/lib/audit-funnel.js", "utf8");
+assert.match(clientSource, /\/functions\/v1\/audit-funnel/);
+assert.match(clientSource, /apikey:\s*SUPABASE_PUBLISHABLE_KEY/);
 assert.match(clientSource, /credentials:\s*"omit"/);
 assert.match(clientSource, /referrerPolicy:\s*"no-referrer"/);
+assert.doesNotMatch(clientSource, /authorization\s*:/i);
 assert.doesNotMatch(clientSource, /localStorage|sessionStorage|cookie/i);
+assert.doesNotMatch(clientSource, /\/api\/funnel\/online-growth-audit/);
+
+const functionSource = fs.readFileSync("supabase/functions/audit-funnel/index.ts", "utf8");
+for (const eventName of [
+  "PAGE_VIEW",
+  "FORM_STARTED",
+  "AUDIT_STARTED",
+  "AUDIT_FAILED",
+  "RESULT_VIEWED",
+  "PDF_DOWNLOADED",
+  "PLANNING_CLICK",
+  "WHATSAPP_CLICK",
+]) {
+  assert.match(functionSource, new RegExp(`\\"${eventName}\\"`));
+}
+assert.match(functionSource, /"https:\/\/vedantix\.nl"/);
+assert.match(functionSource, /"https:\/\/www\.vedantix\.nl"/);
+assert.match(functionSource, /keys\.length !== 1 \|\| keys\[0\] !== "event"/);
+assert.match(functionSource, /from\("audit_funnel_events"\)\.insert\(\{ event \}\)/);
+assert.match(functionSource, /SMOKE_TEST/);
+for (const forbidden of [
+  /x-forwarded-for/i,
+  /cf-connecting-ip/i,
+  /user-agent/i,
+  /referer/i,
+  /cookie/i,
+  /authorization/i,
+]) {
+  assert.doesNotMatch(functionSource, forbidden);
+}
+
+const migrationSource = fs.readFileSync("supabase/migrations/0046_audit_funnel_events.sql", "utf8");
+assert.match(migrationSource, /event text not null check/i);
+assert.match(migrationSource, /created_at timestamptz not null default now\(\)/i);
+assert.match(migrationSource, /enable row level security/i);
+assert.match(migrationSource, /revoke all on table public\.audit_funnel_events from anon, authenticated/i);
+assert.doesNotMatch(migrationSource, /email|website_url|audit_id|session|user_agent|ip_address/i);
+
+const serverSource = fs.readFileSync("src/server.ts", "utf8");
+assert.doesNotMatch(serverSource, /\/api\/funnel\/online-growth-audit/);
+assert.doesNotMatch(serverSource, /audit-funnel\.server/);
 
 const trackerSource = fs.readFileSync("src/components/AuditFunnelTracker.jsx", "utf8");
 for (const eventName of [
@@ -145,4 +66,4 @@ const apiSource = fs.readFileSync("src/api/onlineGrowthAudit.api.js", "utf8");
 assert.match(apiSource, /AUDIT_STARTED/);
 assert.match(apiSource, /PDF_DOWNLOADED/);
 
-console.log("Audit funnel privacy checks passed.");
+console.log("Supabase audit funnel privacy checks passed.");
