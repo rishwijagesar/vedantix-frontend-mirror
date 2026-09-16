@@ -57,14 +57,28 @@ jobs:
         continue-on-error: true
         run: |
           set -uo pipefail
-          distribution_id="$(aws cloudfront list-distributions \
-            --query "DistributionList.Items[?contains(Aliases.Items, 'vedantix.nl')].Id | [0]" \
+          distribution_id="$(aws cloudformation describe-stacks \
+            --region "$AWS_REGION" \
+            --stack-name vedantix-site \
+            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue | [0]" \
             --output text 2>/dev/null || true)"
+
+          if [ -n "$distribution_id" ] && [ "$distribution_id" != "None" ]; then
+            echo "Resolved CloudFront distribution from CloudFormation stack vedantix-site: $distribution_id"
+          else
+            distribution_id="$(aws cloudfront list-distributions \
+              --query "DistributionList.Items[?contains(Aliases.Items, 'vedantix.nl')].Id | [0]" \
+              --output text 2>/dev/null || true)"
+          fi
+
           if [ -z "$distribution_id" ] || [ "$distribution_id" = "None" ]; then
             echo "::warning::Could not resolve the CloudFront distribution for vedantix.nl with the deploy role."
             exit 0
           fi
-          echo "CloudFront distribution: $distribution_id"
+
+          aws cloudfront get-distribution --id "$distribution_id" \
+            --query '{domain:Distribution.DomainName,aliases:Distribution.DistributionConfig.Aliases.Items,status:Distribution.Status}' \
+            --output json || true
           aws cloudfront get-distribution-config --id "$distribution_id" \
             --query '{targetOrigin:DistributionConfig.DefaultCacheBehavior.TargetOriginId,allowedMethods:DistributionConfig.DefaultCacheBehavior.AllowedMethods.Items,cachedMethods:DistributionConfig.DefaultCacheBehavior.AllowedMethods.CachedMethods.Items,cachePolicyId:DistributionConfig.DefaultCacheBehavior.CachePolicyId,originRequestPolicyId:DistributionConfig.DefaultCacheBehavior.OriginRequestPolicyId}' \
             --output json || true
