@@ -4,6 +4,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 const allowedOrigins = new Set([
   "https://vedantix-migration-test.lovable.app",
   "https://vedantix.nl",
+  "https://www.vedantix.nl",
 ]);
 
 function headersFor(request: Request) {
@@ -44,13 +45,17 @@ Deno.serve(async (request: Request) => {
 
   const { data: invoice, error: invoiceError } = await admin
     .from("invoices")
-    .select("id,invoice_number,status,total_incl_vat,amount_paid,public_token")
+    .select("id,invoice_number,status,total_incl_vat,amount_paid,public_token,customer_id")
     .eq("public_token", publicToken)
     .maybeSingle();
   if (invoiceError || !invoice || !invoice.invoice_number) return new Response(JSON.stringify({ error: "Invoice not found" }), { status: 404, headers });
 
+  const { data: customer } = await admin.from("customers").select("company_name").eq("id", invoice.customer_id).maybeSingle();
+  const customerName = String(customer?.company_name || "Klant").trim();
+  const paymentDescription = `Factuur ${invoice.invoice_number} - ${customerName}`.slice(0, 255);
+
   const outstanding = Math.max(0, Number(invoice.total_incl_vat || 0) - Number(invoice.amount_paid || 0));
-  const eligible = ["SENT", "PARTIALLY_PAID", "OVERDUE"].includes(String(invoice.status)) && outstanding > 0.009;
+  const eligible = ["FINALIZED", "SENT", "PARTIALLY_PAID", "OVERDUE"].includes(String(invoice.status)) && outstanding > 0.009;
   const { data: config } = await admin.from("payment_provider_config").select("enabled,mode,credentials_configured").eq("id", true).maybeSingle();
   const available = Boolean(config?.enabled && config?.credentials_configured && eligible);
 
@@ -69,6 +74,7 @@ Deno.serve(async (request: Request) => {
       mode: config?.mode || "TEST",
       outstanding: amountValue(outstanding),
       invoice_number: invoice.invoice_number,
+      customer_name: customerName,
       invoice_status: invoice.status,
       payment_status: latestPayment?.status || null,
     }), { status: 200, headers });
@@ -91,6 +97,12 @@ Deno.serve(async (request: Request) => {
   const redirectUrl = `${redirectOrigin}/betaling/resultaat/${publicToken}`;
   const webhookUrl = `${supabaseUrl}/functions/v1/mollie-webhook`;
 
+  const metadata = {
+    invoice_number: invoice.invoice_number,
+    customer_name: customerName,
+    payment_reference: invoice.invoice_number,
+  };
+
   const { data: requestRow, error: insertError } = await admin
     .from("payment_requests")
     .insert({
@@ -100,7 +112,7 @@ Deno.serve(async (request: Request) => {
       currency: "EUR",
       status: "CREATING",
       redirect_url: redirectUrl,
-      metadata: { invoice_number: invoice.invoice_number },
+      metadata,
     })
     .select("id")
     .single();
@@ -108,7 +120,7 @@ Deno.serve(async (request: Request) => {
 
   const { data: apiKey, error: keyError } = await admin.rpc("get_mollie_api_key");
   if (keyError || !apiKey) {
-    await admin.from("payment_requests").update({ status: "FAILED", metadata: { error: "provider_credentials_missing" } }).eq("id", requestRow.id);
+    await admin.from("payment_requests").update({ status: "FAILED", metadata: { ...metadata, error: "provider_credentials_missing" } }).eq("id", requestRow.id);
     return new Response(JSON.stringify({ error: "Payment provider is not configured" }), { status: 503, headers });
   }
 
@@ -121,12 +133,14 @@ Deno.serve(async (request: Request) => {
     },
     body: JSON.stringify({
       amount: { currency: "EUR", value: amountValue(outstanding) },
-      description: `Factuur ${invoice.invoice_number} - Vedantix`,
+      description: paymentDescription,
       redirectUrl,
       webhookUrl,
       metadata: {
         invoice_id: invoice.id,
         invoice_number: invoice.invoice_number,
+        customer_name: customerName,
+        payment_reference: invoice.invoice_number,
         payment_request_id: requestRow.id,
       },
     }),
@@ -134,7 +148,7 @@ Deno.serve(async (request: Request) => {
   const mollie = await mollieResponse.json().catch(() => ({}));
 
   if (!mollieResponse.ok || !mollie?.id || !mollie?._links?.checkout?.href) {
-    await admin.from("payment_requests").update({ status: "FAILED", metadata: { error: mollie?.detail || mollie?.title || "mollie_create_failed" } }).eq("id", requestRow.id);
+    await admin.from("payment_requests").update({ status: "FAILED", metadata: { ...metadata, error: mollie?.detail || mollie?.title || "mollie_create_failed" } }).eq("id", requestRow.id);
     return new Response(JSON.stringify({ error: "Mollie payment could not be created" }), { status: 502, headers });
   }
 
@@ -144,7 +158,7 @@ Deno.serve(async (request: Request) => {
     status: mappedStatus,
     checkout_url: mollie._links.checkout.href,
     provider_created_at: mollie.createdAt || null,
-    metadata: { invoice_number: invoice.invoice_number, mollie_mode: mollie.mode || config?.mode || "TEST" },
+    metadata: { ...metadata, mollie_mode: mollie.mode || config?.mode || "TEST" },
   }).eq("id", requestRow.id);
 
   return new Response(JSON.stringify({ ok: true, reused: false, payment_request_id: requestRow.id, checkout_url: mollie._links.checkout.href, status: mappedStatus }), { status: 201, headers });
