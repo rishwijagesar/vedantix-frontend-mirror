@@ -1,3 +1,4 @@
+import ClientCasesModule from "./ClientCasesModule";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   Activity,
@@ -51,10 +52,11 @@ import MigaduCredentialModal from "./MigaduCredentialModal";
 import { BillingDashboardCards } from "./SalesBillingModules";
 import "./control-center.css";
 
-type Section = "dashboard" | "customers" | "domains" | "websites" | "health" | "monitoring" | "staff";
+type Section = "dashboard" | "client-cases" | "customers" | "domains" | "websites" | "health" | "monitoring" | "staff";
 
 const sections: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "client-cases", label: "Klantcases", icon: MonitorSmartphone },
   { id: "customers", label: "Klanten", icon: Users },
   { id: "domains", label: "Domeinen", icon: Globe2 },
   { id: "websites", label: "Websites", icon: MonitorSmartphone },
@@ -151,6 +153,7 @@ export default function AdminControlCenterV3() {
 
   const activeTitle: Record<Section, [string, string]> = {
     dashboard: ["Control Center", "Operationeel overzicht van Vedantix en klantinfrastructuur."],
+    "client-cases": ["Klantcases", "Klantverhalen, logo’s en resultaten op de website beheren."],
     customers: ["Klanten", "Centrale eigenaar van domeinen, websites en integraties."],
     domains: ["Domeinen", "DNS, e-mailprovider, status en technische gezondheid."],
     websites: ["Websites", "GitHub-, Lovable- en domeinkoppelingen per website."],
@@ -209,6 +212,7 @@ export default function AdminControlCenterV3() {
             </div>
           </header>
 
+          <nav aria-label="Adminmenu" className="flex gap-2 overflow-x-auto border-b bg-white p-3 md:hidden">{sections.map(item => <button key={item.id} type="button" onClick={() => setSection(item.id)} className={`shrink-0 rounded-lg px-3 py-2 text-xs font-medium ${section === item.id ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-700"}`}>{item.label}</button>)}<a href="/admin/billing" className="shrink-0 rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium">Offertes & facturen</a></nav>
           <main className="mx-auto max-w-7xl p-4 md:p-7">
             <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
               <div><span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Vedantix Admin v3</span><h1 className="mt-1 text-3xl font-bold tracking-tight">{title[0]}</h1><p className="mt-2 max-w-2xl text-sm text-slate-500">{title[1]}</p></div>
@@ -220,6 +224,7 @@ export default function AdminControlCenterV3() {
             {error ? <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
             {section === "dashboard" ? <Dashboard overview={overview} customers={customers} domains={domains} websites={websites} loading={loading} /> : null}
+            {section === "client-cases" ? <ClientCasesModule /> : null}
             {section === "customers" ? <CustomersModule customers={customers} showForm={showForm} onDone={async () => { setShowForm(false); await load(); }} /> : null}
             {section === "domains" ? <DomainsModule domains={domains} customers={customers} showForm={showForm} onDone={async () => { setShowForm(false); await load(); }} /> : null}
             {section === "websites" ? <WebsitesModule websites={websites} customers={customers} domainsByCustomer={domainsByCustomer} showForm={showForm} onDone={async () => { setShowForm(false); await load(); }} /> : null}

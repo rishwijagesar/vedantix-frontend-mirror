@@ -178,9 +178,9 @@ function ContactForm() {
       <input type="tel" placeholder="Telefoonnummer" style={iStyle} />
       <select style={iStyle}>
         <option value="">Welk pakket interesseert u?</option>
-        <option>Starter — €399</option>
-        <option>Business — €799</option>
-        <option>Premium — €1499</option>
+        <option>Starter — Bekijk prijzen</option>
+        <option>Business — Bekijk prijzen</option>
+        <option>Premium — Bekijk prijzen</option>
         <option>Weet ik nog niet</option>
       </select>
       <textarea placeholder="Vertel kort over uw bedrijf en wat u zoekt..." rows={4} style={{ ...iStyle, resize: "vertical" }} />
@@ -307,7 +307,7 @@ export default function VedantixHome() {
           </div>
           <div className="hstats">
             <div className="stat"><strong>48u</strong><span>Gemiddelde levertijd</span></div>
-            <div className="stat"><strong>€399</strong><span>Vanaf prijs</span></div>
+            <div className="stat"><strong>Bekijk prijzen</strong><span>Vanaf prijs</span></div>
             <div className="stat"><strong>100%</strong><span>Inclusief hosting</span></div>
             <div className="stat"><strong>24/7</strong><span>Online bereikbaar</span></div>
           </div>
@@ -362,7 +362,7 @@ export default function VedantixHome() {
         <div className="pgrid">
           <div className="pc">
             <div className="pn">Starter</div>
-            <div className="pp"><sup>€</sup>399</div>
+            <div className="pp"><a href="/prijzen">Actuele prijs</a></div>
             <div className="pd">Eenmalig — ideaal voor starters</div>
             <ul className="pl">
               <li>1-pagina professionele website</li><li>Mobielvriendelijk design</li>
@@ -374,7 +374,7 @@ export default function VedantixHome() {
           <div className="pc hot">
             <div className="hbadge2">MEEST GEKOZEN</div>
             <div className="pn">Business</div>
-            <div className="pp"><sup>€</sup>799</div>
+            <div className="pp"><a href="/prijzen">Actuele prijs</a></div>
             <div className="pd">Eenmalig — voor groeiende bedrijven</div>
             <ul className="pl">
               <li>Tot 5 pagina's</li><li>Mobielvriendelijk design</li>
@@ -386,7 +386,7 @@ export default function VedantixHome() {
           </div>
           <div className="pc">
             <div className="pn">Premium</div>
-            <div className="pp"><sup>€</sup>1499</div>
+            <div className="pp"><a href="/prijzen">Actuele prijs</a></div>
             <div className="pd">Eenmalig — voor serieuze ondernemers</div>
             <ul className="pl">
               <li>Tot 10 pagina's</li><li>Custom design op maat</li>

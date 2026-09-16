@@ -1,7 +1,10 @@
+import { fetchPublicCases } from "@/lib/public-content";
 import { createFileRoute } from "@tanstack/react-router";
 import Page from "@/pages/Home";
 
 export const Route = createFileRoute("/")({
+  loader: () => fetchPublicCases().catch(() => null),
+  staleTime: 0,
   head: () => ({
     meta: [
       { title: "Vedantix | Websites die lokale ondernemers helpen groeien" },
@@ -12,5 +15,5 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Page,
+  component: () => <Page initialCases={Route.useLoaderData()} />,
 });

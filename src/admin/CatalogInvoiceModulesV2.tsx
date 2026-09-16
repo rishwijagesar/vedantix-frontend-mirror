@@ -1,3 +1,4 @@
+import CustomerDocumentsPanel from "./CustomerDocumentsPanel";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Check, Download, FileCheck2, FilePlus2, RefreshCw, Save, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -361,6 +362,7 @@ export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }
           {relatedCredits.length ? <div><h3 className="mb-2 font-semibold">Creditnota’s</h3>{relatedCredits.map((credit) => <button type="button" key={credit.id} onClick={() => setPreview(renderBillingDocumentHtml("CREDIT", credit, [], profile))} className="mr-2 rounded-lg border border-slate-200 px-3 py-2 text-sm">{credit.credit_number} · {money.format(Number(credit.total_incl_vat))}</button>)}</div> : null}
         </div>
       </Panel>
+      <CustomerDocumentsPanel key={selected.id} customerId={selected.customer_id} invoiceId={selected.id}/>
       <BillingPreviewModal open={Boolean(preview)} html={preview} title={selected.invoice_number || "Conceptfactuur"} onClose={() => setPreview("")}/>
     </div>;
   }

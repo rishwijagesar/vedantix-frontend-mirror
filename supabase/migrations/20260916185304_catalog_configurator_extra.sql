@@ -1,0 +1,1 @@
+insert into public.product_catalog(code,name,description,category,billing_type,price_ex_vat,vat_rate,active,sort_order,metadata) values ('CONFIGURATOR_EXTRA','Extra functie','Extra functie in de websiteconfigurator. De precieze uitvoering stemmen we vooraf af.','ADDON','ONE_TIME',75,21,true,79,'{"public_package":true}') on conflict(code) do nothing;

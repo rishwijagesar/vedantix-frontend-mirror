@@ -25,12 +25,12 @@ const canonical = "https://vedantix.nl/ai-vindbaarheid";
 const SERVICES = [
   {
     title: "Webdesign en ontwikkeling",
-    text: "Professionele, snelle en mobielvriendelijke websites vanaf €399 eenmalig, gericht op duidelijke contactmomenten en zonder verplicht maandabonnement.",
+    text: "Professionele, snelle en mobielvriendelijke websitepakketten met actuele prijzen op onze prijzenpagina, gericht op duidelijke contactmomenten en zonder verplicht maandabonnement.",
     icon: Globe2,
   },
   {
     title: "Hosting en ondersteuning",
-    text: "Voordelige websitehosting vanaf €30 per jaar, SSL en losse technische ondersteuning wanneer je die nodig hebt.",
+    text: "Voordelige websitehosting, SSL en losse technische ondersteuning wanneer je die nodig hebt.",
     icon: ServerCog,
   },
   {
@@ -102,12 +102,12 @@ const FAQS = [
   {
     question: "Levert Vedantix ook hosting en technisch onderhoud?",
     answer:
-      "Ja. Hosting voor een normale Vedantix-bedrijfswebsite kost vanaf €30 per jaar. Technische ondersteuning en wijzigingen kunnen los worden afgenomen, zodat je niet verplicht bent om een groot serviceabonnement te nemen.",
+      "Ja. Bekijk de actuele hostingtarieven op onze prijzenpagina. Technische ondersteuning en wijzigingen kunnen los worden afgenomen, zodat je niet verplicht bent om een groot serviceabonnement te nemen.",
   },
   {
     question: "Wat kost een website bij Vedantix?",
     answer:
-      "Een Starter-website begint bij €399 eenmalig. Growth kost €599 en Pro €999. Er is geen verplicht maandabonnement. Growth en Pro bevatten oplopend meer SEO, AEO en AI-vindbaarheidsbasis, terwijl doorlopende groei optioneel blijft.",
+      "Bekijk de actuele prijzen van Starter, Growth en Pro op onze prijzenpagina. Er is geen verplicht maandabonnement. Growth en Pro bevatten oplopend meer SEO, AEO en AI-vindbaarheidsbasis, terwijl doorlopende groei optioneel blijft.",
   },
   {
     question: "Hoe maakt Vedantix een website beter vindbaar in AI-tools?",
@@ -152,7 +152,7 @@ export default function AiVindbaarheid() {
     <>
       <SEO
         title="SEO, AEO, GEO en AIO voor lokale bedrijven | Vedantix"
-        description="Vedantix in Den Bosch bouwt websites vanaf €399 en helpt lokale ondernemers met SEO, AEO, GEO, AIO, AI-vindbaarheid en hosting vanaf €30 per jaar."
+        description="Vedantix in Den Bosch bouwt websites en helpt lokale ondernemers met SEO, AEO, GEO, AIO, AI-vindbaarheid en hosting."
         canonical={canonical}
         schemas={[aboutPageSchema, serviceSchema, faqSchema, breadcrumbSchema]}
       />
@@ -167,8 +167,8 @@ export default function AiVindbaarheid() {
                 <div className="ai-kicker">SEO · AEO · GEO · AIO · AI-vindbaarheid</div>
                 <h1>Betaalbaar webdesign dat ook door zoekmachines en AI wordt begrepen</h1>
                 <p className="ai-lead">
-                  Vedantix helpt lokale ondernemers met professionele websites vanaf €399,
-                  hosting vanaf €30 per jaar en optionele groeidiensten voor Google en AI-systemen.
+                  Vedantix helpt lokale ondernemers met professionele websites,
+                  hosting en optionele groeidiensten voor Google en AI-systemen.
                 </p>
                 <div className="ai-actions">
                   <Link className="ai-btn ai-btn-primary" to="/prijzen">

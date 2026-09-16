@@ -3,7 +3,7 @@ import Page from "@/pages/AiVindbaarheid";
 
 const title = "SEO, AEO, GEO en AIO voor lokale bedrijven | Vedantix";
 const description =
-  "Vedantix in Den Bosch bouwt websites vanaf \u20ac399 en helpt lokale ondernemers met SEO, AEO, GEO, AIO, AI-vindbaarheid en hosting vanaf \u20ac30 per jaar.";
+  "Vedantix in Den Bosch bouwt websites en helpt lokale ondernemers met SEO, AEO, GEO, AIO, AI-vindbaarheid en hosting.";
 
 export const Route = createFileRoute("/ai-vindbaarheid")({
   head: () => ({

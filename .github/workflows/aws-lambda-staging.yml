@@ -150,6 +150,9 @@ jobs:
       - name: Verify every production asset
         run: node scripts/smoke-assets.mjs "$LIVE_URL" "$RUNNER_TEMP/vedantix-current"
 
+      - name: Verify live catalog prices and published client cases
+        run: node scripts/smoke-public-content.mjs "$LIVE_URL"
+
       - name: Mark successful production image
         run: |
           set -euo pipefail

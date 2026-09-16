@@ -1,61 +1,15 @@
-const PACKAGES = [
-  {
-    code: "STARTER",
-    label: "Starter",
-    description: "Professionele onepage",
-    fit: "Voor starters en zzp'ers",
-    featured: false,
-    isActive: true,
-    sortOrder: 10,
-    monthlyPriceInclVat: 0,
-    setupPriceInclVat: 399,
-    cancelNote: "€399 eenmalig. Geen verplicht maandabonnement.",
-    included: [
-      "Professionele responsive onepage",
-      "Contactformulier en WhatsApp-knop",
-      "Technische SEO-basis voor Google",
-    ],
-  },
-  {
-    code: "GROWTH",
-    label: "Growth",
-    description: "Complete bedrijfswebsite",
-    fit: "Voor lokale bedrijven met meerdere diensten",
-    featured: true,
-    isActive: true,
-    sortOrder: 20,
-    monthlyPriceInclVat: 0,
-    setupPriceInclVat: 599,
-    cancelNote: "€599 eenmalig. Geen verplicht maandabonnement.",
-    included: [
-      "Tot 5 pagina's met sterke dienstenstructuur",
-      "SEO en lokale vindbaarheidsbasis",
-      "AEO-basis met FAQ en structured data",
-    ],
-  },
-  {
-    code: "PRO",
-    label: "Pro",
-    description: "Website voor online groei",
-    fit: "Voor bedrijven die meer uit hun website willen halen",
-    featured: false,
-    isActive: true,
-    sortOrder: 30,
-    monthlyPriceInclVat: 0,
-    setupPriceInclVat: 999,
-    cancelNote: "€999 eenmalig. Geen verplicht maandabonnement.",
-    included: [
-      "Tot 10 pagina's en meer maatwerkruimte",
-      "Uitgebreidere SEO en lokale structuur",
-      "AEO + GEO/AIO-basis voor AI-platformen",
-    ],
-  },
-];
-
-export async function fetchPricingSummary() {
-  return { packages: PACKAGES };
-}
+import { fetchPublicCatalog } from "../lib/public-content";
 
 export async function fetchPackages() {
-  return PACKAGES;
+  const products = await fetchPublicCatalog();
+  return products.filter(p => p.category.toUpperCase() === "WEBSITE").map(p => ({
+    code: p.code, label: p.name.split(/[—–]/)[0].trim(), description: p.description,
+    featured: p.code === "GROWTH", isActive: true, sortOrder: p.sort_order,
+    monthlyPriceInclVat: p.billing_type === "MONTHLY" ? Number(p.price_incl_vat) : 0,
+    setupPriceInclVat: p.billing_type === "ONE_TIME" ? Number(p.price_incl_vat) : 0,
+    setupPriceExVat: p.billing_type === "ONE_TIME" ? Number(p.price_ex_vat) : 0,
+    included: p.description ? [p.description] : [],
+    cancelNote: "De actuele catalogusprijs geldt. Hosting en aanvullende diensten worden apart gekozen.",
+  }));
 }
+export async function fetchPricingSummary() { return { packages: await fetchPackages() }; }

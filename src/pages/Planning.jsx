@@ -624,9 +624,9 @@ const PAGE_STYLES = `
 `;
 
 const PACKAGE_OPTIONS = [
-  "Starter — €399 eenmalig",
-  "Growth — €599 eenmalig",
-  "Pro — €999 eenmalig",
+  "Starter",
+  "Growth",
+  "Pro",
   "Custom — op maat",
   "Weet ik nog niet",
 ];

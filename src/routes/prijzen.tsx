@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { fetchPublicCatalog } from "@/lib/public-content";
 import Page from "@/pages/Prijzen";
 
-const title = "Website vanaf \u20ac399 | Hosting \u20ac30 per jaar | Vedantix";
-const description =
-  "Professionele websites vanaf \u20ac399 eenmalig. Hosting vanaf \u20ac30 per jaar. Kies extra SEO, AEO, GEO/AIO en online groei alleen wanneer je die nodig hebt.";
+const title = "Websiteprijzen, hosting en online groei | Vedantix";
+const description = "Bekijk de actuele prijzen voor websites, hosting en online groei. Websitepakketten en uitbreidingen voor lokale ondernemers.";
 
 export const Route = createFileRoute("/prijzen")({
+  loader: () => fetchPublicCatalog().catch(() => null),
+  staleTime: 0,
   head: () => ({
     meta: [
       { title },
@@ -16,5 +18,5 @@ export const Route = createFileRoute("/prijzen")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Page,
+  component: () => <Page initialProducts={Route.useLoaderData()} />,
 });
