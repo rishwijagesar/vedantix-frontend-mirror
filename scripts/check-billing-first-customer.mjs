@@ -24,7 +24,7 @@ assert.match(billingModule, /Toon inactieve facturen/);
 assert.match(billingModule, /deleteInvoice\(/);
 assert.match(billingModule, /setInvoiceActive/);
 
-assert.match(app, /CatalogModuleV2/);
+assert.match(app, /CatalogModuleV3/);
 assert.match(app, /InvoicesModuleV2/);
 
 console.log("Billing first-customer checks passed.");
