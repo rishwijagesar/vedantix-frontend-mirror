@@ -89,6 +89,19 @@ const originalInfo = console.info;
 const logged = [];
 console.info = (value) => logged.push(String(value));
 try {
+  const smokeResponse = await auditFunnel(
+    new Request(endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        origin: "https://vedantix.nl",
+      },
+      body: JSON.stringify({ event: "SMOKE_TEST" }),
+    }),
+  );
+  assert.equal(smokeResponse.status, 204);
+  assert.equal(logged.length, 0);
+
   const response = await auditFunnel(
     new Request(endpoint, {
       method: "POST",
