@@ -9,3 +9,5 @@ Admin > **Klantcases** provides add/edit/delete, logo upload, ordering, draft/pu
 Horeca Topper and the existing Jitan Sports result were migrated from the website. No new customer has been invented.
 
 Validation: public-content.test.tsx tests current price rendering, VAT precision, fresh fetching, failed requests, case placements/removal and escaping. db/proposals/public_content.assertions.sql tests updates, publishing, RLS and anonymous/nonstaff write rejection in a transaction that rolls back.
+
+The public catalog RPC intentionally uses SECURITY DEFINER with an empty search_path and no user parameters: product_catalog remains private while only active published marketing fields are exposed. The Supabase advisor reports this intentional public function; the SQL assertions verify no private metadata or unpublished rows escape. Deployment also compares live rendered prices and case names against the current public RPCs.

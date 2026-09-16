@@ -36,3 +36,22 @@ end $test$;
 reset role;
 rollback;
 select jsonb_build_object('tests','passed and rolled back','starter_ex_vat',(select price_ex_vat from public.product_catalog where code='STARTER'),'cases',(select count(*) from public.client_cases),'bucket',(select jsonb_build_object('public',public,'limit',file_size_limit,'mime_types',allowed_mime_types) from storage.buckets where id='client-cases')) as result;
+
+begin;
+select set_config('request.jwt.claim.sub',(select user_id::text from public.staff_users where active and role='ADMIN' limit 1),true);
+set local role authenticated;
+do $test$
+declare v uuid; current_row public.client_cases%rowtype;
+begin
+  if not public.is_staff(array['ADMIN','OPERATOR']) then raise exception 'Admin session fixture missing'; end if;
+  insert into public.client_cases(name,summary) values('__vedantix_admin_crud_test__','Temporary regression check') returning id into v;
+  if not exists(select 1 from public.client_cases where id=v and not published) then raise exception 'Staff cannot read draft'; end if;
+  update public.client_cases set summary='Changed',published=true where id=v;
+  select * into current_row from public.client_cases where id=v;
+  if current_row.summary<>'Changed' or not current_row.published then raise exception 'Staff update failed'; end if;
+  delete from public.client_cases where id=v;
+  if exists(select 1 from public.client_cases where id=v) then raise exception 'Staff delete failed'; end if;
+end $test$;
+reset role;
+rollback;
+select 'Staff create/read/update/publish/delete passed; rolled back' as result;
