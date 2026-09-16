@@ -158,6 +158,8 @@ export type Quote = {
 
 export type Invoice = {
   id: string;
+  public_token?: string | null;
+  is_active?: boolean;
   invoice_number: string | null;
   source_quote_id: string | null;
   subscription_id: string | null;

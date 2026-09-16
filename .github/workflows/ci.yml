@@ -49,5 +49,20 @@ jobs:
       - name: Billing first-customer checks
         run: bun scripts/check-billing-first-customer.mjs
 
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Invoice payment and PDF regression tests
+        run: deno test --no-check --allow-env --allow-write=tmp/invoice-payment supabase/functions/_tests/invoice-payment.test.ts -- --preview
+
+      - name: Invoice print preview regression tests
+        run: bun test scripts/invoice-payment.test.ts
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: invoice-payment-preview
+          path: tmp/invoice-payment/*.pdf
+
       - name: Production build
         run: bun run build
