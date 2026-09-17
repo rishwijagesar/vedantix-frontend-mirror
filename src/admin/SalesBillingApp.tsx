@@ -1,3 +1,4 @@
+import AdministrationModule from "./AdministrationModule";
 import EboekhoudenModule from "./EboekhoudenModule";
 import { useSearchParams } from "@/lib/router-compat";
 import { useEffect, useState, type ComponentType } from "react";
@@ -40,6 +41,7 @@ type Section =
   | "invoices"
   | "payments"
   | "online-payments"
+  | "administration"
   | "accounting"
   | "email"
   | "production"
@@ -67,6 +69,7 @@ const sections = [
   { id: "invoices" as const, label: "Facturen", icon: ReceiptText },
   { id: "payments" as const, label: "Betalingen", icon: WalletCards },
   { id: "online-payments" as const, label: "Online betalen", icon: CreditCard },
+  { id: "administration" as const, label: "Administratie", icon: ReceiptText },
   { id: "accounting" as const, label: "e-Boekhouden", icon: Link2 },
   { id: "email" as const, label: "E-mail & reminders", icon: Mail },
   { id: "production" as const, label: "Productie readiness", icon: ShieldCheck },
@@ -84,6 +87,7 @@ const titles: Record<Section, [string, string]> = {
   invoices: ["Facturen", "Maak concepten met actuele catalogusprijzen, finaliseer facturen en beheer actieve/inactieve records."],
   payments: ["Betalingen", "Registreer deelbetalingen, bekijk de volledige historie en volg achterstallige facturen."],
   "online-payments": ["Online betalen", "Beheer Mollie/iDEAL en volg hosted checkout-betalingen zonder API-keys in de browser."],
+  administration: ["Administratie", "Kosten, aankopen, omzet en bewijsstukken per kwartaal. Met overzichtelijke controles voor je boekhouding."],
   accounting: ["e-Boekhouden", "Verbind je administratie, kies boekhoudrekeningen en controleer de gegevens voor synchronisatie."],
   email: ["E-mail & reminders", "Verstuur offertes en facturen via Migadu en beheer automatische betaalherinneringen."],
   production: ["Productie readiness", "Valideer de AWS serverless productie-release voordat klantcommunicatie en betalingen actief zijn."],
@@ -171,6 +175,7 @@ export default function SalesBillingApp() {
                   <DashboardAction icon={ReceiptText} title="Nieuwe factuur" description="Direct factureren of vanuit een geaccepteerde offerte." onClick={() => setSection("invoices")} />
                   <DashboardAction icon={WalletCards} title="Betalingen" description="Deelbetalingen, historie en achterstallige facturen." onClick={() => setSection("payments")} />
                   <DashboardAction icon={CreditCard} title="Online betalen" description="Mollie/iDEAL checkout en paymentstatus." onClick={() => setSection("online-payments")} />
+                  <DashboardAction icon={ReceiptText} title="Administratie" description="Kosten, aankopen, kwartaalcijfers en bewijsstukken beheren." onClick={() => setSection("administration")} />
                   <DashboardAction icon={Link2} title="e-Boekhouden" description="Account verbinden en boekhoudrekeningen instellen." onClick={() => setSection("accounting")} />
                   <DashboardAction icon={Mail} title="E-mail" description="Offertes, facturen en betaalherinneringen via Migadu." onClick={() => setSection("email")} />
                   <DashboardAction icon={ShieldCheck} title="Productie readiness" description="Controleer AWS release en commerce-activatie." onClick={() => setSection("production")} />
@@ -187,6 +192,7 @@ export default function SalesBillingApp() {
             {section === "invoices" ? <InvoicesModuleV2 customers={customers}/> : null}
             {section === "payments" ? <PaymentsModule customers={customers}/> : null}
             {section === "online-payments" ? <MolliePaymentsModule/> : null}
+            {section === "administration" ? <AdministrationModule/> : null}
             {section === "accounting" ? <EboekhoudenModule/> : null}
             {section === "email" ? <BillingEmailModule customers={customers}/> : null}
             {section === "production" ? <ProductionReadinessModule/> : null}
