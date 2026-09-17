@@ -1,355 +1,91 @@
+import { useId, useState } from "react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { fetchPublicCases, safeWebsiteUrl, safeLogoUrl } from "../../lib/public-content";
 import { usePublicContent } from "../../lib/use-public-content";
-import { useEffect, useRef, useState } from "react";
+import "../../styles/client-cases.css";
+
+function ClientCaseCard({ client, compact }) {
+  const [expanded, setExpanded] = useState(!compact);
+  const contentId = useId();
+  const website = safeWebsiteUrl(client.website);
+  const logo = safeLogoUrl(client.logo);
+  const domain = website ? new URL(website).hostname.replace(/^www\./, "") : "";
+
+  return (
+    <article className={`client-case${expanded ? " client-case--expanded" : ""}`}>
+      <header className="client-case__header">
+        <div className="client-case__logo">
+          {logo ? (
+            <img src={logo} alt={`${client.name} logo`} width="96" height="96" loading="lazy" decoding="async" />
+          ) : (
+            <span aria-hidden="true">{client.name.slice(0, 2).toUpperCase()}</span>
+          )}
+        </div>
+        <div className="client-case__identity">
+          <div className="client-case__meta">
+            {client.status ? <span className="client-case__status">{client.status}</span> : null}
+            <span className="client-case__branch">{client.branch}</span>
+          </div>
+          <h3>{client.name}</h3>
+          {domain ? <span className="client-case__domain">{domain}</span> : null}
+        </div>
+      </header>
+
+      <div id={contentId} className="client-case__content">
+        <p className="client-case__summary">{client.summary}</p>
+        {client.outcome ? (
+          <div className="client-case__outcome">
+            <span className="client-case__outcome-label">Het resultaat</span>
+            <p>{client.outcome}</p>
+          </div>
+        ) : null}
+      </div>
+
+      <footer className="client-case__footer">
+        {compact ? (
+          <button
+            type="button"
+            className="client-case__more"
+            aria-expanded={expanded}
+            aria-controls={contentId}
+            aria-label={`${expanded ? "Minder" : "Meer"} over ${client.name}`}
+            onClick={() => setExpanded(value => !value)}
+          >
+            {expanded ? "Minder tonen" : "Over dit project"}
+            <ArrowDown size={15} aria-hidden="true" />
+          </button>
+        ) : null}
+        {website ? (
+          <a href={website} target="_blank" rel="noopener noreferrer" className="client-case__visit" aria-label={`Bekijk de website van ${client.name} (opent in een nieuw tabblad)`}>
+            Bekijk website <ArrowUpRight size={17} aria-hidden="true" />
+          </a>
+        ) : null}
+      </footer>
+    </article>
+  );
+}
 
 export default function ClientCasesSection({ initialCases = null, placement = "home" }) {
   const { data } = usePublicContent(fetchPublicCases, initialCases);
-  const clients = data.filter(c => placement === "home" ? c.show_on_home : c.show_on_results).map(c => ({ ...c, logo: safeLogoUrl(c.logo), website: safeWebsiteUrl(c.website), domainLabel: safeWebsiteUrl(c.website) ? new URL(c.website).hostname.replace(/^www\./, "") : "" }));
-  const trackRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const updateScrollState = () => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  };
-
-  useEffect(() => {
-    updateScrollState();
-
-    const el = trackRef.current;
-    if (!el) return;
-
-    el.addEventListener("scroll", updateScrollState);
-    window.addEventListener("resize", updateScrollState);
-
-    return () => {
-      el.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
-    };
-  }, [clients.length]);
-
-  const scrollByAmount = (direction) => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    const amount = Math.min(360, el.clientWidth * 0.9);
-
-    el.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  };
-
+  const compact = placement === "home";
+  const clients = data.filter(client => compact ? client.show_on_home : client.show_on_results);
   if (!clients.length) return null;
 
   return (
-    <section style={styles.section}>
-      <div style={styles.glowOne} />
-      <div style={styles.glowTwo} />
-
-      <div style={styles.container}>
-        <div style={styles.headerRow}>
-          <div style={styles.headerContent}>
-            <div style={styles.eyebrow}>KLANTCASES</div>
-            <h2 style={styles.title}>Online groei die al voor echte bedrijven werkt</h2>
-            <p style={styles.subtitle}>
-              Geen loze beloftes, maar voorbeelden van ondernemers die hun online basis sterker maken voor meer vertrouwen,
-              meer duidelijkheid en een betere basis voor aanvragen.
-            </p>
+    <section className={`client-cases${compact ? "" : " client-cases--results"}`} aria-label="Klantcases">
+      <div className="client-cases__container">
+        <div className="client-cases__heading">
+          <div>
+            <span className="client-cases__eyebrow">Gemaakt door Vedantix</span>
+            <h2>Een kijkje in ons werk.</h2>
+            <p>Websites die passen bij de ondernemer erachter. Bekijk een selectie van onze projecten.</p>
           </div>
-
-          <div style={styles.controls}>
-            <button
-              type="button"
-              onClick={() => scrollByAmount("left")}
-              style={{
-                ...styles.navButton,
-                ...(!canScrollLeft ? styles.navButtonDisabled : {}),
-              }}
-              disabled={!canScrollLeft}
-              aria-label="Scroll naar links"
-            >
-              ←
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollByAmount("right")}
-              style={{
-                ...styles.navButton,
-                ...(!canScrollRight ? styles.navButtonDisabled : {}),
-              }}
-              disabled={!canScrollRight}
-              aria-label="Scroll naar rechts"
-            >
-              →
-            </button>
-          </div>
+          {compact ? <a className="client-cases__all" href="/resultaten">Alle klantcases <ArrowUpRight size={18} aria-hidden="true" /></a> : null}
         </div>
-
-        <div ref={trackRef} style={styles.carousel} aria-label="Klantcases">
-          {clients.map((client) => (
-            <article key={client.id} style={styles.card}>
-              <div style={styles.logoWrap}>
-                {client.logo ? <img
-                  loading="lazy"
-                  decoding="async"
-                  width="60"
-                  height="60"
-                  src={client.logo}
-                  alt={`${client.name} logo`}
-                  style={styles.logo}
-                /> : <strong aria-hidden="true">{client.name.slice(0, 2).toUpperCase()}</strong>}
-              </div>
-
-              <div style={styles.metaRow}>
-                <span style={styles.statusBadge}>{client.status}</span>
-                <span style={styles.branch}>{client.branch}</span>
-              </div>
-
-              <h3 style={styles.cardTitle}>{client.name}</h3>
-
-              {client.website ? <a
-                href={client.website}
-                target="_blank"
-                rel="noreferrer"
-                style={styles.domainLink}
-              >
-                {client.domainLabel}
-              </a> : null}
-
-              <p style={styles.summary}>{client.summary}</p>
-
-              {client.outcome ? <div style={styles.outcomeBox}>
-                {client.outcome}
-              </div> : null}
-
-              {client.website ? <div style={styles.cardFooter}>
-                <a
-                  href={client.website}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={styles.primaryButton}
-                >
-                  Bekijk website
-                </a>
-              </div> : null}
-            </article>
-          ))}
+        <div className={`client-cases__grid${clients.length === 1 ? " client-cases__grid--single" : ""}`}>
+          {clients.map(client => <ClientCaseCard key={client.id} client={client} compact={compact} />)}
         </div>
       </div>
     </section>
   );
 }
-
-/** @type {Record<string, import("react").CSSProperties>} */
-const styles = {
-  section: {
-    position: "relative",
-    overflow: "hidden",
-    padding: "84px 20px",
-    background: "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)",
-  },
-  glowOne: {
-    position: "absolute",
-    top: "-140px",
-    left: "-120px",
-    width: "280px",
-    height: "280px",
-    borderRadius: "999px",
-    background: "rgba(59,130,246,0.08)",
-    filter: "blur(90px)",
-    pointerEvents: "none",
-  },
-  glowTwo: {
-    position: "absolute",
-    right: "-100px",
-    bottom: "-100px",
-    width: "240px",
-    height: "240px",
-    borderRadius: "999px",
-    background: "rgba(168,85,247,0.08)",
-    filter: "blur(90px)",
-    pointerEvents: "none",
-  },
-  container: {
-    position: "relative",
-    zIndex: 1,
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-  headerRow: {
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    gap: "20px",
-    flexWrap: "wrap",
-    marginBottom: "28px",
-  },
-  headerContent: {
-    maxWidth: "760px",
-  },
-  eyebrow: {
-    display: "inline-flex",
-    alignItems: "center",
-    minHeight: "32px",
-    padding: "0 12px",
-    borderRadius: "999px",
-    background: "rgba(15,23,42,0.04)",
-    border: "1px solid rgba(15,23,42,0.06)",
-    fontSize: "12px",
-    fontWeight: 800,
-    letterSpacing: "0.12em",
-    color: "#64748b",
-    marginBottom: "14px",
-  },
-  title: {
-    margin: "0 0 12px 0",
-    fontSize: "clamp(30px, 4vw, 48px)",
-    lineHeight: 1.08,
-    fontWeight: 800,
-    letterSpacing: "-0.03em",
-    color: "#0f172a",
-  },
-  subtitle: {
-    margin: 0,
-    fontSize: "18px",
-    lineHeight: 1.7,
-    color: "#475569",
-  },
-  controls: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-  },
-  navButton: {
-    width: "44px",
-    height: "44px",
-    borderRadius: "12px",
-    border: "1px solid rgba(15,23,42,0.08)",
-    background: "rgba(255,255,255,0.8)",
-    color: "#0f172a",
-    fontSize: "18px",
-    cursor: "pointer",
-    boxShadow: "0 6px 20px rgba(15,23,42,0.06)",
-  },
-  navButtonDisabled: {
-    opacity: 0.4,
-    cursor: "not-allowed",
-  },
-  carousel: {
-    display: "flex",
-    gap: "18px",
-    overflowX: "auto",
-    scrollBehavior: "smooth",
-    paddingBottom: "8px",
-    scrollbarWidth: "none",
-    msOverflowStyle: "none",
-  },
-  card: {
-    flex: "0 0 320px",
-    borderRadius: "24px",
-    padding: "22px",
-    background: "rgba(255,255,255,0.78)",
-    backdropFilter: "blur(14px)",
-    WebkitBackdropFilter: "blur(14px)",
-    color: "#0f172a",
-    border: "1px solid rgba(15,23,42,0.08)",
-    boxShadow: "0 12px 30px rgba(15,23,42,0.08)",
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-  },
-  logoWrap: {
-    width: "60px",
-    height: "60px",
-    borderRadius: "16px",
-    background: "#ffffff",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "8px",
-    marginBottom: "4px",
-    overflow: "hidden",
-    boxShadow: "0 6px 18px rgba(15,23,42,0.06)",
-  },
-  logo: {
-    width: "100%",
-    height: "100%",
-    objectFit: "contain",
-    display: "block",
-  },
-  metaRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    flexWrap: "wrap",
-  },
-  statusBadge: {
-    display: "inline-flex",
-    alignItems: "center",
-    minHeight: "30px",
-    padding: "0 10px",
-    borderRadius: "999px",
-    background: "rgba(34,197,94,0.12)",
-    color: "#16a34a",
-    fontSize: "12px",
-    fontWeight: 700,
-  },
-  branch: {
-    fontSize: "13px",
-    color: "#64748b",
-  },
-  cardTitle: {
-    margin: "0",
-    fontSize: "20px",
-    lineHeight: 1.2,
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: "#0f172a",
-  },
-  domainLink: {
-    display: "inline-block",
-    fontSize: "14px",
-    color: "#2563eb",
-    textDecoration: "none",
-    wordBreak: "break-word",
-  },
-  summary: {
-    margin: 0,
-    fontSize: "15px",
-    lineHeight: 1.7,
-    color: "#475569",
-  },
-  outcomeBox: {
-    padding: "12px 14px",
-    borderRadius: "12px",
-    background: "#f8fafc",
-    border: "1px solid #e2e8f0",
-    fontSize: "14px",
-    lineHeight: 1.65,
-    color: "#334155",
-    fontWeight: 700,
-  },
-  cardFooter: {
-    marginTop: "auto",
-    paddingTop: "6px",
-  },
-  primaryButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "44px",
-    width: "100%",
-    borderRadius: "12px",
-    background: "#0f172a",
-    color: "#ffffff",
-    textDecoration: "none",
-    fontWeight: 700,
-    boxShadow: "0 8px 20px rgba(15,23,42,0.12)",
-  },
-};

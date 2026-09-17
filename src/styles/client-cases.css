@@ -1,0 +1,129 @@
+.client-cases {
+  padding: 80px 5%;
+  background: #f8fafc;
+  border-block: 1px solid #edf1f6;
+  color: #0f172a;
+}
+.client-cases *, .client-cases *::before, .client-cases *::after { box-sizing: border-box; }
+.client-cases__container { max-width: 1160px; margin-inline: auto; }
+.client-cases__heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.client-cases__heading > div { max-width: 650px; }
+.client-cases__eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.client-cases__heading h2 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-size: clamp(30px, 3.4vw, 44px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -.04em;
+}
+.client-cases__heading p { margin: 0; color: #64748b; font-size: 16px; line-height: 1.7; }
+.client-cases__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  flex-shrink: 0;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.client-cases__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 24px; }
+.client-cases__grid--single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
+.client-case {
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, .025);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.client-case:hover { border-color: #cbd5e1; box-shadow: 0 10px 28px rgba(15, 23, 42, .055); }
+.client-case__header { display: flex; align-items: center; gap: 22px; margin-bottom: 24px; }
+.client-case__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 104px;
+  height: 104px;
+  flex: 0 0 104px;
+  padding: 8px;
+  border: 1px solid #edf1f6;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+.client-case__logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.client-case__logo > span { color: #334155; font-size: 28px; font-weight: 800; }
+.client-case__identity { min-width: 0; }
+.client-case__meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 9px; margin-bottom: 10px; }
+.client-case__status { padding: 3px 8px; border-radius: 6px; background: #ecfdf5; color: #047857; font-size: 11px; font-weight: 700; line-height: 1.6; }
+.client-case__branch { color: #64748b; font-size: 12px; line-height: 1.5; }
+.client-case__identity h3 { margin: 0; color: #0f172a; font-size: clamp(20px, 2vw, 25px); line-height: 1.2; font-weight: 800; letter-spacing: -.035em; overflow-wrap: anywhere; }
+.client-case__domain { display: block; margin-top: 7px; color: #64748b; font-size: 13px; overflow-wrap: anywhere; }
+.client-case__summary { margin: 0; color: #475569; font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+.client-case:not(.client-case--expanded) .client-case__summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  min-height: 5.1em;
+}
+.client-case__outcome { margin-top: 20px; padding: 0 0 0 14px; border-left: 2px solid #cbd5e1; }
+.client-case__outcome-label { display: block; margin-bottom: 5px; color: #64748b; font-size: 10px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+.client-case__outcome p { margin: 0; color: #334155; font-size: 14px; font-weight: 550; line-height: 1.65; overflow-wrap: anywhere; }
+.client-case:not(.client-case--expanded) .client-case__outcome p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  min-height: 3.3em;
+}
+.client-case__footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; margin-top: 24px; padding-top: 18px; border-top: 1px solid #edf1f6; }
+.client-case__more { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0; border: 0; background: transparent; color: #475569; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.client-case__more svg { transition: transform .2s ease; }
+.client-case--expanded .client-case__more svg { transform: rotate(180deg); }
+.client-case__visit { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; margin-left: auto; padding: 10px 15px; border: 1px solid #0f172a; border-radius: 9px; background: #0f172a; color: #fff; font-size: 13px; font-weight: 700; line-height: 1.4; text-decoration: none; }
+.client-case__visit:hover { background: #1e293b; color: #fff; }
+.client-case__more:hover, .client-cases__all:hover { color: #1d4ed8; }
+.client-cases a:focus-visible, .client-cases button:focus-visible { outline: 3px solid #2563eb; outline-offset: 5px; }
+.client-cases--results { padding: 64px 0; background: transparent; border: 0; }
+@media (max-width: 760px) {
+  .client-cases { padding: 56px 5%; }
+  .client-cases--results { padding: 44px 0; }
+  .client-cases__heading { align-items: flex-start; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+  .client-cases__grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .client-case { padding: 22px; border-radius: 16px; }
+  .client-case__header { gap: 16px; margin-bottom: 20px; }
+  .client-case__logo { width: 84px; height: 84px; flex-basis: 84px; padding: 5px; border-radius: 12px; }
+  .client-case__meta { margin-bottom: 7px; }
+}
+@media (max-width: 360px) {
+  .client-case { padding: 18px; }
+  .client-case__logo { width: 68px; height: 68px; flex-basis: 68px; }
+  .client-case__header { gap: 12px; }
+  .client-case__footer { gap: 8px; }
+  .client-case__visit { padding-inline: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .client-case, .client-case__more svg { transition: none; } }
+@media print {
+  .client-case:not(.client-case--expanded) .client-case__summary,
+  .client-case:not(.client-case--expanded) .client-case__outcome p { display: block; overflow: visible; -webkit-line-clamp: unset; }
+  .client-case__more { display: none; }
+}
