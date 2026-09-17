@@ -129,7 +129,12 @@ export async function makePdf(kind: DocKind, doc: AnyRecord, token?: string) {
   const statusColor = ["ACCEPTED", "PAID"].includes(statusText) ? GREEN : ["REJECTED", "OVERDUE"].includes(statusText) ? RED : BLUE;
   page.drawText(statusText, { x: 430, y: sideY - 56, size: 9, font: bold, color: statusColor });
 
-  y -= 35;
+  const metadataBottom = sideY - (kind === "invoice" ? 84 : 56);
+  if (kind === "invoice") {
+    label("Leverdatum", 350, metadataBottom);
+    value(dateNl(doc.delivery_date), 430, metadataBottom);
+  }
+  y = Math.min(y, metadataBottom) - 24;
   page.drawLine({ start: { x: MARGIN, y }, end: { x: A4.width - MARGIN, y }, thickness: 0.8, color: BORDER });
   y -= 24;
 
@@ -166,13 +171,16 @@ export async function makePdf(kind: DocKind, doc: AnyRecord, token?: string) {
 
     for (const item of rows) {
       const descLines = wrap(item.description || "", regular, 8.5, widths.desc - 8);
-      const rowHeight = Math.max(25, descLines.length * 11 + 10);
+      const vatRate = item.vat_rate == null ? null : Number(item.vat_rate);
+      const hasVatRate = vatRate !== null && Number.isFinite(vatRate);
+      const rowHeight = Math.max(hasVatRate ? 33 : 25, descLines.length * 11 + 10);
       ensure(rowHeight + 8);
       let descY = y - 10;
       for (const line of descLines) { page.drawText(line, { x: cols.desc + 5, y: descY, size: 8.5, font: regular, color: DARK }); descY -= 11; }
       page.drawText(safeText(Number(item.quantity || 0)), { x: cols.qty, y: y - 10, size: 8.5, font: regular, color: DARK });
       page.drawText(money(item.line_total_ex_vat), { x: cols.excl, y: y - 10, size: 7.8, font: regular, color: DARK });
       page.drawText(money(item.line_vat), { x: cols.vat, y: y - 10, size: 7.8, font: regular, color: DARK });
+      if (hasVatRate) page.drawText(`${vatRate!.toLocaleString("nl-NL")}%`, { x: cols.vat, y: y - 23, size: 7.2, font: regular, color: SLATE });
       page.drawText(money(item.line_total_incl_vat), { x: cols.incl, y: y - 10, size: 7.8, font: bold, color: DARK });
       y -= rowHeight;
       page.drawLine({ start: { x: MARGIN, y }, end: { x: A4.width - MARGIN, y }, thickness: 0.4, color: BORDER });
@@ -280,4 +288,3 @@ export async function makePdf(kind: DocKind, doc: AnyRecord, token?: string) {
 
   return await pdf.save();
 }
-

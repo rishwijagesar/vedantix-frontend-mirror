@@ -8,11 +8,11 @@ import { makePdf } from "../billing-pdf/document.ts";
 const token = "00000000-0000-4000-8000-000000000001";
 const invoice = {
   invoice_number: "VED-TEST-2026-001", title: "Website & hosting september 2026",
-  status: "FINALIZED", invoice_date: "2026-09-16", due_date: "2026-09-30",
+  status: "FINALIZED", invoice_date: "2026-09-16", delivery_date: "2026-09-14", due_date: "2026-09-30",
   total_ex_vat: 100, vat_total: 21, total_incl_vat: 121, amount_paid: 0, amount_outstanding: 121,
   payment_reference: "PROJECT-ABC", company: { trade_name: "Vedantix", iban: "NL00 TEST 0000 0000 00", email: "info@example.com" },
   customer: { company_name: "Voorbeeldklant", address_line1: "Voorbeeldstraat 1", postal_code: "1000 AA", city: "Voorbeeldstad" },
-  items: [{ description: "Website & hosting", billing_type: "ONE_TIME", quantity: 1, line_total_ex_vat: 100, line_vat: 21, line_total_incl_vat: 121 }],
+  items: [{ description: "Website & hosting", billing_type: "ONE_TIME", quantity: 1, vat_rate: 21, line_total_ex_vat: 100, line_vat: 21, line_total_incl_vat: 121 }],
 };
 
 function links(pdf: PDFDocument) {
