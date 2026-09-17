@@ -16,3 +16,12 @@ test("draft, paid, credited, archived and tokenless documents have no pay CTA", 
     expect(renderBillingDocumentHtml("INVOICE", { ...invoice, ...patch }, [])).not.toContain('class="payment-button"');
   }
 });
+
+test("printed invoice distinguishes delivery date from invoice and due dates", () => {
+  const html = renderBillingDocumentHtml("INVOICE", { ...invoice, invoice_date: "2026-09-16", delivery_date: "2026-09-14", due_date: "2026-09-30" }, []);
+  expect(html).toContain("<span>Leverdatum</span><strong>14-09-2026</strong>");
+  expect(html).toContain("<span>Datum</span><strong>16-09-2026</strong>");
+  expect(html).toContain("<span>Vervaldatum</span><strong>30-09-2026</strong>");
+  const missing = renderBillingDocumentHtml("INVOICE", { ...invoice, invoice_date: "2026-09-16", delivery_date: null }, []);
+  expect(missing).toContain("<span>Leverdatum</span><strong>—</strong>");
+});

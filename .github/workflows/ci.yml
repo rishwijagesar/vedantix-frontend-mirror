@@ -66,6 +66,9 @@ jobs:
           pdftoppm -png -r 110 -singlefile tmp/invoice-payment/invoice-payment.pdf tmp/invoice-payment/invoice-payment
           test "$(zbarimg --quiet --raw tmp/invoice-payment/invoice-payment.png)" = "https://vedantix.nl/factuur/00000000-0000-4000-8000-000000000001#betalen"
 
+      - name: Verify invoice delivery date and VAT rate in actual PDFs
+        run: python3 scripts/check-invoice-tax-fields.py
+
       - name: Verify document bundle and exact terms text
         run: |
           unzip -t tmp/invoice-payment/documents/dossier.zip
@@ -91,5 +94,3 @@ jobs:
 
       - name: Production build
         run: bun run build
-
-
