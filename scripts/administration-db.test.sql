@@ -14,7 +14,7 @@ create table storage.objects(id uuid primary key default gen_random_uuid(),bucke
 alter table storage.objects enable row level security;
 grant usage on schema storage to authenticated;
 grant select,insert,update,delete on storage.objects to authenticated;
-\ir ../supabase/migrations/20260917103604_administration_workspace.sql
+\ir ../supabase/migrations/20260917105514_administration_workspace.sql
 begin;
 set local role authenticated;
 select set_config('test.user_id','00000000-0000-4000-8000-000000000001',true);
