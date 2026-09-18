@@ -1,8 +1,8 @@
 \set ON_ERROR_STOP on
 -- Isolated CI database only: fake Vault verifies privilege boundaries, never production secrets.
-do $ begin
+do $$ begin
   if not exists(select 1 from pg_roles where rolname='service_role') then create role service_role; end if;
-end; $;
+end; $$;
 create schema auth;
 create schema vault;
 grant usage on schema auth to anon,authenticated,service_role;
