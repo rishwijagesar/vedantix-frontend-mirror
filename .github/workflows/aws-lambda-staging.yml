@@ -153,6 +153,9 @@ jobs:
       - name: Verify live catalog prices and published client cases
         run: node scripts/smoke-public-content.mjs "$LIVE_URL"
 
+      - name: Verify mailbox management rejects unauthenticated access
+        run: node scripts/smoke-migadu-management.mjs
+
       - name: Mark successful production image
         run: |
           set -euo pipefail
