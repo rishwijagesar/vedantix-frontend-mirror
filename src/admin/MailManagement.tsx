@@ -71,7 +71,7 @@ export default function MailManagement({domains,onChanged}:{domains:Domain[];onC
     {message&&<p role="status" className="text-sm text-emerald-800">{message}</p>}
     {!config?<div className="flex items-center gap-3 text-sm text-slate-500">{error?<button className={button} type="button" onClick={status}>Opnieuw laden</button>:"Verbinding laden…"}</div>:(!config.connected||settings)?<form ref={formRef} onSubmit={connect} className="space-y-4 rounded-xl bg-slate-50 p-4">
       <h3 className="font-semibold">Migadu eenmalig verbinden</h3>
-      <p className="text-sm leading-6 text-slate-600">Maak in Migadu onder <a className="underline" href="https://admin.migadu.com/api_keys" target="_blank" rel="noopener noreferrer">My Account → API Keys</a> een sleutel voor Vedantix. Vul hieronder het e-mailadres van je Migadu-account en die sleutel in. De bestaande koppeling voor het versturen van meldingen blijft apart werken.</p>
+      <p className="text-sm leading-6 text-slate-600">Maak in Migadu onder <a className="underline" href="https://admin.migadu.com/account/api/keys" target="_blank" rel="noopener noreferrer">My Account → API Keys</a> een sleutel voor Vedantix. Vul hieronder het e-mailadres van je Migadu-account en die sleutel in. De bestaande koppeling voor het versturen van meldingen blijft apart werken.</p>
       <fieldset disabled={busy} className="grid gap-4 sm:grid-cols-2">
         <Field label="E-mailadres Migadu-account"><input className={input} type="email" name="email" autoComplete="username" required defaultValue={config.account_email||""}/></Field>
         <Field label="Migadu API-sleutel"><input className={input} type="password" name="api_key" autoComplete="off" required maxLength={4096}/></Field>

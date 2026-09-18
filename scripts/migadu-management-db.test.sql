@@ -26,7 +26,7 @@ $$;
 create function vault.update_secret(p_id uuid,p_secret text) returns void language sql as $$
   update vault.secrets set secret=p_secret where id=p_id;
 $$;
-\ir ../supabase/migadu-management.sql
+\ir ../supabase/migrations/20260918060847_migadu_mailbox_management.sql
 
 do $$
 begin
