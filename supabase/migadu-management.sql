@@ -14,6 +14,7 @@ create table public.migadu_management_config (
 alter table public.migadu_management_config enable row level security;
 revoke all on public.migadu_management_config from public, anon, authenticated;
 grant select,insert,update on public.migadu_management_config to service_role;
+create policy migadu_config_service on public.migadu_management_config for all to service_role using (true) with check (true);
 insert into public.migadu_management_config(id) values(true);
 
 create table public.migadu_management_audit (

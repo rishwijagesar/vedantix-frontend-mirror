@@ -27,7 +27,7 @@ export function createMailHandler(
     if (request.method!=="POST") return reply({error:"Gebruik POST."},405);
     const authorization = request.headers.get("Authorization") || "";
     if (!/^Bearer\s+\S+$/i.test(authorization)) return reply({error:"Log opnieuw in."},401);
-    let admin: Client, auditId: string | null = null;
+    let admin: Client = null, auditId: string | null = null;
     try {
       const user = createUser(authorization);
       const auth = await user.auth.getUser();
