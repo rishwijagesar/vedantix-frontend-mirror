@@ -111,5 +111,15 @@ jobs:
           PGPASSWORD: administration-ci-only
         run: psql -h localhost -U postgres -d administration_test -v ON_ERROR_STOP=1 -f scripts/administration-db.test.sql
 
+      - name: Migadu mailbox management API and authorization tests
+        run: bun test scripts/migadu-management.test.ts
+
+      - name: Migadu Vault isolation and audit authorization
+        env:
+          PGPASSWORD: administration-ci-only
+        run: |
+          createdb -h localhost -U postgres migadu_test
+          psql -h localhost -U postgres -d migadu_test -v ON_ERROR_STOP=1 -f scripts/migadu-management-db.test.sql
+
       - name: Production build
         run: bun run build
