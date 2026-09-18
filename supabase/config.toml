@@ -36,3 +36,7 @@ verify_jwt = false
 # Custom getUser JWT validation and ADMIN authorization in the handler.
 [functions.ebookhouden-admin]
 verify_jwt = false
+
+# Verified getUser JWT and ADMIN role in the handler before service access.
+[functions.migadu-admin]
+verify_jwt = false

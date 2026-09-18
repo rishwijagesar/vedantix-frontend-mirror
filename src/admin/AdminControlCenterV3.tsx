@@ -1,4 +1,5 @@
 import ClientCasesModule from "./ClientCasesModule";
+import MailManagement from "./MailManagement";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   Activity,
@@ -157,7 +158,7 @@ export default function AdminControlCenterV3() {
     customers: ["Klanten", "Centrale eigenaar van domeinen, websites en integraties."],
     domains: ["Domeinen", "DNS, e-mailprovider, status en technische gezondheid."],
     websites: ["Websites", "GitHub-, Lovable- en domeinkoppelingen per website."],
-    health: ["E-mail & DNS", "Live MX, SPF, DKIM en DMARC-health per domein."],
+    health: ["E-mail & DNS", "Beheer mailboxen en controleer de mailinstellingen van je domeinen."],
     monitoring: ["Monitoring", "Autonome domein-, e-mail- en websitecontrole met alerts en notification delivery."],
     staff: ["Staff", "Toegang, rollen en uitnodigingen voor het Control Center."],
   };
@@ -337,6 +338,7 @@ function HealthModule({ domains, onChanged }: { domains: Domain[]; onChanged: ()
 
   return (
     <div className="space-y-5">
+      <MailManagement domains={domains} onChanged={onChanged} />
       {message ? <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">{message}</div> : null}
       {domains.length === 0 ? <Panel title="Domein-health"><Empty>Nog geen domeinen.</Empty></Panel> : domains.map((domain) => {
         const checks = snapshotChecks(domain);
