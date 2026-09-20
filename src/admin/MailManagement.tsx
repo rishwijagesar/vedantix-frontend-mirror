@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { KeyRound, Mail, Plus, RefreshCw, Settings2, Trash2 } from "lucide-react";
+import { MailDnsSetup } from "./MailDnsSetup";
 import type { Domain } from "./control-center-data";
 import { mailAction, type DnsRecord, type MailConfig, type MailDomain, type Mailbox } from "./mail-management-data";
 
@@ -150,7 +151,7 @@ function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void
     </div>
     {details&&!details.registered&&<div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
       <h4 className="font-semibold">Dit domein is nog niet beschikbaar in je Migadu-account</h4>
-      <p className="text-sm leading-6">Je kunt het hier toevoegen. Migadu maakt ook de standaardadressen admin, postmaster en abuse aan. Daarna moeten de DNS-records eenmalig bij {domain.dns_provider||"je DNS-provider"} worden ingesteld.</p>
+      <p className="text-sm leading-6">Je kunt het hier toevoegen. Migadu maakt ook de standaardadressen admin, postmaster en abuse aan. Daarna kun je de mailinstellingen hier laten controleren en voor gekoppelde Route 53-domeinen automatisch instellen.</p>
       <Field label={"Typ "+domain.domain_name+" om het domein toe te voegen"}><input className={input} value={confirmation} onChange={e=>setConfirmation(e.target.value)} autoComplete="off" disabled={busy}/></Field>
       <button type="button" disabled={busy||confirmation!==domain.domain_name} className={primary} onClick={()=>run("add_domain",{confirm_domain:confirmation},"Domein toegevoegd. Open nu de DNS-instellingen om het in gebruik te nemen.")}>Domein toevoegen aan Migadu</button>
     </div>}
@@ -159,13 +160,7 @@ function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void
         <div><strong className="text-sm">{active?"Domein actief bij Migadu":"Domein nog niet klaar voor verzenden en ontvangen"}</strong><p className="mt-1 text-xs text-slate-600">{active?"Mailboxen kunnen worden beheerd. Controleer hieronder ook de DNS-health.":"Je kunt mailboxen alvast aanmaken. Rond de DNS-inrichting en activatie af voordat de klant ze gebruikt."}</p></div>
         <button type="button" className={button} disabled={busy||loading} onClick={showRecords}>DNS instellen</button>
       </div>
-      {setup&&records&&<div className="space-y-4 rounded-xl border border-slate-200 p-4">
-        <div className="flex items-center justify-between gap-3"><h4 className="font-semibold">Eenmalige domeininrichting</h4><button className={button} type="button" onClick={()=>setSetup(false)}>Sluiten</button></div>
-        <p className="text-sm leading-6 text-slate-600">Onderstaande records komen rechtstreeks van Migadu. Plaats ze bij {domain.dns_provider||"je DNS-provider"}. Automatisch instellen bij de DNS-provider is nog niet gekoppeld. Behoud bestaande website-records; voeg SPF samen met bestaande verzenddiensten in één SPF-record.</p>
-        <div className="overflow-x-auto"><table className="w-full text-left text-sm"><caption className="sr-only">Benodigde mailrecords voor {domain.domain_name}</caption><thead><tr className="border-b"><th className="p-2">Doel</th><th className="p-2">Type</th><th className="p-2">Naam</th><th className="p-2">Waarde</th></tr></thead><tbody>{records.map((r,i)=><tr key={i} className="border-b border-slate-100"><td className="p-2">{r.purpose}</td><td className="p-2">{r.type}</td><td className="p-2 font-mono text-xs">{r.name}</td><td className="min-w-56 break-all p-2 font-mono text-xs">{r.priority!==null?r.priority+" ":""}{r.value}</td></tr>)}</tbody></table></div>
-        <p className="text-xs leading-5 text-slate-500">DNS-wijzigingen kunnen even nodig hebben om overal zichtbaar te worden. Migadu controleert de records bij het activeren. Gebruik deze stap pas wanneer de mail van dit domein naar Migadu mag gaan.</p>
-        <button type="button" className={primary} disabled={busy||loading} onClick={()=>run("activate_domain",{confirm_domain:domain.domain_name},"Activatie gecontroleerd bij Migadu.")}>{busy?"Bezig…":"DNS controleren en domein activeren"}</button>
-      </div>}
+      {setup&&records&&<MailDnsSetup domainId={domain.id} domainName={domain.domain_name} records={records} activating={busy||loading} onClose={()=>setSetup(false)} onActivate={()=>run("activate_domain",{confirm_domain:domain.domain_name},"Activatie gecontroleerd bij Migadu.")}/>}
       <div className="flex flex-wrap items-center justify-between gap-3"><h4 className="text-sm font-semibold">{details.mailboxes.length} mailbox(en)</h4><button type="button" className={primary} disabled={busy||loading} onClick={()=>open("create")}><Plus size={16}/> Nieuwe mailbox</button></div>
       {!details.mailboxes.length?<p className="rounded-xl border border-dashed p-5 text-sm text-slate-500">Nog geen mailboxen. Maak bijvoorbeeld info@{domain.domain_name} aan.</p>:<div className="divide-y rounded-xl border border-slate-200">{details.mailboxes.map(box=><div className="flex flex-wrap items-center justify-between gap-3 p-4" key={box.local_part}>
         <div className="min-w-0"><strong className="block break-all text-sm">{box.address||box.local_part+"@"+domain.domain_name}</strong><span className="text-xs text-slate-500">{box.name} · Verzenden {box.may_send?"aan":"uit"} · Ontvangen {box.may_receive?"aan":"uit"}</span></div>
@@ -190,3 +185,4 @@ function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void
     </form>}
   </div>;
 }
+

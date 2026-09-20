@@ -63,6 +63,15 @@ jobs:
             echo "::warning::Audit funnel Supabase smoke returned HTTP $funnel_code. Core site deployment will continue because telemetry is non-critical."
           fi
 
+      - name: Deploy verified mail DNS service
+        run: |
+          set -euo pipefail
+          python3 -m pip install boto3
+          python3 -m unittest discover -s aws/mail-dns -p 'test_*.py'
+          python3 aws/mail-dns/build.py "$RUNNER_TEMP/mail-dns"
+          aws lambda update-function-code --function-name vedantix-mail-dns --zip-file "fileb://$RUNNER_TEMP/mail-dns/function.zip" >/dev/null
+          aws lambda wait function-updated --function-name vedantix-mail-dns
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -156,9 +165,13 @@ jobs:
       - name: Verify mailbox management rejects unauthenticated access
         run: node scripts/smoke-migadu-management.mjs
 
+      - name: Verify mail DNS rejects unauthenticated changes
+        run: node scripts/smoke-mail-dns.mjs
+
       - name: Mark successful production image
         run: |
           set -euo pipefail
           docker pull "$IMAGE_URI"
           docker tag "$IMAGE_URI" "$ECR_REGISTRY/$ECR_REPOSITORY:production-latest"
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:production-latest"
+
