@@ -8,10 +8,10 @@ Available: list/create mailboxes, edit display name and send/receive/IMAP/POP3 a
 1. Migadu: My Account > API Keys. Create a dedicated management key with access to the intended domains.
 2. Vedantix: E-mail & DNS > Mailboxen beheren. Enter account email and key.
 3. Select the domain. Existing mailboxes appear immediately.
-4. If missing, explicitly add the domain, then load DNS records. Apply these once at the DNS provider before activating.
+4. If missing, explicitly add the domain. Open DNS instellen, review the Route 53 preview, confirm and apply. Check AWS processing, then validate/activate with Migadu. Other DNS providers still have manual instructions.
 5. Create a mailbox with a password saved in the owner's password manager.
 
-Automatic Route 53 writes are not included: the AWS connection could not be established during implementation. The UI explicitly shows manual DNS setup and never claims DNS has been configured. Never overwrite live provider MX or add a second SPF record. Existing mail migration is a separate operation.
+Automatic Route 53 setup is supported for the three explicitly configured Vedantix, NatureHealing and Jitan Sports zones. See `aws/mail-dns/README.md` for the AWS API, authorization, conservative merge rules, audit, tests and deployment. Existing mail migration is a separate operation; conflicting MX/SPF/DKIM records block automatic setup. AWS acceptance is not presented as successful Migadu activation.
 
 ## Security and verification
 - Custom Supabase getUser JWT validation plus is_staff(ADMIN) before service-client creation.
@@ -24,3 +24,4 @@ Automatic Route 53 writes are not included: the AWS connection could not be esta
 - Live provider end-to-end verification requires the user's management key. Do not use SMTP credentials as an API key.
 
 API reference: https://migadu.com/api/
+
