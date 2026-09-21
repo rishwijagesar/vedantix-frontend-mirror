@@ -1,7 +1,121 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { accountCredentials, createMigaduClient, dnsRecords, localPart, mailboxPayload, safeMailbox } from "../supabase/functions/migadu-admin/api.ts";
+import { accountCredentials, createMigaduClient, dnsRecords, localPart, mailboxPayload, safeMailbox, recoveryEmail } from "../supabase/functions/migadu-admin/api.ts";
 import { createMailHandler } from "../supabase/functions/migadu-admin/handler.ts";
+
+test("reserve address validation requires an independent reachable email address",()=>{
+  assert.equal(recoveryEmail("Client@GMAIL.COM","example.org",true),"Client@gmail.com");
+  for(const value of ["","bad","a@example.org","a@sub.example.org","a@evil.org\nBCC:x@y.org","a..b@gmail.com"])
+    assert.throws(()=>recoveryEmail(value,"example.org",true));
+  assert.equal(recoveryEmail("","example.org"),"");
+  const payload=mailboxPayload("create_mailbox",{local_part:"info",name:"Example",password_method:"invitation",password_recovery_email:"Client@GMAIL.COM",confirm_invitation_email:"Client@GMAIL.COM"},"example.org");
+  assert.equal(payload.password_recovery_email,"Client@gmail.com");
+});
+
+test("invitation creation sends no password and requires exact recipient confirmation",async()=>{
+  const f=fixture();
+  const request={action:"create_mailbox",local_part:"info",name:"Example",password_method:"invitation",password_recovery_email:"client@gmail.com"};
+  assert.equal((await f.invoke(request)).status,400);
+  assert.equal(f.calls.length,0);
+  const r=await f.invoke({...request,confirm_invitation_email:"client@gmail.com"});
+  assert.equal(r.status,200);
+  assert.deepEqual(f.calls[0].body,{local_part:"info",name:"Example",password_method:"invitation",password_recovery_email:"client@gmail.com",is_internal:false});
+  assert.equal(f.contacts[0].recovery_email,"client@gmail.com");
+  assert.equal((await r.json()).invitation_requested,true);
+  assert.ok(!JSON.stringify(f.writes).includes(pwd));
+});
+
+test("invitation rejects mixed password modes and unsupported methods",()=>{
+  const base={local_part:"info",name:"Example",password_method:"invitation",password_recovery_email:"client@gmail.com",confirm_invitation_email:"client@gmail.com"};
+  assert.throws(()=>mailboxPayload("create_mailbox",{...base,password:pwd},"example.org"));
+  assert.throws(()=>mailboxPayload("create_mailbox",{...base,password_method:"other"},"example.org"));
+});
+
+test("reset invitation rechecks the provider recipient and never returns credentials",async()=>{
+  const f=fixture({mailbox:{password_recovery_email:"client@gmail.com"}});
+  const r=await f.invoke({action:"send_invitation",local_part:"info",confirm_address:"info@example.org",confirm_recovery_email:"client@gmail.com"});
+  assert.equal(r.status,200);
+  assert.equal(f.calls[0].method,"GET");
+  assert.deepEqual(f.calls[1],{path:"/domains/example.org/mailboxes/info",method:"PUT",body:{password_method:"invitation",password_recovery_email:"client@gmail.com"}});
+  assert.ok(!(await r.text()).includes(pwd));
+  assert.equal(f.contacts[0].recovery_email,"client@gmail.com");
+});
+
+test("stale recipient, absent recovery and tampered invitation cannot send",async()=>{
+  for(const options of [{mailbox:{password_recovery_email:"new@gmail.com"}},{mailbox:{password_recovery_email:""}}]) {
+    const f=fixture(options);assert.ok((await f.invoke({action:"send_invitation",local_part:"info",confirm_address:"info@example.org",confirm_recovery_email:"old@gmail.com"})).status>=400);
+    assert.ok(f.calls.every(c=>c.method==="GET"));
+  }
+  const f=fixture({mailbox:{password_recovery_email:"client@gmail.com"}});
+  assert.equal((await f.invoke({action:"send_invitation",local_part:"info",confirm_address:"info@example.org",confirm_recovery_email:"client@gmail.com",password_recovery_email:"other@gmail.com"})).status,400);
+  assert.ok(f.calls.every(c=>c.method==="GET"));
+});
+
+test("new actions require admin access and audited non-replayed requests",async()=>{
+  for(const action of ["contacts","send_invitation","set_primary_address"]) {
+    const f=fixture({denied:true});assert.equal((await f.invoke({action,local_part:"info"})).status,403);assert.equal(f.adminCalls(),0);
+  }
+  for(const action of ["send_invitation","set_primary_address"]) {
+    const f=fixture({duplicate:true});assert.equal((await f.invoke({action,local_part:"info"})).status,409);assert.equal(f.calls.length,0);
+  }
+});
+
+test("backup contacts remain available with provider disconnected or unavailable",async()=>{
+  const f=fixture({connected:false,providerFailure:true,contacts:[{local_part:"info",recovery_email:"client@gmail.com"}]});
+  const r=await f.invoke({action:"contacts"});assert.equal(r.status,200);assert.equal((await r.json()).contacts[0].recovery_email,"client@gmail.com");
+  assert.equal(f.calls.length,0);assert.equal(f.rpcs.length,0);
+});
+
+test("mailbox update saves reserve address but preserves preferred identity",async()=>{
+  const f=fixture({contacts:[{local_part:"info",preferred_local_part:"hello",recovery_email:"old@gmail.com"}]});
+  const r=await f.invoke({action:"update_mailbox",...box,password_recovery_email:"client@gmail.com"});
+  assert.equal(r.status,200);assert.equal(f.contacts[0].recovery_email,"client@gmail.com");assert.equal(f.contacts[0].preferred_local_part,"hello");
+  assert.equal(f.calls[0].body.password_recovery_email,"client@gmail.com");
+  assert.ok(!("password" in f.calls[0].body));
+});
+
+test("deleting mailbox retains a backup contact before provider deletion",async()=>{
+  const f=fixture({mailbox:{password_recovery_email:"client@gmail.com"}});
+  assert.equal((await f.invoke({action:"delete_mailbox",local_part:"info",confirm_address:"info@example.org"})).status,200);
+  assert.equal(f.contacts[0].recovery_email,"client@gmail.com");assert.equal(f.calls.at(-1).method,"DELETE");
+});
+
+test("failed contact persistence warns after an accepted invitation without repeating it",async()=>{
+  const f=fixture({contactFailure:true,mailbox:{password_recovery_email:"client@gmail.com"}});
+  const r=await f.invoke({action:"send_invitation",local_part:"info",confirm_address:"info@example.org",confirm_recovery_email:"client@gmail.com"});
+  const out=await r.json();assert.equal(out.ok,true);assert.ok(out.warning);assert.equal(f.calls.filter(c=>c.method==="PUT").length,1);
+});
+
+test("info identity uses existing mailbox password without creating or deleting a mailbox",async()=>{
+  const f=fixture({mailbox:{local_part:"admin",address:"admin@example.org"}});
+  const r=await f.invoke({action:"set_primary_address",local_part:"admin",new_local_part:"info",confirm_address:"admin@example.org",confirm_new_address:"info@example.org"});
+  assert.equal(r.status,200);
+  const mutation=f.calls.filter(c=>c.method!=="GET");assert.equal(mutation.length,1);
+  assert.equal(mutation[0].path,"/domains/example.org/mailboxes/admin/identities");assert.equal(mutation[0].body.password_use,"mailbox");assert.ok(!("password" in mutation[0].body));
+  assert.equal(f.contacts[0].preferred_local_part,"info");assert.equal(f.contacts[0].local_part,"admin");
+  assert.equal((await r.json()).primary_address,"info@example.org");
+});
+
+test("occupied addresses and custom-password identities are never overwritten",async()=>{
+  const request={action:"set_primary_address",local_part:"admin",new_local_part:"info",confirm_address:"admin@example.org",confirm_new_address:"info@example.org"};
+  for(const options of [{mailboxes:[{local_part:"admin"},{local_part:"info"}]},{aliases:[{local_part:"info"}]},{identities:[{local_part:"info",password_use:"custom"}]}]){
+    const f=fixture({mailbox:{local_part:"admin"},...options});assert.equal((await f.invoke(request)).status,409);assert.ok(f.calls.every(c=>c.method==="GET"));
+  }
+});
+
+test("existing shared identity is reused idempotently and preferred address is verified on reads",async()=>{
+  const identity={local_part:"info",password_use:"mailbox",may_send:true,may_receive:true,may_access_imap:true};
+  const f=fixture({mailbox:{local_part:"admin",address:"admin@example.org"},identities:[identity]});
+  assert.equal((await f.invoke({action:"set_primary_address",local_part:"admin",new_local_part:"info",confirm_address:"admin@example.org",confirm_new_address:"info@example.org"})).status,200);
+  assert.ok(f.calls.every(c=>c.method==="GET"));
+  const r=await f.invoke({action:"domain"});assert.equal((await r.json()).mailboxes[0].primary_address,"info@example.org");
+});
+
+test("unconfirmed identity never becomes the preferred address",async()=>{
+  const f=fixture({mailbox:{local_part:"admin"},identityUnconfirmed:true});
+  const r=await f.invoke({action:"set_primary_address",local_part:"admin",new_local_part:"info",confirm_address:"admin@example.org",confirm_new_address:"info@example.org"});
+  assert.equal(r.status,502);assert.equal(f.contacts.length,0);assert.ok(f.calls.every(c=>c.method!=="DELETE"));
+});
 
 const domainId="00000000-0000-4000-8000-000000000001";
 const requestId="00000000-0000-4000-8000-000000000002";
@@ -9,6 +123,9 @@ const credentials={email:"admin@example.org",api_key:"api-secret-never-return"};
 const pwd="A-long-mailbox-password!42";
 const box={local_part:"info",address:"info@example.org",name:"Example",may_send:true,may_receive:true,may_access_imap:true,may_access_pop3:false,password:"must-not-leak"};
 function fixture(options:any={}) {
+  const contacts:any[]=structuredClone(options.contacts||[]);
+  const identities:any[]=structuredClone(options.identities||[]);
+  const currentBox={...box,...options.mailbox};
   const calls:any[]=[];const writes:any[]=[];const rpcs:any[]=[];let adminCalls=0;
   function query(value:any,onWrite?:(v:any)=>void) {
     const builder:any={
@@ -28,6 +145,16 @@ function fixture(options:any={}) {
     from:(table:string)=>{
       if(table==="migadu_management_config")return query({data:{connected:options.connected!==false,account_email:credentials.email,last_verified_at:null},error:null});
       if(table==="migadu_management_audit")return query({data:{id:requestId},error:options.duplicate?{code:"23505"}:options.auditFailure?{code:"500"}:null},v=>writes.push({table,...v}));
+      if(table==="migadu_mailbox_contacts") {
+        let part:string|undefined;
+        const result=()=>({data:part?contacts.filter(c=>c.local_part===part):contacts,error:options.contactFailure?{code:"500"}:null});
+        const q:any={
+          select:()=>q,eq:(key:string,value:string)=>{if(key==="local_part")part=value;return q;},
+          maybeSingle:async()=>({...result(),data:result().data[0]||null}),
+          upsert:(v:any)=>{writes.push({table,...v});const index=contacts.findIndex(c=>c.local_part===v.local_part);if(index<0)contacts.push(v);else contacts[index]=v;return q;},
+          then:(resolve:any,reject:any)=>Promise.resolve(result()).then(resolve,reject),
+        };return q;
+      }
       if(table==="domains")return query({data:null,error:null},v=>writes.push({table,...v}));
       throw new Error("Unexpected table "+table);
     },
@@ -39,7 +166,12 @@ function fixture(options:any={}) {
       calls.push({path,method,body});
       if(options.providerFailure)throw new Error("authorization="+credentials.api_key+" password="+pwd);
       if(path==="/domains"&&method==="GET")return {domains:options.absent?[]:[{name:"example.org",state:"active",can_send:true,can_receive:true}]};
-      if(path.endsWith("/mailboxes")&&method==="GET")return {mailboxes:[box]};
+      if(path.endsWith("/mailboxes")&&method==="GET")return {mailboxes:options.mailboxes||[currentBox]};
+      if(path.endsWith("/aliases"))return {aliases:options.aliases||[]};
+      if(path.endsWith("/identities")&&method==="GET")return {identities};
+      if(path.endsWith("/identities")&&method==="POST"){identities.push({...body});return {...body,password:pwd};}
+      if(path.includes("/identities/")&&method==="GET")return options.identityUnconfirmed?{local_part:"other"}:identities.find(i=>path.endsWith("/"+i.local_part));
+      if(method==="GET"&&/\/mailboxes\/[^/]+$/.test(path))return currentBox;
       if(path.endsWith("/records"))return {dkim:[{name:"key1._domainkey",type:"cname",value:"key1.example.org._domainkey.migadu.com."}],spf:{name:"@",type:"txt",value:"v=spf1 include:spf.migadu.com -all"}};
       if(path.endsWith("/activate"))return {name:"example.org",state:"active",can_send:true,can_receive:true};
       return {...box,password:pwd};
@@ -47,7 +179,7 @@ function fixture(options:any={}) {
   };
   const handler=createMailHandler(()=>user,()=>{adminCalls++;return admin;},provider);
   const invoke=(body:any={},headers:Record<string,string>={Authorization:"Bearer test-jwt"})=>handler(new Request("https://edge.example/migadu-admin",{method:"POST",headers:{"Content-Type":"application/json",...headers},body:JSON.stringify({request_id:requestId,domain_id:domainId,...body})}));
-  return {invoke,calls,writes,rpcs,adminCalls:()=>adminCalls};
+  return {invoke,calls,writes,rpcs,contacts,identities,adminCalls:()=>adminCalls};
 }
 
 test("unauthenticated and non-admin callers never instantiate privileged clients",async()=>{
@@ -99,7 +231,7 @@ test("password reset writes only password fields with PUT",async()=>{
 test("delete is blocked until the exact complete address is confirmed",async()=>{
   const f=fixture();for(const confirm_address of ["","info","info@other.org"]){assert.equal((await f.invoke({action:"delete_mailbox",local_part:"info",confirm_address})).status,400);}
   assert.equal(f.calls.length,0);assert.equal(f.writes.length,0);
-  const r=await f.invoke({action:"delete_mailbox",local_part:"info",confirm_address:"info@example.org"});assert.equal(r.status,200);assert.equal(f.calls[0].method,"DELETE");assert.equal(f.calls[0].path,"/domains/example.org/mailboxes/info");
+  const r=await f.invoke({action:"delete_mailbox",local_part:"info",confirm_address:"info@example.org"});assert.equal(r.status,200);assert.equal(f.calls.at(-1).method,"DELETE");assert.equal(f.calls.at(-1).path,"/domains/example.org/mailboxes/info");
 });
 test("failed audit and repeated request IDs prevent external writes",async()=>{
   for(const options of [{duplicate:true},{auditFailure:true}]){const f=fixture(options);const r=await f.invoke({action:"reset_password",local_part:"info",password:pwd});assert.ok(r.status>=400);assert.equal(f.calls.length,0);}

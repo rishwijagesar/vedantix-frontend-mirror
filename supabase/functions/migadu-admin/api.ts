@@ -35,11 +35,32 @@ function displayName(value: unknown): string {
     throw new MailError("Vul een naam van maximaal 100 tekens in.");
   return value.trim();
 }
-export function mailboxPayload(action: string, body: any): Record<string, unknown> {
-  if (action === "create_mailbox")
-    return { local_part: localPart(body.local_part), name: displayName(body.name), password: passwordValue(body.password), password_method: "password", is_internal: false };
+export function recoveryEmail(value: unknown, domain: string, required = false): string {
+  if ((value === "" || value == null) && !required) return "";
+  if (typeof value !== "string" || value.length > 254 || !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]{0,63}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/.test(value.trim()) || value.includes(".."))
+    throw new MailError("Vul een geldig reserve-e-mailadres van de klant in.");
+  const [local, host] = value.trim().split("@");
+  const destination = domainName(host);
+  if (destination === domain || destination.endsWith("." + domain))
+    throw new MailError("Gebruik een reserveadres buiten dit domein, bijvoorbeeld het persoonlijke e-mailadres van de klant.");
+  return local + "@" + destination;
+}
+export function mailboxPayload(action: string, body: any, domain = ""): Record<string, unknown> {
+  if (action === "create_mailbox") {
+    const method = body.password_method ?? "password";
+    if (!["password", "invitation"].includes(method)) throw new MailError("Kies hoe de klant een wachtwoord krijgt.");
+    const recovery = recoveryEmail(body.password_recovery_email, domain, method === "invitation");
+    if (method === "invitation") {
+      if (body.password) throw new MailError("Vul geen wachtwoord in bij een uitnodiging.");
+      if (recoveryEmail(body.confirm_invitation_email, domain, true) !== recovery) throw new MailError("Bevestig naar welk reserveadres de uitnodiging wordt gestuurd.");
+      return { local_part:localPart(body.local_part), name:displayName(body.name), password_method:"invitation", password_recovery_email:recovery, is_internal:false };
+    }
+    return { local_part: localPart(body.local_part), name: displayName(body.name), password: passwordValue(body.password), password_method: "password", is_internal: false,
+      ...(body.password_recovery_email !== undefined ? {password_recovery_email:recovery} : {}) };
+  }
   if (action === "reset_password") return { password: passwordValue(body.password), password_method: "password" };
   const result: Record<string, unknown> = { name: displayName(body.name) };
+  if (body.password_recovery_email !== undefined) result.password_recovery_email = recoveryEmail(body.password_recovery_email, domain);
   for (const key of ["may_send", "may_receive", "may_access_imap", "may_access_pop3"])
     if (typeof body[key] === "boolean") result[key] = body[key];
     else throw new MailError("Controleer de toegangsinstellingen van de mailbox.");
@@ -56,6 +77,7 @@ export function safeMailbox(value: any) {
     name: String(value.name || ""),
     may_send: value.may_send === true, may_receive: value.may_receive === true,
     may_access_imap: value.may_access_imap === true, may_access_pop3: value.may_access_pop3 === true,
+    password_recovery_email: typeof value.password_recovery_email === "string" ? value.password_recovery_email.slice(0,254) : "",
   };
 }
 export function safeDomain(value: any) {
