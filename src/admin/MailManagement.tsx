@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { KeyRound, Mail, Plus, RefreshCw, Settings2, Trash2 } from "lucide-react";
+import { SavedMailContacts } from "./SavedMailContacts";
 import { MailDnsSetup } from "./MailDnsSetup";
 import type { Domain } from "./control-center-data";
 import { mailAction, type DnsRecord, type MailConfig, type MailDomain, type Mailbox } from "./mail-management-data";
@@ -39,6 +40,7 @@ export default function MailManagement({domains,onChanged}:{domains:Domain[];onC
   const [selected,setSelected]=useState(domains[0]?.id||"");
   const [settings,setSettings]=useState(false);
   const [revision,setRevision]=useState(0);
+  const [contactRevision,setContactRevision]=useState(0);
   const formRef=useRef<HTMLFormElement>(null);
   async function status() {
     setError("");
@@ -82,14 +84,15 @@ export default function MailManagement({domains,onChanged}:{domains:Domain[];onC
         {config.connected&&<button type="button" className={button} disabled={busy} onClick={disconnect}>Loskoppelen</button>}
       </div>
     </form>:<p className="text-sm text-emerald-800">Verbonden met {config.account_email}</p>}
-    {config?.connected&&<div className="space-y-5">
+    {config&&<div className="space-y-5">
       <Field label="Kies een domein"><select className={input} value={selected} disabled={busy||!domains.length} onChange={e=>setSelected(e.target.value)}>{!domains.length&&<option value="">Voeg eerst een domein toe via Domeinen</option>}{domains.map(d=><option key={d.id} value={d.id}>{d.domain_name}</option>)}</select></Field>
-      {domain&&<DomainMail key={domain.id+":"+revision} domain={domain} onChanged={onChanged}/>}
+      {domain&&config.connected&&<DomainMail key={domain.id+":"+revision} domain={domain} onChanged={onChanged} onContactChange={()=>setContactRevision(v=>v+1)}/>}
+      {domain&&<SavedMailContacts key={domain.id} domainId={domain.id} domainName={domain.domain_name} revision={contactRevision}/>}
     </div>}
   </section>;
 }
-type Editor={kind:"create"|"edit"|"password"|"delete";box?:Mailbox}|null;
-function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void>}) {
+type Editor={kind:"create"|"edit"|"password"|"delete"|"address";box?:Mailbox}|null;
+function DomainMail({domain,onChanged,onContactChange}:{domain:Domain;onChanged:()=>Promise<void>;onContactChange:()=>void}) {
   const [details,setDetails]=useState<MailDomain|null>(null);
   const [records,setRecords]=useState<DnsRecord[]|null>(null);
   const [busy,setBusy]=useState(false);
@@ -100,6 +103,9 @@ function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void
   const [setup,setSetup]=useState(false);
   const [confirmation,setConfirmation]=useState("");
   const [formKey,setFormKey]=useState(0);
+  const [passwordMethod,setPasswordMethod]=useState("invitation");
+  const [backupEmail,setBackupEmail]=useState("");
+  const [newPart,setNewPart]=useState("info");
   async function reload() {
     setLoading(true);
     try{setDetails(await mailAction("domain",{domain_id:domain.id}));}
@@ -111,7 +117,9 @@ function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void
     setBusy(true);setError("");setMessage("");
     try{
       const result=await mailAction(action,{...body,domain_id:domain.id});
-      setMessage(result.warning?success+" "+result.warning:success);setEditor(null);setConfirmation("");
+      const confirmation=result.invitation_requested?"Uitnodiging aangevraagd bij Migadu voor "+result.recipient+". De klant stelt via die e-mail zelf een wachtwoord in. Controleer zo nodig de spammap.":success;
+      setMessage(result.warning?confirmation+" "+result.warning:confirmation);setEditor(null);setConfirmation("");
+      onContactChange();
       await reload();
       if(action==="activate_domain")await onChanged();
       return true;
@@ -128,19 +136,40 @@ function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void
     event.preventDefault();if(!editor)return;
     const values=new FormData(event.currentTarget);
     const password=String(values.get("password")||"");
-    if(["create","password"].includes(editor.kind)&&password!==String(values.get("repeat_password")||"")){setError("De twee wachtwoorden komen niet overeen.");return;}
+    const manual=passwordMethod==="password";
+    if(["create","password"].includes(editor.kind)&&manual&&password!==String(values.get("repeat_password")||"")){setError("De twee wachtwoorden komen niet overeen.");return;}
     const part=editor.box?.local_part||String(values.get("local_part")||"");
-    const action=editor.kind==="create"?"create_mailbox":editor.kind==="edit"?"update_mailbox":editor.kind==="password"?"reset_password":"delete_mailbox";
+    const action=editor.kind==="create"?"create_mailbox":editor.kind==="edit"?"update_mailbox":editor.kind==="address"?"set_primary_address":editor.kind==="password"?(manual?"reset_password":"send_invitation"):"delete_mailbox";
     const body:Record<string,unknown>={local_part:part};
-    if(editor.kind==="create"||editor.kind==="password")body.password=password;
+    if((editor.kind==="create"||editor.kind==="password")&&manual)body.password=password;
+    if(editor.kind==="create"){
+      body.password_method=passwordMethod;
+      body.password_recovery_email=backupEmail.trim();
+      if(!manual&&values.get("confirm_send")==="on")body.confirm_invitation_email=backupEmail.trim();
+    }
     if(editor.kind==="create"||editor.kind==="edit")body.name=String(values.get("name")||"");
-    if(editor.kind==="edit")for(const key of ["may_send","may_receive","may_access_imap","may_access_pop3"])body[key]=values.get(key)==="on";
+    if(editor.kind==="edit"){
+      body.password_recovery_email=backupEmail.trim();
+      for(const key of ["may_send","may_receive","may_access_imap","may_access_pop3"])body[key]=values.get(key)==="on";
+    }
+    if(editor.kind==="password"&&!manual&&values.get("confirm_send")==="on"){
+      body.confirm_address=part+"@"+domain.domain_name;
+      body.confirm_recovery_email=editor.box?.password_recovery_email||"";
+    }
+    if(editor.kind==="address"&&values.get("confirm_address_change")==="on"){
+      body.new_local_part=newPart.trim().toLowerCase();
+      body.confirm_address=part+"@"+domain.domain_name;
+      body.confirm_new_address=newPart.trim().toLowerCase()+"@"+domain.domain_name;
+    }
     if(editor.kind==="delete")body.confirm_address=String(values.get("confirm_address")||"");
-    await run(action,body,editor.kind==="create"?"Mailbox aangemaakt.":editor.kind==="password"?"Het nieuwe wachtwoord is ingesteld. Werk het ook bij in de mailapp.":editor.kind==="delete"?"Mailbox verwijderd.":"Mailbox bijgewerkt.");
-    // Clear password inputs after every submission, including an uncertain provider response.
+    await run(action,body,editor.kind==="create"?"Mailbox aangemaakt.":editor.kind==="password"?"Het nieuwe wachtwoord is ingesteld. Werk het ook bij in de mailapp.":editor.kind==="delete"?"Mailbox verwijderd. Het bewaarde reserveadres blijft beschikbaar.":editor.kind==="address"?"Het gewenste e-mailadres is ingesteld voor dezelfde inbox. Gebruik dit adres in de mailapp; het mailboxwachtwoord blijft hetzelfde.":"Mailbox en reserveadres bijgewerkt.");
     setFormKey(v=>v+1);
   }
-  function open(kind:NonNullable<Editor>["kind"],box?:Mailbox){setEditor({kind,box});setError("");setMessage("");setFormKey(v=>v+1);}
+  function open(kind:NonNullable<Editor>["kind"],box?:Mailbox){
+    setEditor({kind,box});setError("");setMessage("");setFormKey(v=>v+1);
+    setPasswordMethod("invitation");setBackupEmail(box?.password_recovery_email||"");
+    setNewPart(box?.primary_address&&box.primary_address!==box.address?box.primary_address.split("@")[0]:"info");
+  }
   const active=details?.domain?.can_receive===true&&details?.domain?.can_send===true;
   return <div className="space-y-4">
     {error&&<Alert>{error}</Alert>}
@@ -163,26 +192,31 @@ function DomainMail({domain,onChanged}:{domain:Domain;onChanged:()=>Promise<void
       {setup&&records&&<MailDnsSetup domainId={domain.id} domainName={domain.domain_name} records={records} activating={busy||loading} onClose={()=>setSetup(false)} onActivate={()=>run("activate_domain",{confirm_domain:domain.domain_name},"Activatie gecontroleerd bij Migadu.")}/>}
       <div className="flex flex-wrap items-center justify-between gap-3"><h4 className="text-sm font-semibold">{details.mailboxes.length} mailbox(en)</h4><button type="button" className={primary} disabled={busy||loading} onClick={()=>open("create")}><Plus size={16}/> Nieuwe mailbox</button></div>
       {!details.mailboxes.length?<p className="rounded-xl border border-dashed p-5 text-sm text-slate-500">Nog geen mailboxen. Maak bijvoorbeeld info@{domain.domain_name} aan.</p>:<div className="divide-y rounded-xl border border-slate-200">{details.mailboxes.map(box=><div className="flex flex-wrap items-center justify-between gap-3 p-4" key={box.local_part}>
-        <div className="min-w-0"><strong className="block break-all text-sm">{box.address||box.local_part+"@"+domain.domain_name}</strong><span className="text-xs text-slate-500">{box.name} · Verzenden {box.may_send?"aan":"uit"} · Ontvangen {box.may_receive?"aan":"uit"}</span></div>
+        <div className="min-w-0"><strong className="block break-all text-sm">{box.primary_address||box.address||box.local_part+"@"+domain.domain_name}</strong>{box.primary_address&&box.primary_address!==box.local_part+"@"+domain.domain_name&&<span className="mt-1 block text-xs text-slate-500">Eén inbox · onderliggende mailbox {box.local_part}@{domain.domain_name}</span>}{box.password_recovery_email&&<span className="mt-1 block break-all text-xs text-slate-600">Reserveadres: {box.password_recovery_email}</span>}<span className="text-xs text-slate-500">{box.name} · Verzenden {box.may_send?"aan":"uit"} · Ontvangen {box.may_receive?"aan":"uit"}</span></div>
         <div className="flex flex-wrap gap-2">
           <button type="button" className={button} aria-label={"Aanpassen "+box.local_part+"@"+domain.domain_name} disabled={busy||loading} onClick={()=>open("edit",box)}><Settings2 size={14}/> Aanpassen</button>
+          <button type="button" className={button} aria-label={"E-mailadres kiezen voor "+box.local_part+"@"+domain.domain_name} disabled={busy||loading} onClick={()=>open("address",box)}><Mail size={14}/> E-mailadres</button>
           <button type="button" className={button} aria-label={"Wachtwoord wijzigen "+box.local_part+"@"+domain.domain_name} disabled={busy||loading} onClick={()=>open("password",box)}><KeyRound size={14}/> Wachtwoord</button>
           <button type="button" className={button} aria-label={"Verwijderen "+box.local_part+"@"+domain.domain_name} disabled={busy||loading} onClick={()=>open("delete",box)}><Trash2 size={14}/> Verwijderen</button>
         </div>
       </div>)}</div>}
     </>}
     {editor&&<form key={formKey} onSubmit={submit} className="space-y-4 rounded-xl border border-slate-300 bg-slate-50 p-4">
-      <h4 className="font-semibold">{editor.kind==="create"?"Nieuwe mailbox":editor.kind==="edit"?"Mailbox aanpassen":editor.kind==="password"?"Nieuw wachtwoord instellen":"Mailbox definitief verwijderen"}</h4>
+      <h4 className="font-semibold">{editor.kind==="create"?"Nieuwe mailbox":editor.kind==="edit"?"Mailbox aanpassen":editor.kind==="password"?"Wachtwoord herstellen":editor.kind==="address"?"Ander e-mailadres voor dezelfde inbox":"Mailbox definitief verwijderen"}</h4>
       {editor.box&&<p className="break-all text-sm">{editor.box.local_part}@{domain.domain_name}</p>}
       <fieldset disabled={busy||loading} className="space-y-4">
         {editor.kind==="create"&&<Field label="E-mailadres"><div className="mt-1.5 flex flex-wrap items-center gap-2"><input aria-label="Naam vóór het @-teken" className={input+" max-w-xs"} name="local_part" required placeholder="info" maxLength={64} autoComplete="off"/><span className="break-all text-sm">@{domain.domain_name}</span></div></Field>}
         {(editor.kind==="create"||editor.kind==="edit")&&<Field label="Naam"><input className={input} name="name" required maxLength={100} defaultValue={editor.box?.name||""} placeholder="Bijvoorbeeld: NatureHealing"/></Field>}
-        {(editor.kind==="create"||editor.kind==="password")&&<PasswordFields/>}
-        {editor.kind==="edit"&&<div className="space-y-2">{[["may_send","E-mail versturen"],["may_receive","E-mail ontvangen"],["may_access_imap","Toegang via IMAP (mailapps)"],["may_access_pop3","Toegang via POP3"]].map(([key,label])=><label className="flex items-center gap-2 text-sm" key={key}><input type="checkbox" name={key} defaultChecked={Boolean(editor.box?.[key as keyof Mailbox])}/>{label}</label>)}<p className="text-xs leading-5 text-slate-500">Het e-mailadres zelf kan niet worden hernoemd. Maak daarvoor een nieuwe mailbox aan.</p></div>}
+        {(editor.kind==="create"||editor.kind==="password")&&<Field label="Wachtwoord instellen"><select className={input} value={passwordMethod} onChange={e=>setPasswordMethod(e.target.value)}><option value="invitation">Klant kiest zelf via e-mail (aanbevolen)</option><option value="password">Zelf een wachtwoord instellen</option></select></Field>}
+        {(editor.kind==="create"||editor.kind==="edit")&&<div className="space-y-2"><Field label={"Reserve-e-mailadres van de klant"+(editor.kind==="create"&&passwordMethod==="invitation"?" *":"")}><input className={input} type="email" name="password_recovery_email" maxLength={254} required={editor.kind==="create"&&passwordMethod==="invitation"} value={backupEmail} onChange={e=>setBackupEmail(e.target.value)} placeholder="Bijvoorbeeld het persoonlijke Gmail- of Outlook-adres" autoComplete="off"/></Field><p className="text-xs leading-5 text-slate-500">Gebruik een adres buiten {domain.domain_name} waar de klant bij kan als deze mailbox niet werkt. Het wordt ook als apart contactadres in Vedantix bewaard. Dit stelt geen doorstuuradres in.</p></div>}
+        {(editor.kind==="create"||editor.kind==="password")&&(passwordMethod==="password"?<PasswordFields/>:<div className="space-y-3 rounded-xl border border-blue-200 bg-blue-50 p-4"><p className="text-sm leading-6">Migadu stuurt een uitnodiging waarmee de klant zelf een wachtwoord instelt. Jij ziet het wachtwoord niet.</p>{editor.kind==="password"&&<><p className="break-all text-sm"><strong>Reserveadres:</strong> {editor.box?.password_recovery_email||"Nog niet ingesteld"}</p><button type="button" className={button} onClick={()=>open("edit",editor.box)}>Reserveadres aanpassen</button></>}<label className="flex items-start gap-2 text-sm"><input className="mt-1" type="checkbox" name="confirm_send" required/><span>Stuur de uitnodiging naar <strong className="break-all">{editor.kind==="create"?(backupEmail||"het ingevulde reserveadres"):editor.box?.password_recovery_email||"het reserveadres"}</strong>.</span></label><p className="text-xs leading-5 text-slate-600">Na het kiezen van een nieuw wachtwoord moet de klant dit ook in de mailapp bijwerken.</p></div>)}
+        {editor.kind==="address"&&<div className="space-y-3"><p className="text-sm leading-6">Gebruik bijvoorbeeld info@{domain.domain_name} voor dezelfde inbox, bestaande berichten en hetzelfde wachtwoord. De klant kan hiermee inloggen, verzenden en ontvangen. Migadu bewaart {editor.box?.local_part}@{domain.domain_name} als onderliggende mailbox; er komt geen tweede mailbox bij.</p><Field label="Gewenst e-mailadres"><div className="flex flex-wrap items-center gap-2"><input className={input+" max-w-xs"} required maxLength={64} value={newPart} onChange={e=>setNewPart(e.target.value)} autoComplete="off"/><span className="text-sm">@{domain.domain_name}</span></div></Field><label className="flex items-start gap-2 text-sm"><input className="mt-1" type="checkbox" name="confirm_address_change" required/><span>Gebruik <strong className="break-all">{newPart||"…"}@{domain.domain_name}</strong> als adres voor deze bestaande inbox.</span></label></div>}
+        {editor.kind==="edit"&&<div className="space-y-2">{[["may_send","E-mail versturen"],["may_receive","E-mail ontvangen"],["may_access_imap","Toegang via IMAP (mailapps)"],["may_access_pop3","Toegang via POP3"]].map(([key,label])=><label className="flex items-center gap-2 text-sm" key={key}><input type="checkbox" name={key} defaultChecked={Boolean(editor.box?.[key as keyof Mailbox])}/>{label}</label>)}<p className="text-xs leading-5 text-slate-500">Gebruik de knop E-mailadres om een ander adres voor dezelfde inbox te kiezen.</p></div>}
         {editor.kind==="delete"&&<><p className="text-sm font-medium text-red-800">Dit verwijdert de mailbox en de opgeslagen e-mails bij Migadu. Maak eerst een back-up als je de berichten wilt bewaren. Deze actie kan niet via Vedantix ongedaan worden gemaakt.</p><Field label="Typ het volledige e-mailadres ter bevestiging"><input className={input} name="confirm_address" required autoComplete="off" placeholder={editor.box?.local_part+"@"+domain.domain_name}/></Field></>}
       </fieldset>
-      <div className="flex flex-wrap gap-2"><button className={primary+(editor.kind==="delete"?" bg-red-700 hover:bg-red-800":"")} disabled={busy||loading}>{busy?"Bezig…":editor.kind==="delete"?"Definitief verwijderen":editor.kind==="create"?"Mailbox aanmaken":"Opslaan"}</button><button className={button} type="button" disabled={busy} onClick={()=>setEditor(null)}>Annuleren</button></div>
+      <div className="flex flex-wrap gap-2"><button className={primary+(editor.kind==="delete"?" bg-red-700 hover:bg-red-800":"")} disabled={busy||loading||(editor.kind==="password"&&passwordMethod==="invitation"&&!editor.box?.password_recovery_email)}>{busy?"Bezig…":editor.kind==="delete"?"Definitief verwijderen":editor.kind==="create"?(passwordMethod==="invitation"?"Mailbox aanmaken en klant uitnodigen":"Mailbox aanmaken"):editor.kind==="password"&&passwordMethod==="invitation"?"Uitnodiging aanvragen":editor.kind==="address"?"E-mailadres gebruiken":"Opslaan"}</button><button className={button} type="button" disabled={busy} onClick={()=>setEditor(null)}>Annuleren</button></div>
     </form>}
   </div>;
 }
+
 

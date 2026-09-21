@@ -27,6 +27,7 @@ create function vault.update_secret(p_id uuid,p_secret text) returns void langua
   update vault.secrets set secret=p_secret where id=p_id;
 $$;
 \ir ../supabase/migrations/20260918060847_migadu_mailbox_management.sql
+\ir ../supabase/migrations/20260921000039_migadu_recovery_contacts.sql
 
 do $$
 begin
@@ -80,3 +81,43 @@ do $$ begin
   if (select count(*) from public.migadu_management_audit)<>1 then raise exception 'Admin cannot read audit'; end if;
 end; $$;
 reset role;
+
+
+-- Recovery contacts are independent of provider deletion and administrator-only.
+insert into public.domains(id) values('00000000-0000-4000-8000-000000000001');
+set role service_role;
+insert into public.migadu_mailbox_contacts(domain_id,local_part,recovery_email,preferred_local_part)
+values('00000000-0000-4000-8000-000000000001','admin','client@example.net','info');
+reset role;
+do $$ begin
+  if has_table_privilege('anon','public.migadu_mailbox_contacts','SELECT')
+    or has_table_privilege('authenticated','public.migadu_mailbox_contacts','INSERT')
+    or has_table_privilege('authenticated','public.migadu_mailbox_contacts','UPDATE')
+    or has_table_privilege('authenticated','public.migadu_mailbox_contacts','DELETE')
+  then raise exception 'Reserve contact grants are unsafe'; end if;
+  if not (select relrowsecurity from pg_class where oid='public.migadu_mailbox_contacts'::regclass)
+  then raise exception 'Reserve contacts need RLS'; end if;
+end; $$;
+set role authenticated;
+select set_config('request.jwt.claims','{"role":"authenticated","staff_role":"OPERATOR"}',false);
+do $$ begin
+  if exists(select 1 from public.migadu_mailbox_contacts) then raise exception 'Operator can read reserve contacts'; end if;
+end; $$;
+select set_config('request.jwt.claims','{"role":"authenticated","staff_role":"ADMIN"}',false);
+do $$ begin
+  if (select count(*) from public.migadu_mailbox_contacts)<>1 then raise exception 'Admin cannot read reserve contacts'; end if;
+  begin
+    update public.migadu_mailbox_contacts set recovery_email='attacker@example.net';
+    raise exception 'Direct browser update bypassed API confirmation';
+  exception when insufficient_privilege then null;
+  end;
+end; $$;
+reset role;
+insert into public.migadu_management_audit(request_id,actor_id,domain_id,action,target,status)
+values(gen_random_uuid(),gen_random_uuid(),'00000000-0000-4000-8000-000000000001','send_invitation','admin@example.org','succeeded'),
+(gen_random_uuid(),gen_random_uuid(),'00000000-0000-4000-8000-000000000001','set_primary_address','admin@example.org','succeeded'),
+(gen_random_uuid(),gen_random_uuid(),'00000000-0000-4000-8000-000000000001','delete_mailbox','admin@example.org','succeeded');
+do $$ begin
+  if (select recovery_email from public.migadu_mailbox_contacts where local_part='admin')<>'client@example.net'
+  then raise exception 'Contact must remain after mailbox deletion'; end if;
+end; $$;

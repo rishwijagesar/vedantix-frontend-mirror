@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 export type MailConfig = { connected:boolean;account_email:string|null;last_verified_at:string|null };
-export type Mailbox = { local_part:string;address:string;name:string;may_send:boolean;may_receive:boolean;may_access_imap:boolean;may_access_pop3:boolean };
+export type Mailbox = { local_part:string;address:string;primary_address?:string;password_recovery_email:string;name:string;may_send:boolean;may_receive:boolean;may_access_imap:boolean;may_access_pop3:boolean };
+export type MailContact = { local_part:string;recovery_email:string|null;preferred_local_part:string|null;updated_at:string };
 export type MailDomain = { registered:boolean;domain:{name:string;state:string;can_send:boolean;can_receive:boolean}|null;mailboxes:Mailbox[] };
 export type DnsRecord = { purpose:string;name:string;type:string;value:string;priority:number|null };
 export async function mailAction(action:string, body:Record<string,unknown>={}) {

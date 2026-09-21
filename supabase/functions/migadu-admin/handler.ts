@@ -1,9 +1,10 @@
-import { MailError, accountCredentials, createMigaduClient, domainName, dnsRecords, listFrom, localPart, mailboxPayload, safeDomain, safeMailbox, type Credentials, type MigaduCall } from "./api.ts";
+import { sendInvitation, usableIdentity, usePrimaryAddress } from "./mailbox-tools.ts";
+import { MailError, accountCredentials, createMigaduClient, domainName, dnsRecords, listFrom, localPart, mailboxPayload, safeDomain, safeMailbox, recoveryEmail, type Credentials, type MigaduCall } from "./api.ts";
 
 type Client = any;
 const origins = new Set(["https://vedantix.nl", "https://www.vedantix.nl", "https://vedantix-migration-test.lovable.app"]);
-const actions = new Set(["status","connect","disconnect","domain","records","add_domain","activate_domain","create_mailbox","update_mailbox","reset_password","delete_mailbox"]);
-const mutationActions = new Set(["connect","disconnect","add_domain","activate_domain","create_mailbox","update_mailbox","reset_password","delete_mailbox"]);
+const actions = new Set(["status","contacts","connect","disconnect","domain","records","add_domain","activate_domain","create_mailbox","update_mailbox","reset_password","delete_mailbox","send_invitation","set_primary_address"]);
+const mutationActions = new Set(["connect","disconnect","add_domain","activate_domain","create_mailbox","update_mailbox","reset_password","delete_mailbox","send_invitation","set_primary_address"]);
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 async function data(query: any) {
   const result = await query;
@@ -49,9 +50,19 @@ export function createMailHandler(
         domain=await data(user.from("domains").select("id,domain_name,dns_provider").eq("id",body.domain_id).maybeSingle());
         if (!domain) throw new MailError("Domein niet gevonden.",404);
         name=domainName(domain.domain_name);
-        if (body.action.endsWith("_mailbox") || body.action==="reset_password") part=localPart(body.local_part);
+        if (body.action.endsWith("_mailbox") || ["reset_password","send_invitation","set_primary_address"].includes(body.action)) part=localPart(body.local_part);
       }
-      const payload = ["create_mailbox","update_mailbox","reset_password"].includes(body.action) ? mailboxPayload(body.action,body) : undefined;
+      const contactColumns="local_part,recovery_email,preferred_local_part,updated_at";
+      const savedContacts=async()=>await data(admin.from("migadu_mailbox_contacts").select(contactColumns).eq("domain_id",domain.id));
+      if(body.action==="contacts") return reply({ok:true,contacts:await savedContacts()});
+      const saveContact=async(local:string, fields:Record<string,unknown>)=>{
+        const previous=await data(admin.from("migadu_mailbox_contacts").select(contactColumns).eq("domain_id",domain.id).eq("local_part",local).maybeSingle());
+        await data(admin.from("migadu_mailbox_contacts").upsert({
+          domain_id:domain.id,local_part:local,recovery_email:previous?.recovery_email||null,
+          preferred_local_part:previous?.preferred_local_part||null,...fields,updated_at:new Date().toISOString(),
+        },{onConflict:"domain_id,local_part"}));
+      };
+      const payload = ["create_mailbox","update_mailbox","reset_password"].includes(body.action) ? mailboxPayload(body.action,body,name) : undefined;
       if (body.action==="delete_mailbox" && body.confirm_address!==part+"@"+name)
         throw new MailError("Typ het volledige e-mailadres om de mailbox definitief te verwijderen.");
       if (["add_domain","activate_domain"].includes(body.action) && body.confirm_domain!==name)
@@ -91,7 +102,18 @@ export function createMailHandler(
       if (body.action==="domain") {
         const registered=listFrom(await api("/domains"),"domains").find(d=>String(d.name).toLowerCase()===name);
         if (!registered) return reply({ok:true,registered:false,domain:null,mailboxes:[]});
+        const contacts=await savedContacts();
         const mailboxes=listFrom(await api(base+"/mailboxes"),"mailboxes").map(safeMailbox);
+        for(const box of mailboxes) {
+          (box as any).primary_address=box.local_part+"@"+name;
+          const contact=contacts.find((c:any)=>c.local_part===box.local_part);
+          if(contact?.preferred_local_part && contact.preferred_local_part!==box.local_part) {
+            try {
+              const identities=listFrom(await api(base+"/mailboxes/"+encodeURIComponent(box.local_part)+"/identities"),"identities");
+              if(identities.some(i=>usableIdentity(i,contact.preferred_local_part))) (box as any).primary_address=contact.preferred_local_part+"@"+name;
+            } catch { /* Show the confirmed parent address if the identity cannot be verified. */ }
+          }
+        }
         return reply({ok:true,registered:true,domain:safeDomain(registered),mailboxes});
       }
       if (body.action==="records") return reply({ok:true,records:dnsRecords(await api(base+"/records"))});
@@ -113,10 +135,34 @@ export function createMailHandler(
         return completed({domain:safeDomain(activated),...(warning ? {warning} : {})});
       }
       const mailbox=base+"/mailboxes"+(body.action==="create_mailbox" ? "" : "/"+encodeURIComponent(part));
+      if(body.action==="send_invitation") {
+        const recipient=await sendInvitation(api,mailbox,body,name);
+        let warning:string|undefined;
+        try {await saveContact(part,{recovery_email:recipient});}
+        catch {warning="Het reserveadres kon nog niet in Vedantix worden bewaard. Controleer dit via Aanpassen; verstuur de uitnodiging niet opnieuw.";}
+        return completed({invitation_requested:true,recipient,...(warning?{warning}:{})});
+      }
+      if(body.action==="set_primary_address") {
+        const result=await usePrimaryAddress(api,base,part,body,name);
+        let recovery="";
+        try {recovery=recoveryEmail(result.current.password_recovery_email,name);} catch { /* Legacy addresses can be corrected separately. */ }
+        await saveContact(part,{preferred_local_part:result.target,...(recovery?{recovery_email:recovery}:{})});
+        return completed({primary_address:result.target+"@"+name,parent_address:part+"@"+name});
+      }
+      if(body.action==="delete_mailbox") {
+        // Keep a contact record before deletion; deleting a mailbox never deletes its reserve contact.
+        const current=await api(mailbox);
+        if(current.password_recovery_email) await saveContact(part,{recovery_email:recoveryEmail(current.password_recovery_email,name)});
+      }
       const method=body.action==="delete_mailbox" ? "DELETE" : body.action==="create_mailbox" ? "POST" : "PUT";
       await api(mailbox,method,payload);
       // No provider response is forwarded for mutations: it could contain credentials.
-      return completed({});
+      let warning:string|undefined;
+      if(payload && Object.hasOwn(payload,"password_recovery_email")) {
+        try {await saveContact(part,{recovery_email:payload.password_recovery_email||null});}
+        catch {warning="De wijziging bij Migadu is bevestigd, maar het reserveadres kon nog niet in Vedantix worden bewaard. Controleer dit via Aanpassen.";}
+      }
+      return completed({...(payload?.password_method==="invitation"?{invitation_requested:true,recipient:payload.password_recovery_email}:{}),...(warning?{warning}:{})});
     } catch(error) {
       if (auditId && admin) {
         try { await admin.from("migadu_management_audit").update({status:"unconfirmed",finished_at:new Date().toISOString()}).eq("id",auditId); } catch { /* Never log raw provider errors or request bodies. */ }
@@ -125,3 +171,4 @@ export function createMailHandler(
     }
   };
 }
+
