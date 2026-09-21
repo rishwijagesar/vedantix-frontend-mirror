@@ -1,6 +1,6 @@
+import AdminLayout from "./AdminLayout";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   BarChart3,
   CircleAlert,
   Download,
@@ -131,32 +131,7 @@ export default function GrowthAnalytics() {
   const displayedRows = rows.slice(0, Math.min(days, 14));
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-7">
-          <div className="flex min-w-0 items-center gap-3">
-            <a
-              href="/admin"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50"
-              aria-label="Terug naar Control Center"
-            >
-              <ArrowLeft size={17} />
-            </a>
-            <div className="min-w-0">
-              <strong className="block truncate text-sm">Vedantix Control Center</strong>
-              <span className="block truncate text-xs text-slate-400">Groei & conversie</span>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => void load()}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
-          >
-            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-            Vernieuwen
-          </button>
-        </div>
-      </header>
+    <AdminLayout actions={<button type="button" onClick={() => void load()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""}/> Vernieuwen</button>}>
 
       <main className="mx-auto max-w-7xl p-4 md:p-7">
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
@@ -279,6 +254,7 @@ export default function GrowthAnalytics() {
           )}
         </section>
       </main>
-    </div>
+    </AdminLayout>
   );
 }
+

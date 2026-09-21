@@ -1,3 +1,6 @@
+import AdminLayout from "./AdminLayout";
+import { operationSection, type OperationSection } from "./admin-navigation";
+import { useSearchParams } from "@/lib/router-compat";
 import ClientCasesModule from "./ClientCasesModule";
 import MailManagement from "./MailManagement";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
@@ -6,21 +9,15 @@ import {
   CheckCircle2,
   CircleAlert,
   Globe2,
-  LayoutDashboard,
-  LogOut,
   Mail,
   MonitorSmartphone,
   Plus,
   RefreshCw,
-  ReceiptText,
   ScanLine,
   Settings,
-  ShieldCheck,
   Trash2,
-  UserCog,
   Users,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import {
   createCustomer,
   createDomain,
@@ -53,18 +50,7 @@ import MigaduCredentialModal from "./MigaduCredentialModal";
 import { BillingDashboardCards } from "./SalesBillingModules";
 import "./control-center.css";
 
-type Section = "dashboard" | "client-cases" | "customers" | "domains" | "websites" | "health" | "monitoring" | "staff";
-
-const sections: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "client-cases", label: "Klantcases", icon: MonitorSmartphone },
-  { id: "customers", label: "Klanten", icon: Users },
-  { id: "domains", label: "Domeinen", icon: Globe2 },
-  { id: "websites", label: "Websites", icon: MonitorSmartphone },
-  { id: "health", label: "E-mail & DNS", icon: Mail },
-  { id: "monitoring", label: "Monitoring", icon: Activity },
-  { id: "staff", label: "Staff", icon: UserCog },
-];
+type Section = OperationSection;
 
 function Badge({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "success" | "warning" | "danger" }) {
   const className = {
@@ -108,7 +94,8 @@ function Input({ label, name, type = "text", required, placeholder }: { label: s
 }
 
 export default function AdminControlCenterV3() {
-  const [section, setSection] = useState<Section>("dashboard");
+  const [searchParams] = useSearchParams();
+  const section = operationSection(searchParams.get("section"));
   const [overview, setOverview] = useState<Overview>({ customers: 0, domains: 0, websites: 0, checksNeedingAttention: 0 });
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [domains, setDomains] = useState<Domain[]>([]);
@@ -153,70 +140,23 @@ export default function AdminControlCenterV3() {
   }, [domains]);
 
   const activeTitle: Record<Section, [string, string]> = {
-    dashboard: ["Control Center", "Operationeel overzicht van Vedantix en klantinfrastructuur."],
+    dashboard: ["Dashboard", "Operationeel overzicht van Vedantix en klantinfrastructuur."],
     "client-cases": ["Klantcases", "Klantverhalen, logo’s en resultaten op de website beheren."],
     customers: ["Klanten", "Centrale eigenaar van domeinen, websites en integraties."],
     domains: ["Domeinen", "DNS, e-mailprovider, status en technische gezondheid."],
     websites: ["Websites", "GitHub-, Lovable- en domeinkoppelingen per website."],
     health: ["E-mail & DNS", "Beheer mailboxen en controleer de mailinstellingen van je domeinen."],
     monitoring: ["Monitoring", "Autonome domein-, e-mail- en websitecontrole met alerts en notification delivery."],
-    staff: ["Staff", "Toegang, rollen en uitnodigingen voor het Control Center."],
+    staff: ["Team & toegang", "Toegang, rollen en uitnodigingen voor het Control Center."],
   };
 
   const title = activeTitle[section];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
-      <div className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-slate-950 p-5 text-white md:flex md:flex-col">
-          <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">V</div>
-            <div><strong className="block text-sm">Vedantix</strong><span className="text-xs text-slate-400">Control Center</span></div>
-          </div>
-          <nav className="space-y-1">
-            {sections.map((item) => {
-              const Icon = item.icon;
-              const active = item.id === section;
-              return (
-                <button
-                  type="button"
-                  key={item.id}
-                  onClick={() => setSection(item.id)}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition ${active ? "bg-white text-slate-950" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}
-                >
-                  <Icon size={17} />{item.label}
-                </button>
-              );
-            })}
-            <div className="my-3 border-t border-white/10 pt-3">
-              <div className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Sales & Billing</div>
-              <a
-                href="/admin/billing"
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
-              >
-                <ReceiptText size={17} /> Offertes & facturen
-              </a>
-            </div>
-          </nav>
-          <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-slate-400">
-            <div className="mb-1 flex items-center gap-2 text-emerald-300"><ShieldCheck size={14} /> Supabase Auth + RLS</div>
-            Alleen geautoriseerde staff-accounts hebben toegang.
-          </div>
-        </aside>
-
-        <div className="min-w-0 flex-1">
-          <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur md:px-7">
-            <div><span className="text-xs font-medium uppercase tracking-[0.16em] text-slate-400">Vedantix Operations</span><strong className="block text-sm md:hidden">{title[0]}</strong></div>
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Vernieuwen</button>
-              <button type="button" onClick={() => supabase.auth.signOut()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><LogOut size={14} /> Uitloggen</button>
-            </div>
-          </header>
-
-          <nav aria-label="Adminmenu" className="flex gap-2 overflow-x-auto border-b bg-white p-3 md:hidden">{sections.map(item => <button key={item.id} type="button" onClick={() => setSection(item.id)} className={`shrink-0 rounded-lg px-3 py-2 text-xs font-medium ${section === item.id ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-700"}`}>{item.label}</button>)}<a href="/admin/billing" className="shrink-0 rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium">Offertes & facturen</a></nav>
+    <AdminLayout actions={<button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""}/> Vernieuwen</button>}>
           <main className="mx-auto max-w-7xl p-4 md:p-7">
             <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-              <div><span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Vedantix Admin v3</span><h1 className="mt-1 text-3xl font-bold tracking-tight">{title[0]}</h1><p className="mt-2 max-w-2xl text-sm text-slate-500">{title[1]}</p></div>
+              <div><span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Vedantix Admin</span><h1 className="mt-1 text-3xl font-bold tracking-tight">{title[0]}</h1><p className="mt-2 max-w-2xl text-sm text-slate-500">{title[1]}</p></div>
               {section === "customers" || section === "domains" || section === "websites" ? (
                 <button type="button" onClick={() => setShowForm((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"><Plus size={16} /> Nieuwe toevoegen</button>
               ) : null}
@@ -233,9 +173,7 @@ export default function AdminControlCenterV3() {
             {section === "monitoring" ? <MonitoringModule /> : null}
             {section === "staff" ? <StaffModule /> : null}
           </main>
-        </div>
-      </div>
-    </div>
+    </AdminLayout>
   );
 }
 
@@ -452,3 +390,4 @@ function MonitoringModule() {
     </div>
   );
 }
+

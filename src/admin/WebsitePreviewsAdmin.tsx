@@ -1,5 +1,6 @@
+import AdminLayout from "./AdminLayout";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { ArrowLeft, Check, Copy, ExternalLink, Link2, RefreshCw, RotateCcw, Save, ShieldCheck, XCircle } from "lucide-react";
+import { Check, Copy, ExternalLink, Link2, RefreshCw, RotateCcw, Save, ShieldCheck, XCircle } from "lucide-react";
 import { listCustomers, listWebsites, updateWebsite, type Customer, type Website } from "./control-center-data";
 import { createWebsitePreviewLink, listWebsitePreviewLinks, publicPreviewUrl, revokeWebsitePreviewLink, type WebsitePreviewLink } from "./preview-links-data";
 
@@ -98,13 +99,7 @@ export default function WebsitePreviewsAdmin() {
     window.setTimeout(() => setCopied(null), 1600);
   }
 
-  return <div className="min-h-screen bg-slate-50 text-slate-950">
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-7">
-        <div><span className="text-xs font-semibold uppercase tracking-[.16em] text-slate-400">Vedantix Operations</span><strong className="block text-sm">Customer Preview</strong></div>
-        <div className="flex gap-2"><a href="/admin" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"><ArrowLeft size={15}/> Control Center</a><button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"><RefreshCw size={15} className={loading ? "animate-spin" : ""}/> Vernieuwen</button></div>
-      </div>
-    </header>
+  return <AdminLayout actions={<button type="button" onClick={() => void load()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""}/> Vernieuwen</button>}>
 
     <main className="mx-auto max-w-7xl p-4 md:p-7">
       <div className="mb-7"><span className="text-xs font-semibold uppercase tracking-[.16em] text-slate-400">Beveiligde klantlinks</span><h1 className="mt-1 text-3xl font-bold tracking-tight">Website previews</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">De klant krijgt een tijdelijke Vedantix-link. Het echte preview-adres blijft gekoppeld aan de website en kan later zonder een nieuwe publieke slug worden gewijzigd. Een nieuwe link trekt de vorige automatisch in.</p></div>
@@ -131,5 +126,6 @@ export default function WebsitePreviewsAdmin() {
         </section>;
       })}</div>}
     </main>
-  </div>;
+  </AdminLayout>;
 }
+
