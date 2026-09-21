@@ -1,3 +1,4 @@
+import { adminNavigation } from "../src/admin/admin-navigation.ts";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
@@ -21,7 +22,8 @@ assert.match(routeSource, /<AdminAuthGate>/);
 assert.match(routeSource, /noindex, nofollow, noarchive/);
 
 const adminSource = fs.readFileSync("src/routes/admin.tsx", "utf8");
-assert.match(adminSource, /href="\/admin\/growth"/);
+assert.match(adminSource, /<AdminAuthGate>/);
+assert.ok(adminNavigation.some(group => group.items.some(item => item.href === "/admin/growth")), "Growth must be reachable from the shared admin menu");
 
 const dataSource = fs.readFileSync("src/admin/audit-funnel-data.ts", "utf8");
 assert.match(dataSource, /functions\.invoke\("audit-funnel-stats"/);

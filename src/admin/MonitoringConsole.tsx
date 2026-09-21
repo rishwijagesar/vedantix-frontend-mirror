@@ -1,8 +1,8 @@
+import AdminLayout from "./AdminLayout";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   AlertTriangle,
-  ArrowLeft,
   CheckCircle2,
   CircleAlert,
   Clock3,
@@ -161,24 +161,9 @@ export default function MonitoringConsole({ embedded = false }: { embedded?: boo
     }
   }
 
-  return (
-    <div className={embedded ? "text-slate-950" : "min-h-screen bg-slate-50 text-slate-950"}>
-      {embedded ? null : (
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
-          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-7">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white">V</div>
-              <div><strong className="block text-sm">Vedantix Monitoring</strong><span className="text-xs text-slate-400">Control Center</span></div>
-            </div>
-            <div className="flex items-center gap-2">
-              <a href="/admin" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><ArrowLeft size={14} /> Control Center</a>
-              <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Vernieuwen</button>
-            </div>
-          </div>
-        </header>
-      )}
-
-      <main className={embedded ? "" : "mx-auto max-w-7xl p-4 md:p-7"}>
+  const Content = embedded ? "div" : "main";
+  const content = (
+      <Content className={embedded ? "" : "mx-auto max-w-7xl p-4 md:p-7"}>
         {embedded ? (
           <div className="mb-5 flex justify-end">
             <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Monitoring vernieuwen</button>
@@ -253,9 +238,9 @@ export default function MonitoringConsole({ embedded = false }: { embedded?: boo
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </Content>
   );
+  return embedded ? content : <AdminLayout actions={<button type="button" onClick={() => void load()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""}/> Vernieuwen</button>}>{content}</AdminLayout>;
 }
 
 function SummaryCard({ label, value, icon: Icon, caption, tone }: { label: string; value: string | number; icon: typeof ServerCog; caption: string; tone: "neutral" | "success" | "warning" | "danger" }) {
@@ -266,3 +251,4 @@ function SummaryCard({ label, value, icon: Icon, caption, tone }: { label: strin
 function StatusRow({ label, ok, value }: { label: string; ok: boolean; value: string }) {
   return <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-3 last:border-0 last:pb-0"><span className="text-slate-500">{label}</span><span className={`inline-flex items-center gap-1.5 text-right text-xs font-semibold ${ok ? "text-emerald-700" : "text-amber-700"}`}>{ok ? <CheckCircle2 size={14} /> : <CircleAlert size={14} />}{value}</span></div>;
 }
+

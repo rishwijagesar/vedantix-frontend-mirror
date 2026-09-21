@@ -1,6 +1,6 @@
+import AdminLayout from "./AdminLayout";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
-  ArrowLeft,
   CalendarClock,
   CheckCircle2,
   ExternalLink,
@@ -110,25 +110,7 @@ export default function LeadsPipeline() {
   }), [leads]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-3 px-4 md:px-7">
-          <div className="flex items-center gap-3">
-            <a href="/admin" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50">
-              <ArrowLeft size={14} /> Control Center
-            </a>
-            <div className="hidden sm:block"><strong className="block text-sm">Leads & Sales Pipeline</strong><span className="text-xs text-slate-400">Vedantix</span></div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => void load()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50">
-              <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Vernieuwen
-            </button>
-            <button type="button" onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800">
-              <Plus size={14} /> Nieuwe lead
-            </button>
-          </div>
-        </div>
-      </header>
+    <AdminLayout actions={<><button type="button" onClick={() => void load()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"><RefreshCw size={14} className={loading ? "animate-spin" : ""}/> Vernieuwen</button><button type="button" onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800"><Plus size={14}/> Nieuwe lead</button></>}>
 
       <main className="mx-auto max-w-[1600px] p-4 md:p-7">
         <div className="mb-7">
@@ -193,7 +175,7 @@ export default function LeadsPipeline() {
 
       {selected ? <LeadDetail lead={selected} onClose={() => setSelectedId(null)} onChanged={load} /> : null}
       {showCreate ? <CreateLeadModal onClose={() => setShowCreate(false)} onCreated={async (lead) => { setShowCreate(false); await load(); setSelectedId(lead.id); }} /> : null}
-    </div>
+    </AdminLayout>
   );
 }
 
@@ -284,7 +266,7 @@ function LeadDetail({ lead, onClose, onChanged }: { lead: SalesLead; onClose: ()
             <div className="mt-4 flex flex-wrap gap-2">
               {lead.latest_audit?.public_token ? <a href={`/online-groei-audit?audit=${lead.latest_audit.public_token}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50"><ExternalLink size={14} /> Audit openen</a> : null}
               <button type="button" disabled={busy} onClick={() => void run(() => createQuoteForLead(lead))} className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800"><FileText size={14} /> {lead.latest_quote ? "Nieuwe offerte" : "Offerte maken"}</button>
-              {lead.latest_quote ? <a href="/admin/billing" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50"><ExternalLink size={14} /> {lead.latest_quote.quote_number || "Offerte"} · {lead.latest_quote.status}</a> : null}
+              {lead.latest_quote ? <a href="/admin/billing?section=quotes" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50"><ExternalLink size={14} /> {lead.latest_quote.quote_number || "Offerte"} · {lead.latest_quote.status}</a> : null}
             </div>
           </section>
 
@@ -355,3 +337,4 @@ function CreateLeadModal({ onClose, onCreated }: { onClose: () => void; onCreate
 function Field({ label, name, type = "text", required, placeholder }: { label: string; name: string; type?: string; required?: boolean; placeholder?: string }) {
   return <label className="text-sm font-medium text-slate-700">{label}<input name={name} type={type} required={required} placeholder={placeholder} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-slate-400" /></label>;
 }
+

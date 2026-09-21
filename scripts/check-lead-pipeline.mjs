@@ -1,3 +1,4 @@
+import { adminNavigation } from "../src/admin/admin-navigation.ts";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
@@ -34,6 +35,7 @@ assert.match(page, /Online Groei Audits verschijnen automatisch als lead/);
 assert.match(page, /Offerte maken/);
 assert.match(page, /Contactmoment registreren/);
 assert.match(page, /Opvolging/);
-assert.match(adminRoute, /href="\/admin\/leads"/);
+assert.match(adminRoute, /<AdminAuthGate>/);
+assert.ok(adminNavigation.some(group => group.items.some(item => item.href === "/admin/leads")), "Leads must be reachable from the shared admin menu");
 
 console.log("Lead pipeline regression checks passed.");
