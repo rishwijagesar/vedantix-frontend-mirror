@@ -132,6 +132,20 @@ jobs:
       - name: Website Google insights authorization, provider and tracking tests
         run: bun test scripts/website-insights.test.ts
 
+      - name: Client performance PDF authorization and pagination tests
+        run: deno test --node-modules-dir=auto --no-check --allow-env --allow-write=tmp/website-report supabase/functions/_tests/website-report.test.ts -- --preview
+
+      - name: Client PDF binary download regression tests
+        run: bun test scripts/website-report-client.test.ts
+
+      - name: Check text and layout of generated performance reports
+        run: python3 scripts/check-website-report.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website-performance-reports
+          path: tmp/website-report/*.pdf
+
       - name: Google insights Vault, RLS and lease tests
         env:
           PGPASSWORD: administration-ci-only
@@ -141,4 +155,3 @@ jobs:
 
       - name: Production build
         run: bun run build
-

@@ -92,18 +92,36 @@ export function propertyInput(body: any) {
   if (!["EUR", "USD", "GBP", "CHF", "CAD", "AUD"].includes(currencyCode)) throw new InsightsError("Kies een ondersteunde valuta.");
   return { displayName, timeZone, currencyCode };
 }
+export function normalizeAgentic(lh: any) {
+  const category = lh.categories?.['agentic-browsing'];
+  if (!Array.isArray(category?.auditRefs)) return null;
+  const seen = new Set<string>();
+  const checks = category.auditRefs.filter((ref: any) => typeof ref?.id === 'string' && !seen.has(ref.id) && seen.add(ref.id)).map((ref: any) => {
+    const audit = lh.audits?.[ref.id];
+    const mode = audit?.scoreDisplayMode;
+    const status = !audit || mode === 'error' ? 'error'
+      : mode === 'notApplicable' ? 'not_applicable'
+      : mode === 'manual' ? 'manual'
+      : mode === 'informative' ? 'informative'
+      : audit.score === 1 ? 'passed'
+      : typeof audit.score === 'number' && Number.isFinite(audit.score) ? 'failed' : 'error';
+    return { id: ref.id, title: String(audit?.title || ref.id), display: String(audit?.displayValue || ''), status };
+  });
+  // Count successful evaluated checks, never convert the experimental category to 0-100.
+  return { checks, passed: checks.filter((c: any) => c.status === 'passed').length, evaluated: checks.filter((c: any) => c.status === 'passed' || c.status === 'failed').length };
+}
 export function normalizePageSpeed(value: any, device: string) {
   const lh = value?.lighthouseResult;
   if (!lh || lh.runtimeError || typeof lh.categories?.performance?.score !== "number") throw new InsightsError("Google kon deze pagina niet volledig meten.", 502);
   const score = (id: string) => typeof lh.categories?.[id]?.score === "number" ? Math.round(lh.categories[id].score * 100) : null;
   const metric = (id: string) => { const a = lh.audits?.[id]; return { value: Number.isFinite(a?.numericValue) ? a.numericValue : null, display: typeof a?.displayValue === "string" ? a.displayValue : null }; };
-  return { device, url: lh.finalDisplayedUrl || lh.finalUrl || value.id, measured_at: lh.fetchTime || value.analysisUTCTimestamp, scores: { performance: score("performance"), accessibility: score("accessibility"), seo: score("seo"), best_practices: score("best-practices") }, metrics: { speed_index: metric("speed-index"), lcp: metric("largest-contentful-paint"), fcp: metric("first-contentful-paint"), cls: metric("cumulative-layout-shift"), tbt: metric("total-blocking-time") }, opportunities: Object.values(lh.audits || {}).filter((a: any) => typeof a.score === "number" && a.score < .9 && (a.details?.type === "opportunity" || a.metricSavings)).map((a: any) => ({ title: String(a.title || "Verbeterpunt"), display: String(a.displayValue || ""), savings_ms: Number(a.details?.overallSavingsMs || a.metricSavings?.LCP || 0) })).sort((a, b) => b.savings_ms - a.savings_ms).slice(0, 8) };
+  return { device, lighthouse_version: typeof lh.lighthouseVersion === "string" ? lh.lighthouseVersion : null, warnings: (Array.isArray(lh.runWarnings) ? lh.runWarnings : []).filter((x: unknown) => typeof x === "string"), agentic: normalizeAgentic(lh), url: lh.finalDisplayedUrl || lh.finalUrl || value.id, measured_at: lh.fetchTime || value.analysisUTCTimestamp, scores: { performance: score("performance"), accessibility: score("accessibility"), seo: score("seo"), best_practices: score("best-practices") }, metrics: { speed_index: metric("speed-index"), lcp: metric("largest-contentful-paint"), fcp: metric("first-contentful-paint"), cls: metric("cumulative-layout-shift"), tbt: metric("total-blocking-time") }, opportunities: Object.values(lh.audits || {}).filter((a: any) => typeof a.score === "number" && a.score < .9 && (a.details?.type === "opportunity" || a.metricSavings)).map((a: any) => ({ title: String(a.title || "Verbeterpunt"), display: String(a.displayValue || ""), savings_ms: Number(a.details?.overallSavingsMs || a.metricSavings?.LCP || 0) })).sort((a, b) => b.savings_ms - a.savings_ms).slice(0, 8) };
 }
 export async function pageSpeed(url: string, device: string, key: string | null, transport: typeof fetch = fetch) {
   if (!["mobile", "desktop"].includes(device)) throw new InsightsError("Kies mobiel of desktop.");
   const endpoint = new URL("https://www.googleapis.com/pagespeedonline/v5/runPagespeed");
   endpoint.search = new URLSearchParams({ url, strategy: device, locale: "nl", ...(key ? { key } : {}) }).toString();
-  for (const category of ["performance", "accessibility", "best-practices", "seo"]) endpoint.searchParams.append("category", category);
+  for (const category of ["PERFORMANCE", "ACCESSIBILITY", "BEST_PRACTICES", "SEO", "AGENTIC_BROWSING"]) endpoint.searchParams.append("category", category);
   let response: Response;
   try { response = await transport(endpoint, { redirect: "error", signal: AbortSignal.timeout(55000) }); } catch { throw new InsightsError("De PageSpeed-meting duurde te lang. Probeer later opnieuw.", 504); }
   if (response.status === 429) throw new InsightsError("Google PageSpeed heeft zijn limiet bereikt. Stel een eigen PageSpeed API-sleutel in of probeer later opnieuw.", 429);
