@@ -45,3 +45,7 @@ verify_jwt = false
 # Verified getUser JWT and ADMIN role before Google credentials or website mutations.
 [functions.website-insights]
 verify_jwt = false
+
+# Authenticated client reports: getUser JWT and ADMIN role checked before reading data.
+[functions.website-report]
+verify_jwt = false
