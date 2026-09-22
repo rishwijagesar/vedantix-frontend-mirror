@@ -1,6 +1,8 @@
+import InvoiceLines from "./InvoiceLines";
+import { documentDraft, lineIsChanged, parseDocumentDraft, parseLineDraft, previewInvoice, saveInvoiceLineEdits, type InvoiceDocumentDraft, type InvoiceLineDraft, type InvoiceLineEdits } from "./invoice-draft";
 import CustomerDocumentsPanel from "./CustomerDocumentsPanel";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { Check, Download, FileCheck2, FilePlus2, RefreshCw, Save, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Check, Download, FileCheck2, FilePlus2, Save, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Customer } from "./control-center-data";
 import BillingPreviewModal from "./BillingPreviewModal";
@@ -14,7 +16,6 @@ import {
   deleteInvoiceItem,
   finalizeInvoice,
   getCompanyProfile,
-  getInvoice,
   listCreditNotes,
   listInvoiceItems,
   markInvoicePaid,
@@ -232,68 +233,6 @@ function InvoiceItemForm({ invoiceId, products, position, onDone }: { invoiceId:
   </form></Panel>;
 }
 
-function InvoiceLines({ invoice, items, products, onDone, onError }: { invoice: InvoiceWithActive; items: BillingItem[]; products: CatalogProductEx[]; onDone: () => Promise<void>; onError: (message: string) => void }) {
-  const draft = invoice.status === "DRAFT";
-  const productMap = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
-
-  async function syncOne(item: BillingItem) {
-    const product = item.catalog_product_id ? productMap.get(item.catalog_product_id) : null;
-    if (!product) return;
-    await updateInvoiceItem(item.id, {
-      code: product.code,
-      description: product.name,
-      billing_type: product.billing_type,
-      unit_price_ex_vat: product.price_ex_vat,
-      vat_rate: product.vat_rate,
-    });
-  }
-
-  async function syncAll() {
-    try {
-      await Promise.all(items.filter((item) => item.catalog_product_id && productMap.has(item.catalog_product_id)).map(syncOne));
-      await onDone();
-    } catch (err) { onError(err instanceof Error ? err.message : "Catalogusprijzen verversen mislukt."); }
-  }
-
-  return <section className="space-y-3">
-    <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-semibold">Factuurregels</h3><p className="text-sm text-slate-500">Bestaande regels blijven snapshots. Bij een concept kun je actuele catalogusprijzen bewust verversen.</p></div>{draft && items.some((item) => item.catalog_product_id) ? <button type="button" onClick={() => void syncAll()} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold"><RefreshCw size={14}/>Alle catalogusprijzen verversen</button> : null}</div>
-    {items.length === 0 ? <div className="rounded-xl border border-dashed border-slate-200 p-7 text-center text-sm text-slate-500">Nog geen factuurregels.</div> : null}
-    {items.map((item) => {
-      const product = item.catalog_product_id ? productMap.get(item.catalog_product_id) : null;
-      const stale = Boolean(product && (Math.abs(Number(item.unit_price_ex_vat) - product.price_ex_vat) > 0.009 || Number(item.vat_rate) !== product.vat_rate || item.billing_type !== product.billing_type));
-      return <form key={item.id} onSubmit={async (event) => {
-        event.preventDefault();
-        if (!draft) return;
-        const f = new FormData(event.currentTarget);
-        try {
-          await updateInvoiceItem(item.id, {
-            description: String(f.get("description") || ""),
-            billing_type: String(f.get("billing_type") || "ONE_TIME") as BillingType,
-            quantity: Number(f.get("quantity") || 0),
-            unit_price_ex_vat: Number(f.get("unit_price_ex_vat") || 0),
-            vat_rate: Number(f.get("vat_rate") || 0),
-            discount_type: String(f.get("discount_type") || "NONE") as DiscountType,
-            discount_value: Number(f.get("discount_value") || 0),
-          });
-          await onDone();
-        } catch (err) { onError(err instanceof Error ? err.message : "Regel opslaan mislukt."); }
-      }} className={`rounded-xl border p-4 ${stale ? "border-amber-300 bg-amber-50/40" : "border-slate-100"}`}>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[1.8fr_130px_120px_120px_140px_140px_auto] xl:items-end">
-          <label className="text-sm font-medium">Omschrijving<input name="description" defaultValue={item.description} disabled={!draft} className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:bg-slate-50"/></label>
-          <label className="text-sm font-medium">Aantal<input name="quantity" type="number" step="0.01" defaultValue={item.quantity} disabled={!draft} className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:bg-slate-50"/></label>
-          <label className="text-sm font-medium">Prijs excl.<input name="unit_price_ex_vat" type="number" step="0.01" defaultValue={item.unit_price_ex_vat} disabled={!draft} className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:bg-slate-50"/></label>
-          <label className="text-sm font-medium">BTW %<input name="vat_rate" type="number" step="0.01" defaultValue={item.vat_rate} disabled={!draft} className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:bg-slate-50"/></label>
-          <label className="text-sm font-medium">Type<select name="billing_type" defaultValue={item.billing_type} disabled={!draft} className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-2 py-2 disabled:bg-slate-50"><option value="ONE_TIME">Eenmalig</option><option value="MONTHLY">Maand</option><option value="YEARLY">Jaar</option></select></label>
-          <div><span className="text-xs text-slate-400">Regeltotaal incl.</span><strong className="mt-2 block text-sm">{money.format(Number(item.line_total_incl_vat || 0))}</strong></div>
-          {draft ? <div className="flex gap-2"><button title="Opslaan" className="rounded-lg border border-slate-200 p-2.5"><Save size={15}/></button><button type="button" title="Verwijderen" onClick={async () => { try { await deleteInvoiceItem(item.id); await onDone(); } catch (err) { onError(err instanceof Error ? err.message : "Verwijderen mislukt."); } }} className="rounded-lg border border-red-100 p-2.5 text-red-600"><Trash2 size={15}/></button></div> : null}
-        </div>
-        <input type="hidden" name="discount_type" value={item.discount_type}/><input type="hidden" name="discount_value" value={item.discount_value}/>
-        {product ? <div className="mt-3 flex flex-wrap items-center gap-2 text-xs"><span className="text-slate-500">Catalogus: {product.name} · {money.format(product.price_ex_vat)} excl.</span>{stale && draft ? <button type="button" onClick={async () => { try { await syncOne(item); await onDone(); } catch (err) { onError(err instanceof Error ? err.message : "Prijs verversen mislukt."); } }} className="rounded-md bg-amber-100 px-2 py-1 font-semibold text-amber-800">Prijs uit catalogus verversen</button> : <span className="font-medium text-emerald-700">Actueel</span>}</div> : null}
-      </form>;
-    })}
-  </section>;
-}
-
 export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }) {
   const [invoices, setInvoices] = useState<InvoiceWithActive[]>([]);
   const [credits, setCredits] = useState<CreditNote[]>([]);
@@ -304,6 +243,19 @@ export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }
   const [showInactive, setShowInactive] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState("");
+  const [lineEdits, setLineEdits] = useState<InvoiceLineEdits>({});
+  const [documentEdit, setDocumentEdit] = useState<InvoiceDocumentDraft | null>(null);
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const hasChanges = Boolean(selected?.status === "DRAFT" && (Object.keys(lineEdits).length || documentEdit));
+
+  useEffect(() => {
+    if (!hasChanges) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [hasChanges]);
 
   async function load() {
     try {
@@ -311,12 +263,74 @@ export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }
       setInvoices(nextInvoices); setCredits(nextCredits); setProducts(nextProducts); setProfile(nextProfile); setError(null);
     } catch (err) { setError(err instanceof Error ? err.message : "Facturen laden mislukt."); }
   }
-  async function open(invoice: InvoiceWithActive) { setSelected(await getInvoiceWithActive(invoice.id)); setItems(await listInvoiceItems(invoice.id)); }
+  async function open(invoice: InvoiceWithActive) {
+    const [nextInvoice, nextItems] = await Promise.all([getInvoiceWithActive(invoice.id), listInvoiceItems(invoice.id)]);
+    setSelected(nextInvoice); setItems(nextItems); setLineEdits({}); setDocumentEdit(null); setSaveMessage("");
+  }
   async function refresh() {
     await load();
     if (selected) { setSelected(await getInvoiceWithActive(selected.id)); setItems(await listInvoiceItems(selected.id)); }
   }
   useEffect(() => { void load(); }, []);
+
+  function changeLine(id: string, value: InvoiceLineDraft) {
+    if (savingRef.current || selected?.status !== "DRAFT") return;
+    const item = items.find(row => row.id === id);
+    if (!item) return;
+    setLineEdits(previous => {
+      const next = { ...previous };
+      if (lineIsChanged(item, value)) next[id] = value; else delete next[id];
+      return next;
+    });
+    setSaveMessage("");
+  }
+
+  function savedLine(item: BillingItem) {
+    setItems(previous => previous.map(row => row.id === item.id ? item : row));
+    setLineEdits(previous => { const next = { ...previous }; delete next[item.id]; return next; });
+  }
+
+  async function runDraftAction(action: () => Promise<void>, message: string) {
+    if (savingRef.current || selected?.status !== "DRAFT") return;
+    savingRef.current = true; setSaving(true); setError(null); setSaveMessage("");
+    try {
+      await action();
+      await refresh();
+      setSaveMessage(message);
+    } catch (err) {
+      // Keep any edits that did not save. Reload successful writes so retries
+      // and the displayed totals start from the actual stored invoice.
+      try { await refresh(); } catch { /* Preserve the original error. */ }
+      setError(err instanceof Error ? err.message : "Opslaan mislukt. Je wijzigingen zijn behouden; probeer het opnieuw.");
+    } finally { savingRef.current = false; setSaving(false); }
+  }
+
+  async function saveConcept() {
+    await runDraftAction(async () => {
+      const doc = documentEdit ? parseDocumentDraft(documentEdit) : null;
+      Object.values(lineEdits).forEach(parseLineDraft);
+      if (doc && selected) {
+        const saved = await updateInvoice(selected.id, doc);
+        setSelected(previous => previous ? { ...previous, ...saved } : previous);
+        setDocumentEdit(null);
+      }
+      await saveInvoiceLineEdits(lineEdits, updateInvoiceItem, savedLine);
+    }, "Concept opgeslagen.");
+  }
+
+  async function saveLine(id: string) {
+    if (!lineEdits[id]) return;
+    await runDraftAction(() => saveInvoiceLineEdits({ [id]: lineEdits[id] }, updateInvoiceItem, savedLine), "Factuurregel opgeslagen.");
+  }
+
+  async function removeLine(id: string) {
+    if (lineEdits[id] && !confirm("Deze regel met niet-opgeslagen wijzigingen verwijderen?")) return;
+    await runDraftAction(async () => {
+      await deleteInvoiceItem(id);
+      setLineEdits(previous => { const next = { ...previous }; delete next[id]; return next; });
+      setItems(previous => previous.filter(row => row.id !== id));
+    }, "Factuurregel verwijderd.");
+  }
 
   async function newInvoice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -330,39 +344,59 @@ export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }
 
   if (selected) {
     const draft = selected.status === "DRAFT";
+    const doc = documentEdit || documentDraft(selected);
+    let totals: Pick<Invoice, "subtotal_ex_vat" | "total_ex_vat" | "vat_total" | "total_incl_vat"> | null = selected;
+    let validationError = "";
+    if (hasChanges) {
+      try { totals = previewInvoice(selected, items, lineEdits, documentEdit); }
+      catch (err) { totals = null; validationError = err instanceof Error ? err.message : "Controleer de invoer."; }
+    }
+    const showAmount = (key: "subtotal_ex_vat" | "total_ex_vat" | "vat_total" | "total_incl_vat") => totals ? money.format(Number(totals[key])) : "—";
+    const changeDocument = (next: InvoiceDocumentDraft) => { setDocumentEdit(JSON.stringify(next) === JSON.stringify(documentDraft(selected)) ? null : next); setSaveMessage(""); };
     const customer = customers.find((c) => c.id === selected.customer_id);
     const relatedCredits = credits.filter((credit) => credit.invoice_id === selected.id);
     return <div className="space-y-5">
-      <button type="button" onClick={() => setSelected(null)} className="text-sm font-semibold text-slate-600">← Terug naar facturen</button>
-      <Panel title={`${selected.invoice_number || "Conceptfactuur"} — ${customer?.company_name || "Klant"}`} subtitle={`Financiële status: ${selected.status}`} actions={<div className="flex flex-wrap gap-2"><Status invoice={selected}/><button type="button" onClick={() => setPreview(renderBillingDocumentHtml("INVOICE", selected, items, profile))} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold"><Download size={14}/>PDF-preview</button></div>}>
+      <button type="button" disabled={saving} onClick={() => { if (hasChanges && !confirm("Je hebt wijzigingen die nog niet zijn opgeslagen. Deze wijzigingen verlaten?")) return; setSelected(null); setLineEdits({}); setDocumentEdit(null); }} className="text-sm font-semibold text-slate-600 disabled:opacity-40">← Terug naar facturen</button>
+      <Panel title={`${selected.invoice_number || "Conceptfactuur"} — ${customer?.company_name || "Klant"}`} subtitle={`Financiële status: ${selected.status}`} actions={<div className="flex flex-wrap gap-2"><Status invoice={selected}/><button type="button" disabled={hasChanges || saving} title={hasChanges ? "Sla eerst het concept op" : undefined} onClick={() => setPreview(renderBillingDocumentHtml("INVOICE", selected, items, profile))} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold disabled:opacity-40"><Download size={14}/>PDF-preview</button></div>}>
         <ErrorBox error={error}/>
+        {hasChanges ? <p role="status" className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Je hebt niet-opgeslagen wijzigingen. Concept opslaan bewaart de factuurgegevens én alle gewijzigde regels. Sla op voordat je een PDF maakt of de factuur finaliseert.</p> : saveMessage ? <p role="status" className="mb-4 text-sm text-emerald-700">{saveMessage}</p> : null}
         <div className="space-y-5">
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={async () => { try { await setInvoiceActive(selected.id, !selected.is_active); await refresh(); } catch (err) { setError(err instanceof Error ? err.message : "Status wijzigen mislukt."); } }} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold">{selected.is_active ? "Inactief zetten" : "Heractiveren"}</button>
-            {draft ? <button type="button" onClick={async () => { if (!confirm("Dit factuurconcept definitief verwijderen?")) return; try { await deleteInvoice(selected.id); setSelected(null); setItems([]); await load(); } catch (err) { setError(err instanceof Error ? err.message : "Verwijderen mislukt. Alleen conceptfacturen kunnen worden verwijderd."); } }} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700"><Trash2 size={14}/>Concept verwijderen</button> : null}
+            <button type="button" disabled={saving || hasChanges} onClick={async () => { try { await setInvoiceActive(selected.id, !selected.is_active); await refresh(); } catch (err) { setError(err instanceof Error ? err.message : "Status wijzigen mislukt."); } }} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold">{selected.is_active ? "Inactief zetten" : "Heractiveren"}</button>
+            {draft ? <button type="button" disabled={saving} onClick={async () => { if (!confirm("Dit factuurconcept definitief verwijderen?")) return; try { await deleteInvoice(selected.id); setSelected(null); setItems([]); await load(); } catch (err) { setError(err instanceof Error ? err.message : "Verwijderen mislukt. Alleen conceptfacturen kunnen worden verwijderd."); } }} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700"><Trash2 size={14}/>Concept verwijderen</button> : null}
           </div>
 
-          {draft ? <form onSubmit={async (event) => { event.preventDefault(); const f = new FormData(event.currentTarget); try { await updateInvoice(selected.id, { notes: String(f.get("notes") || "") || null, discount_type: String(f.get("discount_type") || "NONE") as DiscountType, discount_value: Number(f.get("discount_value") || 0) }); await refresh(); } catch (err) { setError(err instanceof Error ? err.message : "Opslaan mislukt."); } }} className="grid gap-3 rounded-2xl border border-slate-200 p-4 md:grid-cols-4">
-            <label className="text-sm font-medium">Korting<select name="discount_type" defaultValue={selected.discount_type} className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"><option value="NONE">Geen</option><option value="PERCENTAGE">Percentage</option><option value="FIXED">Vast bedrag</option></select></label>
-            <label className="text-sm font-medium">Kortingwaarde<input name="discount_value" type="number" step="0.01" defaultValue={selected.discount_value} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5"/></label>
-            <label className="md:col-span-2 text-sm font-medium">Notities<textarea name="notes" defaultValue={selected.notes || ""} rows={2} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5"/></label>
-            <div className="md:col-span-4"><button className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">Concept opslaan</button></div>
+          {draft ? <form onSubmit={event => { event.preventDefault(); void saveConcept(); }}>
+            <fieldset disabled={saving} className="grid gap-3 rounded-2xl border border-slate-200 p-4 md:grid-cols-4">
+              <label className="text-sm font-medium">Korting<select value={doc.discount_type} onChange={e => changeDocument({ ...doc, discount_type: e.target.value as DiscountType })} className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"><option value="NONE">Geen</option><option value="PERCENTAGE">Percentage</option><option value="FIXED">Vast bedrag</option></select></label>
+              <label className="text-sm font-medium">Kortingwaarde<input required type="number" min="0" step="0.01" value={doc.discount_value} onChange={e => changeDocument({ ...doc, discount_value: e.target.value })} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5"/></label>
+              <label className="md:col-span-2 text-sm font-medium">Notities<textarea value={doc.notes} onChange={e => changeDocument({ ...doc, notes: e.target.value })} rows={2} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5"/></label>
+              <div className="md:col-span-4"><button disabled={!hasChanges || saving} className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-40">{saving ? "Opslaan…" : "Concept opslaan"}</button></div>
+            </fieldset>
           </form> : null}
 
-          {draft ? <InvoiceItemForm invoiceId={selected.id} products={products} position={items.length + 1} onDone={refresh}/> : null}
-          <InvoiceLines invoice={selected} items={items} products={products} onDone={refresh} onError={setError}/>
+          {draft ? <fieldset disabled={saving}><InvoiceItemForm invoiceId={selected.id} products={products} position={items.length + 1} onDone={refresh}/></fieldset> : null}
+          <InvoiceLines invoice={selected} items={items} products={products} edits={lineEdits} busy={saving} onChange={changeLine} onSave={saveLine} onDelete={removeLine}/>
 
-          <div className="ml-auto w-full max-w-md space-y-2 rounded-xl bg-slate-50 p-4 text-sm"><div className="flex justify-between"><span>Subtotaal excl. btw</span><strong>{money.format(Number(selected.subtotal_ex_vat))}</strong></div><div className="flex justify-between"><span>Totaal excl. btw</span><strong>{money.format(Number(selected.total_ex_vat))}</strong></div><div className="flex justify-between"><span>BTW</span><strong>{money.format(Number(selected.vat_total))}</strong></div><div className="flex justify-between border-t border-slate-300 pt-2 text-base"><span>Totaal incl. btw</span><strong>{money.format(Number(selected.total_incl_vat))}</strong></div></div>
+          <div className="ml-auto w-full max-w-md space-y-2 rounded-xl bg-slate-50 p-4 text-sm">
+            {hasChanges ? <p className="text-xs font-medium text-amber-800">Voorbeeld met je wijzigingen · nog niet opgeslagen</p> : null}
+            {validationError ? <p role="alert" className="text-sm text-red-700">{validationError}</p> : null}
+            <div className="flex justify-between"><span>Subtotaal excl. btw</span><strong>{showAmount("subtotal_ex_vat")}</strong></div>
+            <div className="flex justify-between"><span>Totaal excl. btw</span><strong>{showAmount("total_ex_vat")}</strong></div>
+            <div className="flex justify-between"><span>BTW</span><strong>{showAmount("vat_total")}</strong></div>
+            <div className="flex justify-between border-t border-slate-300 pt-2 text-base"><span>Totaal incl. btw</span><strong>{showAmount("total_incl_vat")}</strong></div>
+            {draft && hasChanges ? <button type="button" disabled={saving} onClick={() => void saveConcept()} className="mt-2 w-full rounded-lg bg-slate-950 px-4 py-2.5 font-semibold text-white disabled:opacity-40">{saving ? "Opslaan…" : "Concept opslaan"}</button> : null}
+          </div>
 
           <div className="flex flex-wrap gap-2">
-            {draft ? <button type="button" disabled={!items.length} onClick={async () => { if (!confirm("Factuur finaliseren? Daarna zijn financiële regels niet meer aanpasbaar.")) return; try { const number = await finalizeInvoice(selected.id); await refresh(); alert(`Factuur ${number} is gefinaliseerd.`); } catch (err) { setError(err instanceof Error ? err.message : "Finaliseren mislukt."); } }} className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-40"><FileCheck2 size={15} className="mr-2 inline"/>Finaliseer factuur</button> : null}
+            {draft ? <button type="button" disabled={!items.length || hasChanges || saving} title={hasChanges ? "Sla eerst het concept op" : undefined} onClick={async () => { if (!confirm("Factuur finaliseren? Daarna zijn financiële regels niet meer aanpasbaar.")) return; try { const number = await finalizeInvoice(selected.id); await refresh(); alert(`Factuur ${number} is gefinaliseerd.`); } catch (err) { setError(err instanceof Error ? err.message : "Finaliseren mislukt."); } }} className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-40"><FileCheck2 size={15} className="mr-2 inline"/>Finaliseer factuur</button> : null}
             {["FINALIZED", "SENT", "PARTIALLY_PAID", "OVERDUE"].includes(selected.status) ? <><button type="button" onClick={async () => { try { await updateInvoice(selected.id, { status: "SENT", sent_at: new Date().toISOString() }); await refresh(); } catch (err) { setError(err instanceof Error ? err.message : "Status wijzigen mislukt."); } }} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold">Markeer verzonden</button><button type="button" onClick={async () => { try { await markInvoicePaid(selected); await refresh(); } catch (err) { setError(err instanceof Error ? err.message : "Betaling registreren mislukt."); } }} className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white"><Check size={15} className="mr-2 inline"/>Markeer betaald</button><button type="button" onClick={async () => { const reason = prompt("Reden voor volledige creditnota?") || "Volledige creditering"; if (!confirm("Volledige creditnota maken?")) return; try { await createFullCreditNote(selected.id, reason); await refresh(); } catch (err) { setError(err instanceof Error ? err.message : "Crediteren mislukt."); } }} className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">Volledig crediteren</button></> : null}
           </div>
 
           {relatedCredits.length ? <div><h3 className="mb-2 font-semibold">Creditnota’s</h3>{relatedCredits.map((credit) => <button type="button" key={credit.id} onClick={() => setPreview(renderBillingDocumentHtml("CREDIT", credit, [], profile))} className="mr-2 rounded-lg border border-slate-200 px-3 py-2 text-sm">{credit.credit_number} · {money.format(Number(credit.total_incl_vat))}</button>)}</div> : null}
         </div>
       </Panel>
-      <CustomerDocumentsPanel key={selected.id} customerId={selected.customer_id} invoiceId={selected.id}/>
+      {!hasChanges && !saving ? <CustomerDocumentsPanel key={selected.id} customerId={selected.customer_id} invoiceId={selected.id}/> : null}
       <BillingPreviewModal open={Boolean(preview)} html={preview} title={selected.invoice_number || "Conceptfactuur"} onClose={() => setPreview("")}/>
     </div>;
   }

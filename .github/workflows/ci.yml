@@ -70,6 +70,9 @@ jobs:
       - name: Invoice print preview regression tests
         run: bun test scripts/invoice-payment.test.ts
 
+      - name: Invoice draft calculation and save regression tests
+        run: bun test scripts/invoice-draft.test.ts
+
       - name: Verify QR in rendered PDF
         run: |
           sudo apt-get update -qq
