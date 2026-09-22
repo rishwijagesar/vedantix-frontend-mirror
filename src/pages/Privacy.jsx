@@ -59,7 +59,7 @@ const sections = [
       <>
         <p>
           Vedantix gebruikt noodzakelijke opslag om de website en privacyvoorkeuren goed te
-          laten werken. Marketingtracking wordt niet gestart voordat je daar actief
+          laten werken. Statistieken- en marketingtracking worden niet gestart voordat je daar actief
           toestemming voor hebt gegeven.
         </p>
         <p>
@@ -69,9 +69,16 @@ const sections = [
           normaal bruikbaar en wordt Meta Pixel niet geladen.
         </p>
         <p>
+          Na toestemming kan Vedantix ook Google Analytics gebruiken voor bezoekersaantallen,
+          bezoeken en bekeken openbare pagina’s. Hierbij kunnen Analytics-cookies en online
+          identifiers worden gebruikt. De Vedantix-meetcode verstuurt geen queryparameters,
+          formuliertekst of documenttokens. Beheer- en klantdocumentpagina’s zijn uitgesloten.
+          Bij weigeren wordt ook deze meetcode niet geladen.
+        </p>
+        <p>
           Je kunt je toestemming op ieder moment intrekken. Na intrekking stopt Vedantix
-          verdere marketingtracking en verwijderen we waar mogelijk de bijbehorende
-          first-party Meta-cookies uit je browser.
+          verdere statistieken- en marketingtracking en verwijderen we waar mogelijk de
+          bijbehorende Meta- en Google Analytics-cookies uit je browser.
         </p>
         <CookieSettingsButton />
       </>
@@ -89,6 +96,7 @@ const sections = [
         </p>
         <ul>
           <li>Meta Platforms</li>
+          <li>Google (Analytics)</li>
           <li>OpenAI</li>
           <li>AWS</li>
           <li>Supabase</li>
@@ -180,7 +188,7 @@ export default function Privacy() {
       intro="Hoe Vedantix persoonsgegevens verwerkt bij websites, hosting, AI-diensten, marketing, analytics en klantrelaties."
       description="Lees het privacybeleid van Vedantix over persoonsgegevens, cookies, tracking, Meta Ads conversiedata, analytics, bewaartermijnen en AVG-rechten."
       canonical={canonical}
-      updatedAt="11 september 2026"
+      updatedAt="22 september 2026"
       schemas={[breadcrumbSchema]}
       sections={sections}
     >
@@ -191,3 +199,4 @@ export default function Privacy() {
     </LegalPageLayout>
   );
 }
+
