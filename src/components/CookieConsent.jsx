@@ -60,10 +60,11 @@ export default function CookieConsent() {
       <div className="cookie-consent__content">
         <div>
           <p className="cookie-consent__eyebrow">Privacy-instellingen</p>
-          <h2 id="cookie-consent-title">Marketingtracking alleen met jouw toestemming</h2>
+          <h2 id="cookie-consent-title">Statistieken en marketing alleen met jouw toestemming</h2>
           <p id="cookie-consent-description">
-            De website werkt zonder marketingcookies. Met jouw toestemming laden we Meta Pixel om
-            advertentiecampagnes en conversies te meten. Je kunt je keuze later altijd wijzigen.
+            De website werkt zonder trackingcookies. Met jouw toestemming gebruiken we Google Analytics
+            voor bezoekersstatistieken en Meta Pixel voor advertentiecampagnes en conversies.
+            Je kunt je keuze later altijd wijzigen.
           </p>
           <Link to="/privacy" className="cookie-consent__privacy-link">
             Lees het privacybeleid
@@ -96,3 +97,4 @@ export default function CookieConsent() {
     </aside>
   );
 }
+

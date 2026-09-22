@@ -1,4 +1,4 @@
-export const MARKETING_CONSENT_KEY = "vedantix_marketing_consent_v1";
+export const MARKETING_CONSENT_KEY = "vedantix_marketing_consent_v2";
 export const MARKETING_CONSENT_EVENT = "vedantix:marketing-consent";
 export const OPEN_COOKIE_SETTINGS_EVENT = "vedantix:open-cookie-settings";
 
@@ -27,7 +27,7 @@ export function writeMarketingConsent(value) {
 export function clearMetaTrackingCookies() {
   if (typeof document === "undefined") return;
 
-  const names = ["_fbp", "_fbc"];
+  const names = ["_fbp", "_fbc", ...document.cookie.split(";").map((part) => part.trim().split("=")[0]).filter((name) => /^_ga(?:_|$)/.test(name))];
   const hostname = window.location.hostname;
   const domains = [hostname, `.${hostname}`];
 
@@ -38,3 +38,4 @@ export function clearMetaTrackingCookies() {
     });
   });
 }
+

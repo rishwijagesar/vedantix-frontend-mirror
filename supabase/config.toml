@@ -40,3 +40,8 @@ verify_jwt = false
 # Verified getUser JWT and ADMIN role in the handler before service access.
 [functions.migadu-admin]
 verify_jwt = false
+
+
+# Verified getUser JWT and ADMIN role before Google credentials or website mutations.
+[functions.website-insights]
+verify_jwt = false

@@ -1,0 +1,8 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { createInsightsHandler } from './handler.ts';
+Deno.serve(createInsightsHandler(
+  authorization => createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authorization } }, auth: { persistSession: false, autoRefreshToken: false } }),
+  () => createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false, autoRefreshToken: false } }),
+  undefined,
+  Deno.env.get('PAGESPEED_API_KEY') || null,
+));
