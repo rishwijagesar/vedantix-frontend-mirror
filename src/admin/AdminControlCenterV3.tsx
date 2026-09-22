@@ -1,4 +1,5 @@
 import AdminLayout from "./AdminLayout";
+import WebsitesModule from "./WebsitesModule";
 import { operationSection, type OperationSection } from "./admin-navigation";
 import { useSearchParams } from "@/lib/router-compat";
 import ClientCasesModule from "./ClientCasesModule";
@@ -21,10 +22,8 @@ import {
 import {
   createCustomer,
   createDomain,
-  createWebsite,
   deleteCustomer,
   deleteDomain,
-  deleteWebsite,
   getOverview,
   listCustomers,
   listDomains,
@@ -144,7 +143,7 @@ export default function AdminControlCenterV3() {
     "client-cases": ["Klantcases", "Klantverhalen, logo’s en resultaten op de website beheren."],
     customers: ["Klanten", "Centrale eigenaar van domeinen, websites en integraties."],
     domains: ["Domeinen", "DNS, e-mailprovider, status en technische gezondheid."],
-    websites: ["Websites", "GitHub-, Lovable- en domeinkoppelingen per website."],
+    websites: ["Websites", "Websites beheren, snelheid meten en Google Analytics bekijken."],
     health: ["E-mail & DNS", "Beheer mailboxen en controleer de mailinstellingen van je domeinen."],
     monitoring: ["Monitoring", "Autonome domein-, e-mail- en websitecontrole met alerts en notification delivery."],
     staff: ["Team & toegang", "Toegang, rollen en uitnodigingen voor het Control Center."],
@@ -232,23 +231,6 @@ function DomainsModule({ domains, customers, showForm, onDone }: { domains: Doma
   }
   const customerName = (id: string) => customers.find((customer) => customer.id === id)?.company_name || "Onbekend";
   return <div className="space-y-5">{showForm ? <Panel title="Domein toevoegen"><form className="grid gap-4 md:grid-cols-2" onSubmit={submit}><label className="text-sm font-medium">Klant<select name="customer_id" required className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"><option value="">Selecteer klant</option>{customers.map((customer) => <option value={customer.id} key={customer.id}>{customer.company_name}</option>)}</select></label><Input name="domain_name" label="Domein" placeholder="voorbeeld.nl" required /><Input name="registrar" label="Registrar" /><Input name="dns_provider" label="DNS-provider" /><Input name="email_provider" label="E-mailprovider" placeholder="Migadu" /><div className="flex items-end"><button disabled={busy} className="w-full rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">{busy ? "Opslaan…" : "Domein opslaan"}</button></div></form></Panel> : null}<Panel title="Domeinen" subtitle={`${domains.length} domein(en)`}>{domains.length === 0 ? <Empty>Nog geen domeinen.</Empty> : <div className="grid gap-3">{domains.map((domain) => <div key={domain.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><strong className="text-sm">{domain.domain_name}</strong><span className="block text-xs text-slate-400">{customerName(domain.customer_id)} · {domain.dns_provider || "DNS onbekend"} · {domain.email_provider || "mail onbekend"}</span></div><div className="flex items-center gap-2"><Badge tone={domain.status === "HEALTHY" ? "success" : domain.status === "WARNING" ? "warning" : domain.status === "ERROR" ? "danger" : "neutral"}>{domain.status}</Badge><button type="button" onClick={async () => { if (confirm(`${domain.domain_name} verwijderen?`)) { await deleteDomain(domain.id); await onDone(); } }} className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600"><Trash2 size={15} /></button></div></div>)}</div>}</Panel></div>;
-}
-
-function WebsitesModule({ websites, customers, domainsByCustomer, showForm, onDone }: { websites: Website[]; customers: Customer[]; domainsByCustomer: Map<string, Domain[]>; showForm: boolean; onDone: () => Promise<void> }) {
-  const [busy, setBusy] = useState(false);
-  const [customerId, setCustomerId] = useState("");
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setBusy(true);
-    try {
-      const form = new FormData(event.currentTarget);
-      await createWebsite({ customer_id: String(form.get("customer_id")), domain_id: String(form.get("domain_id") || "") || null, name: String(form.get("name")), github_repo: String(form.get("github_repo") || "") || null, lovable_project_id: String(form.get("lovable_project_id") || "") || null, production_url: String(form.get("production_url") || "") || null, status: "DRAFT" });
-      event.currentTarget.reset();
-      setCustomerId("");
-      await onDone();
-    } finally { setBusy(false); }
-  }
-  return <div className="space-y-5">{showForm ? <Panel title="Website koppelen"><form className="grid gap-4 md:grid-cols-2" onSubmit={submit}><label className="text-sm font-medium">Klant<select name="customer_id" value={customerId} onChange={(event) => setCustomerId(event.target.value)} required className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"><option value="">Selecteer klant</option>{customers.map((customer) => <option value={customer.id} key={customer.id}>{customer.company_name}</option>)}</select></label><label className="text-sm font-medium">Domein<select name="domain_id" className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"><option value="">Geen domein</option>{(domainsByCustomer.get(customerId) ?? []).map((domain) => <option value={domain.id} key={domain.id}>{domain.domain_name}</option>)}</select></label><Input name="name" label="Naam" required /><Input name="github_repo" label="GitHub repository" placeholder="owner/repo" /><Input name="lovable_project_id" label="Lovable project ID" /><Input name="production_url" label="Productie-URL" type="url" /><div className="md:col-span-2"><button disabled={busy} className="w-full rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">{busy ? "Opslaan…" : "Website koppelen"}</button></div></form></Panel> : null}<Panel title="Websites" subtitle={`${websites.length} website(s)`}>{websites.length === 0 ? <Empty>Nog geen websites.</Empty> : <div className="grid gap-3">{websites.map((website) => <div key={website.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><strong className="text-sm">{website.name}</strong><span className="block text-xs text-slate-400">{website.github_repo || "Geen repo"} · {website.hosting_provider}</span></div><div className="flex items-center gap-2"><Badge tone={website.status === "LIVE" || website.status === "READY" ? "success" : "neutral"}>{website.status}</Badge><button type="button" onClick={async () => { if (confirm(`${website.name} verwijderen?`)) { await deleteWebsite(website.id); await onDone(); } }} className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600"><Trash2 size={15} /></button></div></div>)}</div>}</Panel></div>;
 }
 
 function snapshotChecks(domain: Domain): DomainHealthCheck[] {
@@ -390,4 +372,5 @@ function MonitoringModule() {
     </div>
   );
 }
+
 

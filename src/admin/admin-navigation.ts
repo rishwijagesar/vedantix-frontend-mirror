@@ -32,7 +32,7 @@ export const adminNavigation: AdminNavGroup[] = [
     billing("administration", "Administratie", "book", "boekhouding kosten aankopen bonnetjes bewijsstukken omzet winst btw kwartaal belasting"),
   ] },
   { id: "services", label: "Websites & e-mail", items: [
-    operation("websites", "Websites", "monitor", "hosting projecten"),
+    operation("websites", "Websites", "monitor", "hosting projecten Google Analytics PageSpeed statistieken snelheid"),
     operation("domains", "Domeinen", "globe", "domeinnaam registrar"),
     operation("health", "E-mail & DNS", "mail", "mailbox migadu reserveadres wachtwoord aws route53"),
     { id: "previews", label: "Website previews", href: "/admin/previews", icon: "external", keywords: "voorbeeld klantlink concept" },
