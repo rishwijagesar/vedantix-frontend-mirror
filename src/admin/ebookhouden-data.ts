@@ -2,10 +2,11 @@ import { supabase } from "@/lib/supabase";
 
 export type Ledger = { id: number; code: string; description: string; category: string };
 export type Mapping = { debtor?: number; revenue?: number; bank?: number | null; mollie?: number | null };
-export type AccountingConfig = { connected: boolean; last_verified_at: string | null; mapping: Mapping; sync_enabled: false; stage: "TOKEN_REQUIRED" | "ACCOUNTS_REQUIRED" | "REVIEW_REQUIRED" };
-export type AccountingPreview = { invoices: Array<{ id: string; number: string; title: string; date: string | null; amount: number }>; credits: Array<{ id: string; number: string; date: string | null; amount: number }>; payment_count: number; payment_amount: number; excluded_invoice_count: number };
+export type AccountingConfig = { connected: boolean; last_verified_at: string | null; mapping: Mapping; sync_enabled: boolean; payment_mode: 'EXTERNAL' | 'VEDANTIX'; sync_from: string | null; last_sync_at: string | null; last_sync_error: string | null; stage: "TOKEN_REQUIRED" | "ACCOUNTS_REQUIRED" | "REVIEW_REQUIRED" | "ACTIVE" };
+export type ExportRow = { kind: 'INVOICE' | 'CREDIT' | 'PAYMENT'; id: string; number: string; date: string; customer?: string; amount: number; base?: number; vat?: number; state: 'READY' | 'BLOCKED' | 'SENDING' | 'REVIEW' | 'SYNCED' | 'CHANGED'; reason?: string; remote_id?: number; review_hash?: string; ledger_id?: number };
+export type AccountingPreview = { rows: ExportRow[]; excluded_invoice_count: number; first_invoice_synced: boolean; attention: number };
 
-export async function accountingRequest(body: Record<string, unknown>): Promise<{ ok: true; config?: AccountingConfig; ledgers?: Ledger[]; preview?: AccountingPreview }> {
+export async function accountingRequest(body: Record<string, unknown>): Promise<{ ok: true; config?: AccountingConfig; ledgers?: Ledger[]; preview?: AccountingPreview; message?: string; remote_id?: number }> {
   const { data, error } = await supabase.functions.invoke("ebookhouden-admin", { body });
   if (error) {
     let message = "De boekhoudinstellingen konden niet worden geladen. Probeer opnieuw.";
