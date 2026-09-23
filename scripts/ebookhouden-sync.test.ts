@@ -10,6 +10,51 @@ const invoice=()=>({id,customer_id:customer,invoice_number:'FAC-2026-0001',invoi
 const ledgers=[{id:1,code:'1300',description:'Debiteuren',category:'DEB'},{id:2,code:'8000',description:'Omzet',category:'VW'},{id:3,code:'1100',description:'Bank',category:'FIN'},{id:4,code:'1150',description:'Mollie',category:'FIN'}];
 function remote(d:any,n=101){return {id:n,...structuredClone(d.mutation),vat:Object.entries(d.expected_vat).map(([vatCode,amount])=>({vatCode,amount:Number(amount)/100}))};}
 
+// Anonymized shape observed from GET /v1/mutation/{id}: the provider omits
+// entryNumber and copies invoice/customer/header description onto every row.
+function providerInvoice(d:any,n=101){
+ const a=remote(d,n);a.entryNumber='';
+ a.rows=a.rows.map((r:any)=>({...r,invoiceNumber:a.invoiceNumber,relationId:a.relationId,description:a.description,vatAmount:cents(r.amount)*.21/100}));
+ return a;
+}
+
+test('actual provider invoice shape requires a known ID and retains exact financial checks',async()=>{
+ const i=invoice(),d=await buildDraft('INVOICE',i,i,cfg());d.mutation.relationId=99;
+ const a=providerInvoice(d);
+ assert.equal(mutationMatches(a,d.mutation,d.expected_vat,101),true);
+ assert.equal(mutationMatches(a,d.mutation,d.expected_vat),false);
+ assert.equal(mutationMatches(a,d.mutation,d.expected_vat,102),false);
+ assert.equal(mutationMatches(a,d.mutation,d.expected_vat,0),false);
+ for(const change of [
+  (v:any)=>{v.entryNumber='OTHER';},(v:any)=>{v.invoiceNumber='OTHER';},
+  (v:any)=>{v.relationId=100;},(v:any)=>{v.ledgerId=3;},
+  (v:any)=>{v.date='2026-09-24';},(v:any)=>{v.type=1;},
+  (v:any)=>{v.description='OTHER';},(v:any)=>{v.termOfPayment=30;},
+  (v:any)=>{v.rows[0].invoiceNumber='OTHER';},(v:any)=>{v.rows[0].relationId=100;},
+  (v:any)=>{v.rows[0].ledgerId=3;},(v:any)=>{v.rows[0].amount=498.99;},
+  (v:any)=>{v.rows[0].vatCode='LAAG_VERK_9';},(v:any)=>{v.vat[0].amount=117.38;},
+  (v:any)=>{v.rows.pop();},(v:any)=>{v.inExVat='IN';},
+ ]){const changed=structuredClone(a);change(changed);assert.equal(mutationMatches(changed,d.mutation,d.expected_vat,101),false);}
+ // Even a correct marker must not override a different known remote ID.
+ assert.equal(mutationMatches(remote(d,102),d.mutation,d.expected_vat,101),false);
+});
+
+test('header-derived row fields also match with preserved markers; credits keep negative VAT',async()=>{
+ const i=invoice(),d=await buildDraft('INVOICE',i,i,cfg());d.mutation.relationId=99;
+ const a=providerInvoice(d);a.entryNumber=d.mutation.entryNumber;
+ assert.equal(mutationMatches(a,d.mutation,d.expected_vat),true);
+ const credit={id:'33333333-3333-4333-8333-333333333333',credit_number:'CR-2026-0001',credit_date:'2026-09-24',finalized_at:'2026-09-24T12:00:00Z',total_ex_vat:-559,vat_total:-117.39,total_incl_vat:-676.39};
+ const c=await buildDraft('CREDIT',credit,i,cfg());c.mutation.relationId=99;
+ assert.equal(mutationMatches(providerInvoice(c),c.mutation,c.expected_vat,101),true);
+});
+
+test('empty-marker exception never applies to payment mutations',async()=>{
+ const p={id:'33333333-3333-4333-8333-333333333333',amount:200,payment_date:'2026-09-24',method:'MOLLIE',created_at:'2026-09-24T12:00:00Z'};
+ const d=await buildDraft('PAYMENT',p,invoice(),{...cfg(),payment_mode:'VEDANTIX'});d.mutation.relationId=99;d.mutation.rows[0].relationId=99;
+ const a=remote(d);assert.equal(mutationMatches(a,d.mutation,d.expected_vat,101),true);
+ a.entryNumber='';assert.equal(mutationMatches(a,d.mutation,d.expected_vat,101),false);
+});
+
 test('finalized invoice retains invoice number, descriptions, exact VAT and reference',async()=>{
  const i=invoice(),d=await buildDraft('INVOICE',i,i,cfg());
  assert.equal(d.mutation.invoiceNumber,i.invoice_number);assert.equal(d.mutation.rows[0].description,'Website bouwen');assert.equal(d.mutation.termOfPayment,14);
@@ -74,6 +119,39 @@ test('lost POST response is recoverable by exact remote match without a second P
  f.config.connection_revision='rotated';f.provider.find=async()=>[accepted];f.provider.post=async()=>{throw new Error('Must not retry');};
  const r=await processSync(f.db,await f.target('check_export'),customer,async()=>f.provider);assert.equal(r.remote_id,101);assert.equal(f.journal[0].status,'SYNCED');
 });
+
+test('provider response verifies on first POST and reconciles recorded REVIEW without posting again',async()=>{
+ const f=dbFixture();let posts=0;
+ f.provider.post=async()=>{posts++;return providerInvoice(f.journal[0].draft);};
+ await processSync(f.db,await f.target(),customer,async()=>f.provider);
+ assert.equal(f.journal[0].status,'SYNCED');assert.equal(f.journal[0].remote_id,101);
+ f.journal[0].status='REVIEW';f.provider.find=async()=>[providerInvoice(f.journal[0].draft)];
+ await processSync(f.db,await f.target('check_export'),customer,async()=>f.provider);
+ assert.equal(f.journal[0].status,'SYNCED');assert.equal(posts,1);
+ for(const remoteId of [undefined,102]){
+  f.journal[0].status='REVIEW';f.journal[0].remote_id=remoteId;
+  await assert.rejects(processSync(f.db,await f.target('check_export'),customer,async()=>f.provider),/bestaat al/);
+  assert.equal(f.journal[0].status,'REVIEW');assert.equal(posts,1);
+ }
+});
+
+test('unknown existing invoice with matching amounts is never adopted or duplicated',async()=>{
+ const f=dbFixture(),d=await buildDraft('INVOICE',invoice(),invoice(),cfg());d.mutation.relationId=99;
+ f.provider.find=async()=>[providerInvoice(d)];
+ await assert.rejects(processSync(f.db,await f.target(),customer,async()=>f.provider),/bestaat al/);
+ assert.equal(f.journal.length,0);assert.ok(!f.events.includes('post'));
+});
+
+test('changed or duplicate known bookings remain in review without posting again',async()=>{
+ for(const fault of ['amount','duplicate']){
+  const f=dbFixture();await processSync(f.db,await f.target(),customer,async()=>f.provider);
+  f.journal[0].status='REVIEW';const a=providerInvoice(f.journal[0].draft);
+  if(fault==='amount')a.rows[0].amount-=.01;
+  f.provider.find=async()=>fault==='duplicate'?[a,a]:[a];
+  await assert.rejects(processSync(f.db,await f.target('check_export'),customer,async()=>f.provider),/bestaat al/);
+  assert.equal(f.journal[0].status,'REVIEW');assert.equal(f.events.filter(e=>e==='post').length,1);
+ }
+});
 test('uncertain writes require explicit retry; existing invoice numbers and changed sources block export',async()=>{
  const f=dbFixture();f.provider.post=async()=>{throw new Error('lost');};
  await assert.rejects(processSync(f.db,await f.target(),customer,async()=>f.provider));
@@ -112,6 +190,19 @@ test('all export and settings actions require a verified ADMIN, with bounded req
  }
  const handler=createEboekhoudenHandler(()=>({auth:{getUser:async()=>({data:{user:{id:customer}}})},rpc:async()=>({data:true})}),()=>{throw new Error('Service access unexpected');});
  assert.equal((await handler(new Request('https://example.org',{method:'POST',headers:{Authorization:'Bearer user'},body:'x'.repeat(12001)}))).status,413);
+});
+
+test('provider rejects a GET response whose ID differs from the requested or created booking',async()=>{
+ const p=await openBookkeeping('fixture',async(url:any,init:any)=>{
+  const path=new URL(url).pathname;
+  if(path==='/v1/session')return init.method==='DELETE'?new Response(null,{status:204}):Response.json({token:'session'});
+  if(path==='/v1/mutation'&&init.method==='POST')return Response.json({id:101});
+  return Response.json({id:102});
+ });
+ const d=await buildDraft('INVOICE',invoice(),invoice(),cfg());
+ await assert.rejects(p.detail(101),/boekingsnummer wijkt af/);
+ await assert.rejects(p.post(d.mutation),/boekingsnummer wijkt af/);
+ await p.close();
 });
 
 test('a changed parent customer blocks new payments even when a previous booking exists',async()=>{

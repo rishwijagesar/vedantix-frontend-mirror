@@ -74,11 +74,22 @@ export async function buildDraft(kind: Kind, source: any, invoice: any, config: 
 
 // Responses can be PascalCase in older API releases.
 export function normalize(value: any): any { if (Array.isArray(value)) return value.map(normalize); if (value && typeof value==='object') return Object.fromEntries(Object.entries(value).map(([k,v])=>[k[0].toLowerCase()+k.slice(1),normalize(v)])); return value; }
-export function mutationMatches(actual: any, expected: Mutation, vat: Record<string,number>): boolean {
+export function mutationMatches(actual: any, expected: Mutation, vat: Record<string,number>, confirmedRemoteId?: number): boolean {
   const a=normalize(actual);
-  if (Number(a.type)!==expected.type || a.date?.slice(0,10)!==expected.date || Number(a.ledgerId)!==expected.ledgerId || a.entryNumber!==expected.entryNumber || a.inExVat!=='EX' || (expected.invoiceNumber && a.invoiceNumber!==expected.invoiceNumber) || (expected.relationId && Number(a.relationId)!==expected.relationId)) return false;
+  if (!a || typeof a!=='object') return false;
+  const knownId=Number.isSafeInteger(confirmedRemoteId) && Number(confirmedRemoteId)>0;
+  if (confirmedRemoteId!==undefined && (!knownId || Number(a.id)!==confirmedRemoteId)) return false;
+  // Some administrations return an empty entryNumber for sales invoices.
+  // Accept that only for the exact ID returned by our POST or already recorded
+  // in our journal, with the same invoice number, customer and financial data.
+  // An unknown existing invoice or a conflicting non-empty marker stays blocked.
+  const knownInvoiceWithoutMarker=expected.type===2 && knownId && (a.entryNumber==null || a.entryNumber==='') && !!expected.invoiceNumber && Number.isSafeInteger(expected.relationId) && Number(expected.relationId)>0;
+  if (a.entryNumber!==expected.entryNumber && !knownInvoiceWithoutMarker) return false;
+  if (Number(a.type)!==expected.type || a.date?.slice(0,10)!==expected.date || Number(a.ledgerId)!==expected.ledgerId || a.inExVat!=='EX' || a.description!==expected.description || (expected.invoiceNumber && a.invoiceNumber!==expected.invoiceNumber) || (expected.relationId && Number(a.relationId)!==expected.relationId) || (expected.termOfPayment!==undefined && Number(a.termOfPayment)!==expected.termOfPayment)) return false;
   if (!Array.isArray(a.rows) || a.rows.length!==expected.rows.length) return false;
-  const canonical = (rows: any[]) => rows.map(r=>JSON.stringify([cents(r.amount),r.vatCode,expected.type===3 ? 0 : Number(r.ledgerId || 0),r.invoiceNumber || '',Number(r.relationId || 0)])).sort();
+  // e-Boekhouden repeats the invoice number and relation on sales rows even
+  // when the request specifies them only on the header. Conflicts still fail.
+  const canonical = (rows: any[]) => rows.map(r=>JSON.stringify([cents(r.amount),r.vatCode,expected.type===3 ? 0 : Number(r.ledgerId || 0),r.invoiceNumber || (expected.type===2 ? expected.invoiceNumber : '') || '',Number(r.relationId || (expected.type===2 ? expected.relationId : 0) || 0)])).sort();
   if (JSON.stringify(canonical(a.rows))!==JSON.stringify(canonical(expected.rows))) return false;
   if (expected.type===3) return true;
   if (!Array.isArray(a.vat)) return false;
