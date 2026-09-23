@@ -22,6 +22,12 @@ export function websiteUrl(value: unknown) {
   if (!["https:", "http:"].includes(url.protocol) || url.username || url.password || url.port || !/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,63}$/i.test(url.hostname) || /\.(?:localhost|local|internal|test|invalid|example)$/i.test(url.hostname)) throw new InsightsError("Gebruik een openbare website-URL zonder inloggegevens of poortnummer.");
   url.hash = ""; return url;
 }
+// Analytics reports already combine the apex host and its www alias.
+// Keep attachment validation consistent without accepting other subdomains.
+export function sameAnalyticsSite(left: unknown, right: unknown) {
+  const a=websiteUrl(left), b=websiteUrl(right);
+  return a.protocol===b.protocol && a.hostname.replace(/^www\./,'')===b.hostname.replace(/^www\./,'');
+}
 export function measurementUrl(production: string, path: unknown) {
   const base = websiteUrl(production);
   if (typeof path !== "string" || !path.startsWith("/") || path.length > 1000 || /[\\#]/.test(path)) throw new InsightsError("Gebruik een paginapad zoals / of /contact.");
@@ -143,3 +149,4 @@ export async function analyticsReport(api: GoogleApi, property: string, producti
   const totals = summary.rows?.[0] ? values(summary.rows[0]) : null;
   return { property, days, hostname, period: base.dateRanges[0], totals: totals ? { users: totals[0], sessions: totals[1], views: totals[2], key_events: totals[3], engagement_rate: totals[4] } : null, daily: (daily.rows || []).map((r: any) => ({ date: r.dimensionValues?.[0]?.value, users: values(r)[0], sessions: values(r)[1] })), pages: (pages.rows || []).map((r: any) => ({ path: r.dimensionValues?.[0]?.value, views: values(r)[0] })), thresholded: value.reports.some((r: any) => r.metadata?.subjectToThresholding === true) };
 }
+

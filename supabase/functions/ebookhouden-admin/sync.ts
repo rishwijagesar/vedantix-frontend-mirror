@@ -1,3 +1,4 @@
+import { buildPurchaseDraft } from './purchase-model.ts';
 import { SetupError, validateAccountMapping } from './api.ts';
 import { buildDraft, eligible, eligibleCredit, eligiblePayment, mutationMatches, cents, type Draft, type Kind } from './export-model.ts';
 import { openBookkeeping, type Bookkeeping } from './provider.ts';
@@ -11,22 +12,23 @@ async function list(db:any,table:string,columns='*') {const all:any[]=[];for(let
 // The journal has a composite primary key, not an id column.
 async function journals(db:any) {const all:any[]=[];for(let offset=0;offset<20000;offset+=500){const page=await result(db.from('ebookhouden_exports').select('*').order('source_kind').order('source_id').range(offset,offset+499));all.push(...page);if(page.length<500)return all;}throw new SetupError('Het boekingsarchief is te groot.');}
 export async function loadSnapshot(db:any,c:any) {
-  const [invoices,credits,payments,requests,exports]=await Promise.all([list(db,'invoices','*,invoice_items(*)'),list(db,'credit_notes'),list(db,'invoice_payments'),list(db,'payment_requests','id,invoice_id,metadata'),journals(db)]);
+  const [invoices,credits,payments,requests,exports,purchases,documents]=await Promise.all([list(db,'invoices','*,invoice_items(*)'),list(db,'credit_notes'),list(db,'invoice_payments'),list(db,'payment_requests','id,invoice_id,metadata'),journals(db),list(db,'administration_entries'),list(db,'administration_documents','id,entry_id,sha256,status')]);
   const invoiceMap=new Map(invoices.filter(i=>eligible(i,requests)).map(i=>[i.id,i]));
   const rows:any[]=[]; const drafts=new Map<string,Draft>();
   const push=async(kind:Kind,s:any,i:any)=>{
     const key=`${kind}:${s.id}`, j=exports.find(e=>e.source_kind===kind&&e.source_id===s.id);
     let d:Draft|null=null, reason='';
-    try {d=await buildDraft(kind,s,i,j&&kind==='PAYMENT'?{...c,payment_mode:'VEDANTIX'}:c);drafts.set(key,d);}catch(e){reason=e instanceof SetupError?e.message:'Deze boeking moet worden gecontroleerd.';}
+    try {d=kind==='PURCHASE'?await buildPurchaseDraft(s,documents,c):await buildDraft(kind,s,i,j&&kind==='PAYMENT'?{...c,payment_mode:'VEDANTIX'}:c);drafts.set(key,d);}catch(e){reason=e instanceof SetupError?e.message:'Deze boeking moet worden gecontroleerd.';}
     let state=j?.status || (reason?'BLOCKED':'READY');
     if(j && (reason || d?.source_hash!==j.source_hash)) {state='CHANGED';reason='Dit document is na de boeking gewijzigd. Controleer en corrigeer het in e-Boekhouden.';}
-    if(!j && kind!=='INVOICE' && !rows.some(r=>r.kind==='INVOICE'&&r.id===i.id&&r.state==='SYNCED')) {state='BLOCKED';reason='Zet eerst de bijbehorende factuur over en los eventuele wijzigingen op.';}
+    if(!j && !['INVOICE','PURCHASE'].includes(kind) && !rows.some(r=>r.kind==='INVOICE'&&r.id===i.id&&r.state==='SYNCED')) {state='BLOCKED';reason='Zet eerst de bijbehorende factuur over en los eventuele wijzigingen op.';}
     if(j && state!=='CHANGED') reason=j.message || '';
-    rows.push({kind,id:s.id,number:d?.number || s.credit_number || i.invoice_number,date:d?.date || s.payment_date || s.credit_date || i.invoice_date,amount:d?.amount ?? Number(kind==='PAYMENT'?s.amount:s.total_incl_vat),base:d?.base,vat:d?.vat,customer:i.customer_snapshot?.company_name || i.customer_snapshot?.contact_name || '',state,reason,remote_id:j?.remote_id,review_hash:j?.review_hash || d?.review_hash,available_at:d?.available_at,ledger_id:j?.draft?.mutation.ledgerId || d?.mutation.ledgerId});
+    rows.push({kind,id:s.id,number:d?.number || s.document_number || s.credit_number || i.invoice_number,date:d?.date || s.entry_date || s.payment_date || s.credit_date || i.invoice_date,amount:d?.amount ?? Number(kind==='PAYMENT'?s.amount:kind==='PURCHASE'?(s.lines||[]).reduce((n:any,l:any)=>n+Number(l.base)+Number(l.vat),0)*(s.document_kind==='CREDIT'?-1:1):s.total_incl_vat),base:d?.base,vat:d?.vat,customer:s.supplier || i.customer_snapshot?.company_name || i.customer_snapshot?.contact_name || '',state,reason,remote_id:j?.remote_id,review_hash:j?.review_hash || d?.review_hash,available_at:d?.available_at,ledger_id:j?.draft?.mutation.ledgerId || d?.mutation.ledgerId,cost_ledger_id:kind==='PURCHASE'?(j?.draft?.mutation.rows[0]?.ledgerId || d?.mutation.rows[0]?.ledgerId):undefined});
   };
   for(const i of invoiceMap.values()) await push('INVOICE',i,i);
   for(const s of credits) {const i=invoiceMap.get(s.invoice_id);if(i&&eligibleCredit(s))await push('CREDIT',s,i);}
   for(const s of payments) {const i=invoiceMap.get(s.invoice_id);if(i&&eligiblePayment(s))await push('PAYMENT',s,i);}
+  for(const s of purchases) if(!s.void_reason) await push('PURCHASE',s,s);
   for(const j of exports) if(!rows.some(r=>r.kind===j.source_kind&&r.id===j.source_id)) rows.push({kind:j.source_kind,id:j.source_id,number:j.draft.number,date:j.draft.date,amount:j.draft.amount,state:'CHANGED',reason:'De bron is verwijderd, ingetrokken of uitgesloten. Controleer de bestaande boeking in e-Boekhouden.',remote_id:j.remote_id});
   return {rows,drafts,exports,excluded:invoices.length-invoiceMap.size};
 }
@@ -59,14 +61,14 @@ async function exportOne(db:any,lease:string,c:any,s:Awaited<ReturnType<typeof l
   }
   if(checkOnly) return {message:'Geen bevestigde boeking gevonden. Controleer e-Boekhouden. Gebruik daarna zo nodig Opnieuw proberen; het oorspronkelijke kenmerk blijft behouden.'};
   if(old && !retry) throw new SetupError('De vorige poging is onzeker. Controleer eerst e-Boekhouden en kies daarna bewust Opnieuw proberen.');
-  if(kind!=='INVOICE') {
+  if(!['INVOICE','PURCHASE'].includes(kind)) {
     const parent=s.exports.find(j=>j.source_kind==='INVOICE'&&j.source_id===d.invoice_id&&j.status==='SYNCED');
     if(!parent || !mutationMatches(await provider.detail(Number(parent.remote_id)),parent.draft.mutation,parent.draft.expected_vat,Number(parent.remote_id))) throw new SetupError('De factuur in e-Boekhouden is gewijzigd of ontbreekt. Controleer die eerst.');
   }
   if(!old) {
     // Reuse a parent invoice's exact relation for credits/payments.
     const parent=s.exports.find(j=>j.source_kind==='INVOICE'&&j.source_id===d.invoice_id&&j.status==='SYNCED');
-    const relationId=kind==='INVOICE'?await provider.relation(d):Number(parent?.draft?.mutation.relationId);
+    const relationId=['INVOICE','PURCHASE'].includes(kind)?await provider.relation(d):Number(parent?.draft?.mutation.relationId);
     if(!Number.isSafeInteger(relationId)||relationId<=0) throw new SetupError('De klantrelatie van de factuur ontbreekt.');
     frozen.mutation.relationId=relationId;
     if(kind==='PAYMENT') frozen.mutation.rows[0].relationId=relationId;
@@ -101,12 +103,12 @@ export async function processSync(db:any,input:any,actor:string|null,open= openB
     if(input.action==='worker') {
       if(s.rows.some(r=>['REVIEW','SENDING','CHANGED'].includes(r.state))) {await rpc(db,'pause',lease,{message:'Er is een boeking die eerst moet worden gecontroleerd.'});return {message:'Controle vereist.'};}
       // Do not backfill old documents on activation. Manual exports remain possible.
-      const candidates=s.rows.filter(r=>r.available_at&&Date.parse(r.available_at)>=Date.parse(c.sync_from)&&r.state!=='SYNCED'&&(r.kind!=='PAYMENT'||c.payment_mode==='VEDANTIX'));
+      const candidates=s.rows.filter(r=>r.kind!=='PURCHASE'&&r.available_at&&Date.parse(r.available_at)>=Date.parse(c.sync_from)&&r.state!=='SYNCED'&&(r.kind!=='PAYMENT'||c.payment_mode==='VEDANTIX'));
       const row=candidates.find(r=>r.state==='READY');
       if(!row) {if(candidates.length)await rpc(db,'pause',lease,{message:candidates[0].reason});return {message:'Geen nieuwe boekingen klaar.'};}
       target={...row,action:'export'};
     }
-    if(!['INVOICE','CREDIT','PAYMENT'].includes(target.kind)||typeof target.id!=='string'||typeof target.review_hash!=='string') throw new SetupError('Kies een boeking uit het controleoverzicht.');
+    if(!['INVOICE','CREDIT','PAYMENT','PURCHASE'].includes(target.kind)||typeof target.id!=='string'||typeof target.review_hash!=='string') throw new SetupError('Kies een boeking uit het controleoverzicht.');
     const token=await result(db.rpc('ebookhouden_secret',{p_action:'read',p_token:null}));
     if(!token)throw new SetupError('Het API-token ontbreekt.');
     provider=await open(token);
@@ -114,3 +116,4 @@ export async function processSync(db:any,input:any,actor:string|null,open= openB
   } catch(e) {if(input.action==='worker') await rpc(db,'pause',lease,{message:e instanceof SetupError?e.message:'Automatische verwerking vraagt om controle.'});throw e;}
   finally {if(provider)await provider.close();await rpc(db,'release',lease);}
 }
+

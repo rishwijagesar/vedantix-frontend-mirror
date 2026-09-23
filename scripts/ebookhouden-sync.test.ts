@@ -89,7 +89,7 @@ test('drafts, unfinalized records, inactive data, voided payments and test check
 // grants and the durable transition ordering against PostgreSQL.
 function dbFixture(){
  const config:any=cfg(),journal:any[]=[],invoices:any[]=[invoice()],payments:any[]=[],credits:any[]=[],events:string[]=[];
- const tables:any={invoices,invoice_payments:payments,credit_notes:credits,payment_requests:[],ebookhouden_exports:journal};let lease:string|null=null;
+ const tables:any={administration_entries:[],administration_documents:[],invoices,invoice_payments:payments,credit_notes:credits,payment_requests:[],ebookhouden_exports:journal};let lease:string|null=null;
  const db={from:(name:string)=>{const q:any={select:()=>q,eq:()=>q,order:()=>q,range:async(a:number,b:number)=>({data:tables[name].slice(a,b+1)}),single:async()=>({data:{...config}})};return q;},rpc:async(name:string,a:any)=>{
   if(name==='ebookhouden_secret')return {data:'test-token'};
   const d=a.p_data,action=a.p_action;events.push(action);
@@ -104,7 +104,7 @@ function dbFixture(){
  }};
  const provider:any={close:async()=>{events.push('close');},ledgers:async()=>ledgers,find:async()=>[],relation:async()=>99,outstanding:async()=>67639,detail:async()=>remote(journal[0].draft),post:async()=>{events.push('post');assert.equal(journal.at(-1).status,'SENDING');return remote(journal.at(-1).draft);}};
  const target=async(action='export')=>{const p=await preview(db,config);const row=p.rows.find(r=>r.kind==='INVOICE');return{action,kind:'INVOICE',id,review_hash:row.review_hash};};
- return{db,config,journal,invoices,payments,credits,events,provider,target};
+ return{db,config,journal,invoices,payments,credits,events,provider,target,tables};
 }
 test('review hashes reject stale prices/config before posting; every successful post has durable intent',async()=>{
  const f=dbFixture(),target=await f.target();f.config.mapping.revenue=55;
@@ -221,4 +221,19 @@ test('documented nullable empty lists allow a first booking; incomplete lists fa
 
 test('preview preserves the previous frontend response during staged deployment',async()=>{
  const f=dbFixture(),p=await preview(f.db,f.config);assert.equal(p.invoices.length,1);assert.equal(p.credits.length,0);assert.equal(p.payment_count,0);assert.equal(p.payment_amount,0);assert.equal(p.invoices[0].number,'FAC-2026-0001');
+});
+
+
+test('reviewed purchases export once; sales automation never silently picks them up',async()=>{
+ const f=dbFixture();f.invoices.length=0;
+ const p={id,entry_date:'2026-09-23',supplier:'Hosting',document_number:'INK-01',document_kind:'PURCHASE',description:'Hosting',category:'hosting',treatment:'EXPENSE',business_percent:100,vat_reviewed:true,lines:[{base:10,vat:2.1,deductible:2.1,code:'21'}],created_at:'2026-09-23T12:00:00Z'};
+ f.tables.administration_entries.push(p);f.tables.administration_documents.push({id:'doc',entry_id:id,status:'READY',sha256:'original'});
+ Object.assign(f.config.mapping,{creditor:5,cost_hosting:6});f.config.sync_enabled=true;f.config.sync_from='2026-09-23T00:00:00Z';
+ f.provider.ledgers=async()=>[...ledgers,{id:5,code:'1600',description:'Crediteuren',category:'CRED'},{id:6,code:'4500',description:'Hostingkosten',category:'VW'}];
+ await processSync(f.db,{action:'worker'},null,async()=>f.provider);assert.equal(f.journal.length,0);
+ const row=(await preview(f.db,f.config)).rows[0];assert.equal(row.kind,'PURCHASE');assert.equal(row.state,'READY');
+ await processSync(f.db,{...row,action:'export'},customer,async()=>f.provider);
+ assert.equal(f.journal[0].status,'SYNCED');assert.equal(f.journal[0].draft.mutation.type,1);
+ await processSync(f.db,{...row,action:'export'},customer,async()=>f.provider);assert.equal(f.events.filter(e=>e==='post').length,1);
+ f.tables.administration_documents[0].sha256='different';assert.equal((await preview(f.db,f.config)).rows[0].state,'CHANGED');
 });

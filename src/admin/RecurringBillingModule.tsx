@@ -124,7 +124,7 @@ export function SubscriptionsModule({ customers }: { customers: Customer[] }) {
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Abonnementen</h2><p className="mt-1 text-sm text-slate-500">Dagelijkse verwerking om 06:30 UTC. Facturen worden gegenereerd op of na de ingestelde volgende factuurdatum.</p></div><button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700"><RefreshCw size={14} className={loading ? "animate-spin" : ""}/> Vernieuwen</button></div>
       {error ? <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div> : null}
-      {loading && !subscriptions.length ? <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">Laden…</div> : subscriptions.length ? <div className="space-y-3">{subscriptions.map((subscription) => <SubscriptionCard key={subscription.id} subscription={subscription} items={items} customer={customers.find((customer) => customer.id === subscription.customer_id)} onChanged={load}/>)}</div> : <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">Nog geen abonnementen. Ze ontstaan wanneer je een geaccepteerde offerte met maand- of jaarregels activeert.</div>}
+      {loading && !subscriptions.length ? <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">Laden…</div> : subscriptions.length ? <div className="space-y-3">{subscriptions.map((subscription) => <SubscriptionCard key={subscription.id} subscription={subscription} items={items} customer={customers.find((customer) => customer.id === subscription.customer_id)} onChanged={load}/>)}</div> : <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">Nog geen abonnementen. Plan jaarfacturen vanuit een definitieve factuur, of activeer een geaccepteerde offerte met maand- of jaarregels.</div>}
     </section>
 
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -181,3 +181,4 @@ function SubscriptionCard({ subscription, items, customer, onChanged }: { subscr
     </div>
   </article>;
 }
+

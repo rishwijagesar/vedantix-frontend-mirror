@@ -1,5 +1,5 @@
 export type Ledger = { id: number; code: string; description: string; category: string };
-export type AccountMapping = { debtor: number; revenue: number; bank: number | null; mollie: number | null };
+export type AccountMapping = { debtor: number; revenue: number; bank: number | null; mollie: number | null; creditor?: number | null; [key: string]: number | null | undefined };
 
 export class SetupError extends Error {}
 const base = "https://api.e-boekhouden.nl/v1";
@@ -65,5 +65,15 @@ export function validateAccountMapping(input: unknown, ledgers: Ledger[]): Accou
   const mapping = { debtor: pick("debtor", ["DEB"], true)!, revenue: pick("revenue", ["VW"], true)!, bank: pick("bank", ["FIN"], false), mollie: pick("mollie", ["BAL", "FIN"], false) };
   const chosen = Object.values(mapping).filter(value => value !== null);
   if (new Set(chosen).size !== chosen.length) throw new SetupError("Gebruik voor ieder doel een afzonderlijke rekening.");
-  return mapping;
+  const extended: AccountMapping = mapping;
+  if (values.creditor != null) extended.creditor = pick("creditor", ["CRED"], false);
+  for (const key of ["software","hosting","hardware","office","marketing","travel","education","professional","insurance","bank","depreciation","other"]) {
+    if (values["cost_" + key] != null) {
+      const id = pick("cost_" + key, ["VW"], false);
+      if (id === mapping.revenue) throw new SetupError("Gebruik voor kosten een andere rekening dan omzet.");
+      extended["cost_" + key] = id;
+    }
+  }
+  return extended;
 }
+

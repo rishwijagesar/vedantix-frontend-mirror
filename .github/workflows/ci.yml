@@ -71,7 +71,7 @@ jobs:
         run: bun test scripts/invoice-payment.test.ts
 
       - name: Invoice draft calculation and save regression tests
-        run: bun test scripts/invoice-draft.test.ts
+        run: bun test scripts/invoice-draft.test.ts scripts/invoice-annual.test.ts
 
       - name: Verify QR in rendered PDF
         run: |
@@ -104,7 +104,7 @@ jobs:
         run: bun test scripts/contract-prefill.test.ts
 
       - name: e-Boekhouden setup security and API tests
-        run: bun test scripts/ebookhouden.test.ts scripts/ebookhouden-sync.test.ts
+        run: bun test scripts/ebookhouden.test.ts scripts/ebookhouden-sync.test.ts scripts/purchase-export.test.ts
 
       - name: Administration quarter, financial and archive tests
         run: bun test scripts/administration.test.ts
@@ -123,6 +123,13 @@ jobs:
         run: |
           createdb -h localhost -U postgres customer_margin_test
           psql -h localhost -U postgres -d customer_margin_test -v ON_ERROR_STOP=1 -f scripts/customer-margin-db.test.sql
+
+      - name: Annual invoice scheduling and duplicate prevention
+        env:
+          PGPASSWORD: administration-ci-only
+        run: |
+          createdb -h localhost -U postgres invoice_annual_test
+          psql -h localhost -U postgres -d invoice_annual_test -v ON_ERROR_STOP=1 -f scripts/invoice-annual-db.test.sql
 
       - name: Accounting export journal, leases and authorization
         env:
@@ -172,3 +179,4 @@ jobs:
 
       - name: Production build
         run: bun run build
+
