@@ -11,7 +11,7 @@ end; $$;
 revoke all on function ebookhouden_private.wake_worker() from public,anon,authenticated,service_role;
 do $$ begin
  if not exists(select 1 from vault.decrypted_secrets where name='vedantix_ebookhouden_worker') then
-  perform vault.create_secret(replace(gen_random_uuid()::text,'-','')||replace(gen_random_uuid()::text,'-',''),'vedantix_ebookhouden_worker','Accounting scheduler authentication');
+  perform vault.create_secret(encode(extensions.gen_random_bytes(32),'hex'),'vedantix_ebookhouden_worker','Accounting scheduler authentication');
  end if;
 end; $$;
 select cron.schedule('vedantix-ebookhouden-sync','*/5 * * * *','select ebookhouden_private.wake_worker()');
