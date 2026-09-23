@@ -18,6 +18,7 @@ export async function openBookkeeping(accessToken: string, fetcher: typeof fetch
     const all: any[]=[];
     for (let offset=0;offset<20000;offset+=1000) {
       const page=await request(`${path}${path.includes('?')?'&':'?'}limit=1000&offset=${offset}`);
+      if (page?.items===null && [0,'0'].includes(page.count)) return all;
       if (!Array.isArray(page?.items)) throw new SetupError('Het controleoverzicht van e-Boekhouden is onvolledig.');
       all.push(...page.items); if (page.items.length<1000) return all;
     }

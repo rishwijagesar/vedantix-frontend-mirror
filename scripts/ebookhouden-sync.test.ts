@@ -120,3 +120,10 @@ test('a changed parent customer blocks new payments even when a previous booking
  f.payments.push({id:'33333333-3333-4333-8333-333333333333',invoice_id:id,amount:100,payment_date:'2026-09-24',method:'MOLLIE',created_at:'2026-09-24T12:00:00Z'});
  const p=await preview(f.db,f.config);assert.equal(p.rows.find(r=>r.kind==='INVOICE').state,'CHANGED');assert.equal(p.rows.find(r=>r.kind==='PAYMENT').state,'BLOCKED');
 });
+
+test('documented nullable empty lists allow a first booking; incomplete lists fail closed',async()=>{
+ let empty:any={items:null,count:0};
+ const p=await openBookkeeping('fixture',async(url:any,init:any)=>String(url).endsWith('/session')?(init.method==='DELETE'?new Response(null,{status:204}):Response.json({token:'session'})):Response.json(empty));
+ const d=await buildDraft('INVOICE',invoice(),invoice(),cfg());assert.deepEqual(await p.find(d.mutation),[]);
+ empty={items:null};await assert.rejects(p.find(d.mutation),/onvolledig/);await p.close();
+});
