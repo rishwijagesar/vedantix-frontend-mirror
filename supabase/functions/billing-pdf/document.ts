@@ -1,5 +1,6 @@
 import { invoicePaymentUrl, invoicePaymentDescription, invoicePaymentReference, isInvoicePayable } from "../_shared/invoice-payment.ts";
 import { invoiceQr } from "../_shared/invoice-qr.ts";
+import { invoiceRecurringExplanation } from "../_shared/invoice-recurring.ts";
 import { PDFDocument, PDFName, PDFString, StandardFonts, rgb, type PDFFont, type PDFPage } from "npm:pdf-lib@1.17.1";
 
 const A4 = { width: 595.28, height: 841.89 };
@@ -211,6 +212,17 @@ export async function makePdf(kind: DocKind, doc: AnyRecord, token?: string) {
     ty -= 23;
   }
   y -= boxH + 14;
+
+  const recurringLines = kind === "invoice" ? invoiceRecurringExplanation(doc, items, money) : [];
+  if (recurringLines.length) {
+    const lines = recurringLines.flatMap(line => wrap(line, regular, 8.7, CONTENT_WIDTH - 24));
+    const height = 42 + lines.length * 12;
+    ensure(height + 18);
+    page.drawRectangle({ x: MARGIN, y: y - height, width: CONTENT_WIDTH, height, color: LIGHT, borderColor: BORDER, borderWidth: 0.5 });
+    page.drawText("Deze factuur en terugkerende kosten", { x: MARGIN + 12, y: y - 20, size: 10, font: bold, color: DARK });
+    drawLines(page, lines, MARGIN + 12, y - 38, regular, 8.7, DARK, 12);
+    y -= height + 18;
+  }
 
   if (kind === "invoice" && isInvoicePayable(doc)) {
     const paymentUrl = invoicePaymentUrl(token);
