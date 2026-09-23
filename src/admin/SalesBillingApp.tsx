@@ -1,5 +1,6 @@
 import AdminLayout from "./AdminLayout";
 import { billingSection, type BillingSection } from "./admin-navigation";
+import CustomerMarginModule from "./CustomerMarginModule";
 import AdministrationModule from "./AdministrationModule";
 import EboekhoudenModule from "./EboekhoudenModule";
 import { useSearchParams } from "@/lib/router-compat";
@@ -52,6 +53,7 @@ const titles: Record<Section, [string, string]> = {
   invoices: ["Facturen", "Maak concepten met actuele catalogusprijzen, finaliseer facturen en beheer actieve/inactieve records."],
   payments: ["Betalingen", "Registreer deelbetalingen, bekijk de volledige historie en volg achterstallige facturen."],
   "online-payments": ["Online betalen", "Beheer Mollie/iDEAL en volg hosted checkout-betalingen zonder API-keys in de browser."],
+  "customer-margin": ["Klantrendement", "Terugkerende opbrengst, eigen kosten en marge per klant."],
   administration: ["Administratie", "Kosten, aankopen, omzet en bewijsstukken per kwartaal. Met overzichtelijke controles voor je boekhouding."],
   accounting: ["e-Boekhouden", "Verbind je administratie, kies boekhoudrekeningen en controleer de gegevens voor synchronisatie."],
   email: ["E-mail & herinneringen", "Verstuur offertes en facturen via Migadu en beheer automatische betaalherinneringen."],
@@ -112,6 +114,7 @@ export default function SalesBillingApp() {
                   <DashboardAction icon={ReceiptText} title="Nieuwe factuur" description="Direct factureren of vanuit een geaccepteerde offerte." onClick={() => setSection("invoices")} />
                   <DashboardAction icon={WalletCards} title="Betalingen" description="Deelbetalingen, historie en achterstallige facturen." onClick={() => setSection("payments")} />
                   <DashboardAction icon={CreditCard} title="Online betalen" description="Mollie/iDEAL checkout en paymentstatus." onClick={() => setSection("online-payments")} />
+                  <DashboardAction icon={WalletCards} title="Klantrendement" description="Wat kost een klant per maand en wat houd je eraan over?" onClick={() => setSection("customer-margin")} />
                   <DashboardAction icon={ReceiptText} title="Administratie" description="Kosten, aankopen, kwartaalcijfers en bewijsstukken beheren." onClick={() => setSection("administration")} />
                   <DashboardAction icon={Link2} title="e-Boekhouden" description="Account verbinden en boekhoudrekeningen instellen." onClick={() => setSection("accounting")} />
                   <DashboardAction icon={Mail} title="E-mail" description="Offertes, facturen en betaalherinneringen via Migadu." onClick={() => setSection("email")} />
@@ -129,6 +132,7 @@ export default function SalesBillingApp() {
             {section === "invoices" ? <InvoicesModuleV2 customers={customers}/> : null}
             {section === "payments" ? <PaymentsModule customers={customers}/> : null}
             {section === "online-payments" ? <MolliePaymentsModule/> : null}
+            {section === "customer-margin" ? <CustomerMarginModule/> : null}
             {section === "administration" ? <AdministrationModule/> : null}
             {section === "accounting" ? <EboekhoudenModule/> : null}
             {section === "email" ? <BillingEmailModule customers={customers}/> : null}

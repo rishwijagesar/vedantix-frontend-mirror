@@ -1,5 +1,5 @@
 export const operationSections = ["dashboard", "client-cases", "customers", "domains", "websites", "health", "monitoring", "staff"] as const;
-export const billingSections = ["overview", "quotes", "quote-links", "contracts", "invoices", "payments", "online-payments", "administration", "accounting", "email", "production", "subscriptions", "catalog", "customers", "company"] as const;
+export const billingSections = ["overview", "quotes", "quote-links", "contracts", "invoices", "payments", "online-payments", "administration", "customer-margin", "accounting", "email", "production", "subscriptions", "catalog", "customers", "company"] as const;
 export type OperationSection = typeof operationSections[number];
 export type BillingSection = typeof billingSections[number];
 
@@ -29,6 +29,7 @@ export const adminNavigation: AdminNavGroup[] = [
     billing("invoices", "Facturen", "receipt", "creditnota facturatie pdf"),
     billing("payments", "Betalingen", "wallet", "openstaand achterstallig deelbetaling"),
     billing("subscriptions", "Abonnementen", "repeat", "maandelijks jaarlijks terugkerend"),
+    billing("customer-margin", "Klantrendement", "chart", "kosten per klant marge winst verlies hosting email maandelijks"),
     billing("administration", "Administratie", "book", "boekhouding kosten aankopen bonnetjes bewijsstukken omzet winst btw kwartaal belasting"),
   ] },
   { id: "services", label: "Websites & e-mail", items: [
