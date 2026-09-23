@@ -104,7 +104,7 @@ jobs:
         run: bun test scripts/contract-prefill.test.ts
 
       - name: e-Boekhouden setup security and API tests
-        run: bun test scripts/ebookhouden.test.ts
+        run: bun test scripts/ebookhouden.test.ts scripts/ebookhouden-sync.test.ts
 
       - name: Administration quarter, financial and archive tests
         run: bun test scripts/administration.test.ts
@@ -113,6 +113,13 @@ jobs:
         env:
           PGPASSWORD: administration-ci-only
         run: psql -h localhost -U postgres -d administration_test -v ON_ERROR_STOP=1 -f scripts/administration-db.test.sql
+
+      - name: Accounting export journal, leases and authorization
+        env:
+          PGPASSWORD: administration-ci-only
+        run: |
+          createdb -h localhost -U postgres ebookhouden_test
+          psql -h localhost -U postgres -d ebookhouden_test -v ON_ERROR_STOP=1 -f scripts/ebookhouden-sync-db.test.sql
 
       - name: Migadu mailbox management API and authorization tests
         run: bun test scripts/migadu-management.test.ts
