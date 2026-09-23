@@ -87,8 +87,18 @@ export default function HeroGrowthChart() {
         dots[index].setAttribute("cy", String(point.y));
         const halfLabel = labels[index].getBoundingClientRect().width / 2;
         const labelX = Math.min(width - halfLabel - 2, Math.max(halfLabel + 2, point.x));
+        // Keep the whole label below the curve, including its downhill left edge.
+        const labelLeft = Math.max(10, labelX - halfLabel);
+        let low = 0;
+        let high = length;
+        for (let sample = 0; sample < 16; sample += 1) {
+          const middle = (low + high) / 2;
+          if (line.getPointAtLength(middle).x < labelLeft) low = middle;
+          else high = middle;
+        }
+        const labelY = line.getPointAtLength(high).y + 12;
         labels[index].style.left = `${labelX}px`;
-        labels[index].style.top = `${point.y + 16}px`;
+        labels[index].style.top = `${labelY}px`;
       });
       paint(progress);
     }
