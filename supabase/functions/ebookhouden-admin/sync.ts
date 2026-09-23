@@ -30,7 +30,12 @@ export async function loadSnapshot(db:any,c:any) {
   for(const j of exports) if(!rows.some(r=>r.kind===j.source_kind&&r.id===j.source_id)) rows.push({kind:j.source_kind,id:j.source_id,number:j.draft.number,date:j.draft.date,amount:j.draft.amount,state:'CHANGED',reason:'De bron is verwijderd, ingetrokken of uitgesloten. Controleer de bestaande boeking in e-Boekhouden.',remote_id:j.remote_id});
   return {rows,drafts,exports,excluded:invoices.length-invoiceMap.size};
 }
-export async function preview(db:any,c:any) {const s=await loadSnapshot(db,c);return {rows:s.rows,excluded_invoice_count:s.excluded,first_invoice_synced:s.exports.some(j=>j.source_kind==='INVOICE'&&j.status==='SYNCED'),attention:s.rows.filter(r=>['REVIEW','SENDING','CHANGED'].includes(r.state)).length};}
+export async function preview(db:any,c:any) {
+  const s=await loadSnapshot(db,c);
+  const payments=s.rows.filter(r=>r.kind==='PAYMENT');
+  // Keep already-open admin tabs readable while the new frontend is deployed.
+  return {rows:s.rows,invoices:s.rows.filter(r=>r.kind==='INVOICE'),credits:s.rows.filter(r=>r.kind==='CREDIT'),payment_count:payments.length,payment_amount:payments.reduce((n,r)=>n+cents(r.amount),0)/100,excluded_invoice_count:s.excluded,first_invoice_synced:s.exports.some(j=>j.source_kind==='INVOICE'&&j.status==='SYNCED'),attention:s.rows.filter(r=>['REVIEW','SENDING','CHANGED'].includes(r.state)).length};
+}
 
 async function exportOne(db:any,lease:string,c:any,s:Awaited<ReturnType<typeof loadSnapshot>>,kind:Kind,id:string,hash:string,actor:string|null,provider:Bookkeeping,retry=false,checkOnly=false) {
   const row=s.rows.find(r=>r.kind===kind&&r.id===id), d=s.drafts.get(`${kind}:${id}`);

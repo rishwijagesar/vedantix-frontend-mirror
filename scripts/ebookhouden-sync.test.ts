@@ -127,3 +127,7 @@ test('documented nullable empty lists allow a first booking; incomplete lists fa
  const d=await buildDraft('INVOICE',invoice(),invoice(),cfg());assert.deepEqual(await p.find(d.mutation),[]);
  empty={items:null};await assert.rejects(p.find(d.mutation),/onvolledig/);await p.close();
 });
+
+test('preview preserves the previous frontend response during staged deployment',async()=>{
+ const f=dbFixture(),p=await preview(f.db,f.config);assert.equal(p.invoices.length,1);assert.equal(p.credits.length,0);assert.equal(p.payment_count,0);assert.equal(p.payment_amount,0);assert.equal(p.invoices[0].number,'FAC-2026-0001');
+});
