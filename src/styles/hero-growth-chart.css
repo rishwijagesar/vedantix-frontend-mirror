@@ -41,9 +41,9 @@
 }
 
 .hero-growth-chart__stage svg { flex-shrink: 0; color: #a6baff; }
-.hero-growth-chart__stage--0 { left: 24%; top: 88%; }
-.hero-growth-chart__stage--1 { left: 60%; top: 64%; }
-.hero-growth-chart__stage--2 { left: 84%; top: 28%; color: #ece6ff; }
+.hero-growth-chart__stage--0 { left: 24%; top: 90%; }
+.hero-growth-chart__stage--1 { left: 60%; top: 72%; }
+.hero-growth-chart__stage--2 { left: 84%; top: 45%; color: #ece6ff; }
 .hero-growth-chart__stage--2 svg { color: #b9a8ff; }
 
 .hero-growth-chart__notice {
