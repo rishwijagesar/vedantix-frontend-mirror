@@ -1,0 +1,89 @@
+.hero-growth-chart {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  min-width: 0;
+  margin: 0;
+  justify-self: end;
+  color: #e5edff;
+}
+
+.hero-growth-chart__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 10px;
+  color: #becce6;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-growth-chart__heading svg { color: #b2a1ff; flex-shrink: 0; }
+.hero-growth-chart__canvas { position: relative; margin-top: 12px; }
+.hero-growth-chart__plot { display: block; width: 100%; height: clamp(280px, 26vw, 360px); overflow: visible; }
+.hero-growth-chart__grid { stroke: #bdd1ff; stroke-width: 1; opacity: 0.08; }
+
+.hero-growth-chart__stage {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  color: #cfdbf2;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  transform: translateX(-50%);
+  transition: opacity 240ms ease;
+}
+
+.hero-growth-chart__stage svg { flex-shrink: 0; color: #a6baff; }
+.hero-growth-chart__stage--0 { left: 24%; top: 88%; }
+.hero-growth-chart__stage--1 { left: 60%; top: 64%; }
+.hero-growth-chart__stage--2 { left: 84%; top: 28%; color: #ece6ff; }
+.hero-growth-chart__stage--2 svg { color: #b9a8ff; }
+
+.hero-growth-chart__notice {
+  position: absolute;
+  top: 14px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 20px);
+  padding: 11px 12px;
+  background: #152443;
+  border: 1px solid #8d9ede40;
+  border-radius: 12px;
+  box-shadow: 0 16px 35px #03091840;
+  transition: opacity 350ms ease, transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hero-growth-chart__notice strong { display: block; color: #f0f5ff; font-size: 0.875rem; font-weight: 650; line-height: 1.35; }
+.hero-growth-chart__notice small { display: block; margin-top: 3px; color: #b6c4de; font-size: 0.75rem; line-height: 1.4; }
+.hero-growth-chart__check { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border-radius: 9px; color: #a1e7d6; background: #213c54; }
+.hero-growth-chart__example { align-self: start; color: #a9b9d3; font-size: 0.75rem; line-height: 1.4; margin-left: 5px; }
+.hero-growth-chart__baseline { display: flex; justify-content: space-between; gap: 12px; padding: 18px 10px 0; color: #a9bad8; font-size: 0.75rem; line-height: 1.5; }
+.hero-growth-chart figcaption { margin-top: 20px; color: #a2b4d2; font-size: 0.75rem; line-height: 1.5; text-align: center; }
+
+@media (max-width: 900px) {
+  .hero-growth-chart { justify-self: center; margin-top: 38px; }
+  .hero-growth-chart__plot { height: 300px; }
+}
+
+@media (max-width: 480px) {
+  .hero-growth-chart { margin-top: 32px; }
+  .hero-growth-chart__plot { height: 280px; }
+  .hero-growth-chart__heading { font-size: 0.75rem; letter-spacing: 0.08em; }
+  .hero-growth-chart__stage { font-size: 0.75rem; gap: 4px; }
+  .hero-growth-chart__notice { gap: 7px; padding: 10px; }
+  .hero-growth-chart__notice strong { font-size: 0.8125rem; }
+  .hero-growth-chart__example { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-growth-chart__stage, .hero-growth-chart__notice { transition: none; }
+}

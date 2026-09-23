@@ -1,3 +1,4 @@
+import HeroGrowthChart from "../components/home/HeroGrowthChart";
 import "../styles/home-hero.css";
 
 const HERO_CHECKS = [
@@ -5,12 +6,6 @@ const HERO_CHECKS = [
   "Meer zichtbaarheid",
   "Meer vertrouwen",
   "Alles onder één dak",
-];
-
-const GROWTH_METRICS = [
-  ["Zichtbaarheid", "+38%"],
-  ["Aanvragen", "+21%"],
-  ["Mobiele acties", "+34%"],
 ];
 
 export default function HomeHero() {
@@ -61,49 +56,7 @@ export default function HomeHero() {
             </div>
           </div>
 
-          <div className="hero-mockup-wrap" aria-hidden="true">
-            <div className="hero-mockup">
-              <div className="mockup-bar">
-                <div className="mockup-dot" style={{ background: "#ff5f57" }} />
-                <div className="mockup-dot" style={{ background: "#febc2e" }} />
-                <div className="mockup-dot" style={{ background: "#28c840" }} />
-                <div className="mockup-url">
-                  <span>vedantix-groeiplan.nl</span>
-                </div>
-              </div>
-
-              <div className="mockup-header">
-                <div className="mockup-label">Online Groei Dashboard</div>
-                <div className="mockup-title">Lokale zichtbaarheid stijgt</div>
-                <div className="mockup-sub">
-                  Website, SEO, reviews en aanvragen werken samen.
-                </div>
-
-                <div className="mockup-meta">
-                  <span>🔎 Beter gevonden</span>
-                  <span>💬 Meer contactmomenten</span>
-                </div>
-              </div>
-
-              <div className="mockup-services">
-                {GROWTH_METRICS.map(([name, value]) => (
-                  <div key={name} className="mockup-item">
-                    <span>{name}</span>
-                    <span>{value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mockup-actions">
-                <div className="mockup-action mockup-action-primary">Groei Audit</div>
-                <div className="mockup-action mockup-action-wa">Nieuwe aanvraag</div>
-              </div>
-            </div>
-
-            <p className="mockup-note">
-              Groei-indicatie • bedoeld om kansen zichtbaar te maken
-            </p>
-          </div>
+          <HeroGrowthChart />
         </div>
       </section>
 
