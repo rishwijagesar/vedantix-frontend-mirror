@@ -17,13 +17,15 @@ function customerPricePresentation(source: string) {
   if (!source) return source;
 
   let html = source
+    // The modal owns closing and printing; window.close() cannot close an iframe.
+    .replace(/<div class="printbar">[\s\S]*?<\/div>/g, "")
     .replace(
       '<div class="sum-row"><span>Totaal excl. btw</span>',
       '<div class="sum-row agreed"><span>Afgesproken bedrag excl. btw</span>',
     )
     .replace(
       '<div class="sum-row total"><span>Totaal incl. btw</span>',
-      '<div class="sum-row payable"><span>Te betalen incl. btw</span>',
+      '<div class="sum-row payable"><span>Factuurbedrag incl. btw</span>',
     );
 
   // In offertes zijn betaalmomenten ook primair excl. btw: dat is het bedrag
@@ -59,7 +61,7 @@ export default function BillingPreviewModal({ open, html, title, onClose }: { op
           <div><strong className="text-sm text-slate-950">{title}</strong><span className="ml-2 text-xs text-slate-400">Documentpreview</span></div>
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => frameRef.current?.contentWindow?.print()} className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white"><Download size={14} /> Opslaan als PDF</button>
-            <button type="button" onClick={onClose} className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"><X size={16} /></button>
+            <button type="button" onClick={onClose} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"><X size={16} /> Sluiten</button>
           </div>
         </div>
         <iframe ref={frameRef} title={title} srcDoc={customerHtml} className="min-h-0 flex-1 bg-slate-100" />
