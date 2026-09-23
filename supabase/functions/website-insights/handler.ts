@@ -1,3 +1,4 @@
+import { sameAnalyticsSite } from './api.ts';
 import { InsightsError, analyticsReport, createGoogleClient, credentials, googleList, identifier, label, measurementUrl, pageSpeed, propertyInput, safeProperty, safeStream, streamIdentifier, uuid, websiteUrl } from './api.ts';
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' };
 const settingsFields = 'website_id,pagespeed_enabled,pagespeed_path,pagespeed_devices,ga_connection_id,ga_enabled,ga_property,ga_stream,ga_measurement_id,ga_property_info,ga_pending,updated_at';
@@ -137,7 +138,7 @@ export function createInsightsHandler(createUser: (authorization: string) => any
             // A pending property can be recovered without creating a second property.
             if (s.ga_pending && s.ga_property && s.ga_property !== name) throw new InsightsError('Koppel eerst de eerder aangemaakte meetomgeving, of ontkoppel na controle.');
             const existing = await googleList(api, name + '/dataStreams', 'dataStreams');
-            const matching = existing.filter(x => x.type === 'WEB_DATA_STREAM' && x.webStreamData?.defaultUri && websiteUrl(x.webStreamData.defaultUri).origin === websiteUrl(website.production_url).origin);
+            const matching = existing.filter(x => x.type === 'WEB_DATA_STREAM' && x.webStreamData?.defaultUri && sameAnalyticsSite(x.webStreamData.defaultUri, website.production_url));
             if (matching.length) throw new InsightsError('Er bestaat al een webgegevensstream voor deze website. Selecteer die uit de lijst.');
             await save({ ga_pending: true, ga_connection_id: connectionId, ga_property: name, ga_property_info: property });
             stream = safeStream(await api('admin', name + '/dataStreams', 'POST', { displayName: label(body.stream_name || website.name), type: 'WEB_DATA_STREAM', webStreamData: { defaultUri: websiteUrl(website.production_url).href } }));
@@ -145,7 +146,7 @@ export function createInsightsHandler(createUser: (authorization: string) => any
         }
         if (stream.type !== 'WEB_DATA_STREAM' || !/^G-[A-Z0-9]+$/.test(stream.measurementId)) throw new InsightsError('Google gaf geen geldige webmeetcode terug. Controleer de meetomgeving.', 502);
         streamIdentifier(stream.name, property.name);
-        if (websiteUrl(stream.defaultUri).origin !== websiteUrl(website.production_url).origin) throw new InsightsError('De URL van deze webgegevensstream komt niet overeen met de productie-URL van de website. Pas die eerst aan bij Google.');
+        if (!sameAnalyticsSite(stream.defaultUri, website.production_url)) throw new InsightsError('De URL van deze webgegevensstream komt niet overeen met de productie-URL van de website. Pas die eerst aan bij Google.');
         // Explicitly managed page views: prevent automatic form, search, and history events.
         await api('admin-alpha', stream.name + '/enhancedMeasurementSettings?updateMask=stream_enabled', 'PATCH', { streamEnabled: false });
         await save({ ga_enabled: true, ga_connection_id: connectionId, ga_property: property.name, ga_stream: stream.name, ga_measurement_id: stream.measurementId, ga_property_info: { ...property, stream }, ga_pending: false });
@@ -195,3 +196,4 @@ export function createInsightsHandler(createUser: (authorization: string) => any
     }
   };
 }
+

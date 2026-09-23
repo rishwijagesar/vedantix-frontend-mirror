@@ -40,8 +40,8 @@ export async function openBookkeeping(accessToken: string, fetcher: typeof fetch
       return await Promise.all(rows.map(r=>detail(Number(r.id))));
     },
     relation: async(d:Draft)=>{
-      const code=`VDX${d.customer_id.replaceAll('-','').slice(0,12)}`;
-      const marker=`vedantix:${d.customer_id}`;
+      const code=`${d.kind==='PURCHASE'?'VDS':'VDX'}${d.customer_id.replaceAll('-','').slice(0,12)}`;
+      const marker=`${d.kind==='PURCHASE'?'vedantix-supplier':'vedantix'}:${d.customer_id}`;
       const rows=await list(`/relation?code=${encodeURIComponent(code)}`);
       if (rows.length>1) throw new SetupError('Meerdere klantrelaties gevonden. Controleer de klant in e-Boekhouden.');
       if (rows.length) {
@@ -51,7 +51,7 @@ export async function openBookkeeping(accessToken: string, fetcher: typeof fetch
       }
       const c=d.customer;
       const take=(v:any,n:number)=>String(v||'').trim().slice(0,n);
-      const r=await request('/relation','POST',{code,type:c.company_name?'B':'P',name:take(c.company_name||c.contact_name||c.name,100),contact:take(c.contact_name,50),address:take([c.address_line1,c.address_line2].filter(Boolean).join(' '),150),postalCode:take(c.postal_code,50),city:take(c.city,50),country:'Nederland',emailAddress:take(c.email,150),...(c.vat_number ? {vatNumber:take(c.vat_number,50)}:{}),...(/^\d{8}$/.test(c.kvk_number||'') ? {companyRegistrationNumber:c.kvk_number}:{}),freeText1:marker,doNotReceiveNewsletters:true});
+      const r=await request('/relation','POST',{code,type:c.company_name?'B':'P',name:take(c.company_name||c.contact_name||c.name,100),contact:take(c.contact_name,50),address:take([c.address_line1,c.address_line2].filter(Boolean).join(' '),150),postalCode:take(c.postal_code,50),city:take(c.city,50),...(d.kind==='PURCHASE'?{}:{country:'Nederland'}),emailAddress:take(c.email,150),...(c.vat_number ? {vatNumber:take(c.vat_number,50)}:{}),...(/^\d{8}$/.test(c.kvk_number||'') ? {companyRegistrationNumber:c.kvk_number}:{}),freeText1:marker,doNotReceiveNewsletters:true});
       if (!Number.isSafeInteger(Number(r.id)) || Number(r.id)<=0) throw new SetupError('De klantrelatie is niet bevestigd. Probeer later opnieuw.');
       return Number(r.id);
     },
@@ -65,3 +65,4 @@ export async function openBookkeeping(accessToken: string, fetcher: typeof fetch
   };
 }
 export type Bookkeeping = Awaited<ReturnType<typeof openBookkeeping>>;
+

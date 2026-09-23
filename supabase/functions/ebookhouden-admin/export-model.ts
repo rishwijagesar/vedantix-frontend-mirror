@@ -1,6 +1,6 @@
 import { SetupError } from './api.ts';
 
-export type Kind = 'INVOICE' | 'CREDIT' | 'PAYMENT';
+export type Kind = 'INVOICE' | 'CREDIT' | 'PAYMENT' | 'PURCHASE';
 export type Mutation = { type: number; date: string; ledgerId: number; description: string; entryNumber: string; paymentReference: string; checkPaymentReference: true; inExVat: 'EX'; invoiceNumber?: string; relationId?: number; termOfPayment?: number; rows: Array<{ amount: number; vatCode: string; ledgerId?: number; description: string; invoiceNumber?: string; relationId?: number }> };
 export type Draft = { kind: Kind; id: string; number: string; date: string; available_at: string; amount: number; base: number; vat: number; customer_id: string; customer: any; source_updated_at?: string; source_method?: string; source_reference?: string | null; invoice_id: string; source_hash: string; review_hash: string; mutation: Mutation; expected_vat: Record<string, number> };
 export const cents = (n: unknown) => { const v = Number(n); if (!Number.isFinite(v) || Math.abs(v) > 1e9) throw new SetupError('Ongeldig bedrag.'); return Math.round((v + Math.sign(v) * Number.EPSILON) * 100); };
@@ -83,13 +83,13 @@ export function mutationMatches(actual: any, expected: Mutation, vat: Record<str
   // Accept that only for the exact ID returned by our POST or already recorded
   // in our journal, with the same invoice number, customer and financial data.
   // An unknown existing invoice or a conflicting non-empty marker stays blocked.
-  const knownInvoiceWithoutMarker=expected.type===2 && knownId && (a.entryNumber==null || a.entryNumber==='') && !!expected.invoiceNumber && Number.isSafeInteger(expected.relationId) && Number(expected.relationId)>0;
+  const knownInvoiceWithoutMarker=[1,2].includes(expected.type) && knownId && (a.entryNumber==null || a.entryNumber==='') && !!expected.invoiceNumber && Number.isSafeInteger(expected.relationId) && Number(expected.relationId)>0;
   if (a.entryNumber!==expected.entryNumber && !knownInvoiceWithoutMarker) return false;
   if (Number(a.type)!==expected.type || a.date?.slice(0,10)!==expected.date || Number(a.ledgerId)!==expected.ledgerId || a.inExVat!=='EX' || a.description!==expected.description || (expected.invoiceNumber && a.invoiceNumber!==expected.invoiceNumber) || (expected.relationId && Number(a.relationId)!==expected.relationId) || (expected.termOfPayment!==undefined && Number(a.termOfPayment)!==expected.termOfPayment)) return false;
   if (!Array.isArray(a.rows) || a.rows.length!==expected.rows.length) return false;
   // e-Boekhouden repeats the invoice number and relation on sales rows even
   // when the request specifies them only on the header. Conflicts still fail.
-  const canonical = (rows: any[]) => rows.map(r=>JSON.stringify([cents(r.amount),r.vatCode,expected.type===3 ? 0 : Number(r.ledgerId || 0),r.invoiceNumber || (expected.type===2 ? expected.invoiceNumber : '') || '',Number(r.relationId || (expected.type===2 ? expected.relationId : 0) || 0)])).sort();
+  const canonical = (rows: any[]) => rows.map(r=>JSON.stringify([cents(r.amount),r.vatCode,expected.type===3 ? 0 : Number(r.ledgerId || 0),r.invoiceNumber || ([1,2].includes(expected.type) ? expected.invoiceNumber : '') || '',Number(r.relationId || ([1,2].includes(expected.type) ? expected.relationId : 0) || 0)])).sort();
   if (JSON.stringify(canonical(a.rows))!==JSON.stringify(canonical(expected.rows))) return false;
   if (expected.type===3) return true;
   if (!Array.isArray(a.vat)) return false;
@@ -97,3 +97,4 @@ export function mutationMatches(actual: any, expected: Mutation, vat: Record<str
   for (const r of a.vat) totals[r.vatCode]=(totals[r.vatCode] || 0)+cents(r.amount);
   return Object.entries(vat).every(([k,v])=>totals[k]===v) && Object.keys(totals).every(k=>k in vat || totals[k]===0);
 }
+

@@ -16,10 +16,14 @@ create function vault.update_secret(p_id uuid,p_secret text) returns void langua
 create table public.invoices(id uuid primary key, is_active boolean default true, finalized_at timestamptz, status text, updated_at timestamptz, total_incl_vat numeric);
 create table public.invoice_payments(id uuid primary key,invoice_id uuid,voided_at timestamptz,amount numeric,payment_date date,method text,reference text);
 create table public.credit_notes(id uuid primary key,invoice_id uuid,status text,finalized_at timestamptz,total_incl_vat numeric,total_ex_vat numeric,vat_total numeric,credit_date date,credit_number text);
+create table public.administration_entries(id uuid primary key, updated_at timestamptz, vat_reviewed boolean, void_reason text, treatment text, business_percent numeric);
+create table public.administration_documents(id uuid primary key, entry_id uuid, status text);
+grant select,update on public.administration_entries,public.administration_documents to service_role;
 insert into public.invoices values('33333333-3333-4333-8333-333333333333',true,'2026-09-23T00:00:00Z','FINALIZED','2026-09-23T00:00:00Z',121);
 grant select,update on public.invoices to service_role;
 \ir ../supabase/migrations/20260916202844_ebookhouden_secure_setup.sql
 \ir ../supabase/migrations/20260923004212_ebookhouden_sync.sql
+\ir ../supabase/migrations/20260923115033_purchase_accounting_export.sql
 
 do $$ begin
  if has_table_privilege('authenticated','ebookhouden_exports','SELECT,INSERT,UPDATE,DELETE') or has_table_privilege('anon','ebookhouden_config','SELECT') or has_function_privilege('authenticated','ebookhouden_sync(text,uuid,jsonb)','EXECUTE') or has_schema_privilege('authenticated','ebookhouden_private','USAGE') then raise exception 'Accounting data exposed'; end if;
@@ -62,3 +66,19 @@ do $$ begin
 end; $$;
 reset role;
 \echo 'Accounting leases, durable intents, activation, token guards and grants passed.'
+
+
+insert into administration_entries values('44444444-4444-4444-8444-444444444444','2026-09-23T00:00:00Z',true,null,'EXPENSE',100);
+insert into administration_documents values('55555555-5555-4555-8555-555555555555','44444444-4444-4444-8444-444444444444','READY');
+set role service_role;
+select ebookhouden_secret('save','fixture-token');
+select ebookhouden_sync('claim','66666666-6666-4666-8666-666666666666');
+do $$ begin
+ begin perform ebookhouden_sync('sending','66666666-6666-4666-8666-666666666666','{"kind":"PURCHASE","id":"44444444-4444-4444-8444-444444444444","source_updated_at":"2026-09-22T00:00:00Z"}'); raise exception 'Stale purchase accepted'; exception when raise_exception then if SQLERRM<>'Purchase changed since review' then raise; end if; end;
+ perform ebookhouden_sync('sending','66666666-6666-4666-8666-666666666666','{"kind":"PURCHASE","id":"44444444-4444-4444-8444-444444444444","invoice_id":"44444444-4444-4444-8444-444444444444","source_hash":"source","review_hash":"review","mutation":{"ledgerId":1},"source_updated_at":"2026-09-23T00:00:00Z","amount":12.1}');
+ begin update administration_entries set void_reason='Cancelled'; raise exception 'Purchase voided in flight'; exception when raise_exception then if SQLERRM<>'Accounting export in progress; retry shortly' then raise; end if; end;
+ begin update administration_documents set entry_id=null; raise exception 'Evidence detached in flight'; exception when raise_exception then if SQLERRM<>'Accounting export in progress; retry shortly' then raise; end if; end;
+ perform ebookhouden_sync('finish','66666666-6666-4666-8666-666666666666','{"kind":"PURCHASE","id":"44444444-4444-4444-8444-444444444444","status":"SYNCED","remote_id":102}');
+ perform ebookhouden_sync('release','66666666-6666-4666-8666-666666666666');
+end; $$;
+reset role;

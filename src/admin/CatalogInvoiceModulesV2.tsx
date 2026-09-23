@@ -1,3 +1,4 @@
+import InvoiceAnnualBilling from './InvoiceAnnualBilling';
 import InvoiceLines from "./InvoiceLines";
 import { documentDraft, lineIsChanged, parseDocumentDraft, parseLineDraft, previewInvoice, saveInvoiceLineEdits, type InvoiceDocumentDraft, type InvoiceLineDraft, type InvoiceLineEdits } from "./invoice-draft";
 import CustomerDocumentsPanel from "./CustomerDocumentsPanel";
@@ -396,6 +397,7 @@ export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }
           {relatedCredits.length ? <div><h3 className="mb-2 font-semibold">Creditnota’s</h3>{relatedCredits.map((credit) => <button type="button" key={credit.id} onClick={() => setPreview(renderBillingDocumentHtml("CREDIT", credit, [], profile))} className="mr-2 rounded-lg border border-slate-200 px-3 py-2 text-sm">{credit.credit_number} · {money.format(Number(credit.total_incl_vat))}</button>)}</div> : null}
         </div>
       </Panel>
+      {!draft && <InvoiceAnnualBilling key={selected.id} invoice={selected} items={items}/>}
       {!hasChanges && !saving ? <CustomerDocumentsPanel key={selected.id} customerId={selected.customer_id} invoiceId={selected.id}/> : null}
       <BillingPreviewModal open={Boolean(preview)} html={preview} title={selected.invoice_number || "Conceptfactuur"} onClose={() => setPreview("")}/>
     </div>;
@@ -410,3 +412,4 @@ export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }
     </Panel>
   </div>;
 }
+
