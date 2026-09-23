@@ -51,7 +51,7 @@ async function exportOne(db:any,lease:string,c:any,s:Awaited<ReturnType<typeof l
   const frozen:Draft=old?.draft || d;
   const candidates=await provider.find(frozen.mutation);
   if(candidates.length) {
-    if(old && candidates.length===1 && mutationMatches(candidates[0],frozen.mutation,frozen.expected_vat)) {
+    if(old && candidates.length===1 && mutationMatches(candidates[0],frozen.mutation,frozen.expected_vat,old.remote_id == null ? undefined : Number(old.remote_id))) {
       await rpc(db,'finish',lease,{kind,id,status:'SYNCED',remote_id:Number(candidates[0].id),message:null});
       return {message:'De bestaande boeking is gecontroleerd en gekoppeld.',remote_id:Number(candidates[0].id)};
     }
@@ -61,7 +61,7 @@ async function exportOne(db:any,lease:string,c:any,s:Awaited<ReturnType<typeof l
   if(old && !retry) throw new SetupError('De vorige poging is onzeker. Controleer eerst e-Boekhouden en kies daarna bewust Opnieuw proberen.');
   if(kind!=='INVOICE') {
     const parent=s.exports.find(j=>j.source_kind==='INVOICE'&&j.source_id===d.invoice_id&&j.status==='SYNCED');
-    if(!parent || !mutationMatches(await provider.detail(Number(parent.remote_id)),parent.draft.mutation,parent.draft.expected_vat)) throw new SetupError('De factuur in e-Boekhouden is gewijzigd of ontbreekt. Controleer die eerst.');
+    if(!parent || !mutationMatches(await provider.detail(Number(parent.remote_id)),parent.draft.mutation,parent.draft.expected_vat,Number(parent.remote_id))) throw new SetupError('De factuur in e-Boekhouden is gewijzigd of ontbreekt. Controleer die eerst.');
   }
   if(!old) {
     // Reuse a parent invoice's exact relation for credits/payments.
@@ -78,7 +78,7 @@ async function exportOne(db:any,lease:string,c:any,s:Awaited<ReturnType<typeof l
   try {
     const actual=await provider.post(frozen.mutation);
     postedId=Number(actual.id);
-    if(!mutationMatches(actual,frozen.mutation,frozen.expected_vat)) throw new SetupError('De boeking is aangemaakt, maar de bedragen of btw zijn niet exact bevestigd. Controleer deze in e-Boekhouden voordat je verdergaat.');
+    if(!mutationMatches(actual,frozen.mutation,frozen.expected_vat,postedId)) throw new SetupError('De boeking is aangemaakt, maar de bedragen of btw zijn niet exact bevestigd. Controleer deze in e-Boekhouden voordat je verdergaat.');
     await rpc(db,'finish',lease,{kind,id,status:'SYNCED',remote_id:Number(actual.id),message:null});
     return {message:'Boeking overgezet en bedragen gecontroleerd.',remote_id:Number(actual.id)};
   } catch(e) {

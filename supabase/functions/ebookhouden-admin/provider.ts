@@ -24,7 +24,12 @@ export async function openBookkeeping(accessToken: string, fetcher: typeof fetch
     }
     throw new SetupError('Te veel resultaten om de boeking betrouwbaar te controleren.');
   }
-  const detail=(id:number)=>{if (!Number.isSafeInteger(id)||id<=0) throw new SetupError('Ongeldig boekingsnummer ontvangen.'); return request(`/mutation/${id}`);};
+  const detail=async(id:number)=>{
+    if (!Number.isSafeInteger(id)||id<=0) throw new SetupError('Ongeldig boekingsnummer ontvangen.');
+    const mutation=await request(`/mutation/${id}`);
+    if (Number(mutation?.id)!==id) throw new SetupError('Het teruggelezen boekingsnummer wijkt af. Controleer de boeking.');
+    return mutation;
+  };
   return {
     close: async()=>{try {await request('/session','DELETE');} catch { /* Session expires. */ }},
     ledgers: async()=>await list('/ledger') as Ledger[],
