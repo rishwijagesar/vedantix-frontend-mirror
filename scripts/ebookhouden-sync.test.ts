@@ -113,3 +113,10 @@ test('all export and settings actions require a verified ADMIN, with bounded req
  const handler=createEboekhoudenHandler(()=>({auth:{getUser:async()=>({data:{user:{id:customer}}})},rpc:async()=>({data:true})}),()=>{throw new Error('Service access unexpected');});
  assert.equal((await handler(new Request('https://example.org',{method:'POST',headers:{Authorization:'Bearer user'},body:'x'.repeat(12001)}))).status,413);
 });
+
+test('a changed parent customer blocks new payments even when a previous booking exists',async()=>{
+ const f=dbFixture();await processSync(f.db,await f.target(),customer,async()=>f.provider);
+ f.config.payment_mode='VEDANTIX';f.invoices[0].customer_snapshot.company_name='Changed customer';
+ f.payments.push({id:'33333333-3333-4333-8333-333333333333',invoice_id:id,amount:100,payment_date:'2026-09-24',method:'MOLLIE',created_at:'2026-09-24T12:00:00Z'});
+ const p=await preview(f.db,f.config);assert.equal(p.rows.find(r=>r.kind==='INVOICE').state,'CHANGED');assert.equal(p.rows.find(r=>r.kind==='PAYMENT').state,'BLOCKED');
+});

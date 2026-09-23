@@ -20,7 +20,7 @@ export async function loadSnapshot(db:any,c:any) {
     try {d=await buildDraft(kind,s,i,j&&kind==='PAYMENT'?{...c,payment_mode:'VEDANTIX'}:c);drafts.set(key,d);}catch(e){reason=e instanceof SetupError?e.message:'Deze boeking moet worden gecontroleerd.';}
     let state=j?.status || (reason?'BLOCKED':'READY');
     if(j && (reason || d?.source_hash!==j.source_hash)) {state='CHANGED';reason='Dit document is na de boeking gewijzigd. Controleer en corrigeer het in e-Boekhouden.';}
-    if(!j && kind!=='INVOICE' && !exports.some(e=>e.source_kind==='INVOICE'&&e.source_id===i.id&&e.status==='SYNCED')) {state='BLOCKED';reason='Zet eerst de bijbehorende factuur over.';}
+    if(!j && kind!=='INVOICE' && !rows.some(r=>r.kind==='INVOICE'&&r.id===i.id&&r.state==='SYNCED')) {state='BLOCKED';reason='Zet eerst de bijbehorende factuur over en los eventuele wijzigingen op.';}
     if(j && state!=='CHANGED') reason=j.message || '';
     rows.push({kind,id:s.id,number:d?.number || s.credit_number || i.invoice_number,date:d?.date || s.payment_date || s.credit_date || i.invoice_date,amount:d?.amount ?? Number(kind==='PAYMENT'?s.amount:s.total_incl_vat),base:d?.base,vat:d?.vat,customer:i.customer_snapshot?.company_name || i.customer_snapshot?.contact_name || '',state,reason,remote_id:j?.remote_id,review_hash:j?.review_hash || d?.review_hash,available_at:d?.available_at,ledger_id:j?.draft?.mutation.ledgerId || d?.mutation.ledgerId});
   };
@@ -96,7 +96,7 @@ export async function processSync(db:any,input:any,actor:string|null,open= openB
     if(input.action==='worker') {
       if(s.rows.some(r=>['REVIEW','SENDING','CHANGED'].includes(r.state))) {await rpc(db,'pause',lease,{message:'Er is een boeking die eerst moet worden gecontroleerd.'});return {message:'Controle vereist.'};}
       // Do not backfill old documents on activation. Manual exports remain possible.
-      const candidates=s.rows.filter(r=>r.available_at&&r.available_at>=c.sync_from&&r.state!=='SYNCED'&&(r.kind!=='PAYMENT'||c.payment_mode==='VEDANTIX'));
+      const candidates=s.rows.filter(r=>r.available_at&&Date.parse(r.available_at)>=Date.parse(c.sync_from)&&r.state!=='SYNCED'&&(r.kind!=='PAYMENT'||c.payment_mode==='VEDANTIX'));
       const row=candidates.find(r=>r.state==='READY');
       if(!row) {if(candidates.length)await rpc(db,'pause',lease,{message:candidates[0].reason});return {message:'Geen nieuwe boekingen klaar.'};}
       target={...row,action:'export'};

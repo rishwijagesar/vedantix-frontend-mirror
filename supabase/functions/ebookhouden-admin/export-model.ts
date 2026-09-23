@@ -2,7 +2,7 @@ import { SetupError } from './api.ts';
 
 export type Kind = 'INVOICE' | 'CREDIT' | 'PAYMENT';
 export type Mutation = { type: number; date: string; ledgerId: number; description: string; entryNumber: string; paymentReference: string; checkPaymentReference: true; inExVat: 'EX'; invoiceNumber?: string; relationId?: number; termOfPayment?: number; rows: Array<{ amount: number; vatCode: string; ledgerId?: number; description: string; invoiceNumber?: string; relationId?: number }> };
-export type Draft = { kind: Kind; id: string; number: string; date: string; available_at: string; amount: number; base: number; vat: number; customer_id: string; customer: any; source_updated_at?: string; invoice_id: string; source_hash: string; review_hash: string; mutation: Mutation; expected_vat: Record<string, number> };
+export type Draft = { kind: Kind; id: string; number: string; date: string; available_at: string; amount: number; base: number; vat: number; customer_id: string; customer: any; source_updated_at?: string; source_method?: string; source_reference?: string | null; invoice_id: string; source_hash: string; review_hash: string; mutation: Mutation; expected_vat: Record<string, number> };
 export const cents = (n: unknown) => { const v = Number(n); if (!Number.isFinite(v) || Math.abs(v) > 1e9) throw new SetupError('Ongeldig bedrag.'); return Math.round((v + Math.sign(v) * Number.EPSILON) * 100); };
 const date = (v: unknown) => { if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v) || new Date(v).toISOString().slice(0,10) !== v) throw new SetupError('Een geldige boekingsdatum ontbreekt.'); return v; };
 const uuid = (v: unknown) => { if (typeof v !== 'string' || !/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i.test(v)) throw new SetupError('Ongeldige document- of klantidentificatie.'); return v; };
@@ -69,7 +69,7 @@ export async function buildDraft(kind: Kind, source: any, invoice: any, config: 
   }
   const source_hash = await digest({ kind, id:source.id, number, date:mutation.date, customer_id:invoice.customer_id, customer, amount, base, vat, method:kind==='PAYMENT'?source.method:undefined, rows:mutation.rows.map(({ledgerId:_,...r})=>r), expected, term:mutation.termOfPayment });
   const review_hash = await digest({source_hash,mutation,revision:config.connection_revision,payment_mode:config.payment_mode});
-  return {kind,id:source.id,source_updated_at:source.updated_at,number,date:mutation.date,available_at:source.finalized_at || source.created_at,amount,base,vat,customer_id:invoice.customer_id,customer,invoice_id:invoice.id,source_hash,review_hash,mutation,expected_vat:expected};
+  return {kind,id:source.id,source_updated_at:source.updated_at,source_method:source.method,source_reference:source.reference,number,date:mutation.date,available_at:source.finalized_at || source.created_at,amount,base,vat,customer_id:invoice.customer_id,customer,invoice_id:invoice.id,source_hash,review_hash,mutation,expected_vat:expected};
 }
 
 // Responses can be PascalCase in older API releases.

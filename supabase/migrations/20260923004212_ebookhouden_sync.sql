@@ -79,7 +79,7 @@ begin
    if not exists(select 1 from public.invoices where id=(p_data->>'id')::uuid and updated_at=(p_data->>'source_updated_at')::timestamptz and total_incl_vat=(p_data->>'amount')::numeric) then raise exception 'Invoice changed since review'; end if;
   elsif p_data->>'kind'='PAYMENT' then
    perform 1 from public.invoice_payments where id=(p_data->>'id')::uuid for update;
-   if not exists(select 1 from public.invoice_payments where id=(p_data->>'id')::uuid and invoice_id=(p_data->>'invoice_id')::uuid and voided_at is null and amount=(p_data->>'amount')::numeric and payment_date::date=(p_data->>'date')::date) then raise exception 'Payment changed since review'; end if;
+   if not exists(select 1 from public.invoice_payments where id=(p_data->>'id')::uuid and invoice_id=(p_data->>'invoice_id')::uuid and voided_at is null and method=p_data->>'source_method' and reference is not distinct from p_data->>'source_reference' and amount=(p_data->>'amount')::numeric and payment_date::date=(p_data->>'date')::date) then raise exception 'Payment changed since review'; end if;
   elsif p_data->>'kind'='CREDIT' then
    perform 1 from public.credit_notes where id=(p_data->>'id')::uuid for update;
    if not exists(select 1 from public.credit_notes where id=(p_data->>'id')::uuid and invoice_id=(p_data->>'invoice_id')::uuid and status in ('FINALIZED','SENT') and finalized_at is not null and total_incl_vat=(p_data->>'amount')::numeric and total_ex_vat=(p_data->>'base')::numeric and vat_total=(p_data->>'vat')::numeric and credit_date=(p_data->>'date')::date and credit_number=p_data->>'number') then raise exception 'Credit changed since review'; end if;

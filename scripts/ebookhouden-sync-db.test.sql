@@ -14,7 +14,7 @@ create view vault.decrypted_secrets as select id,name,secret as decrypted_secret
 create function vault.create_secret(p_secret text,p_name text,p_description text) returns uuid language plpgsql as $$ declare v_id uuid; begin insert into vault.secrets(secret,name,description) values(p_secret,p_name,p_description) returning id into v_id;return v_id;end; $$;
 create function vault.update_secret(p_id uuid,p_secret text) returns void language sql as $$ update vault.secrets set secret=p_secret where id=p_id; $$;
 create table public.invoices(id uuid primary key, is_active boolean default true, finalized_at timestamptz, status text, updated_at timestamptz, total_incl_vat numeric);
-create table public.invoice_payments(id uuid primary key,invoice_id uuid,voided_at timestamptz,amount numeric,payment_date date);
+create table public.invoice_payments(id uuid primary key,invoice_id uuid,voided_at timestamptz,amount numeric,payment_date date,method text,reference text);
 create table public.credit_notes(id uuid primary key,invoice_id uuid,status text,finalized_at timestamptz,total_incl_vat numeric,total_ex_vat numeric,vat_total numeric,credit_date date,credit_number text);
 insert into public.invoices values('33333333-3333-4333-8333-333333333333',true,'2026-09-23T00:00:00Z','FINALIZED','2026-09-23T00:00:00Z',121);
 grant select,update on public.invoices to service_role;
