@@ -10,7 +10,7 @@ create function public.is_staff(required_roles text[] default array['ADMIN','OPE
 grant usage on schema auth to authenticated;
 create table public.customers(id uuid primary key);
 insert into public.customers values('00000000-0000-4000-8000-000000000001'),('00000000-0000-4000-8000-000000000002');
-\ir ../supabase/migrations/20260923110752_customer_recurring_costs.sql
+\ir ../supabase/migrations/20260923111317_customer_recurring_costs.sql
 begin;
 set local role authenticated;
 select set_config('test.user_id','00000000-0000-4000-8000-000000000001',true);
