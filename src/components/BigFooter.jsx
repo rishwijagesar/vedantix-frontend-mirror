@@ -59,11 +59,11 @@ export default function BigFooter() {
             <div className="big-footer__brand">
               <div className="big-footer__brand-name">Vedantix</div>
               <h2 className="big-footer__brand-heading">
-                Online zichtbaarheid voor lokale ondernemers
+                Digitale groei voor ondernemers
               </h2>
               <p className="big-footer__brand-text">
-                Vedantix helpt lokale ondernemers groeien met websites, SEO,
-                AI-vriendelijke content, online zichtbaarheid en onderhoud.
+                Vedantix helpt ondernemers met websites, AI-oplossingen, webapps,
+                mobiele apps, koppelingen en vindbaarheid. Vanuit Den Bosch, voor heel Nederland.
               </p>
 
               <ul className="big-footer__links" aria-label="Vedantix diensten">
@@ -156,8 +156,13 @@ export default function BigFooter() {
             <div className="big-footer__col">
               <div className="big-footer__col-title">Diensten</div>
               <ul className="big-footer__links">
+                <li><Link to="/diensten">Alle diensten</Link></li>
+                <li><Link to="/ai-oplossingen">AI & automatisering</Link></li>
+                <li><Link to="/webapps-klantportalen">Webapps & klantportalen</Link></li>
+                <li><Link to="/mobiele-apps">Mobiele apps</Link></li>
+                <li><Link to="/koppelingen-automatisering">Koppelingen & beheer</Link></li>
                 <li>
-                  <Link to="/voorwie">Website laten maken</Link>
+                  <Link to="/website-laten-maken">Website laten maken</Link>
                 </li>
                 <li>
                   <Link to="/groeimodel">SEO optimalisatie</Link>
@@ -277,3 +282,4 @@ export default function BigFooter() {
     </>
   );
 }
+

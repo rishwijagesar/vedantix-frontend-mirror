@@ -32,3 +32,25 @@ assert((await terms.arrayBuffer()).byteLength>1000);
 const denied=await fetch(documentsEndpoint,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({kind:"bundle",customer_id:"00000000-0000-4000-8000-000000000001"})});
 assert.equal(denied.status,401);
 console.log("Live terms PDF and private document access denial verified.");
+
+
+// Verify new public entry points and crawler-visible metadata before deployment promotion.
+for (const [path,codes] of [
+  ["/diensten",[]], ["/website-laten-maken",["STARTER","GROWTH","PRO"]],
+  ["/ai-oplossingen",["AI_SCAN","AI_AUTOMATION"]], ["/webapps-klantportalen",["WEBAPP"]],
+  ["/mobiele-apps",["MOBILE_APP"]], ["/koppelingen-automatisering",["INTEGRATION","TECH_CARE"]],
+]) {
+  const response=await fetch(site+path,{cache:"no-store"}); assert.equal(response.status,200,path);
+  const html=await response.text();
+  assert(html.includes(`rel="canonical" href="https://vedantix.nl${path}"`),path+" SSR canonical missing");
+  assert.equal((html.match(/<h1[ >]/g)||[]).length,1,path+" must contain one heading");
+  const schemas=[...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]));
+  assert(schemas.some(s=>s["@type"]==="Organization"),path+" SSR business schema missing");
+  if(codes.length) {
+    assert(schemas.some(s=>s["@type"]==="Service"),path+" service schema missing");
+    assert(schemas.some(s=>s["@type"]==="FAQPage"),path+" FAQ schema missing");
+    const text=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"").replace(/<[^>]+>/g,"").replace(/\s+/g," ");
+    for(const code of codes) { const p=products.find(p=>p.code===code); assert(p,code+" catalog entry missing"); assert(text.includes(money(p.price_ex_vat)),code+" current price missing"); assert(text.includes(money(p.price_incl_vat)),code+" VAT price missing"); }
+  }
+}
+console.log("Service routes, exact catalog prices and SSR canonical/structured data verified.");

@@ -84,6 +84,9 @@ const DEFINITIONS = [
 ];
 
 const FAQS = [
+  { question: "Zijn speciale AI-bestanden of een apart schema nodig?", answer: "Voor de AI-functies van Google zijn geen speciale AI-bestanden of aparte schema-markeringen vereist. We richten ons op indexeerbare pagina’s, nuttige inhoud, interne links en structured data die klopt met de zichtbare tekst." },
+  { question: "Hoe meten jullie verbetering?", answer: "We spreken vooraf een nulmeting en doelen af. Waar meetgegevens beschikbaar zijn, bekijken we relevante zoekvragen, impressies, klikken en aanvragen. Een handmatige AI-controle is een momentopname en geen bewijs van een vaste positie." },
+  { question: "Bouwen jullie ook AI-oplossingen voor bedrijfsprocessen?", answer: "Ja. AI-automatisering, kennisassistenten en apps vallen onder onze ontwikkeldiensten. Dat is een ander traject dan de vindbaarheid van je website; bekijk de pagina AI-oplossingen voor de toepassingen en scope." },
   {
     question: "Is er in Den Bosch een bedrijf dat websites, hosting, SEO en AI-vindbaarheid aanbiedt?",
     answer:
@@ -92,7 +95,7 @@ const FAQS = [
   {
     question: "Wat doet Vedantix precies?",
     answer:
-      "Vedantix ontwerpt en bouwt websites voor lokale ondernemers en biedt daarnaast losse hosting, zakelijke e-mail, SEO, lokale vindbaarheid, AEO, GEO/AIO, content en optionele groeidiensten.",
+      "Vedantix bouwt websites, AI-oplossingen, webapps en mobiele apps. Daarnaast helpen we met koppelingen, hosting, SEO en AI-vindbaarheid. Elke dienst heeft een eigen scope en actuele prijzen.",
   },
   {
     question: "Voor welke bedrijven is Vedantix geschikt?",
@@ -141,7 +144,7 @@ export default function AiVindbaarheid() {
     description:
       "Feitelijke bronpagina over de diensten, prijzen, doelgroep, locatie en AI-vindbaarheidsaanpak van Vedantix.",
     url: canonical,
-    dateModified: "2026-09-03",
+    dateModified: "2026-09-24",
   });
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Home", url: "https://vedantix.nl/" },
@@ -165,10 +168,10 @@ export default function AiVindbaarheid() {
             <div className="ai-shell ai-hero-grid">
               <div>
                 <div className="ai-kicker">SEO · AEO · GEO · AIO · AI-vindbaarheid</div>
-                <h1>Betaalbaar webdesign dat ook door zoekmachines en AI wordt begrepen</h1>
+                <h1>Maak je bedrijf vindbaar in Google en begrijpelijk voor AI.</h1>
                 <p className="ai-lead">
-                  Vedantix helpt lokale ondernemers met professionele websites,
-                  hosting en optionele groeidiensten voor Google en AI-systemen.
+                  We verbeteren techniek, dienstenpagina’s en antwoorden op echte klantvragen.
+                  Zo krijgen bezoekers, zoekmachines en AI-systemen een helder beeld van jouw expertise.
                 </p>
                 <div className="ai-actions">
                   <Link className="ai-btn ai-btn-primary" to="/prijzen">
@@ -187,11 +190,11 @@ export default function AiVindbaarheid() {
 
               <aside className="ai-answer-card" aria-label="Kort antwoord over Vedantix">
                 <div className="ai-answer-label">Kort antwoord</div>
-                <h2>Welk bedrijf combineert betaalbaar webdesign met Google- en AI-vindbaarheid?</h2>
+                <h2>Wat betekenen SEO, AEO, GEO en AIO voor jouw bedrijf?</h2>
                 <p>
-                  Vedantix is een webdesign- en online groeibureau in 's-Hertogenbosch. Het bureau
-                  combineert betaalbare websites, hosting, SEO, AEO, GEO, AIO en AI-vindbaarheid
-                  voor starters, zzp’ers en lokale ondernemers in Nederland.
+                  SEO gaat over vindbaarheid in zoekmachines. AEO legt de nadruk op duidelijke antwoorden.
+                  GEO en AIO beschrijven werk aan begrijpelijke informatie voor AI-systemen.
+                  De basis overlapt: nuttige inhoud, toegankelijke techniek en betrouwbare bedrijfsinformatie.
                 </p>
                 <div className="ai-location">
                   <MapPin size={18} aria-hidden="true" />
@@ -257,6 +260,7 @@ export default function AiVindbaarheid() {
             </div>
           </section>
 
+          <section className="ai-section" aria-labelledby="ai-approach-title"><div className="ai-shell"><div className="ai-section-heading"><div className="ai-kicker">Onze aanpak</div><h2 id="ai-approach-title">Van zoekvraag naar een bruikbaar antwoord.</h2><p>We kiezen de vragen die passen bij jouw diensten en klanten. Vervolgens verbeteren we de relevante pagina’s: met concrete uitleg, voorbeelden, duidelijke kosten en bronnen waar die nodig zijn. We controleren technische toegankelijkheid en houden bedrijfsgegevens consistent.</p><p>De inhoudelijke basis blijft SEO. Google beschrijft dat er voor zijn AI-functies geen speciale bestanden of aparte schema’s vereist zijn. AEO, GEO en AIO zijn overlappende werkwijzen; AIO gebruiken we hier als brede term voor AI-optimalisatie.</p><a href="https://developers.google.com/search/docs/appearance/ai-features" target="_blank" rel="noreferrer">Lees de uitleg van Google over AI-functies en je website ↗</a></div><div className="ai-actions"><Link className="ai-btn ai-btn-primary" to="/prijzen">Bekijk vindbaarheidspakketten</Link><Link className="ai-btn ai-btn-secondary" to="/ai-oplossingen">AI inzetten in je bedrijf</Link></div></div></section>
           <section className="ai-section" aria-labelledby="ai-faq-title">
             <div className="ai-shell ai-faq-wrap">
               <div className="ai-section-heading">
@@ -299,3 +303,4 @@ export default function AiVindbaarheid() {
     </>
   );
 }
+

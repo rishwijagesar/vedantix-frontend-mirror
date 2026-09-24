@@ -23,6 +23,7 @@ import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
 import JotformReviewWidget from "../components/JotformReviewWidget";
 import HomeHero from "./HomeHero";
+import ServiceCards from "../components/ServiceCards";
 import ClientCasesSection from "../components/home/ClientCasesSection";
 import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
@@ -47,7 +48,7 @@ const BENEFITS = [
   },
   {
     title: "Meer tijd",
-    text: "Geen gedoe met techniek, updates of hosting.",
+    text: "Bespaar handwerk met slimme apps, koppelingen en automatisering.",
     icon: Clock,
   },
 ];
@@ -109,8 +110,8 @@ const ECOSYSTEM = [
   { label: "Zakelijke E-mail", icon: Mail },
   { label: "SEO", icon: Search },
   { label: "Google Optimalisatie", icon: Target },
-  { label: "Reviews", icon: Star },
-  { label: "Content", icon: FileText },
+  { label: "AI & automatisering", icon: Sparkles },
+  { label: "Apps & portalen", icon: Network },
   { label: "Onderhoud", icon: Wrench },
   { label: "Support", icon: LifeBuoy },
 ];
@@ -200,7 +201,7 @@ const HOMEPAGE_FAQS = [
   {
     question: "Wat doet Vedantix?",
     answer:
-      "Vedantix helpt lokale ondernemers groeien met websites, SEO, content, online zichtbaarheid, hosting en onderhoud. Het doel is meer vertrouwen, meer aanvragen en minder technische zorgen.",
+      "Vedantix bouwt websites, AI-oplossingen, webapps en mobiele apps voor ondernemers en het mkb. We helpen ook met koppelingen, SEO, AI-vindbaarheid, hosting en beheer. Vanuit Den Bosch werken we voor bedrijven in heel Nederland.",
   },
   {
     question:
@@ -296,8 +297,8 @@ export default function Home({ initialCases = null }) {
   return (
     <>
       <SEO
-        title="Vedantix | Websites die lokale ondernemers helpen groeien"
-        description="Vedantix helpt lokale ondernemers met professionele websites, SEO, AI-vriendelijke content en online zichtbaarheid voor meer vertrouwen, meer aanvragen en minder technische zorgen."
+        title="Vedantix | Websites, AI-oplossingen & apps voor bedrijven"
+        description="Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk."
         canonical={canonical}
         schemas={[faqSchema, breadcrumbSchema]}
       />
@@ -307,6 +308,7 @@ export default function Home({ initialCases = null }) {
 
         <main>
           <HomeHero />
+          <section className="home-services" aria-labelledby="home-services-title"><div className="services-wrap"><span className="services-kicker">Websites · AI · Apps</span><h2 id="home-services-title">Meer klanten. Slimmer werken.</h2><p>Van een sterke website tot een eigen app of slimme automatisering: we bouwen digitale oplossingen die passen bij jouw bedrijf, klanten en dagelijkse werk.</p><ServiceCards /></div></section>
 
           <Suspense fallback={null}>
             <section
@@ -702,3 +704,4 @@ export default function Home({ initialCases = null }) {
     </>
   );
 }
+

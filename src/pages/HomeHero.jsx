@@ -4,7 +4,7 @@ import "../styles/home-hero.css";
 const HERO_CHECKS = [
   "Meer klanten",
   "Meer zichtbaarheid",
-  "Meer vertrouwen",
+  "Minder handwerk",
   "Alles onder één dak",
 ];
 
@@ -14,7 +14,7 @@ export default function HomeHero() {
       <section className="hero">
         <div className="hero-container">
           <div className="hero-content">
-            <div className="hero-eyebrow">Online groei voor lokale ondernemers</div>
+            <div className="hero-eyebrow">Websites, AI & apps voor ondernemers</div>
 
             <h1>
               Meer klanten.
@@ -25,20 +25,20 @@ export default function HomeHero() {
             </h1>
 
             <p className="hero-sub">
-              Wij helpen lokale ondernemers groeien met websites die vertrouwen wekken, beter
-              gevonden worden in Google en meer aanvragen opleveren.
+              Websites die klanten aantrekken. AI en apps die werk uit handen nemen.
+              Wij helpen jouw bedrijf groeien én slimmer werken.
             </p>
 
             <p className="hero-sub hero-sub-strong">
-              Niet alleen een website. Een complete online groeistrategie.
+              Van eerste idee tot een oplossing die voor je werkt.
             </p>
 
             <div className="hero-ctas">
               <a
-                href="/online-groei-audit"
+                href="/diensten"
                 className="hero-btn-primary"
               >
-                Gratis Online Groei Audit →
+                Ontdek onze diensten →
               </a>
 
               <a

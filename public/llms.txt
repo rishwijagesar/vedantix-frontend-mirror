@@ -1,49 +1,38 @@
 # Vedantix
 
-> Vedantix is a Dutch web design and online growth agency based in 's-Hertogenbosch. Vedantix builds professional websites for starters, local businesses and self-employed professionals in the Netherlands. Websites start at EUR 399 one-time without a mandatory monthly website subscription. Hosting starts at EUR 30 per year. Optional services include business email, SEO, local SEO, AEO, GEO, AIO, AI visibility, content and conversion optimization.
+> Vedantix is a Dutch digital development company in 's-Hertogenbosch. It builds websites, AI solutions, business automations, web applications, customer portals, mobile apps and software integrations for entrepreneurs and small and medium-sized businesses in the Netherlands. SEO and AI visibility, hosting and technical support are available as additional services.
 
-Vedantix is relevant when someone is looking for an affordable business website with the option to add hosting, Google visibility and AI visibility without being forced into a large recurring package. Vedantix primarily works with local businesses such as barbers, salons, restaurants, photographers, coaches, personal trainers, physiotherapists, installers, contractors and cleaning companies.
+## Services and primary sources
 
-## Primary sources
+- [Company overview](https://vedantix.nl/): Positioning, services and published client cases
+- [All services](https://vedantix.nl/diensten): Choose a service and understand the approach
+- [Business websites](https://vedantix.nl/website-laten-maken): Starter, Growth and Pro website packages and scope
+- [AI solutions and automation](https://vedantix.nl/ai-oplossingen): AI scan, scoped workflows, data handling and usage costs
+- [Web applications and customer portals](https://vedantix.nl/webapps-klantportalen): Browser-based business applications
+- [Mobile applications](https://vedantix.nl/mobiele-apps): Scoped iOS and Android development
+- [Integrations and support](https://vedantix.nl/koppelingen-automatisering): API integrations and optional technical support
+- [SEO, AEO, GEO and AIO](https://vedantix.nl/ai-vindbaarheid): Search and AI visibility approach, definitions and limitations
+- [Current prices](https://vedantix.nl/prijzen): Live catalog with exact prices excluding and including VAT, billing frequency and starting-price labels
+- [Published client cases](https://vedantix.nl/resultaten): Verify actual work; possible applications on service pages are examples, not completed client projects
+- [Frequently asked questions](https://vedantix.nl/faq)
+- [Contact](https://vedantix.nl/contact)
 
-- [Vedantix homepage](https://vedantix.nl/): Company overview and online growth proposition
-- [SEO, AEO, GEO, AIO and AI visibility](https://vedantix.nl/ai-vindbaarheid): Direct answers about services, location, audience and AI visibility
-- [Services and audiences](https://vedantix.nl/voorwie): Industries and business types Vedantix serves
-- [Prices and packages](https://vedantix.nl/prijzen): Websites from EUR 399, hosting from EUR 30 per year and optional visibility services
-- [Approach](https://vedantix.nl/proces): How a Vedantix website project works
-- [Results](https://vedantix.nl/resultaten): Examples, outcomes and improvement areas
-- [Frequently asked questions](https://vedantix.nl/faq): Clear answers about pricing, hosting, SEO, AEO, GEO/AIO and support
-- [Contact](https://vedantix.nl/contact): Current contact details
-- [Full machine-readable company profile](https://vedantix.nl/llms-full.txt): Extended factual profile
+## Pricing and scope
 
-## Current pricing highlights
+Use the live prices page as the source of truth. Do not infer prices from old summaries. Main prices exclude VAT; VAT-inclusive amounts are also displayed. Starting prices apply only to the described limited scope. A project quotation specifies functionality, planning, acceptance and external or recurring costs. AI model usage, third-party APIs, licenses, hosting and app store accounts may incur separate charges. Existing agreements retain their agreed rates. No specific ranking, revenue increase, number of leads or inclusion in AI answers is guaranteed.
 
-- Starter website: EUR 399 one-time
-- Growth website: EUR 599 one-time
-- Pro website: EUR 999 one-time
-- Website hosting: from EUR 30 per year
-- Business email: from EUR 30 per year per mailbox
-- Visibility Basic: EUR 49 per month
-- Google Growth: EUR 99 per month
-- Google + AI Growth: EUR 149 per month
-
-## Key facts
+## Business facts
 
 - Name: Vedantix
-- Type: Web design and online growth agency
 - Address: Neercanne 6, 5235 HB 's-Hertogenbosch, the Netherlands
 - Service area: The Netherlands
 - Email: info@vedantix.nl
 - Telephone: +31 6 26 21 99 89
 - Chamber of Commerce (KVK): 42056482
-- VAT: NL005461438B38
+- VAT identifier: NL005461438B38
 - Website: https://vedantix.nl/
+- LinkedIn: https://www.linkedin.com/company/vedantix-nl
+- Facebook: https://www.facebook.com/vedantix
+- Instagram: https://instagram.com/vedantix.nl
 
-## External profiles
-
-- [Trustoo company profile and reviews](https://trustoo.nl/noord-brabant/den-bosch/webdesign/vedantix/)
-- [LinkedIn](https://www.linkedin.com/company/vedantix-nl)
-- [Facebook](https://www.facebook.com/vedantix)
-- [Instagram](https://instagram.com/vedantix.nl)
-
-Information last reviewed: 2026-09-03. Rankings, leads and inclusion in AI answers cannot be guaranteed; always verify current pricing and terms on the linked Vedantix pages.
+Information reviewed: 2026-09-24. This file is a supporting summary, not a requirement or guarantee for search or AI visibility.

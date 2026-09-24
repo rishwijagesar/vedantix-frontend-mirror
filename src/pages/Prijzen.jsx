@@ -21,6 +21,9 @@ import {
 } from "lucide-react";
 import SEO from "../components/SEO";
 import NavBar from "../components/NavBar";
+import ServicePrices from "../components/ServicePrices";
+import { PROJECT_CATEGORIES } from "../data/services";
+import "../styles/services.css";
 import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 import "../styles/prijzen.css";
@@ -186,13 +189,13 @@ export default function Prijzen({ initialProducts = null }) {
     priceIncl: Number(p.price_incl_vat), description: p.description, featured: Number(p.duration_years) === 3,
   }));
   const addonIcons = { EMAIL: Mail, SEO_START: Search, AEO_START: MessageCircle, GEO_AIO_START: Sparkles, ANALYTICS: BarChart3, APPOINTMENTS: CalendarCheck2, EXTRA_PAGE: FilePlus2, COPYWRITING: PenLine, SUPPORT: Headphones };
-  const ADD_ONS = products.filter(p => !["WEBSITE","GROWTH","HOSTING"].includes(p.category.toUpperCase())).map(p => ({
+  const ADD_ONS = products.filter(p => !["WEBSITE","GROWTH","HOSTING",...PROJECT_CATEGORIES].includes(p.category.toUpperCase())).map(p => ({
     title: p.name, price: `${p.from_price ? "Vanaf " : ""}${currency(p.price_ex_vat)} ${suffix(p.billing_type)}`,
     priceIncl: Number(p.price_incl_vat), text: p.description, icon: addonIcons[p.code] || Sparkles,
   }));
-  const lowest = WEBSITE_PACKAGES.length ? Math.min(...WEBSITE_PACKAGES.map(p => p.price)) : null;
+  const projectProducts = products.filter(p => PROJECT_CATEGORIES.includes(p.category.toUpperCase()));
   const yearlyHosting = products.find(p => p.code === "HOSTING_YEAR");
-  const heading = lowest === null ? "Een professionele website voor jouw bedrijf." : `Een professionele website vanaf ${currency(lowest)}.`;
+  const heading = "Heldere prijzen. Ruimte om te groeien.";
   const PRICE_FAQS = BASE_PRICE_FAQS.map(faq => {
     if (faq.question === "Wat kost een website bij Vedantix?" && WEBSITE_PACKAGES.length) return { ...faq, answer: WEBSITE_PACKAGES.map(p => `${p.label}: ${currency(p.price)} excl. btw (${currency(p.priceIncl)} incl. btw), ${p.suffix}.`).join(" ") + " Hosting, e-mail en groeidiensten kies je apart." };
     if (faq.question === "Wat kost hosting?" && yearlyHosting) return { ...faq, answer: `Jaarlijkse hosting kost ${currency(yearlyHosting.price_ex_vat)} excl. btw (${currency(yearlyHosting.price_incl_vat)} incl. btw). Domeinnamen en mailboxen staan los van hosting.` };
@@ -208,10 +211,10 @@ export default function Prijzen({ initialProducts = null }) {
   return (
     <>
       <SEO
-        title={lowest === null ? "Websiteprijzen en pakketten | Vedantix" : `Website vanaf ${currency(lowest)} excl. btw | Vedantix`}
-        description="Bekijk de actuele prijzen voor websites, hosting, SEO en online groei. Kies het pakket dat past bij jouw bedrijf."
+        title="Prijzen voor websites, AI-oplossingen & apps | Vedantix"
+        description="Actuele tarieven voor websitepakketten, AI-automatisering, webapps, mobiele apps en SEO. Bekijk de scope, vanafprijzen en bedragen inclusief en exclusief btw."
         canonical={canonical}
-        schemas={[breadcrumbSchema, faqSchema]}
+        schemas={[breadcrumbSchema, faqSchema, { "@context": "https://schema.org", "@type": "OfferCatalog", name: "Vedantix diensten en prijzen", itemListElement: products.map(p => ({ "@type": "Offer", url: canonical, itemOffered: { "@type": "Service", name: p.name, description: p.description, provider: { "@id": "https://vedantix.nl/#localbusiness" } }, priceSpecification: { "@type": "UnitPriceSpecification", [p.from_price ? "minPrice" : "price"]: Number(p.price_ex_vat), priceCurrency: "EUR", valueAddedTaxIncluded: false, ...(p.billing_type === "MONTHLY" ? { billingDuration: "P1M" } : p.billing_type === "YEARLY" ? { billingDuration: "P1Y" } : {}) } })) }]}
       />
 
       <div className="pricing-page">
@@ -223,16 +226,17 @@ export default function Prijzen({ initialProducts = null }) {
             <div className="pricing-container pricing-hero-inner">
               <header className="pricing-hero-header">
                 <div className="pricing-eyebrow">
-                  <span /> Geen bureauprijzen. Wel een professionele basis.
+                  <span /> Websites · AI · Apps · Vindbaarheid
                 </div>
                 <h1 id="pricing-title">{heading}</h1>
                 <p>
-                  Betaal je website één keer. Geen verplicht maandabonnement. Wil je daarna
-                  actiever groeien in Google of AI-platformen? Dan kies je alleen de zichtbaarheid
-                  en ondersteuning die bij jouw bedrijf past.
+                  Kies een websitepakket of start met een afgebakende AI-oplossing, webapp of mobiele app.
+                  Je ziet wat de eerste stap kost; maatwerk, externe kosten en beheer spreken we vooraf af.
                 </p>
               </header>
 
+              <nav className="pricing-service-links" aria-label="Prijscategorieën"><a href="#websites">Websitepakketten</a><a href="#apps-ai">AI & apps</a><a href="#groei">SEO & AI-vindbaarheid</a><a href="#uitbreidingen">Hosting & uitbreidingen</a></nav>
+              <h2 id="websites">Websitepakketten</h2>
               {loading ? <p role="status">Actuele prijzen laden…</p> : null}
               {error ? <p role="alert">De prijzen zijn tijdelijk niet beschikbaar. Neem contact op voor een offerte.</p> : null}
               <div className="pricing-package-grid">
@@ -242,7 +246,7 @@ export default function Prijzen({ initialProducts = null }) {
                     key={pkg.code}
                   >
                     {pkg.featured ? (
-                      <div className="pricing-recommended-badge">Meest gekozen</div>
+                      <div className="pricing-recommended-badge">Aanbevolen</div>
                     ) : null}
 
                     <div className="pricing-card-heading">
@@ -297,6 +301,7 @@ export default function Prijzen({ initialProducts = null }) {
             </div>
           </section>
 
+          <section className="pricing-section" id="apps-ai"><div className="pricing-container"><div className="pricing-section-heading"><div className="pricing-kicker">Slimmer werken en digitaal uitbreiden</div><h2>AI, apps, koppelingen en beheer.</h2><p>Vanafprijzen voor een afgebakende eerste versie. Bekijk per dienst welke functies en werkzaamheden inbegrepen zijn.</p></div><ServicePrices products={projectProducts} details /><p className="service-scope">Je ontvangt vooraf een offerte met scope, planning en acceptatieafspraken. Hosting, model- en API-gebruik, licenties en appstorekosten worden apart begroot. Vanafprijzen zijn geen prijs voor iedere denkbare uitvoering. Bestaande offertes, contracten en abonnementen behouden hun afgesproken tarieven.</p><a href="/diensten">Vergelijk de diensten en toepassingen →</a></div></section>
           <section className="pricing-section pricing-payment-section" id="vindbaarheid">
             <div className="pricing-container">
               <div className="pricing-section-heading">
@@ -434,7 +439,7 @@ export default function Prijzen({ initialProducts = null }) {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {plan.featured ? <span>Meest gekozen</span> : null}
+                      {plan.featured ? <span>Aanbevolen</span> : null}
                       <strong>{plan.name}</strong>
                       <b>{currency(plan.price)} {plan.suffix} excl. btw</b><small>{currency(plan.priceIncl)} incl. btw</small>
                       <small>{plan.note}</small>
@@ -562,3 +567,4 @@ export default function Prijzen({ initialProducts = null }) {
     </>
   );
 }
+

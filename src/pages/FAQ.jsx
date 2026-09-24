@@ -5,6 +5,8 @@ import NavBar from "../components/NavBar";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 
 const FAQS = [
+  { id: 20, question: "Bouwt Vedantix ook AI-oplossingen en apps?", answer: "Ja. Naast websites bouwen we AI-automatiseringen, webapps, klantportalen, mobiele apps en koppelingen. Op onze dienstenpagina vind je toepassingen en scope; actuele tarieven staan op de prijzenpagina." },
+  { id: 21, question: "Zijn gebruikskosten van AI en apps inbegrepen?", answer: "De bouwprijs staat los van kosten voor hosting, modellen, API’s, softwarelicenties en appstoreaccounts. We specificeren verwachte externe en terugkerende kosten vooraf in de offerte." },
   {
     id: 1,
     question: "Wat kost een website bij Vedantix?",
@@ -15,7 +17,7 @@ const FAQS = [
     id: 2,
     question: "Hoe snel kan mijn website online staan?",
     answer:
-      "In veel gevallen kan een website binnen 48 uur live staan. Dat hangt wel af van hoe snel teksten, foto’s, logo’s en feedback worden aangeleverd. Bij uitgebreidere websites of extra wensen kan de oplevering iets langer duren.",
+      "We spreken na de intake een planning af op basis van omvang, content en feedback. Voor apps en AI-oplossingen plannen we ook tijd voor ontwerp, testen en overdracht.",
   },
   {
     id: 3,
@@ -387,8 +389,8 @@ export default function FAQ() {
   return (
     <>
       <SEO
-        title="FAQ | Prijzen, hosting, SEO en AI-vindbaarheid | Vedantix"
-        description="Veelgestelde vragen over Vedantix websites, actuele prijzen, hosting, SEO, AEO, GEO/AIO, oplevering en uitbreidingen."
+        title="FAQ | Websites, AI-oplossingen, apps en prijzen | Vedantix"
+        description="Antwoorden over websites, AI-oplossingen, apps, prijzen, hosting, SEO en AI-vindbaarheid bij Vedantix."
         canonical={canonical}
         schemas={[faqSchema, breadcrumbSchema]}
       />
@@ -464,7 +466,7 @@ export default function FAQ() {
             </section>
 
             <section className="faq-cta" aria-labelledby="faq-cta-title">
-              <h2 id="faq-cta-title">Klaar om je website te laten maken?</h2>
+              <h2 id="faq-cta-title">Klaar om je idee te bespreken?</h2>
               <p>
                 Start met een professioneel websitepakket en voeg hosting of online
                 groei alleen toe wanneer jouw bedrijf dat nodig heeft.
@@ -490,3 +492,4 @@ export default function FAQ() {
     </>
   );
 }
+
