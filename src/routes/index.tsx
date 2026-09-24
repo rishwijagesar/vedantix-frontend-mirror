@@ -15,6 +15,8 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: () => <Page initialCases={Route.useLoaderData()} />,
+  component: function ServiceRoute() {
+    return <Page initialCases={Route.useLoaderData()} />;
+  },
 });
 
