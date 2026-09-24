@@ -94,7 +94,7 @@ export default function SEO({
     });
     appendElement("meta", {
       property: "og:image:alt",
-      content: "Vedantix webdesign en online groei voor lokale ondernemers",
+      content: "Vedantix websites, AI-oplossingen en apps voor bedrijven",
     });
     appendElement("meta", { property: "og:site_name", content: "Vedantix" });
     appendElement("meta", { property: "og:locale", content: "nl_NL" });
@@ -113,27 +113,21 @@ export default function SEO({
     });
     appendElement("meta", {
       name: "twitter:image:alt",
-      content: "Vedantix webdesign en online groei voor lokale ondernemers",
-    });
-
-    const baseSchemas = includeBaseSchemas
-      ? [
-          createOrganizationSchema(),
-          createLocalBusinessSchema(),
-          createWebSiteSchema(),
-        ]
-      : [];
-
-    [...baseSchemas, ...schemas].forEach((schema) => {
-      appendElement(
-        "script",
-        { type: "application/ld+json" },
-        JSON.stringify(schema),
-      );
+      content: "Vedantix websites, AI-oplossingen en apps voor bedrijven",
     });
 
     return () => ownedElements.forEach((element) => element.remove());
   }, [title, description, canonical, schemas, includeBaseSchemas]);
 
-  return null;
+  const structuredData = [
+    ...(includeBaseSchemas ? [createOrganizationSchema(), createLocalBusinessSchema(), createWebSiteSchema()] : []),
+    ...schemas,
+  ];
+  return <>
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hrefLang="nl-NL" href={canonical} />
+    <link rel="alternate" hrefLang="x-default" href={canonical} />
+    {structuredData.map((schema, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />)}
+  </>;
 }
+

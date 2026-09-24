@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { fetchPublicCatalog } from "@/lib/public-content";
 import Page from "@/pages/Prijzen";
 
-const title = "Websiteprijzen, hosting en online groei | Vedantix";
-const description = "Bekijk de actuele prijzen voor websites, hosting en online groei. Websitepakketten en uitbreidingen voor lokale ondernemers.";
+const title = "Prijzen voor websites, AI-oplossingen & apps | Vedantix";
+const description = "Actuele tarieven voor websitepakketten, AI-automatisering, webapps, mobiele apps en SEO. Bekijk scope, vanafprijzen en btw.";
 
 export const Route = createFileRoute("/prijzen")({
   loader: () => fetchPublicCatalog().catch(() => null),
@@ -20,3 +20,4 @@ export const Route = createFileRoute("/prijzen")({
   }),
   component: () => <Page initialProducts={Route.useLoaderData()} />,
 });
+

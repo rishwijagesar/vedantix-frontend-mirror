@@ -101,3 +101,6 @@
     display: none;
   }
 }
+
+
+.site-menu-toggle{display:none;background:transparent;color:inherit;border:1px solid currentColor;border-radius:8px;padding:9px 12px;font:inherit;font-size:.85rem;font-weight:650;cursor:pointer}.site-nav{color:#fff}.is-solid .site-nav{color:#0f172a}.site-nav a:focus-visible,.site-menu-toggle:focus-visible{outline:3px solid #25ac88;outline-offset:4px}@media(max-width:1100px){.site-nav-links{display:none}.site-menu-toggle{display:block}.site-nav-links.is-open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:#fff;border-bottom:1px solid #d9e4de;box-shadow:0 12px 18px #172d2512;padding:12px 20px}.site-nav-links.is-open .site-nav-link{color:#0f172a;padding:12px}.site-nav{gap:10px}}

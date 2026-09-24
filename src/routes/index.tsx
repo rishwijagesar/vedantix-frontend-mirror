@@ -7,13 +7,14 @@ export const Route = createFileRoute("/")({
   staleTime: 0,
   head: () => ({
     meta: [
-      { title: "Vedantix | Websites die lokale ondernemers helpen groeien" },
-      { name: "description", content: "Vedantix helpt lokale ondernemers met professionele websites, SEO, AI-vriendelijke content en online zichtbaarheid voor meer vertrouwen, meer aanvragen en minder technische zorgen." },
-      { property: "og:title", content: "Vedantix | Websites die lokale ondernemers helpen groeien" },
-      { property: "og:description", content: "Vedantix helpt lokale ondernemers met professionele websites, SEO, AI-vriendelijke content en online zichtbaarheid voor meer vertrouwen, meer aanvragen en minder technische zorgen." },
+      { title: "Vedantix | Websites, AI-oplossingen & apps voor bedrijven" },
+      { name: "description", content: "Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk." },
+      { property: "og:title", content: "Vedantix | Websites, AI-oplossingen & apps voor bedrijven" },
+      { property: "og:description", content: "Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: () => <Page initialCases={Route.useLoaderData()} />,
 });
+

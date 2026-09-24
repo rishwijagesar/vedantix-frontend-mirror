@@ -21,9 +21,13 @@ const SOCIAL_PROFILES = [
 
 const SERVICE_CATALOG = {
   "@type": "OfferCatalog",
-  name: "Websites en online groei voor lokale ondernemers",
+  name: "Websites, AI-oplossingen, apps en vindbaarheid voor bedrijven",
   itemListElement: [
     "Webdesign en webontwikkeling",
+    "AI-oplossingen en bedrijfsautomatisering",
+    "Webapps en klantportalen",
+    "Mobiele apps voor iOS en Android",
+    "API-koppelingen en technisch beheer",
     "Managed website hosting en SSL",
     "Technisch websiteonderhoud",
     "SEO en lokale SEO",
@@ -46,7 +50,7 @@ export const vedantixEntity = {
   email: "info@vedantix.nl",
   telephone: "+31626219989",
   description:
-    "Vedantix is een webdesign- en online groeibureau in 's-Hertogenbosch voor websites, managed hosting, onderhoud, SEO, AEO, GEO en AI-vindbaarheid.",
+    "Vedantix is een digitaal ontwikkelbureau in 's-Hertogenbosch voor websites, AI-oplossingen, automatisering, webapps, mobiele apps, koppelingen, SEO en AI-vindbaarheid. Voor ondernemers en het mkb in Nederland.",
 };
 
 export function createOrganizationSchema() {
@@ -88,6 +92,10 @@ export function createOrganizationSchema() {
     knowsAbout: [
       "Webdesign voor lokale ondernemers",
       "Webontwikkeling",
+      "AI-oplossingen en automatisering",
+      "Webapps en klantportalen",
+      "Mobiele appontwikkeling",
+      "API-koppelingen",
       "Managed website hosting",
       "Technisch websiteonderhoud",
       "Search Engine Optimization (SEO)",
@@ -222,3 +230,4 @@ export function createBreadcrumbSchema(items = []) {
     })),
   };
 }
+

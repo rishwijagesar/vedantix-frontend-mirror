@@ -1,12 +1,8 @@
-# Vedantix AI discovery file
+# Vedantix
 
-The canonical machine-readable profile for Vedantix is available at:
+Canonical company profile: https://vedantix.nl/llms.txt
+Extended profile: https://vedantix.nl/llms-full.txt
+Services: https://vedantix.nl/diensten
+Current prices including scope and VAT: https://vedantix.nl/prijzen
 
-- https://vedantix.nl/llms.txt
-- https://vedantix.nl/llms-full.txt
-
-Vedantix is a web design and online growth agency in 's-Hertogenbosch for affordable professional websites from EUR 399 one-time, hosting from EUR 30 per year, SEO, AEO, GEO, AIO and AI visibility for starters, self-employed professionals and local businesses in the Netherlands.
-
-Primary source page: https://vedantix.nl/ai-vindbaarheid
-Pricing source: https://vedantix.nl/prijzen
-Contact: https://vedantix.nl/contact
+Vedantix builds websites, AI solutions, webapps, mobile apps and integrations for businesses in the Netherlands. Reviewed 2026-09-24.

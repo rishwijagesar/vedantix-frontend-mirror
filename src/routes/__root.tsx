@@ -90,11 +90,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1.0" },
-        { title: "Webdesign, hosting en SEO voor ondernemers | Vedantix" },
+        { title: "Vedantix | Websites, AI-oplossingen & apps voor bedrijven" },
         {
           name: "description",
           content:
-            "Vedantix is een webdesign- en online groeibureau in Den Bosch voor websites, hosting, onderhoud, SEO, AEO, GEO en AI-vindbaarheid.",
+            "Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk.",
         },
         {
           name: "robots",
@@ -104,12 +104,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "author", content: "Vedantix" },
         {
           property: "og:title",
-          content: "Webdesign, hosting en SEO voor ondernemers | Vedantix",
+          content: "Vedantix | Websites, AI-oplossingen & apps voor bedrijven",
         },
         {
           property: "og:description",
           content:
-            "Websites, managed hosting, onderhoud, SEO, AEO, GEO en AI-vindbaarheid voor lokale ondernemers in Den Bosch en heel Nederland.",
+            "Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk.",
         },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "Vedantix" },
@@ -176,4 +176,5 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
 

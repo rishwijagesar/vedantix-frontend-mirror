@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Page from "@/pages/FAQ";
 
-const title = "FAQ | Prijzen, hosting, SEO en AI-vindbaarheid | Vedantix";
-const description =
-  "Veelgestelde vragen over Vedantix websites, hosting, SEO, AEO, GEO/AIO, oplevering en uitbreidingen.";
+const title = "FAQ | Websites, AI-oplossingen, apps en prijzen | Vedantix";
+const description = "Antwoorden over websites, AI-oplossingen, apps, prijzen, hosting, SEO en AI-vindbaarheid bij Vedantix.";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
@@ -18,3 +17,4 @@ export const Route = createFileRoute("/faq")({
   }),
   component: Page,
 });
+

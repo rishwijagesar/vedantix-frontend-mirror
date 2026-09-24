@@ -7,6 +7,7 @@ export default function NavBar() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!isHomePage) {
@@ -44,18 +45,15 @@ export default function NavBar() {
           <VedantixLogo variant="full" size="md" theme={logoTheme} />
         </Link>
 
-        <nav className="site-nav">
-          <div className="site-nav-links">
+        <nav className="site-nav" aria-label="Hoofdnavigatie" onKeyDown={event => { if (event.key === "Escape") setMenuOpen(false); }}>
+          <button type="button" className="site-menu-toggle" aria-expanded={menuOpen} aria-controls="site-main-links" onClick={() => setMenuOpen(open => !open)}>{menuOpen ? "Sluiten ✕" : "Menu ☰"}</button>
+          <div id="site-main-links" className={`site-nav-links${menuOpen ? " is-open" : ""}`} onClick={() => setMenuOpen(false)}>
+            <Link to="/diensten" className="site-nav-link">Diensten</Link>
             <Link to="/prijzen" className="site-nav-link">Prijzen</Link>
-            <a href={isHomePage ? "#how" : "/#how"} className="site-nav-link">
-              Hoe het werkt
-            </a>
-            <Link to="/groeimodel" className="site-nav-link">Waarom Vedantix</Link>
+            <Link to="/proces" className="site-nav-link">Werkwijze</Link>
             <Link to="/resultaten" className="site-nav-link">Resultaten</Link>
-            <Link to="/online-groei-audit" className="site-nav-link">Audit</Link>
-            <Link to="/contact" className="site-nav-link">Contact</Link>
             <Link to="/blog" className="site-nav-link">Blog</Link>
-            <Link to="/faq" className="site-nav-link">FAQ</Link>
+            <Link to="/contact" className="site-nav-link">Contact</Link>
           </div>
 
           <Link to="/online-groei-audit" className="site-nav-cta">
@@ -66,3 +64,4 @@ export default function NavBar() {
     </header>
   );
 }
+

@@ -18,6 +18,10 @@ import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 
 const HELP_OPTIONS = [
   "Nieuwe website",
+  "AI / automatisering",
+  "Webapp / klantportaal",
+  "Mobiele app",
+  "Koppelingen",
   "Website verbeteren",
   "SEO / vindbaarheid",
   "Onderhoud",
@@ -40,6 +44,8 @@ const CONTACT_CARDS = [
     text: "Wil je hoger komen in Google op zoektermen die belangrijk zijn voor jouw bedrijf? We helpen met SEO, lokale vindbaarheid, structuur en content.",
     icon: Search,
   },
+  { title: "AI en automatisering", text: "Wil je minder herhaalwerk of een praktische AI-toepassing onderzoeken? We beginnen bij één proces en maken de mogelijkheden en kosten concreet.", icon: Sparkles },
+  { title: "Webapp of mobiele app", text: "Van klantportaal tot een app voor medewerkers: we bespreken je gebruikers, kernfuncties en een haalbare eerste versie.", icon: Wrench },
   {
     title: "Samenwerking bespreken",
     text: "Heb je een ander idee of wil je sparren over online groei? Neem contact op en we kijken samen wat logisch is.",
@@ -71,7 +77,7 @@ const FAQS = [
   {
     question: "Wat doet Vedantix precies?",
     answer:
-      "Vedantix helpt lokale ondernemers met websites, SEO, content, hosting, onderhoud en online zichtbaarheid zodat hun bedrijf meer vertrouwen en meer aanvragen kan krijgen.",
+      "Vedantix helpt ondernemers met websites, AI-oplossingen, webapps, mobiele apps, koppelingen en vindbaarheid. We bespreken de scope, planning en kosten voordat we bouwen.",
   },
   {
     question: "Waarom is een professionele website belangrijk?",
@@ -567,7 +573,7 @@ export default function Contact() {
 
   const whatsappUrl = useMemo(() => {
     const text = encodeURIComponent(
-      "Hallo Vedantix, ik wil graag vrijblijvend advies over een website."
+      "Hallo Vedantix, ik wil graag vrijblijvend advies over een website, AI-oplossing of app."
     );
     return `${CONTACT.WHATSAPP_URL}?text=${text}`;
   }, []);
@@ -582,9 +588,9 @@ export default function Contact() {
   const contactPageSchema = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
-    name: "Contact | Vedantix",
+    name: "Contact over websites, AI & apps | Vedantix",
     url: canonical,
-    about: "Contact opnemen met Vedantix voor websites, SEO en online groei.",
+    about: "Contact opnemen met Vedantix voor websites, AI-oplossingen, apps en vindbaarheid.",
     mainEntity: {
       "@type": "Organization",
       name: "Vedantix",
@@ -641,8 +647,8 @@ export default function Contact() {
   return (
     <>
       <SEO
-        title="Contact | Vedantix"
-        description="Neem contact op met Vedantix voor een snelle, professionele website voor jouw lokale bedrijf. Vraag vrijblijvend advies aan."
+        title="Contact over websites, AI & apps | Vedantix"
+        description="Bespreek je website, AI-oplossing, webapp of mobiele app met Vedantix in Den Bosch. Neem contact op voor een kennismaking."
         canonical={canonical}
         schemas={[contactPageSchema, faqSchema, breadcrumbSchema]}
       />
@@ -860,7 +866,7 @@ export default function Contact() {
             <div className="contact-shell">
               <div className="contact-final-card">
                 <CheckCircle2 size={34} aria-hidden="true" />
-                <h2>Klaar om je website serieus aan te pakken?</h2>
+                <h2>Klaar voor de volgende stap in je bedrijf?</h2>
                 <p>
                   Laat weten waar je tegenaan loopt of wat je wilt laten maken. Dan ontvang je eerlijk advies over de beste volgende stap.
                 </p>
@@ -881,3 +887,4 @@ export default function Contact() {
     </>
   );
 }
+
