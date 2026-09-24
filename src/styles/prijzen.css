@@ -1152,4 +1152,4 @@
 }
 
 
-.pricing-service-links{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}.pricing-service-links a{padding:10px 16px;border:1px solid #ceded5;border-radius:100px;color:inherit;font-weight:650;text-decoration:none}.pricing-service-links a:hover{background:#e9f4ee}#websites,#apps-ai{scroll-margin-top:100px}#websites{font-size:1.5rem;margin-bottom:24px}.pricing-page .service-price a{color:#087257}
+.pricing-service-links{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}.pricing-service-links a{padding:10px 16px;border:1px solid #ceded5;border-radius:100px;color:inherit;font-weight:650;text-decoration:none}.pricing-service-links a:hover{background:#e9f4ee;color:#163c2d}#websites,#apps-ai{scroll-margin-top:100px}#websites{font-size:1.5rem;margin-bottom:24px}.pricing-page .service-price a{color:#087257}

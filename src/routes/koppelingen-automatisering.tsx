@@ -8,5 +8,7 @@ export const Route = createFileRoute("/koppelingen-automatisering")({
   loader: () => fetchPublicCatalog().catch(() => null),
   staleTime: 0,
   head: () => publicHead(service.title, service.description, "/koppelingen-automatisering"),
-  component: () => <Page slug="koppelingen-automatisering" initialProducts={Route.useLoaderData()} />,
+  component: function ServiceRoute() {
+    return <Page slug="koppelingen-automatisering" initialProducts={Route.useLoaderData()} />;
+  },
 });

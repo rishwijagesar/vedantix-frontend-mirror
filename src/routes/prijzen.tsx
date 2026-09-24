@@ -18,6 +18,8 @@ export const Route = createFileRoute("/prijzen")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: () => <Page initialProducts={Route.useLoaderData()} />,
+  component: function ServiceRoute() {
+    return <Page initialProducts={Route.useLoaderData()} />;
+  },
 });
 

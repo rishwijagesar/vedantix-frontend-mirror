@@ -8,5 +8,7 @@ export const Route = createFileRoute("/webapps-klantportalen")({
   loader: () => fetchPublicCatalog().catch(() => null),
   staleTime: 0,
   head: () => publicHead(service.title, service.description, "/webapps-klantportalen"),
-  component: () => <Page slug="webapps-klantportalen" initialProducts={Route.useLoaderData()} />,
+  component: function ServiceRoute() {
+    return <Page slug="webapps-klantportalen" initialProducts={Route.useLoaderData()} />;
+  },
 });
