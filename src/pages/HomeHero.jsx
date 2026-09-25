@@ -1,4 +1,4 @@
-import HeroGrowthChart from "../components/home/HeroGrowthChart";
+import HeroLiveExperience from "../components/home/HeroLiveExperience";
 import "../styles/home-hero.css";
 
 const HERO_CHECKS = [
@@ -11,7 +11,7 @@ const HERO_CHECKS = [
 export default function HomeHero() {
   return (
     <>
-      <section className="hero">
+      <section className="hero hero--live">
         <div className="hero-container">
           <div className="hero-content">
             <div className="hero-eyebrow">Websites, AI & apps voor ondernemers</div>
@@ -56,7 +56,7 @@ export default function HomeHero() {
             </div>
           </div>
 
-          <HeroGrowthChart />
+          <HeroLiveExperience />
         </div>
       </section>
 
@@ -83,3 +83,4 @@ export default function HomeHero() {
     </>
   );
 }
+
