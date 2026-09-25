@@ -792,30 +792,33 @@
 
 
 
-/* A light editorial hero keeps the photograph secondary to the message. */
+/* Full viewport hero in the Vedantix palette; grow naturally when content needs it. */
 .hero.hero--photo {
-  background: #f6f5f0;
-  min-height: 690px;
-  padding: 158px 5% 90px;
+  background: #0a1428;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(116px, 12vh, 160px) 5% clamp(70px, 9vh, 120px);
   isolation: isolate;
 }
 .hero--photo::before { display: none; }
-.hero--photo .hero-container { max-width: 1360px; display: block; pointer-events: none; }
-.hero--photo .hero-content { width: 53%; max-width: 650px; pointer-events: auto; }
+.hero--photo .hero-container { max-width: 1440px; display: block; pointer-events: none; }
+.hero--photo .hero-content { width: 54%; max-width: 720px; pointer-events: auto; }
 .hero--photo h1 {
-  color: #1d2929;
-  font-size: clamp(2.6rem, 3.65vw, 3.85rem);
+  color: #ffffff;
+  font-size: clamp(2.6rem, 3.65vw, 4.2rem);
   line-height: 1.1;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
   margin: 0 0 24px;
 }
 .hero--photo h1 span {
-  color: #536c60;
-  background: none;
-  -webkit-text-fill-color: currentColor;
+  color: #9bb5ff;
+  background: linear-gradient(105deg, #74adff, #b29aff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .hero--photo .hero-eyebrow {
-  color: #58685e;
+  color: #c4d5ef;
   border: 0;
   background: transparent;
   padding: 0;
@@ -823,15 +826,15 @@
   font-size: 0.6rem;
   letter-spacing: 1.5px;
 }
-.hero--photo .hero-eyebrow::before { animation: none; background: #6b8b72; }
-.hero--photo .hero-sub { color: #58615c; max-width: 505px; font-size: 0.96rem; line-height: 1.8; margin-bottom: 0; }
-.hero--photo .hero-ctas { gap: 11px; margin: 28px 0 16px; }
-.hero--photo .hero-btn-primary { background: #263e35; color: #fff; box-shadow: 0 6px 16px #263e3510; }
-.hero--photo .hero-btn-primary:hover { background: #1b3028; }
-.hero--photo .hero-btn-ghost { background: #f6f5f0ad; border: 1px solid #bcc4bb; color: #263e35; backdrop-filter: none; }
-.hero--photo .hero-btn-ghost:hover { background: #eaece3; border-color: #899b8f; }
-.hero--photo .hero-cta-note { color: #626c65; line-height: 1.65; font-weight: 450; }
-.hero--photo .hero-visual { position: absolute; z-index: 0; top: 0; bottom: 0; right: 0; width: 64%; }
+.hero--photo .hero-eyebrow::before { animation: none; background: #7aaeff; }
+.hero--photo .hero-sub { color: #d0d9e9; max-width: 570px; font-size: clamp(0.96rem, 1.05vw, 1.06rem); line-height: 1.8; margin-bottom: 0; }
+.hero--photo .hero-ctas { gap: 11px; margin: 28px 0 16px; flex-wrap: wrap; }
+.hero--photo .hero-btn-primary { background: #fff; color: #0f172a; box-shadow: 0 6px 20px #0002; }
+.hero--photo .hero-btn-primary:hover { background: #edf3ff; }
+.hero--photo .hero-btn-ghost { background: #ffffff09; border: 1px solid #b7c9e84d; color: #fff; backdrop-filter: none; }
+.hero--photo .hero-btn-ghost:hover { background: #ffffff15; border-color: #b7c9e880; }
+.hero--photo .hero-cta-note { color: #b5c3d9; line-height: 1.65; font-weight: 450; }
+.hero--photo .hero-visual { position: absolute; z-index: 0; top: 0; bottom: 0; right: 0; width: 68%; }
 .hero-visual picture, .hero-visual img { display: block; width: 100%; height: 100%; }
 .hero-visual img { object-fit: cover; object-position: 72% center; }
 .hero-visual::after {
@@ -839,30 +842,35 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, #f6f5f0 0%, #f6f5f0ed 10%, #f6f5f09c 26%, #f6f5f000 47%);
+  background:
+    linear-gradient(90deg, #0a1428 0%, #0a1428f0 13%, #0a1428b8 33%, #0a142833 66%, #0a142826 100%),
+    linear-gradient(180deg, #0a142845, transparent 28%, transparent 70%, #0a142891);
 }
-.site-header.is-home { background: #f6f5f0ed; border-bottom-color: transparent; }
-.hero-trust-section.hero-trust-section--light { background: #f6f5f0; border-top: 1px solid #dfe2d8; border-bottom: 1px solid #e3e5de; }
-.hero-trust-section--light .hero-trust-item { background: transparent; border: 0; box-shadow: none; }
-.hero-trust-section--light .hero-trust-stat { color: #4d6055; font-weight: 600; }
+.site-header.is-home { background: linear-gradient(180deg, #071224b8, #07122400); border-bottom-color: transparent; }
 @media (max-width: 1100px) and (min-width: 901px) {
-  .hero.hero--photo { min-height: 620px; padding-top: 145px; padding-bottom: 75px; }
-  .hero--photo h1 { font-size: 2.5rem; }
-  .hero--photo .hero-content { width: 56%; }
-  .hero--photo .hero-sub { max-width: 420px; font-size: 0.9rem; }
+  .hero--photo h1 { font-size: clamp(2.4rem, 4vw, 2.75rem); }
+  .hero--photo .hero-content { width: 58%; }
+  .hero--photo .hero-sub { max-width: 445px; font-size: 0.94rem; }
   .hero--photo .hero-eyebrow { font-size: 0.54rem; letter-spacing: 1px; }
-  .hero--photo .hero-ctas { flex-wrap: wrap; }
   .hero--photo .hero-btn-primary, .hero--photo .hero-btn-ghost { font-size: 0.76rem; padding: 12px 14px; }
 }
 @media (max-width: 900px) {
-  .hero.hero--photo { display: block; min-height: 0; padding: 116px 0 0; }
+  .hero.hero--photo {
+    display: grid;
+    grid-template-rows: auto minmax(300px, 1fr);
+    align-items: stretch;
+    padding: 110px 0 0;
+  }
   .hero--photo .hero-container { padding: 0 6%; max-width: 740px; }
   .hero--photo .hero-content { width: 100%; max-width: 640px; }
   .hero--photo h1 { font-size: clamp(2.45rem, 6.2vw, 3.6rem); }
-  .hero--photo .hero-sub { max-width: 540px; }
-  .hero--photo .hero-visual { position: relative; width: 100%; height: clamp(300px, 54vw, 440px); margin-top: 24px; }
-  .hero-visual img { object-position: 70% 48%; }
-  .hero-visual::after { background: linear-gradient(180deg, #f6f5f0 0%, #f6f5f000 30%); }
+  .hero--photo .hero-sub { max-width: 570px; }
+  .hero--photo .hero-visual { position: relative; width: 100%; min-height: 300px; }
+  .hero-visual picture { position: absolute; inset: 0; }
+  .hero-visual img { object-position: 70% 45%; }
+  .hero-visual::after {
+    background: linear-gradient(180deg, #0a1428 0%, #0a14285c 25%, #0a142833 64%, #0a142887 100%);
+  }
 }
 @media (max-width: 480px) {
   .hero.hero--photo { padding-top: 99px; }
@@ -872,5 +880,4 @@
   .hero--photo .hero-sub { font-size: 0.9rem; }
   .hero--photo .hero-ctas { margin: 23px 0 13px; gap: 9px; }
   .hero--photo .hero-cta-note { font-size: 0.62rem; }
-  .hero--photo .hero-visual { height: 320px; margin-top: 15px; }
 }

@@ -57,7 +57,7 @@ export default function HomeHero() {
           <picture>
             <source
               srcSet="/images/vedantix-ondernemers-hero-small.webp 768w, /images/vedantix-ondernemers-hero.webp 1536w"
-              sizes="(max-width: 900px) 100vw, 64vw"
+              sizes="(max-width: 900px) 100vw, 68vw"
               type="image/webp"
             />
             <img
@@ -73,7 +73,7 @@ export default function HomeHero() {
         </div>
       </section>
 
-      <section className="hero-trust-section hero-trust-section--light" aria-label="Waarom ondernemers kiezen voor Vedantix">
+      <section className="hero-trust-section" aria-label="Waarom ondernemers kiezen voor Vedantix">
         <div className="hero-trust-container">
           {HERO_CHECKS.map((item) => (
             <div className="hero-trust-item" key={item}>
