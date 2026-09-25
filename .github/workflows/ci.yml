@@ -45,6 +45,9 @@ jobs:
       - name: Marketing consent checks
         run: bun scripts/check-marketing-consent.mjs
 
+      - name: Public sitemap coverage checks
+        run: bun scripts/check-sitemap.mjs
+
       - name: Audit funnel privacy checks
         run: bun scripts/check-audit-funnel.mjs
 

@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import {
   ArrowRight,
-  CheckCircle2,
   Clock,
   FileText,
   Globe2,
@@ -51,47 +50,6 @@ const BENEFITS = [
     text: "Bespaar handwerk met slimme apps, koppelingen en automatisering.",
     icon: Clock,
   },
-];
-
-const PROOF_CARDS = [
-  {
-    title: "Sneller vertrouwen opbouwen",
-    text: "Laat direct zien waarom bezoekers jouw bedrijf serieus kunnen nemen.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Beter gevonden worden in Google",
-    text: "Maak diensten, regio en klantvragen duidelijk voor zoekmachines.",
-    icon: Search,
-  },
-  {
-    title: "Meer contactmomenten creëren",
-    text: "Zet bezoekers sneller om naar telefoontjes, WhatsApp-berichten en aanvragen.",
-    icon: MessageCircle,
-  },
-  {
-    title: "Klaar voor moderne AI-zoekmachines",
-    text: "Structuur en FAQ-content helpen AI-systemen je bedrijf beter begrijpen.",
-    icon: Sparkles,
-  },
-];
-
-const WEBSITE_ONLY = [
-  "Mooie homepage",
-  "Online visitekaartje",
-  "Weinig bezoekers",
-  "Geen SEO strategie",
-  "Geen groei",
-];
-
-const GROWTH_MODEL = [
-  "Professionele website",
-  "SEO geoptimaliseerd",
-  "Google vindbaarheid",
-  "Content strategie",
-  "Reviews",
-  "Autoriteit",
-  "Meer aanvragen",
 ];
 
 const ROADMAP = [
@@ -173,21 +131,12 @@ const AI_READINESS_CARDS = [
 ];
 
 const SCAN_ITEMS = [
-  "Vindbaarheid",
-  "SEO",
-  "Snelheid",
-  "Mobiele gebruikservaring",
-  "Reviews",
-  "Conversie",
-  "Call-to-actions",
-];
-
-const TRANSLATIONS = [
-  ["SEO", "Meer zichtbaarheid"],
-  ["Hosting", "Minder zorgen"],
-  ["PageSpeed", "Minder afhakers"],
-  ["Onderhoud", "Meer tijd"],
-  ["Responsive website", "Meer klanten via mobiel"],
+  "Controle van één openbare pagina",
+  "Signalen voor Google en AI",
+  "Zichtbare contactmogelijkheden",
+  "Technische basisinstellingen",
+  "Verbeterpunten op prioriteit",
+  "Downloadbaar PDF-rapport",
 ];
 
 const CTA_META = [
@@ -268,22 +217,6 @@ function IconCard({ title, text, icon: Icon }) {
   );
 }
 
-function CompareList({ title, items, variant }) {
-  return (
-    <article className={`growth-compare-col ${variant}`}>
-      <h3>{title}</h3>
-      <ul>
-        {items.map((item) => (
-          <li key={item}>
-            <CheckCircle2 size={18} aria-hidden="true" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
-}
-
 export default function Home({ initialCases = null }) {
   const meetingUrl = `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent(
     "Hallo Vedantix, ik wil graag een kennismaking plannen over online groei.",
@@ -323,36 +256,7 @@ export default function Home({ initialCases = null }) {
             </section>
           </Suspense>
 
-          <Suspense fallback={null}>
-            <section className="section-shell">
-              <div className="section-wrap">
-                <div className="section-header center">
-                  <div className="section-label">
-                    Bewijs dat jouw website werkt
-                  </div>
-                  <h2 className="section-h2">
-                    Een website moet bezoekers overtuigen
-                  </h2>
-                  <p className="section-p">
-                    Een website moet niet alleen mooi zijn. Hij moet bezoekers
-                    overtuigen, vertrouwen opbouwen en kansen creëren op nieuwe
-                    klanten.
-                  </p>
-                </div>
-
-                <div className="growth-benefit-grid">
-                  {PROOF_CARDS.map((proof) => (
-                    <IconCard key={proof.title} {...proof} />
-                  ))}
-                </div>
-
-                <SectionCta
-                  title="Wil je weten of jouw website echt werkt?"
-                  text="Vraag een gratis Online Groei Audit aan en ontdek waar je meer vertrouwen, zichtbaarheid en aanvragen kunt winnen."
-                />
-              </div>
-            </section>
-          </Suspense>
+          <ClientCasesSection initialCases={initialCases} />
 
           <Suspense fallback={null}>
             <section className="section-shell">
@@ -379,45 +283,7 @@ export default function Home({ initialCases = null }) {
 
                 <SectionCta
                   title="Benieuwd waar jouw grootste online groeikans ligt?"
-                  text="Laat je website, vindbaarheid en aanvraagflow vrijblijvend bekijken."
-                />
-              </div>
-            </section>
-          </Suspense>
-
-          <Suspense fallback={null}>
-            <section className="section-shell alt">
-              <div className="section-wrap">
-                <div className="section-header">
-                  <div className="section-label">
-                    Waarom websites vaak stilvallen
-                  </div>
-                  <h2 className="section-h2">
-                    Waarom veel websites geen klanten opleveren
-                  </h2>
-                  <p className="section-p">
-                    Een website is slechts één onderdeel van online succes.
-                    Groei ontstaat pas als zichtbaarheid, vertrouwen en
-                    duidelijke contactmomenten samenwerken.
-                  </p>
-                </div>
-
-                <div className="growth-compare-grid">
-                  <CompareList
-                    title="Alleen een website"
-                    items={WEBSITE_ONLY}
-                    variant="old"
-                  />
-                  <CompareList
-                    title="Het Vedantix Groei Model"
-                    items={GROWTH_MODEL}
-                    variant="new"
-                  />
-                </div>
-
-                <SectionCta
-                  title="Maak van je website geen visitekaartje, maar een groeikanaal."
-                  text="We laten zien welke onderdelen ontbreken om meer aanvragen te krijgen."
+                  text="Begin met een gratis check van één openbare pagina: van vindbaarheidssignalen tot contactmogelijkheden."
                 />
               </div>
             </section>
@@ -432,17 +298,8 @@ export default function Home({ initialCases = null }) {
                     Van zichtbaar worden naar aanvragen krijgen
                   </h2>
                   <p className="section-p">
-                    Een website alleen zorgt zelden voor nieuwe klanten.
-                  </p>
-                  <p className="section-p">
                     Online groei ontstaat wanneer techniek, content, snelheid,
                     reviews en vertrouwen samenwerken.
-                  </p>
-                  <p className="section-p">
-                    Daarom bouwen wij niet alleen websites.
-                  </p>
-                  <p className="section-p">
-                    Wij bouwen complete online groeiplatformen.
                   </p>
                 </div>
 
@@ -465,7 +322,7 @@ export default function Home({ initialCases = null }) {
 
                 <SectionCta
                   title="Wil je weten welke stap jouw bedrijf nu mist?"
-                  text="De Online Groei Audit maakt snel duidelijk waar aanvragen blijven liggen."
+                  text="De Online Groei Audit geeft verbeterpunten voor de gecontroleerde pagina, op volgorde van prioriteit."
                 />
               </div>
             </section>
@@ -502,7 +359,7 @@ export default function Home({ initialCases = null }) {
 
                 <SectionCta
                   title="Meer overzicht, minder losse lijntjes."
-                  text="Laat je online basis controleren en ontdek wat slimmer onder één dak kan."
+                  text="Start met een websitecheck en bespreek welke verbeteringen passen bij jouw bedrijf."
                 />
               </div>
             </section>
@@ -530,18 +387,6 @@ export default function Home({ initialCases = null }) {
                   ))}
                 </div>
 
-                <div
-                  className="translation-strip"
-                  aria-label="Techniek vertaald naar voordeel"
-                >
-                  {TRANSLATIONS.map(([technical, benefit]) => (
-                    <div className="translation-item" key={technical}>
-                      <span>{technical}</span>
-                      <ArrowRight size={16} aria-hidden="true" />
-                      <strong>{benefit}</strong>
-                    </div>
-                  ))}
-                </div>
               </div>
             </section>
           </Suspense>
@@ -587,13 +432,11 @@ export default function Home({ initialCases = null }) {
 
                 <SectionCta
                   title="Vraag een gratis Online Groei Audit aan"
-                  text="Ontdek hoe jouw website scoort op SEO, AI-zichtbaarheid, Google Business en conversie."
+                  text="Bekijk of de teksten en structuur van de opgegeven pagina zoekmachines en AI helpen je bedrijf te begrijpen."
                 />
               </div>
             </section>
           </Suspense>
-
-          <ClientCasesSection initialCases={initialCases} />
 
           <Suspense fallback={null}>
             <section
@@ -606,16 +449,16 @@ export default function Home({ initialCases = null }) {
                     <div className="lead-badge">Gratis · vrijblijvend</div>
                     <div className="lead-title">Gratis Online Groei Audit</div>
                     <p className="lead-text">
-                      Ontdek waarom jouw concurrent hoger staat in Google.
+                      Laat één openbare pagina van je website controleren.
                     </p>
                     <p className="lead-text">
-                      We bekijken waar jouw bedrijf online zichtbaarheid,
-                      vertrouwen en aanvragen laat liggen.
+                      Bekijk de gemeten signalen voor vindbaarheid en contact,
+                      ontvang verbeterpunten op prioriteit en download je rapport als PDF.
                     </p>
                   </div>
 
                   <div className="lead-side">
-                    <h3>Wij analyseren:</h3>
+                    <h3>Dit krijg je:</h3>
                     <ul>
                       {SCAN_ITEMS.map((item) => (
                         <li key={item}>{item}</li>
@@ -625,7 +468,7 @@ export default function Home({ initialCases = null }) {
                       Vraag gratis Online Groei Audit aan →
                     </a>
                     <div className="lead-note">
-                      Concreet advies. Geen verplichtingen.
+                      Scores alleen voor gemeten onderdelen. Vrijblijvend.
                     </div>
                   </div>
                 </div>
@@ -704,4 +547,3 @@ export default function Home({ initialCases = null }) {
     </>
   );
 }
-

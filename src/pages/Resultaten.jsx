@@ -2,7 +2,6 @@ import ClientCasesSection from "../components/home/ClientCasesSection";
 import {
   ArrowRight,
   BarChart3,
-  CheckCircle2,
   MessageCircle,
   Search,
   ShieldCheck,
@@ -363,8 +362,8 @@ export default function Resultaten({ initialCases = null }) {
   return (
     <>
       <SEO
-        title="Resultaten voor lokale ondernemers | Vedantix"
-        description="Bekijk hoe Vedantix lokale ondernemers helpt met meer zichtbaarheid, meer vertrouwen, betere websites en meer aanvragen."
+        title="Klantcases: websites voor ondernemers | Vedantix"
+        description="Bekijk websites die Vedantix voor ondernemers heeft gebouwd. Lees wat we hebben gerealiseerd en bezoek de websites van onze klanten."
         canonical={canonical}
         schemas={[serviceSchema, faqSchema, breadcrumbSchema]}
       />
@@ -378,12 +377,12 @@ export default function Resultaten({ initialCases = null }) {
             <div className="results-panel">
               <div className="results-kicker">
                 <TrendingUp size={16} aria-hidden="true" />
-                Resultaten
+                Klantcases
               </div>
-              <h1 id="results-title">Websites die ondernemers helpen groeien</h1>
+              <h1 id="results-title">Ons werk voor ondernemers</h1>
               <p className="results-lead">
-                Een website moet niet alleen mooi zijn. Hij moet bezoekers overtuigen,
-                vertrouwen opbouwen en kansen creëren op nieuwe klanten.
+                Bekijk de websites die we hebben gebouwd, lees wat er is gerealiseerd
+                en ontdek welke aanpak bij jouw bedrijf past.
               </p>
               <div className="results-actions">
                 <a href="/online-groei-audit" className="results-primary">
@@ -396,9 +395,9 @@ export default function Resultaten({ initialCases = null }) {
               </div>
             </div>
 
-            <aside className="results-panel results-scorecard" aria-label="Online groei indicatoren">
-              <div className="results-section-label">Wat wij zichtbaar maken</div>
-              <h2 style={{ color: "#fff", marginBottom: 18 }}>Van website naar groeikanaal</h2>
+            <aside className="results-panel results-scorecard" aria-label="Waar we aan werken">
+              <div className="results-section-label">Onze aanpak</div>
+              <h2 style={{ color: "#fff", marginBottom: 18 }}>Van eerste indruk naar contact</h2>
               <div className="results-score-grid">
                 <div className="results-score-row">
                   <span>Zichtbaarheid</span>
@@ -420,10 +419,12 @@ export default function Resultaten({ initialCases = null }) {
             </aside>
           </section>
 
+          <ClientCasesSection initialCases={initialCases} placement="results" />
+
           <section className="results-section" aria-labelledby="improvements-title">
             <div className="results-section-header center">
               <div className="results-section-label">Wat wij verbeteren</div>
-              <h2 id="improvements-title">Bewijs dat jouw website werkt</h2>
+              <h2 id="improvements-title">Wat een goede website voor je kan doen</h2>
               <p>
                 Vedantix vertaalt technische onderdelen naar ondernemersvoordeel:
                 zichtbaarheid, vertrouwen, contact en groei.
@@ -440,8 +441,6 @@ export default function Resultaten({ initialCases = null }) {
               ))}
             </div>
           </section>
-
-          <ClientCasesSection initialCases={initialCases} placement="results" />
 
           <section className="results-section" aria-labelledby="results-faq-title">
             <div className="results-section-header center">
