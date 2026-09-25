@@ -667,7 +667,7 @@ export default function Contact() {
                 </div>
                 <h1>Neem contact op met Vedantix</h1>
                 <p className="contact-hero-subtitle">
-                  Wil je een professionele website laten maken voor jouw bedrijf? Vertel kort wat je nodig hebt, dan denken we met je mee over de beste aanpak.
+                  Een nieuwe website, minder herhaalwerk met AI of een eigen app? Vertel wat je wilt bereiken. We denken met je mee over een haalbare aanpak, planning en kosten.
                 </p>
                 <div className="contact-hero-actions" aria-label="Contact acties">
                   <a className="contact-btn contact-btn-primary" href="#contact-form">
@@ -685,8 +685,8 @@ export default function Contact() {
               </div>
 
               <aside className="contact-hero-note" aria-label="Waarom contact opnemen">
-                <strong>Snel duidelijkheid over je website</strong>
-                <span>Geen lange intake nodig. Stuur je vraag, website of idee en we kijken praktisch met je mee.</span>
+                <strong>Maak je idee concreet</strong>
+                <span>Je hoeft nog geen uitgewerkt plan te hebben. Stuur je vraag, website of idee en vertel wat je wilt verbeteren.</span>
               </aside>
             </div>
           </header>
@@ -695,7 +695,7 @@ export default function Contact() {
             <div className="contact-shell">
               <div className="contact-intro-card">
                 <p>
-                  Bij Vedantix helpen we lokale ondernemers met snelle, moderne websites die goed vindbaar zijn in Google en gericht zijn op meer aanvragen. Of je nu een nieuwe website nodig hebt, je bestaande website wilt verbeteren of online beter gevonden wilt worden: we helpen je graag verder.
+                  Vedantix helpt ondernemers met websites, AI en automatisering, webapps en mobiele apps. Of je nu meer aanvragen wilt, tijd wilt besparen of klanten beter wilt helpen: we beginnen bij jouw vraag en bespreken wat daarvoor nodig is.
                 </p>
                 <div className="contact-link-row" aria-label="Relevante pagina's">
                   <Link className="contact-link-pill" to="/prijzen">
@@ -718,7 +718,7 @@ export default function Contact() {
                 <p className="contact-label">Hoe kunnen we je helpen?</p>
                 <h2 id="contact-help-title">Kies de vraag die het beste past</h2>
                 <p className="contact-section-copy">
-                  We denken mee vanuit wat jouw bedrijf nodig heeft: duidelijkheid, vindbaarheid en meer contactmomenten met potentiële klanten.
+                  Kies wat aansluit op jouw vraag. We bespreken wat je wilt bereiken en welke oplossing bij je bedrijf past.
                 </p>
               </div>
 
@@ -793,11 +793,11 @@ export default function Contact() {
                   )}
 
                   <button className="contact-btn contact-btn-dark" type="submit" disabled={submitting}>
-                    {submitting ? "Aanvraag voorbereiden..." : "Verstuur aanvraag"}
+                    {submitting ? "E-mail voorbereiden..." : "Open e-mail met je aanvraag"}
                     <Send size={18} aria-hidden="true" />
                   </button>
                   <p className="contact-form-microcopy">
-                    We reageren meestal zo snel mogelijk. Je aanvraag is vrijblijvend.
+                    Dit opent je e-mailprogramma met je ingevulde bericht. Verstuur de e-mail daar om je aanvraag te verzenden. Je aanvraag is vrijblijvend.
                   </p>
                 </form>
               </section>
@@ -807,7 +807,7 @@ export default function Contact() {
                   <p className="contact-label">Direct contact</p>
                   <h2 id="direct-contact-title">Direct contact</h2>
                   <p className="contact-section-copy">
-                    Liever direct contact? Stuur ons een bericht via WhatsApp of e-mail. Dan kijken we snel met je mee.
+                    Liever direct contact? Stuur ons je vraag via WhatsApp of e-mail.
                   </p>
                 </div>
 

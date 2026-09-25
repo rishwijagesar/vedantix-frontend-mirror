@@ -32,10 +32,11 @@ function ClientCaseCard({ client, compact }) {
       </header>
 
       <div id={contentId} className="client-case__content">
+        <span className="client-case__detail-label">Het project</span>
         <p className="client-case__summary">{client.summary}</p>
         {client.outcome ? (
           <div className="client-case__outcome">
-            <span className="client-case__outcome-label">Het resultaat</span>
+            <span className="client-case__detail-label">Gerealiseerd</span>
             <p>{client.outcome}</p>
           </div>
         ) : null}
@@ -77,12 +78,12 @@ export default function ClientCasesSection({ initialCases = null, placement = "h
         <div className="client-cases__heading">
           <div>
             <span className="client-cases__eyebrow">Gemaakt door Vedantix</span>
-            <h2>Een kijkje in ons werk.</h2>
-            <p>Websites die passen bij de ondernemer erachter. Bekijk een selectie van onze projecten.</p>
+            <h2>Websites die we hebben gebouwd.</h2>
+            <p>Bekijk wat we voor deze ondernemers hebben gerealiseerd en bezoek hun websites.</p>
           </div>
           {compact ? <a className="client-cases__all" href="/resultaten">Alle klantcases <ArrowUpRight size={18} aria-hidden="true" /></a> : null}
         </div>
-        <div className={`client-cases__grid${clients.length === 1 ? " client-cases__grid--single" : ""}`}>
+        <div className={`client-cases__grid${clients.length === 1 ? " client-cases__grid--single" : ""}${clients.length === 3 ? " client-cases__grid--trio" : ""}`}>
           {clients.map(client => <ClientCaseCard key={client.id} client={client} compact={compact} />)}
         </div>
       </div>

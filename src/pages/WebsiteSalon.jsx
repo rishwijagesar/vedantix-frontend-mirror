@@ -2,7 +2,7 @@ import { Link } from "@/lib/router-compat";
 import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
 import { createServiceSchema, createBreadcrumbSchema } from "../utils/schema";
-import { cities, blogPosts } from "../data/seoData";
+import { localSeoCities, blogPosts } from "../data/seoData";
 
 const PAGE_STYLES = `
   * { box-sizing: border-box; }
@@ -319,7 +319,7 @@ export default function WebsiteSalon() {
   const pageDescription =
     "Professionele website laten maken voor een salon? Vedantix bouwt snelle websites waarmee je meer boekingen ontvangt, vertrouwen opbouwt en beter zichtbaar wordt.";
 
-  const relatedCities = cities.slice(0, 6);
+  const relatedCities = localSeoCities;
   const relatedBlogs = blogPosts
     .filter((post) => post.niche === "salon")
     .slice(0, 3);
@@ -623,3 +623,4 @@ export default function WebsiteSalon() {
     </>
   );
 }
+

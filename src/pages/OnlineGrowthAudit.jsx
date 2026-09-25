@@ -49,9 +49,9 @@ const STATUS_LABELS = {
 };
 
 const PRIORITY_LABELS = {
-  CRITICAL: "Kritiek",
-  IMPORTANT: "Belangrijk",
-  OPTIMIZATION: "Optimalisatie",
+  CRITICAL: "Eerst aanpakken",
+  IMPORTANT: "Daarna verbeteren",
+  OPTIMIZATION: "Verder verfijnen",
 };
 
 const MODULE_STATUS_LABELS = {
@@ -68,33 +68,33 @@ const CONFIDENCE_LABELS = {
 
 const CONNECTION_GUIDES = {
   analytics: {
-    title: "Google Analytics veilig koppelen",
+    title: "Google Analytics bespreken",
     intro:
-      "Voor event- en conversiedata moet de website-eigenaar via Google toestemming geven. De openbare audit krijgt nooit automatisch toegang tot een Analytics-account.",
+      "Bezoekerscijfers en aanvragen zijn niet openbaar. Deze websitecheck heeft geen toegang tot je Google Analytics-account. Bespreek met ons hoe we die gegevens kunnen meenemen.",
     steps: [
-      "Log in met het Google-account dat toegang heeft tot de juiste GA4-property.",
-      "Kies de property van de gecontroleerde website en geef alleen-lezen toestemming.",
-      "Vedantix controleert daarna conversie-events, consent en datakwaliteit.",
+      "Vertel welke website je wilt bekijken en wat je wilt weten over je bezoekers.",
+      "We bespreken welke gegevens daarvoor nodig zijn en of je daar toegang toe hebt.",
+      "We spreken vooraf af hoe je de gegevens deelt en wat we ermee controleren.",
     ],
   },
   backlink: {
-    title: "Een backlinkbron koppelen",
+    title: "Links van andere websites onderzoeken",
     intro:
-      "Backlinks staan niet in de website zelf. Hiervoor is een externe backlinkdatabase en een server-side API-koppeling nodig.",
+      "Om te zien welke andere websites naar jou verwijzen, zijn extra gegevens nodig. Deze websitecheck kan daar zonder zo’n bron geen betrouwbaar overzicht van geven.",
     steps: [
-      "Kies een ondersteunde bron, zoals Semrush, Ahrefs of Majestic.",
-      "De API-sleutel wordt uitsluitend versleuteld aan de backend opgeslagen en nooit in de browser gezet.",
-      "Na de koppeling kan de auditor verwijzende domeinen, kwaliteit en verloren links meten.",
+      "Geef aan voor welke website je verwijzende links wilt onderzoeken.",
+      "We bespreken welke bron beschikbaar is en welke informatie die kan leveren.",
+      "We maken de aanpak en eventuele kosten duidelijk voordat we beginnen.",
     ],
   },
   googleBusiness: {
-    title: "Google Bedrijfsprofiel veilig koppelen",
+    title: "Google Bedrijfsprofiel bespreken",
     intro:
-      "Google Bedrijfsprofieldata is beschermd. De eigenaar moet inloggen en Vedantix via Google OAuth expliciet alleen-lezen toegang geven.",
+      "Deze websitecheck heeft geen toegang tot het beheer van je Google Bedrijfsprofiel. Wil je je profiel en reviews laten bekijken? Bespreek met ons welke gegevens daarvoor nodig zijn.",
     steps: [
-      "Log in met het Google-account dat het bedrijfsprofiel beheert.",
-      "Selecteer de juiste vestiging en verleen toestemming.",
-      "Vedantix kan daarna profielgegevens, openingstijden en reviews controleren.",
+      "Stuur de naam van je bedrijf en de vestiging die je wilt bekijken.",
+      "Vertel of je eigenaar of beheerder van het profiel bent.",
+      "We bespreken wat we kunnen controleren en of extra toegang nodig is.",
     ],
   },
 };
@@ -102,41 +102,46 @@ const CONNECTION_GUIDES = {
 const FEATURE_CARDS = [
   {
     icon: Search,
-    title: "SEO, GEO, AEO en AI",
-    text: "Meetbare crawl-, content-, entity- en vraag-antwoordsignalen met zichtbaar bewijs.",
+    title: "Vindbaarheid in Google en AI",
+    text: "Bekijk of de teksten en structuur van de opgegeven pagina zoekmachines en AI helpen om jouw bedrijf te begrijpen.",
   },
   {
     icon: Zap,
-    title: "Performance en security",
-    text: "Google PageSpeed, headers, HTTPS, SPF en DMARC worden bij de bron gecontroleerd.",
+    title: "Technische basis",
+    text: "Controleer de bereikbaarheid van de opgegeven pagina en zichtbare instellingen voor een beveiligde verbinding.",
   },
   {
     icon: Target,
-    title: "Conversie en vertrouwen",
-    text: "CTA's, contactroutes en on-site trust-signalen worden gecontroleerd; externe data wordt niet geschat.",
+    title: "Van bezoeker naar aanvraag",
+    text: "Zie of de opgegeven pagina duidelijke contactmogelijkheden en informatie biedt om vertrouwen te wekken.",
   },
 ];
 
 const FAQS = [
   {
-    question: "Wordt de Online Groei Audit in de browser berekend?",
+    question: "Wat krijg ik met de gratis Online Groei Audit?",
     answer:
-      "Nee. De frontend verzamelt alleen invoer en toont resultaten. Alle analyses, scores en PDF-generatie gebeuren in de Vedantix backend.",
+      "Je krijgt een automatische check van de openbare pagina die je opgeeft, met scores per gemeten onderdeel en verbeterpunten op volgorde van prioriteit. Je bekijkt het resultaat hier en kunt het downloaden als PDF.",
+  },
+  {
+    question: "Wordt mijn hele website gecontroleerd?",
+    answer:
+      "Per website controleren we één openbare pagina: het adres dat je invult. Kies bij voorkeur de startpagina. Ook voor elke concurrent controleren we alleen de opgegeven pagina. Onderdelen die niet betrouwbaar kunnen worden gemeten, blijven zichtbaar als niet gemeten of niet verifieerbaar.",
   },
   {
     question: "Waarom duurt de audit soms even?",
     answer:
-      "De backend rendert JavaScript-pagina’s, crawlt een gerichte steekproef en raadpleegt Google PageSpeed en DNS. Daarom draait de audit asynchroon.",
+      "De wachttijd hangt af van de bereikbaarheid van de opgegeven websites en de beschikbaarheid van aanvullende metingen. Je ziet de voortgang op deze pagina; we kunnen vooraf geen vaste duur beloven.",
   },
   {
     question: "Kan ik het rapport downloaden?",
     answer:
-      "Ja. Zodra de audit is afgerond genereert de backend een professioneel PDF-rapport dat je direct kunt downloaden.",
+      "Ja. Zodra de audit is afgerond kun je via ‘Download PDF’ het rapport opslaan en de verbeterpunten later rustig bekijken.",
   },
   {
-    question: "Meet de audit ook backlinks, Google Reviews en mijn Bedrijfsprofiel?",
+    question: "Worden Google-reviews en links van andere websites ook gecontroleerd?",
     answer:
-      "Alleen wanneer daarvoor een betrouwbare externe databron is gekoppeld. Zonder zo’n bron toont Vedantix ‘niet verifieerbaar’ en verzint de auditor geen score.",
+      "Daarvoor zijn extra gegevens nodig, net als voor je Google Bedrijfsprofiel en bezoekerscijfers. Als we iets niet betrouwbaar kunnen meten, staat dat bij het resultaat. Je krijgt dan geen geschatte score voor dat onderdeel.",
   },
 ];
 
@@ -145,7 +150,7 @@ const serviceSchema = createServiceSchema({
   name: "Online Groei Audit",
   slug: "online-groei-audit",
   description:
-    "Gratis backend-gedreven audit voor SEO, GEO, AEO, AIO, performance, security, Google Business, reviews, conversie en lokale vindbaarheid.",
+    "Gratis check van de opgegeven openbare pagina voor vindbaarheid, technische basisinstellingen en contactmogelijkheden. Met scores per gemeten onderdeel, verbeterpunten op volgorde van prioriteit en een downloadbaar PDF-rapport.",
   audienceType: "Lokale ondernemers",
   serviceType: "Online groei audit en conversie analyse",
 });
@@ -268,13 +273,13 @@ function ScoreCard({ score, auditedUrl, onConnect, onRerun, isRerunning }) {
         <div className="audit-card-actions">
           <button type="button" onClick={() => onConnect(score.key)}>
             <Link2 size={15} aria-hidden="true" />
-            Bron koppelen
+            Koppeling bespreken
           </button>
         </div>
       ) : null}
       {score.evidenceItems?.length ? (
         <details className="audit-evidence">
-          <summary>Bekijk bewijs en controles</summary>
+          <summary>Bekijk wat er is gecontroleerd</summary>
           <ul>
             {[...failedChecks, ...passedChecks].slice(0, 8).map((item) => (
               <li key={item.check} className={item.status.toLowerCase()}>
@@ -301,7 +306,7 @@ function PriorityColumn({ label, items }) {
           ))}
         </ul>
       ) : (
-        <p>Geen directe punten.</p>
+        <p>Geen verbeterpunten gevonden in de uitgevoerde controles.</p>
       )}
     </article>
   );
@@ -325,8 +330,8 @@ function CompetitorTable({ competitors }) {
               <th>SEO</th>
               <th>Reviews</th>
               <th>FAQ</th>
-              <th>Speed</th>
-              <th>Google Business</th>
+              <th>Snelheid</th>
+              <th>Google Bedrijfsprofiel</th>
               <th>Conversie</th>
             </tr>
           </thead>
@@ -426,7 +431,7 @@ export default function OnlineGrowthAudit() {
     setError("");
 
     if (!form.name.trim() || !form.companyName.trim() || !form.email.trim() || !form.websiteUrl.trim()) {
-      setError("Vul naam, bedrijfsnaam, e-mailadres en website URL in om de audit te starten.");
+      setError("Vul je naam, bedrijfsnaam, e-mailadres en websiteadres in om de audit te starten.");
       return;
     }
 
@@ -510,7 +515,7 @@ export default function OnlineGrowthAudit() {
     <>
       <SEO
         title="Gratis Online Groei Audit | Vedantix"
-        description="Start een backend-gedreven Online Groei Audit en ontdek kansen voor SEO, GEO, AEO, AI-zichtbaarheid, security, reviews, conversie en lokale vindbaarheid."
+        description="Laat een pagina van je website gratis controleren op vindbaarheid, technische basisinstellingen en contactmogelijkheden. Bekijk je verbeterpunten en download het PDF-rapport."
         canonical={canonical}
         schemas={[serviceSchema, faqSchema, breadcrumbSchema]}
       />
@@ -527,9 +532,10 @@ export default function OnlineGrowthAudit() {
               </div>
               <h1 id="audit-title">Ontdek waar jouw website groei laat liggen</h1>
               <p>
-                Vul je gegevens in. De auditor rendert ook JavaScript-websites en laat per
-                controle zien wat werkelijk is gevonden, welke bron is gebruikt en wat niet
-                betrouwbaar kon worden gemeten.
+                Laat een pagina van je website gratis controleren. Je krijgt scores per gemeten onderdeel,
+                praktische verbeterpunten en een duidelijke volgorde om aan de slag te gaan.
+                Bekijk je rapport hier en download het als PDF. Kan iets niet worden gemeten?
+                Dan vermelden we dat bij het resultaat.
               </p>
               <div className="audit-feature-grid">
                 {FEATURE_CARDS.map(({ icon: Icon, title, text }) => (
@@ -573,7 +579,7 @@ export default function OnlineGrowthAudit() {
                   />
                 </label>
                 <label>
-                  <span>Website URL</span>
+                  <span>Pagina-adres <em>bij voorkeur je startpagina</em></span>
                   <input
                     value={form.websiteUrl}
                     onChange={(event) => updateField("websiteUrl", event.target.value)}
@@ -583,7 +589,7 @@ export default function OnlineGrowthAudit() {
                   />
                 </label>
                 <label>
-                  <span>Concurrent URL 1 <em>optioneel</em></span>
+                  <span>Website concurrent 1 <em>optioneel</em></span>
                   <input
                     value={form.competitorUrl1}
                     onChange={(event) => updateField("competitorUrl1", event.target.value)}
@@ -592,7 +598,7 @@ export default function OnlineGrowthAudit() {
                   />
                 </label>
                 <label>
-                  <span>Concurrent URL 2 <em>optioneel</em></span>
+                  <span>Website concurrent 2 <em>optioneel</em></span>
                   <input
                     value={form.competitorUrl2}
                     onChange={(event) => updateField("competitorUrl2", event.target.value)}
@@ -650,10 +656,10 @@ export default function OnlineGrowthAudit() {
             <section className="audit-progress-card">
               <Clock3 size={28} aria-hidden="true" />
               <div>
-                <h2>Onze systemen zijn achter de schermen voor je bezig</h2>
+                <h2>We controleren je website</h2>
                 <p>
-                  Je website wordt stap voor stap geanalyseerd. Je hoeft deze pagina niet open te
-                  houden; als je later terugkomt, halen we de voortgang automatisch weer voor je op.
+                  De opgegeven pagina wordt gecontroleerd. Je hoeft deze pagina niet open te
+                  houden. Bewaar de link in je adresbalk om je resultaat later weer te openen.
                 </p>
               </div>
             </section>
@@ -704,8 +710,8 @@ export default function OnlineGrowthAudit() {
 
               <section className="audit-section-card" aria-labelledby="scores-title">
                 <div className="audit-section-heading">
-                  <p>Scorecards</p>
-                  <h2 id="scores-title">Analyse per categorie</h2>
+                  <p>Jouw resultaten</p>
+                  <h2 id="scores-title">Hoe scoort je website per onderdeel?</h2>
                 </div>
                 <div className="audit-score-grid">
                   {results.scores?.map((score) => (
@@ -724,7 +730,7 @@ export default function OnlineGrowthAudit() {
               <section className="audit-section-card" aria-labelledby="priority-title">
                 <div className="audit-section-heading">
                   <p>Actieplan</p>
-                  <h2 id="priority-title">Prioriteitenmatrix</h2>
+                  <h2 id="priority-title">Wat pak je als eerste aan?</h2>
                 </div>
                 <div className="audit-priority-grid">
                   {Object.entries(PRIORITY_LABELS).map(([key, label]) => (
@@ -740,8 +746,8 @@ export default function OnlineGrowthAudit() {
               <section className="audit-section-card audit-list-grid" aria-labelledby="wins-title">
                 <div>
                   <div className="audit-section-heading">
-                    <p>Snel verbeteren</p>
-                    <h2 id="wins-title">Quick wins</h2>
+                    <p>Snel aan de slag</p>
+                    <h2 id="wins-title">Kleine verbeteringen</h2>
                   </div>
                   <ul>
                     {results.quickWins?.map((item) => (
@@ -751,8 +757,8 @@ export default function OnlineGrowthAudit() {
                 </div>
                 <div>
                   <div className="audit-section-heading">
-                    <p>Roadmap</p>
-                    <h2>Aanbevelingen</h2>
+                    <p>Volgende stappen</p>
+                    <h2>Verder werken aan je website</h2>
                   </div>
                   <ul>
                     {results.recommendations?.map((item) => (
@@ -783,8 +789,8 @@ export default function OnlineGrowthAudit() {
                   <FileText size={26} aria-hidden="true" />
                   <h2>Bespreek je belangrijkste groeikansen</h2>
                   <p>
-                    We vertalen de gemeten signalen naar concrete experimenten voor
-                    zichtbaarheid, vertrouwen en conversie. Resultaten zijn nooit gegarandeerd.
+                    Wil je hulp bij de verbeterpunten? Bespreek je rapport met ons.
+                    Samen bekijken we welke stappen passen bij je bedrijf en je budget.
                   </p>
                 </div>
                 <div>
@@ -794,6 +800,21 @@ export default function OnlineGrowthAudit() {
               </section>
             </section>
           ) : null}
+
+          <section className="audit-section-card" aria-labelledby="audit-faq-title">
+            <div className="audit-section-heading">
+              <p>Over de websitecheck</p>
+              <h2 id="audit-faq-title">Veelgestelde vragen</h2>
+            </div>
+            <div className="audit-list-grid">
+              {FAQS.map((faq) => (
+                <article className="audit-priority-card audit-score-card" key={faq.question}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </article>
+              ))}
+            </div>
+          </section>
         </main>
         {connectionGuide ? (
           <div className="audit-dialog-backdrop" role="presentation" onMouseDown={() => setConnectionKey("")}>
@@ -819,10 +840,10 @@ export default function OnlineGrowthAudit() {
                 {connectionGuide.steps.map((step) => <li key={step}>{step}</li>)}
               </ol>
               <div className="audit-dialog-notice">
-                Dit is bewust geen directe openbare login: eerst moet worden vastgesteld dat de aanvrager eigenaar of beheerder van de website is.
+                Via deze knop stuur je een vraag naar Vedantix. Er wordt nog geen account gekoppeld of toegang verleend.
               </div>
               <div className="audit-dialog-actions">
-                <a href={connectionRequestUrl}>Koppeling aanvragen via WhatsApp</a>
+                <a href={connectionRequestUrl}>Bespreek dit via WhatsApp</a>
                 <button type="button" onClick={() => setConnectionKey("")}>Sluiten</button>
               </div>
             </section>
