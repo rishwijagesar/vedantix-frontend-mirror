@@ -11,7 +11,7 @@ const HERO_CHECKS = [
 export default function HomeHero() {
   return (
     <>
-      <section className="hero hero--live">
+      <section className="hero hero--photo">
         <div className="hero-container">
           <div className="hero-content">
             <div className="hero-eyebrow">Websites, AI & apps voor ondernemers</div>
@@ -27,10 +27,6 @@ export default function HomeHero() {
             <p className="hero-sub">
               Websites die klanten aantrekken. AI en apps die werk uit handen nemen.
               Wij helpen jouw bedrijf groeien én slimmer werken.
-            </p>
-
-            <p className="hero-sub hero-sub-strong">
-              Van eerste idee tot een oplossing die voor je werkt.
             </p>
 
             <div className="hero-ctas">
@@ -56,11 +52,28 @@ export default function HomeHero() {
             </div>
           </div>
 
+        </div>
+        <div className="hero-visual">
+          <picture>
+            <source
+              srcSet="/images/vedantix-ondernemers-hero-small.webp 768w, /images/vedantix-ondernemers-hero.webp 1536w"
+              sizes="(max-width: 900px) 100vw, 64vw"
+              type="image/webp"
+            />
+            <img
+              src="/images/vedantix-ondernemers-hero.webp"
+              alt="Sfeerbeeld van twee ondernemers die tevreden samen aan een laptop werken."
+              width="1536"
+              height="1024"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </picture>
           <HeroLiveExperience />
         </div>
       </section>
 
-      <section className="hero-trust-section" aria-label="Waarom ondernemers kiezen voor Vedantix">
+      <section className="hero-trust-section hero-trust-section--light" aria-label="Waarom ondernemers kiezen voor Vedantix">
         <div className="hero-trust-container">
           {HERO_CHECKS.map((item) => (
             <div className="hero-trust-item" key={item}>
@@ -83,4 +96,3 @@ export default function HomeHero() {
     </>
   );
 }
-

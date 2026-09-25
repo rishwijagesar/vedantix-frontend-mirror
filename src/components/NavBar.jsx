@@ -31,12 +31,13 @@ export default function NavBar() {
 
   const headerClassName = [
     "site-header",
-    scrolled || !isHomePage ? "is-solid" : "",
+    "is-solid",
+    isHomePage && !scrolled ? "is-home" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
-  const logoTheme = scrolled || !isHomePage ? "dark" : "light";
+  const logoTheme = "dark";
 
   return (
     <header className={headerClassName}>
@@ -64,4 +65,5 @@ export default function NavBar() {
     </header>
   );
 }
+
 
