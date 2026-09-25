@@ -789,3 +789,50 @@
 }
 
 @media(prefers-reduced-motion:reduce){.hero-eyebrow::before,.hero-mockup{animation:none}}
+
+
+
+/* The interactive scene gets equal space and a content-sized hero on large screens. */
+.hero.hero--live {
+  min-height: 0;
+  padding: clamp(116px, 9vw, 150px) 5% 62px;
+}
+.hero--live .hero-container {
+  max-width: 1360px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: clamp(34px, 4.5vw, 70px);
+  align-items: center;
+}
+.hero--live .hero-content { max-width: 640px; }
+.hero--live h1 {
+  font-size: clamp(2.55rem, 3.55vw, 3.85rem);
+  line-height: 1.09;
+  letter-spacing: -0.035em;
+  margin: 0 0 20px;
+  max-width: 640px;
+}
+.hero--live .hero-eyebrow { margin-bottom: 20px; }
+.hero--live .hero-sub { max-width: 570px; font-size: clamp(0.94rem, 1.1vw, 1.04rem); line-height: 1.7; margin-bottom: 15px; }
+.hero--live .hero-sub-strong { margin-bottom: 25px; }
+.hero--live .hero-ctas { gap: 10px; margin-bottom: 13px; }
+.hero--live .hero-cta-note { line-height: 1.65; }
+@media (max-width: 1100px) and (min-width: 901px) {
+  .hero--live .hero-container { gap: 28px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .hero--live h1 { font-size: clamp(2.2rem, 3.7vw, 2.6rem); }
+  .hero--live .hero-eyebrow { font-size: 0.56rem; letter-spacing: 1.1px; padding: 7px 10px; }
+}
+@media (max-width: 900px) {
+  .hero.hero--live { padding: 112px 6% 44px; }
+  .hero--live .hero-container { grid-template-columns: minmax(0, 1fr); gap: 44px; max-width: 640px; }
+  .hero--live .hero-content { max-width: 620px; }
+  .hero--live h1 { font-size: clamp(2.45rem, 6.2vw, 3.6rem); }
+}
+@media (max-width: 480px) {
+  .hero.hero--live { padding: 100px 5% 35px; }
+  .hero--live .hero-container { gap: 35px; }
+  .hero--live h1 { font-size: clamp(1.95rem, 8.3vw, 2.4rem); line-height: 1.13; }
+  .hero--live .hero-eyebrow { font-size: 0.51rem; padding: 7px 10px; letter-spacing: 1px; }
+  .hero--live .hero-sub { font-size: 0.9rem; }
+  .hero--live .hero-sub-strong { font-size: 0.86rem; margin-bottom: 20px; }
+  .hero--live .hero-cta-note { font-size: 0.64rem; }
+}
