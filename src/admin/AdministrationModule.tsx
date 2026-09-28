@@ -22,6 +22,9 @@ function linkLabel(doc:Evidence,data:AdminData){if(doc.entry_id){const e=data.en
 export function AdministrationOverview({data,p,onTab}:{data:AdminData;p:Period;onTab:(tab:string)=>void}){
  const s=summarize(data,p);
  return <div className="space-y-5">
+  <div role="note" className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+   <strong>Controleer ook e-Boekhouden.</strong> Dit overzicht telt alleen aankopen en bankregels die in Vedantix zijn vastgelegd. Boekingen die je rechtstreeks in e-Boekhouden invoert, verschijnen hier niet automatisch. Vergelijk beide administraties op factuurnummer voordat je een aankoop toevoegt of overzet; anders kun je kosten dubbel registreren. <a className="font-semibold underline" href="/admin/billing?section=accounting">Bekijk de koppeling</a>.
+  </div>
   <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
    <Metric label="Omzet" value={s.revenue} help="Verkoopfacturen min creditnota’s, exclusief btw."/>
    <Metric label="Zakelijke kosten" value={s.costs} help="Zakelijk deel, inclusief btw die je niet terugvraagt."/>
