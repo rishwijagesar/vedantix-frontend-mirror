@@ -31,10 +31,10 @@ export default function HomeHero() {
 
             <div className="hero-ctas">
               <a
-                href="/diensten"
+                href="/online-groei-audit"
                 className="hero-btn-primary"
               >
-                Ontdek onze diensten →
+                Gratis Online Groei Audit →
               </a>
 
               <a
