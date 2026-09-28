@@ -70,8 +70,9 @@ export default function BillingPreviewModal({ open, html, title, onClose }: { op
     try {
       frameWindow.focus();
       frameWindow.print();
-    } finally {
-      window.setTimeout(restoreTitle, 1500);
+    } catch (error) {
+      restoreTitle();
+      throw error;
     }
   };
 
