@@ -165,7 +165,7 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
       <div class="sum-row total"><span>${isCredit ? "Te crediteren" : "Totaal incl. btw"}</span><strong>${euro.format(totalIncl)}</strong></div>
     </section>`;
 
-  const printTitle = billingDocumentFilename(kind, document).replace(/\.pdf$/i, "").replaceAll("-", " ");
+  const printTitle = billingDocumentFilename(kind, document).replace(/\.pdf$/i, "");
   return `<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>${esc(printTitle)}</title>
   <style>
     @page{size:A4;margin:15mm}*{box-sizing:border-box}body{font-family:Inter,Arial,sans-serif;color:#0f172a;margin:0;background:#fff;font-size:12px;line-height:1.45}
