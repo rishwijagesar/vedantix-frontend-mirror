@@ -104,7 +104,10 @@ function quoteCostOverview(items: BillingItem[], quote: Quote) {
 
 export function billingDocumentFilename(kind: DocumentKind, document: BillingDocument) {
   const number = kind === "QUOTE" ? (document as Quote).quote_number : kind === "INVOICE" ? (document as Invoice).invoice_number : (document as CreditNote).credit_number;
-  return `${number || kind.toLowerCase()}-${new Date().toISOString().slice(0,10)}.pdf`;
+  const customer = (document.customer_snapshot ?? {}) as CustomerSnapshot;
+  const safePart = (value: string) => value.trim().replace(/[^\p{L}\p{N}._-]+/gu, "-").replace(/^-+|-+$/g, "");
+  const label = kind === "QUOTE" ? "Offerte" : kind === "INVOICE" ? "Factuur" : "Creditnota";
+  return `${label}-${safePart(number || "Concept")}-${safePart(customer.company_name || customer.contact_name || "Klant")}.pdf`;
 }
 
 export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingDocument, items: BillingItem[], currentProfile?: CompanyProfile | null) {
@@ -162,7 +165,8 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
       <div class="sum-row total"><span>${isCredit ? "Te crediteren" : "Totaal incl. btw"}</span><strong>${euro.format(totalIncl)}</strong></div>
     </section>`;
 
-  return `<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>${esc(title)} ${esc(number)}</title>
+  const printTitle = billingDocumentFilename(kind, document).replace(/\.pdf$/i, "").replaceAll("-", " ");
+  return `<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>${esc(printTitle)}</title>
   <style>
     @page{size:A4;margin:15mm}*{box-sizing:border-box}body{font-family:Inter,Arial,sans-serif;color:#0f172a;margin:0;background:#fff;font-size:12px;line-height:1.45}
     .page{max-width:180mm;margin:0 auto}.top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0f172a;padding-bottom:18px;margin-bottom:26px}
