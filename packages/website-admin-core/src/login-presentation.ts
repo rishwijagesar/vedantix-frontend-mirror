@@ -24,7 +24,7 @@ export const DEFAULT_LOGIN_PRESENTATION: Readonly<LoginPresentation> = Object.fr
   storyTitle: "Mooi ontworpen.\nMakkelijk beheerd.",
   storyText: "Een vertrouwde plek voor je teksten, afbeeldingen en behandelingen.",
   heading: "Welkom terug",
-  description: "Werk je website bij op een moment dat jou uitkomt.",
+  description: "Log in met je e-mailadres en wachtwoord.",
   primaryColor: "#173963",
   backgroundColor: "#F6F8FC",
   borderRadius: "16px",

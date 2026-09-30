@@ -1,6 +1,6 @@
 {
   "name": "@vedantix/website-admin-core",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Shared Vedantix website administration shell and adapter contracts",
   "type": "module",
   "main": "./dist/index.js",
@@ -12,7 +12,7 @@
   },
   "files": ["dist", "src", "styles.css", "README.md", "build.mjs", "test"],
   "sideEffects": ["./styles.css"],
-  "scripts": { "build": "node build.mjs", "test": "node --experimental-strip-types --test test/*.test.ts" },
+  "scripts": { "build": "node build.mjs", "test": "node --experimental-strip-types --test test/*.test.ts test/*.test.mjs" },
   "peerDependencies": { "react": ">=18.0.0 <20.0.0", "react-dom": ">=18.0.0 <20.0.0" },
   "devDependencies": { "esbuild": "0.27.3", "typescript": "5.9.3", "@types/react": "19.2.0" }
 }

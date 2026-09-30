@@ -5,7 +5,10 @@ export type WebsiteAdminLoginMode = "customer" | "platform";
 export interface WebsiteAdminLoginCredentials { email: string; password: string; mode: WebsiteAdminLoginMode }
 export interface WebsiteAdminLoginProps {
   site: AdminSite; onSubmit: (credentials: WebsiteAdminLoginCredentials) => void | Promise<void>;
-  mode?: WebsiteAdminLoginMode; onModeChange?: (mode: WebsiteAdminLoginMode) => void;
+  /** @deprecated Compatibility only; account types are never shown in the login UI. */
+  mode?: WebsiteAdminLoginMode;
+  /** @deprecated Retained for compatibility; the unified form never calls this callback. */
+  onModeChange?: (mode: WebsiteAdminLoginMode) => void;
   busy?: boolean; error?: string | null; notice?: string | null; recoveryUrl?: string;
   supportEmail?: string; returnUrl?: string; demoUrl?: string; footer?: ReactNode; className?: string;
 }

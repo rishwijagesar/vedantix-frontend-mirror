@@ -7,7 +7,9 @@ export interface WebsiteAdminLoginCredentials { email: string; password: string;
 export interface WebsiteAdminLoginProps {
   site: AdminSite;
   onSubmit: (credentials: WebsiteAdminLoginCredentials) => void | Promise<void>;
+  /** @deprecated Compatibility only; account types are never shown in the login UI. */
   mode?: WebsiteAdminLoginMode;
+  /** @deprecated Retained for compatibility; the unified form never calls this callback. */
   onModeChange?: (mode: WebsiteAdminLoginMode) => void;
   busy?: boolean;
   error?: string | null;

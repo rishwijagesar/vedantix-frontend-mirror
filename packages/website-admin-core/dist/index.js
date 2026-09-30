@@ -161,7 +161,7 @@ var DEFAULT_LOGIN_PRESENTATION = Object.freeze({
   storyTitle: "Mooi ontworpen.\nMakkelijk beheerd.",
   storyText: "Een vertrouwde plek voor je teksten, afbeeldingen en behandelingen.",
   heading: "Welkom terug",
-  description: "Werk je website bij op een moment dat jou uitkomt.",
+  description: "Log in met je e-mailadres en wachtwoord.",
   primaryColor: "#173963",
   backgroundColor: "#F6F8FC",
   borderRadius: "16px"
@@ -265,7 +265,7 @@ import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function Arrow() {
   return /* @__PURE__ */ jsx2("svg", { width: "17", height: "17", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", children: /* @__PURE__ */ jsx2("path", { d: "M19 12H5m7-7-7 7 7 7" }) });
 }
-function WebsiteAdminLogin({ site, onSubmit, mode = "customer", onModeChange, busy = false, error, notice, recoveryUrl, supportEmail, returnUrl, demoUrl, footer, className = "" }) {
+function WebsiteAdminLogin({ site, onSubmit, mode = "customer", busy = false, error, notice, recoveryUrl, supportEmail, returnUrl, demoUrl, footer, className = "" }) {
   const [email, setEmail] = useState2("");
   const [password, setPassword] = useState2("");
   const [submitting, setSubmitting] = useState2(false);
@@ -292,13 +292,6 @@ function WebsiteAdminLogin({ site, onSubmit, mode = "customer", onModeChange, bu
     setPassword("");
     setLocalError("");
   }, [mode]);
-  function chooseMode(next) {
-    interacted.current = true;
-    if (next === mode || pending) return;
-    setPassword("");
-    setLocalError("");
-    onModeChange?.(next);
-  }
   async function submit(event) {
     event.preventDefault();
     interacted.current = true;
@@ -351,13 +344,8 @@ function WebsiteAdminLogin({ site, onSubmit, mode = "customer", onModeChange, bu
           ] })
         ] }),
         /* @__PURE__ */ jsx2("h2", { id: `${formId}-heading`, children: presentation.heading }),
-        /* @__PURE__ */ jsx2("p", { className: "va-login-description", children: presentation.description }),
-        onModeChange && /* @__PURE__ */ jsxs2("div", { className: "va-login-modes", role: "group", "aria-label": "Kies je accounttype", children: [
-          /* @__PURE__ */ jsx2("button", { type: "button", "aria-pressed": mode === "customer", disabled: pending, onClick: () => chooseMode("customer"), children: "Mijn website" }),
-          /* @__PURE__ */ jsx2("button", { type: "button", "aria-pressed": mode === "platform", disabled: pending, onClick: () => chooseMode("platform"), children: "Vedantix-beheerder" })
-        ] }),
-        /* @__PURE__ */ jsx2("p", { className: "va-login-account-note", id: `${formId}-account-note`, children: mode === "platform" ? "Gebruik je Vedantix-beheeraccount voor deze website." : `Gebruik je bestaande account voor ${site.name}.` }),
-        /* @__PURE__ */ jsxs2("form", { className: "va-login-form", onSubmit: submit, "aria-describedby": `${formId}-account-note`, "aria-busy": pending, onInputCapture: () => {
+        /* @__PURE__ */ jsx2("p", { className: "va-login-description", id: `${formId}-description`, children: presentation.description }),
+        /* @__PURE__ */ jsxs2("form", { className: "va-login-form", onSubmit: submit, "aria-describedby": `${formId}-description`, "aria-busy": pending, onInputCapture: () => {
           interacted.current = true;
         }, children: [
           /* @__PURE__ */ jsx2("label", { htmlFor: `${formId}-email`, children: "E-mailadres" }),
