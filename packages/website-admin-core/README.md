@@ -1,8 +1,9 @@
 # @vedantix/website-admin-core
 
-Versioned React 18/19 shell shared by independently deployed Vedantix customer websites.
-It provides responsive navigation, grouped modules, a consistent Vedantix theme and layout slots.
-Existing site editors and backend permissions remain in the consuming website.
+Versioned React 18/19 shell and login shared by independently deployed Vedantix customer websites.
+Version 0.2.0 provides responsive navigation, grouped modules, a consistent Vedantix theme,
+layout slots and `WebsiteAdminLogin`. Existing account providers, credentials, site editors
+and backend permissions remain in the consuming website.
 
 ```tsx
 import { WebsiteAdminShell, type AdminModule } from '@vedantix/website-admin-core';
@@ -32,5 +33,41 @@ Use `status` for a banner and render a detailed page heading inside `children` i
 
 Build: `npm install` then `npm run build`. No React runtime is bundled.
 Distribution: `npm pack`, copy the resulting archive into each site's `vendor/`, then depend on
-`file:vendor/vedantix-website-admin-core-0.1.0.tgz` and update that site's lockfile.
+`file:vendor/vedantix-website-admin-core-0.2.0.tgz` and update that site's lockfile.
 A shared version change is rolled out explicitly to each site; no private registry is required.
+
+## Shared login, existing accounts
+
+```tsx
+import { WebsiteAdminLogin } from '@vedantix/website-admin-core';
+<WebsiteAdminLogin site={site} mode={selectedMode} onModeChange={selectMode}
+  onSubmit={({ email, password, mode }) => signInToSelectedProvider(email, password, mode)}
+  busy={busy} error={error} recoveryUrl={recoveryForSelectedMode}
+  supportEmail="info@vedantix.nl" footer={existingActivationLink} />
+```
+
+The default mode is `customer`. The optional explicit `platform` choice is labeled
+“Vedantix-beheerder”. The component never tries credentials with a second provider,
+sets a password policy, migrates an account or sends a recovery email itself. Existing
+passwords are passed unchanged. The customer website supplies its existing sign-in and
+recovery routes. Password fields are cleared when the selected mode changes.
+
+## Central presentation updates
+
+On a new login-screen visit the component requests the fixed public URL
+`https://vedantix.nl/api/public/website-admin-login`. This is a validated JSON presentation,
+not remotely executable code or an external CSS file. It can change text, `split`/`centered`
+layout, two colors and an enumerated corner radius. The endpoint uses public caching up to
+60 seconds. All consumers already on 0.2.0 can receive those presentation changes without
+a site rebuild, on a subsequent visit once the cached response is stale.
+
+The local blue design appears immediately. The request omits credentials and referrer,
+rejects redirects, stops after three seconds and accepts at most 4096 bytes. Unknown fields,
+HTML, URLs, CSS expressions, unsupported values or colors with inadequate contrast fail
+validation. A failed request keeps the local design. A response received after focus,
+typing or interaction cannot change the active form layout.
+
+Tenant identity, credential fields, labels, provider choice, authentication callbacks,
+recovery/support links and security messages are never controlled by that JSON. New
+structural features still require a new package release and explicit consumer update;
+the pinned tarball itself does not update automatically.
