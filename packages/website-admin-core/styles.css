@@ -2,6 +2,7 @@
 .va-shell,.va-shell *,.va-shell *::before,.va-shell *::after{box-sizing:border-box}
 .va-shell .va-sidebar{position:sticky;top:0;display:flex;flex-direction:column;flex-shrink:0;width:252px;height:100dvh;padding:30px 18px 22px;background:var(--va-surface);border-right:1px solid var(--va-border);overflow-y:auto;overscroll-behavior:contain}
 .va-shell .va-sidebar-brand{padding:0 12px 28px}
+.va-shell .va-sidebar-brand,.va-shell .va-mobile-brand,.va-shell .va-site,.va-shell .va-account{flex-shrink:0}
 .va-shell .va-brand{display:inline-flex;align-items:flex-start;color:var(--va-primary);font-size:31px;font-weight:800;line-height:1;letter-spacing:-1.5px;text-decoration:none}
 .va-shell .va-brand span{margin:3px 0 0 3px;font-size:12px;letter-spacing:0}
 .va-shell .va-site{display:flex;gap:12px;align-items:center;padding:16px 10px;margin-bottom:18px;border-top:1px solid var(--va-border);border-bottom:1px solid var(--va-border)}
@@ -9,9 +10,9 @@
 .va-shell .va-site-info{min-width:0}
 .va-shell .va-site-info strong{display:block;font-size:12px;font-weight:700;overflow-wrap:anywhere}
 .va-shell .va-site-info span{display:block;font-size:10px;color:var(--va-muted);margin-top:3px}
-.va-shell .va-nav{flex:1;min-height:0}
+.va-shell .va-nav{flex:1 0 auto;min-height:auto}
 .va-shell .va-nav-group{margin:0 0 20px}
-.va-shell .va-nav-label{margin:0;padding:0 12px 7px;font-size:10px;font-weight:700;line-height:1.5;letter-spacing:1.5px;text-transform:uppercase;color:var(--va-muted)}
+.va-shell .va-nav-label{font-family:inherit;margin:0;padding:0 12px 7px;font-size:10px;font-weight:700;line-height:1.5;letter-spacing:1.5px;text-transform:uppercase;color:var(--va-muted)}
 .va-shell .va-nav-list{margin:0;padding:0;list-style:none}
 .va-shell .va-nav-list>li{margin:3px 0;padding:0;list-style:none}
 .va-shell .va-nav-button{display:flex;gap:11px;align-items:center;width:100%;min-height:43px;border:0;border-radius:7px;background:transparent;color:var(--va-muted);padding:11px 12px;text-align:left;font:inherit;font-size:12px;line-height:1.4;cursor:pointer}

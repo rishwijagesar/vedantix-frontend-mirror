@@ -1,6 +1,6 @@
 {
   "name": "@vedantix/website-admin-core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Shared Vedantix website administration shell and adapter contracts",
   "type": "module",
   "main": "./dist/index.js",
