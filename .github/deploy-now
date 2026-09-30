@@ -1,2 +1,2 @@
-2026-09-30: publish verified customer access UI and shared website-admin core from PR #88.
-CI 36749500330 passed; no invitations are sent by this deployment.
+2026-09-30: publish shared login presentation endpoint and website-admin core 0.2.0 from PR #89.
+CI 36760756157 passed. Existing accounts, passwords and permissions remain unchanged.
