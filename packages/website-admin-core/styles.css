@@ -51,3 +51,59 @@
 .va-shell .va-nav-button:focus-visible,.va-shell .va-public-link:focus-visible,.va-shell .va-brand:focus-visible,.va-shell .va-menu-button:focus-visible,.va-shell .va-icon-button:focus-visible,.va-shell .va-signout:focus-visible{outline:3px solid #4687dc;outline-offset:3px}
 @media(max-width:1023px){.va-shell .va-sidebar{display:none}.va-shell .va-menu-button{display:inline-flex}.va-shell .va-topbar{padding:13px 22px}.va-shell .va-content{padding:28px 22px 36px}.va-shell .va-status{padding:12px 22px}.va-shell .va-bottom-bar{padding:14px 22px}}
 @media(max-width:600px){.va-shell .va-topbar{padding:11px 14px;gap:10px;min-height:70px;align-items:center;flex-wrap:wrap}.va-shell .va-topbar-actions{gap:8px}.va-shell .va-public-link>span{display:none}.va-shell .va-public-link{min-width:40px;min-height:40px;justify-content:center}.va-shell .va-content{padding:24px 15px 32px}.va-shell .va-status{padding:12px 15px}.va-shell .va-bottom-bar{padding:12px 15px}.va-shell .va-topbar-title{gap:10px}.va-shell .va-menu-button>span{display:none}}
+
+.va-login{--va-login-primary:#173963;--va-login-bg:#f6f8fc;--va-login-radius:16px;display:grid;grid-template-columns:1fr 1fr;min-height:100dvh;background:var(--va-login-bg);color:#0f172a;font-family:Manrope,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5;isolation:isolate}
+.va-login,.va-login *,.va-login *::before,.va-login *::after{box-sizing:border-box}
+.va-login .va-login-story{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:55px;padding:clamp(35px,5vw,76px);color:white;background:var(--va-login-primary);overflow:hidden}
+.va-login .va-login-story::after{content:"";position:absolute;bottom:-190px;right:-220px;pointer-events:none;width:580px;height:580px;border:1px solid rgb(255 255 255 / 14%);border-radius:50%;box-shadow:0 0 0 90px rgb(255 255 255 / 3%),0 0 0 180px rgb(255 255 255 / 2%)}
+.va-login .va-login-brand{display:inline-flex;align-items:flex-start;align-self:flex-start;font-size:35px;font-weight:800;line-height:1.05;letter-spacing:-1.5px;text-decoration:none;color:inherit;position:relative;z-index:1}
+.va-login .va-login-brand>span{font-size:12px;letter-spacing:0;margin:4px 0 0 4px}
+.va-login .va-login-story-copy{position:relative;z-index:1;padding:35px 0;max-width:500px}
+.va-login .va-login-eyebrow{margin:0 0 25px;font-size:12px;font-weight:700;line-height:1.6;letter-spacing:2.3px;color:white}
+.va-login .va-login-story h1{margin:0 0 28px;color:white;font-size:clamp(34px,3.6vw,55px);font-weight:500;line-height:1.17;letter-spacing:-1.8px;white-space:pre-line;overflow-wrap:anywhere}
+.va-login .va-login-story-text{max-width:385px;margin:0;color:white;font-size:16px;line-height:1.95}
+.va-login .va-login-signature{position:relative;z-index:1;margin:0;color:white;font-size:12px;line-height:1.8}
+.va-login .va-login-form-side{display:flex;flex-direction:column;min-width:0;padding:32px clamp(22px,4.5vw,70px);background:var(--va-login-bg)}
+.va-login .va-login-back{display:inline-flex;align-items:center;align-self:flex-start;gap:8px;color:#0f172a;font-size:14px;line-height:1.6;text-decoration:none;margin-bottom:35px;overflow-wrap:anywhere}
+.va-login .va-login-back>svg{flex-shrink:0}
+.va-login .va-login-card{max-width:430px;width:100%;margin:auto;padding:32px;background:white;border:1px solid #e2e8f0;border-radius:var(--va-login-radius);box-shadow:0 12px 42px rgb(27 57 93 / 4%)}
+.va-login .va-login-compact-brand{display:none;color:var(--va-login-primary);margin-bottom:28px}
+.va-login .va-login-tenant{display:flex;align-items:center;gap:12px;margin:0 0 25px;min-width:0}
+.va-login .va-login-tenant>img{width:46px;height:46px;object-fit:contain;border:1px solid #e2e8f0;border-radius:9px;flex-shrink:0;background:white}
+.va-login .va-login-tenant>div{min-width:0}
+.va-login .va-login-tenant span{display:block;font-size:12px;color:#52647d;letter-spacing:.9px;text-transform:uppercase}
+.va-login .va-login-tenant strong{display:block;font-size:14px;font-weight:600;margin-top:3px;overflow-wrap:anywhere;color:#263c59}
+.va-login .va-login-card h2{font-size:28px;font-weight:700;line-height:1.25;letter-spacing:-.8px;margin:0 0 12px;color:#0f172a}
+.va-login .va-login-description{color:#52647d;font-size:16px;line-height:1.9;margin:0 0 23px;overflow-wrap:anywhere}
+.va-login .va-login-modes{display:flex;gap:4px;padding:4px;margin:24px 0 15px;border:1px solid #dbe4ef;border-radius:9px;background:#f4f7fb}
+.va-login .va-login-modes>button{flex:1;padding:10px 7px;min-height:42px;border:0;border-radius:6px;background:transparent;color:#40536d;font:inherit;font-size:14px;font-weight:600;line-height:1.5;cursor:pointer}
+.va-login .va-login-modes>button[aria-pressed=true]{background:white;color:var(--va-login-primary);box-shadow:0 1px 5px rgb(22 44 72 / 9%)}
+.va-login .va-login-account-note{font-size:14px;line-height:1.75;color:#52647d;margin:0 0 22px}
+.va-login .va-login-form{display:flex;flex-direction:column;margin:0;padding:0}
+.va-login .va-login-form>label{font-size:14px;font-weight:600;line-height:1.5;margin:0 0 8px;color:#263c59}
+.va-login .va-login-form>input{display:block;width:100%;min-height:47px;margin:0 0 20px;padding:12px 13px;border:1px solid #cbd6e5;border-radius:7px;background:white;color:#0f172a;font:inherit;font-size:16px;line-height:1.5;outline:none;box-shadow:none}
+.va-login .va-login-form>input:focus{border-color:var(--va-login-primary);outline:2px solid var(--va-login-primary);outline-offset:2px}
+.va-login .va-login-submit{display:flex;align-items:center;justify-content:center;width:100%;min-height:47px;padding:12px 16px;border:1px solid var(--va-login-primary);border-radius:7px;background:var(--va-login-primary);color:white;font:inherit;font-size:14px;font-weight:700;line-height:1.6;cursor:pointer}
+.va-login .va-login-submit:hover:not(:disabled){filter:brightness(.93)}
+.va-login .va-login-modes>button:disabled,.va-login .va-login-submit:disabled,.va-login .va-login-form>input:disabled{cursor:wait;opacity:.65}
+.va-login .va-login-recovery{align-self:center;margin-top:17px;color:var(--va-login-primary);font-size:14px;line-height:1.7;text-decoration:underline;text-underline-offset:3px}
+.va-login .va-login-error,.va-login .va-login-notice{margin:0 0 17px;padding:12px 14px;border-radius:7px;font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+.va-login .va-login-error{border:1px solid #f6d0ce;background:#fff2f0;color:#992a24}
+.va-login .va-login-notice{border:1px solid #cce4d6;background:#edf8f1;color:#23543b}
+.va-login .va-login-help{margin:24px 0 0;text-align:center;color:#52647d;font-size:14px;line-height:1.8}
+.va-login .va-login-help>a,.va-login .va-login-footer a{color:var(--va-login-primary);text-decoration:underline;text-underline-offset:3px}
+.va-login .va-login-demo{border-top:1px solid #e2e8f0;margin-top:25px;padding-top:22px;text-align:center}
+.va-login .va-login-demo>a{font-size:14px;color:var(--va-login-primary);text-decoration:none;line-height:1.8;font-weight:600}
+.va-login .va-login-demo>span{display:block;font-size:12px;color:#52647d;margin-top:5px;line-height:1.7}
+.va-login .va-login-footer{margin-top:22px;text-align:center;font-size:14px;line-height:1.8;color:#52647d}
+.va-login .va-login-submit:focus-visible,.va-login .va-login-modes>button:focus-visible,.va-login a:focus-visible{outline:3px solid #4687dc;outline-offset:4px}
+.va-login .va-login-story a:focus-visible{outline-color:white}
+.va-login-centered{display:flex;align-items:center;justify-content:center;padding:35px 20px}
+.va-login-centered .va-login-story{display:none}
+.va-login-centered .va-login-form-side{width:min(100%,510px);padding:0}
+.va-login-centered .va-login-card{max-width:510px;padding:38px 42px}
+.va-login-centered .va-login-compact-brand{display:block}
+.va-login-centered .va-login-back{margin-bottom:20px}
+@media(max-width:1000px){.va-login .va-login-story{padding:36px}.va-login .va-login-form-side{padding:28px 24px}.va-login .va-login-card{padding:27px}.va-login .va-login-story h1{font-size:37px}}
+@media(max-width:760px){.va-login{grid-template-columns:1fr;min-height:100dvh}.va-login .va-login-story{padding:23px 25px;gap:0}.va-login .va-login-story-copy,.va-login .va-login-signature{display:none}.va-login .va-login-brand{font-size:30px}.va-login .va-login-form-side{padding:23px 20px 32px}.va-login .va-login-back{margin-bottom:22px}.va-login .va-login-card{margin:0 auto;padding:27px 23px}.va-login .va-login-card h2{font-size:27px}.va-login-centered{padding:20px 0}.va-login-centered .va-login-form-side{width:100%;max-width:510px}.va-login-centered .va-login-card{padding:30px 24px}}
+@media(prefers-reduced-motion:reduce){.va-login *{scroll-behavior:auto!important}}

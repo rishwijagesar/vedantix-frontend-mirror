@@ -198,4 +198,4 @@ jobs:
         working-directory: tests/client-access
         run: npm test
       - name: Client access UI requests and shared navigation tests
-        run: node --experimental-strip-types --test scripts/client-access-api.test.ts packages/website-admin-core/test/navigation.test.ts
+        run: node --experimental-strip-types --test scripts/client-access-api.test.ts scripts/website-admin-login.test.ts packages/website-admin-core/test/*.test.ts

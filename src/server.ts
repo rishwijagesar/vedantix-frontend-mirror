@@ -1,5 +1,6 @@
 import { publicReviews } from "./lib/public-reviews.server.js";
 import { metaPixelProxy } from "./lib/meta-pixel-proxy.server.js";
+import { websiteAdminLogin } from "./lib/website-admin-login.server.js";
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
@@ -48,6 +49,7 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const pathname = new URL(request.url).pathname;
+      if (pathname === "/api/public/website-admin-login") return websiteAdminLogin(request);
       if (pathname === "/api/public-reviews") return publicReviews(request);
       if (pathname.startsWith("/integrations/meta-pixel/")) return metaPixelProxy(request);
       const handler = await getServerEntry();
@@ -62,4 +64,3 @@ export default {
     }
   },
 };
-

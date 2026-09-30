@@ -2,6 +2,23 @@ import type { CSSProperties, ReactNode } from "react";
 
 export interface AdminSite { id: string; name: string; publicUrl: string; logoUrl?: string }
 export interface AdminUser { label: string; email?: string }
+export type WebsiteAdminLoginMode = "customer" | "platform";
+export interface WebsiteAdminLoginCredentials { email: string; password: string; mode: WebsiteAdminLoginMode }
+export interface WebsiteAdminLoginProps {
+  site: AdminSite;
+  onSubmit: (credentials: WebsiteAdminLoginCredentials) => void | Promise<void>;
+  mode?: WebsiteAdminLoginMode;
+  onModeChange?: (mode: WebsiteAdminLoginMode) => void;
+  busy?: boolean;
+  error?: string | null;
+  notice?: string | null;
+  recoveryUrl?: string;
+  supportEmail?: string;
+  returnUrl?: string;
+  demoUrl?: string;
+  footer?: ReactNode;
+  className?: string;
+}
 export interface AdminModuleDefinition {
   id: string;
   label: string;

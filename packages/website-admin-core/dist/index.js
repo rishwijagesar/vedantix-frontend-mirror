@@ -142,9 +142,257 @@ function WebsiteAdminShell({ site, user, modules, activeModuleId, onModuleChange
     ] })
   ] });
 }
+
+// src/WebsiteAdminLogin.tsx
+import { useEffect as useEffect3, useId as useId2, useRef as useRef2, useState as useState2 } from "react";
+
+// src/useLoginPresentation.ts
+import { useEffect as useEffect2, useState } from "react";
+
+// src/login-presentation.ts
+var WEBSITE_ADMIN_LOGIN_PRESENTATION_URL = "https://vedantix.nl/api/public/website-admin-login";
+var LOGIN_PRESENTATION_MAX_BYTES = 4096;
+var LOGIN_PRESENTATION_TIMEOUT_MS = 3e3;
+var DEFAULT_LOGIN_PRESENTATION = Object.freeze({
+  version: 1,
+  layout: "split",
+  brandName: "vedantix",
+  eyebrow: "JOUW WEBSITE. JOUW VERHAAL.",
+  storyTitle: "Mooi ontworpen.\nMakkelijk beheerd.",
+  storyText: "Een vertrouwde plek voor je teksten, afbeeldingen en behandelingen.",
+  heading: "Welkom terug",
+  description: "Werk je website bij op een moment dat jou uitkomt.",
+  primaryColor: "#173963",
+  backgroundColor: "#F6F8FC",
+  borderRadius: "16px"
+});
+var textLimits = { brandName: 40, eyebrow: 60, storyTitle: 120, storyText: 280, heading: 80, description: 240 };
+var keys = Object.keys(DEFAULT_LOGIN_PRESENTATION);
+var colorPattern = /^#[0-9a-fA-F]{6}$/;
+function luminance(color) {
+  const channels = [1, 3, 5].map((offset) => {
+    const channel = Number.parseInt(color.slice(offset, offset + 2), 16) / 255;
+    return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+  });
+  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+}
+function contrast(first, second) {
+  const a = luminance(first);
+  const b = luminance(second);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+function validateLoginPresentation(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const data = value;
+  if (Object.keys(data).length !== keys.length || Object.keys(data).some((key) => !keys.includes(key))) return null;
+  if (data["version"] !== 1 || data["layout"] !== "split" && data["layout"] !== "centered") return null;
+  for (const [key, limit] of Object.entries(textLimits)) {
+    const text = data[key];
+    if (typeof text !== "string" || !text.trim() || text.length > limit || /[<>\u0000-\u0008\u000b-\u001f\u007f]/.test(text) || /(?:https?:\/\/|www\.|javascript:|data:|url\s*\()/i.test(text)) return null;
+  }
+  if (typeof data["primaryColor"] !== "string" || !colorPattern.test(data["primaryColor"]) || typeof data["backgroundColor"] !== "string" || !colorPattern.test(data["backgroundColor"])) return null;
+  if (contrast(data["primaryColor"], "#FFFFFF") < 4.5 || contrast(data["backgroundColor"], "#0F172A") < 4.5) return null;
+  if (typeof data["borderRadius"] !== "string" || !["8px", "12px", "16px", "24px"].includes(data["borderRadius"])) return null;
+  return Object.fromEntries(keys.map((key) => [key, data[key]]));
+}
+function mayApplyLoginPresentation(interacted, disposed) {
+  return !interacted && !disposed;
+}
+async function loadLoginPresentation(fetcher = globalThis.fetch, signal) {
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  if (signal?.aborted) return DEFAULT_LOGIN_PRESENTATION;
+  signal?.addEventListener("abort", abort, { once: true });
+  const timer = setTimeout(abort, LOGIN_PRESENTATION_TIMEOUT_MS);
+  let reader;
+  try {
+    const response = await fetcher(WEBSITE_ADMIN_LOGIN_PRESENTATION_URL, {
+      method: "GET",
+      credentials: "omit",
+      referrerPolicy: "no-referrer",
+      redirect: "error",
+      mode: "cors",
+      cache: "default",
+      signal: controller.signal
+    });
+    if (!response.ok || !response.headers.get("content-type")?.toLowerCase().includes("application/json")) return DEFAULT_LOGIN_PRESENTATION;
+    const contentLength = Number(response.headers.get("content-length") || 0);
+    if (contentLength > LOGIN_PRESENTATION_MAX_BYTES || !response.body) return DEFAULT_LOGIN_PRESENTATION;
+    reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8", { fatal: true });
+    let bytes = 0;
+    let json = "";
+    while (true) {
+      const part = await reader.read();
+      if (part.done) break;
+      bytes += part.value.byteLength;
+      if (bytes > LOGIN_PRESENTATION_MAX_BYTES) {
+        await reader.cancel();
+        return DEFAULT_LOGIN_PRESENTATION;
+      }
+      json += decoder.decode(part.value, { stream: true });
+    }
+    json += decoder.decode();
+    return validateLoginPresentation(JSON.parse(json)) || DEFAULT_LOGIN_PRESENTATION;
+  } catch {
+    return DEFAULT_LOGIN_PRESENTATION;
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", abort);
+    reader?.releaseLock();
+  }
+}
+
+// src/useLoginPresentation.ts
+function useLoginPresentation(interaction) {
+  const [presentation, setPresentation] = useState(DEFAULT_LOGIN_PRESENTATION);
+  useEffect2(() => {
+    let disposed = false;
+    const controller = new AbortController();
+    void loadLoginPresentation(globalThis.fetch, controller.signal).then((next) => {
+      if (mayApplyLoginPresentation(interaction.current, disposed)) setPresentation(next);
+    });
+    return () => {
+      disposed = true;
+      controller.abort();
+    };
+  }, [interaction]);
+  return presentation;
+}
+
+// src/WebsiteAdminLogin.tsx
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+function Arrow() {
+  return /* @__PURE__ */ jsx2("svg", { width: "17", height: "17", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", children: /* @__PURE__ */ jsx2("path", { d: "M19 12H5m7-7-7 7 7 7" }) });
+}
+function WebsiteAdminLogin({ site, onSubmit, mode = "customer", onModeChange, busy = false, error, notice, recoveryUrl, supportEmail, returnUrl, demoUrl, footer, className = "" }) {
+  const [email, setEmail] = useState2("");
+  const [password, setPassword] = useState2("");
+  const [submitting, setSubmitting] = useState2(false);
+  const [localError, setLocalError] = useState2("");
+  const formId = useId2();
+  const requestActive = useRef2(false);
+  const mounted = useRef2(true);
+  const interacted = useRef2(false);
+  const presentation = useLoginPresentation(interacted);
+  const pending = busy || submitting;
+  const back = safePublicUrl(returnUrl || site.publicUrl);
+  const recovery = recoveryUrl ? safePublicUrl(recoveryUrl) : null;
+  const demo = demoUrl ? safePublicUrl(demoUrl) : null;
+  const support = supportEmail && /^[^\s@<>?&#]+@[^\s@<>?&#]+\.[^\s@<>?&#]+$/.test(supportEmail) ? `mailto:${supportEmail}` : null;
+  const message = error || localError;
+  const style = { "--va-login-primary": presentation.primaryColor, "--va-login-bg": presentation.backgroundColor, "--va-login-radius": presentation.borderRadius };
+  useEffect3(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  useEffect3(() => {
+    setPassword("");
+    setLocalError("");
+  }, [mode]);
+  function chooseMode(next) {
+    interacted.current = true;
+    if (next === mode || pending) return;
+    setPassword("");
+    setLocalError("");
+    onModeChange?.(next);
+  }
+  async function submit(event) {
+    event.preventDefault();
+    interacted.current = true;
+    if (pending || requestActive.current) return;
+    requestActive.current = true;
+    setSubmitting(true);
+    setLocalError("");
+    try {
+      await onSubmit({ email: email.trim(), password, mode });
+    } catch {
+      if (mounted.current) setLocalError("Inloggen is niet gelukt. Controleer je gegevens en probeer het opnieuw.");
+    } finally {
+      requestActive.current = false;
+      if (mounted.current) setSubmitting(false);
+    }
+  }
+  const brand = /* @__PURE__ */ jsxs2("a", { className: "va-login-brand", href: "https://vedantix.nl", target: "_blank", rel: "noopener noreferrer", "aria-label": "Vedantix website openen", children: [
+    presentation.brandName,
+    /* @__PURE__ */ jsx2("span", { "aria-hidden": "true", children: "\xAE" })
+  ] });
+  return /* @__PURE__ */ jsxs2("main", { className: `va-login va-login-${presentation.layout} ${className}`.trim(), style, onFocusCapture: () => {
+    interacted.current = true;
+  }, onPointerDownCapture: () => {
+    interacted.current = true;
+  }, children: [
+    /* @__PURE__ */ jsxs2("aside", { className: "va-login-story", "aria-label": "Vedantix websitebeheer", children: [
+      brand,
+      /* @__PURE__ */ jsxs2("div", { className: "va-login-story-copy", children: [
+        /* @__PURE__ */ jsx2("p", { className: "va-login-eyebrow", children: presentation.eyebrow }),
+        /* @__PURE__ */ jsx2("h1", { children: presentation.storyTitle }),
+        /* @__PURE__ */ jsx2("p", { className: "va-login-story-text", children: presentation.storyText })
+      ] }),
+      /* @__PURE__ */ jsx2("p", { className: "va-login-signature", children: "Content door jou. Design door Vedantix." })
+    ] }),
+    /* @__PURE__ */ jsxs2("section", { className: "va-login-form-side", "aria-labelledby": `${formId}-heading`, children: [
+      back && /* @__PURE__ */ jsxs2("a", { className: "va-login-back", href: back, children: [
+        /* @__PURE__ */ jsx2(Arrow, {}),
+        /* @__PURE__ */ jsxs2("span", { children: [
+          "Terug naar ",
+          site.name
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs2("div", { className: "va-login-card", children: [
+        /* @__PURE__ */ jsx2("div", { className: "va-login-compact-brand", children: brand }),
+        /* @__PURE__ */ jsxs2("div", { className: "va-login-tenant", children: [
+          site.logoUrl && /* @__PURE__ */ jsx2("img", { src: site.logoUrl, width: "46", height: "46", alt: "" }),
+          /* @__PURE__ */ jsxs2("div", { children: [
+            /* @__PURE__ */ jsx2("span", { children: "Websitebeheer" }),
+            /* @__PURE__ */ jsx2("strong", { children: site.name })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx2("h2", { id: `${formId}-heading`, children: presentation.heading }),
+        /* @__PURE__ */ jsx2("p", { className: "va-login-description", children: presentation.description }),
+        onModeChange && /* @__PURE__ */ jsxs2("div", { className: "va-login-modes", role: "group", "aria-label": "Kies je accounttype", children: [
+          /* @__PURE__ */ jsx2("button", { type: "button", "aria-pressed": mode === "customer", disabled: pending, onClick: () => chooseMode("customer"), children: "Mijn website" }),
+          /* @__PURE__ */ jsx2("button", { type: "button", "aria-pressed": mode === "platform", disabled: pending, onClick: () => chooseMode("platform"), children: "Vedantix-beheerder" })
+        ] }),
+        /* @__PURE__ */ jsx2("p", { className: "va-login-account-note", id: `${formId}-account-note`, children: mode === "platform" ? "Gebruik je Vedantix-beheeraccount voor deze website." : `Gebruik je bestaande account voor ${site.name}.` }),
+        /* @__PURE__ */ jsxs2("form", { className: "va-login-form", onSubmit: submit, "aria-describedby": `${formId}-account-note`, "aria-busy": pending, onInputCapture: () => {
+          interacted.current = true;
+        }, children: [
+          /* @__PURE__ */ jsx2("label", { htmlFor: `${formId}-email`, children: "E-mailadres" }),
+          /* @__PURE__ */ jsx2("input", { id: `${formId}-email`, name: "email", type: "email", autoComplete: "username", autoCapitalize: "none", spellCheck: false, required: true, value: email, onChange: (event) => setEmail(event.target.value), disabled: pending }),
+          /* @__PURE__ */ jsx2("label", { htmlFor: `${formId}-password`, children: "Wachtwoord" }),
+          /* @__PURE__ */ jsx2("input", { id: `${formId}-password`, name: "password", type: "password", autoComplete: "current-password", required: true, value: password, onChange: (event) => setPassword(event.target.value), disabled: pending }),
+          message && /* @__PURE__ */ jsx2("p", { role: "alert", className: "va-login-error", children: message }),
+          notice && /* @__PURE__ */ jsx2("p", { role: "status", className: "va-login-notice", children: notice }),
+          /* @__PURE__ */ jsx2("button", { className: "va-login-submit", type: "submit", disabled: pending, children: pending ? "Bezig met inloggen\u2026" : "Veilig inloggen" }),
+          recovery && /* @__PURE__ */ jsx2("a", { className: "va-login-recovery", href: recovery, children: "Wachtwoord vergeten?" })
+        ] }),
+        support && /* @__PURE__ */ jsxs2("p", { className: "va-login-help", children: [
+          "Hulp nodig met je account? Neem contact op met ",
+          /* @__PURE__ */ jsx2("a", { href: support, children: "Vedantix" }),
+          "."
+        ] }),
+        demo && /* @__PURE__ */ jsxs2("div", { className: "va-login-demo", children: [
+          /* @__PURE__ */ jsx2("a", { href: demo, children: "Bekijk een voorbeeld van het beheer \u2192" }),
+          /* @__PURE__ */ jsx2("span", { children: "Je kunt rondkijken zonder iets te publiceren." })
+        ] }),
+        footer && /* @__PURE__ */ jsx2("div", { className: "va-login-footer", children: footer })
+      ] })
+    ] })
+  ] });
+}
 export {
+  DEFAULT_LOGIN_PRESENTATION,
+  LOGIN_PRESENTATION_MAX_BYTES,
+  LOGIN_PRESENTATION_TIMEOUT_MS,
+  WEBSITE_ADMIN_LOGIN_PRESENTATION_URL,
+  WebsiteAdminLogin,
   WebsiteAdminShell,
   enabledModules,
   groupModules,
-  safePublicUrl
+  loadLoginPresentation,
+  safePublicUrl,
+  validateLoginPresentation
 };
