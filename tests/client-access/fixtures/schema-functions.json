@@ -1,0 +1,10 @@
+[
+  {
+    "proname": "can_manage_site",
+    "definition": "CREATE OR REPLACE FUNCTION public.can_manage_site(p_site_slug text)\n RETURNS boolean\n LANGUAGE sql\n STABLE\n SET search_path TO ''\nAS $function$\n  select exists (select 1 from public.site_auth_sites s\n    where s.slug = p_site_slug and s.active\n      and ((select public.is_site_platform_admin()) or exists (\n        select 1 from public.site_auth_memberships m\n        where m.site_slug = s.slug and m.user_id = (select auth.uid()) and m.active\n      )));\n$function$\n"
+  },
+  {
+    "proname": "is_site_platform_admin",
+    "definition": "CREATE OR REPLACE FUNCTION public.is_site_platform_admin()\n RETURNS boolean\n LANGUAGE sql\n STABLE\n SET search_path TO ''\nAS $function$\n  select exists (select 1 from public.site_auth_platform_admins\n    where user_id = (select auth.uid()) and active);\n$function$\n"
+  }
+]

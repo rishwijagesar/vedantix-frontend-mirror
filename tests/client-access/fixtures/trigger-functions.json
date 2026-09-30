@@ -1,0 +1,14 @@
+[
+  {
+    "proname": "bootstrap_first_admin",
+    "definition": "CREATE OR REPLACE FUNCTION public.bootstrap_first_admin()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if new.email_confirmed_at is null then\n    return new;\n  end if;\n\n  if new.email is null or lower(split_part(new.email, '@', 2)) <> 'vedantix.nl' then\n    return new;\n  end if;\n\n  if exists (select 1 from public.staff_users where active = true) then\n    return new;\n  end if;\n\n  insert into public.staff_users (user_id, role, active)\n  values (new.id, 'ADMIN', true)\n  on conflict (user_id) do update\n    set role = 'ADMIN', active = true;\n\n  return new;\nend;\n$function$\n"
+  },
+  {
+    "proname": "apply_staff_invite",
+    "definition": "CREATE OR REPLACE FUNCTION public.apply_staff_invite()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare\n  invite_id uuid;\n  invite_role text;\nbegin\n  if new.email_confirmed_at is null or new.email is null then\n    return new;\n  end if;\n\n  select i.id, i.role into invite_id, invite_role\n  from public.staff_invites i\n  where i.active = true and lower(i.email) = lower(new.email)\n  order by i.created_at desc\n  limit 1;\n\n  if invite_id is null then\n    return new;\n  end if;\n\n  insert into public.staff_users (user_id, role, active)\n  values (new.id, invite_role, true)\n  on conflict (user_id) do update set role = excluded.role, active = true;\n\n  update public.staff_invites\n  set active = false, accepted_by = new.id, accepted_at = now()\n  where id = invite_id;\n\n  return new;\nend;\n$function$\n"
+  },
+  {
+    "proname": "current_staff_has_role",
+    "definition": "CREATE OR REPLACE FUNCTION authz_private.current_staff_has_role(required_roles text[])\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select (select auth.uid()) is not null and exists (\n    select 1 from public.staff_users s\n    where s.user_id = (select auth.uid()) and s.active\n      and s.role = any(required_roles)\n  );\n$function$\n"
+  }
+]

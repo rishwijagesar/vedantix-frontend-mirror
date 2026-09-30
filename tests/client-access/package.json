@@ -1,0 +1,12 @@
+{
+  "name": "vedantix-client-access-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@supabase/supabase-js": "2.57.4"
+  }
+}
