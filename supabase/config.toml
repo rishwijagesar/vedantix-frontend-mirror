@@ -57,3 +57,14 @@ verify_jwt = true
 # Public recovery deliberately returns the same generic response for all accounts.
 [functions.client-password-reset]
 verify_jwt = false
+
+# Public login/recovery use fixed provider routing and authenticate inside their handlers.
+[functions.site-login]
+verify_jwt = false
+
+[functions.site-password-reset]
+verify_jwt = false
+
+# Verified getUser JWT and exact Nature site authorization are enforced in the gateway.
+[functions.site-admin-naturehealing]
+verify_jwt = false

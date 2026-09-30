@@ -1,0 +1,19 @@
+# Unified Nature login backend
+
+This change routes existing accounts. It creates no users or memberships and changes no passwords, Auth provider configuration, or mail configuration.
+
+The fixed Nature endpoint first resolves an exact normalized email in the central database. An active central platform administrator or active Nature member uses the central provider. All other addresses use the original Nature provider. The password is forwarded unchanged exactly once. Failed credentials never trigger a second provider attempt. A same-email central/local collision deliberately uses central; the existing `/admin/local` compatibility route retains direct local login and local recovery.
+
+`POST /functions/v1/site-login` accepts exactly `{site_slug:"naturehealing",email,password}`. Success returns `{provider:"local"|"central",user:{id,email},session:{access_token,refresh_token,expires_in,token_type:"bearer"}}`. The broker verifies the new access token with Auth and rechecks central `can_manage_site` or the original local `admin` role before returning tokens. Failure returns no session or provider discriminator. The frontend must set only the returned provider's session and independently verify its user and site rights.
+
+`POST /functions/v1/site-password-reset` accepts exactly `{site_slug:"naturehealing",email}` and returns the same generic response for valid, unknown, denied, throttled, malformed, and unavailable accounts. Delivery runs in the Edge background. Local recovery uses the existing Nature Auth mail service and `/admin/reset-password`; central recovery uses the existing Migadu mailer and `/admin/accept#token_hash=...&type=recovery`. Provider destinations and callbacks are fixed server constants. Only `https://naturehealing.nl` and `https://www.naturehealing.nl` are accepted browser origins.
+
+Apply migration `20260930200413_unified_nature_login.sql` on central project `zxnexwqvoznmirajhgxj`, then deploy `site-login` and `site-password-reset` with `verify_jwt=false`. Both functions require the existing `SUPABASE_SERVICE_ROLE_KEY` Edge environment variable. Merge the two function sections into the existing Supabase config. The copied `_shared/client-mailer.ts` is byte-identical to the existing client-access implementation and needs no change.
+
+The SQL wrappers are service-role only. The private throttle records hashed addresses, never passwords or plaintext email. Atomic counters and a transaction advisory lock enforce 12 attempts per email and 300 per site in 15 minutes. Recovery allows 1 per email per minute, 3 per hour, and 60 per site per hour. Exhausted site budgets do not create further email keys. No caller-chosen IP header is trusted. Upstream Auth still sees Edge egress and can apply its own shared-IP limits; this change neither alters nor bypasses those provider limits.
+
+Run `npm ci --prefix tests/site-login` and `npm test --prefix tests/site-login`. All 20 tests pass. Tests use mocked network/mail and an in-memory PostgreSQL implementation; no real passwords, messages, or remote mutations were used. Coverage includes actual SQL denial under `anon` and `authenticated`, central/local exact-email routing, preserved passwords, one-provider submission, fresh rights checks, denied-session cleanup, fixed destinations and origins, generic recovery, and throttle bounds. Parallel submitted calls are exercised through PGlite's serialized execution queue; production cross-connection serialization is supplied by the SQL transaction advisory lock and atomic upsert.
+
+Local project read access was denied by the connected account, so cross-project duplicate-address counts and live local Auth behavior were not inspected. The local compatibility route preserves access if an address exists in both providers.
+
+After deployment, verify the two Edge versions/configuration, service-only grants, and Supabase advisors read-only. Do not test by sending recovery mail or by changing any existing credentials.

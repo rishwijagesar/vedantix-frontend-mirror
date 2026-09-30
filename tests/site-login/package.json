@@ -1,0 +1,1 @@
+{"name":"vedantix-unified-site-login","private":true,"type":"module","scripts":{"test":"node --experimental-strip-types --test *.test.mjs *.test.ts"},"devDependencies":{"@electric-sql/pglite":"0.5.8"}}

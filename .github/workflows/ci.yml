@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Shared login markup regression tests
+        run: node --test packages/website-admin-core/test/login-markup.test.mjs
+
       - name: Lint (informational during migration)
         continue-on-error: true
         run: bun run lint
@@ -199,3 +202,19 @@ jobs:
         run: npm test
       - name: Client access UI requests and shared navigation tests
         run: node --experimental-strip-types --test scripts/client-access-api.test.ts scripts/website-admin-login.test.ts packages/website-admin-core/test/*.test.ts
+
+  site-login:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install isolated site login test dependencies
+        working-directory: tests/site-login
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Unified site login authorization, recovery and migration tests
+        working-directory: tests/site-login
+        run: npm test
+      - name: Nature gateway origin and authorization regression tests
+        run: node --experimental-strip-types --test tests/site-admin-naturehealing-cors.test.mjs
