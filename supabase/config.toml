@@ -49,3 +49,11 @@ verify_jwt = false
 # Authenticated client reports: getUser JWT and ADMIN role checked before reading data.
 [functions.website-report]
 verify_jwt = false
+
+# Verified user JWT plus active ADMIN role are also enforced inside the handler.
+[functions.client-access]
+verify_jwt = true
+
+# Public recovery deliberately returns the same generic response for all accounts.
+[functions.client-password-reset]
+verify_jwt = false

@@ -1,5 +1,6 @@
 import AdminLayout from "./AdminLayout";
 import WebsitesModule from "./WebsitesModule";
+import CustomerAccessModule from "./CustomerAccessModule";
 import { operationSection, type OperationSection } from "./admin-navigation";
 import { useSearchParams } from "@/lib/router-compat";
 import ClientCasesModule from "./ClientCasesModule";
@@ -144,6 +145,7 @@ export default function AdminControlCenterV3() {
     customers: ["Klanten", "Centrale eigenaar van domeinen, websites en integraties."],
     domains: ["Domeinen", "DNS, e-mailprovider, status en technische gezondheid."],
     websites: ["Websites", "Websites beheren, snelheid meten en Google Analytics bekijken."],
+    "customer-access": ["Klanttoegang", "Klantaccounts en toegang tot afzonderlijke websites beheren."],
     health: ["E-mail & DNS", "Beheer mailboxen en controleer de mailinstellingen van je domeinen."],
     monitoring: ["Monitoring", "Autonome domein-, e-mail- en websitecontrole met alerts en notification delivery."],
     staff: ["Team & toegang", "Toegang, rollen en uitnodigingen voor het Control Center."],
@@ -171,6 +173,7 @@ export default function AdminControlCenterV3() {
             {section === "health" ? <HealthModule domains={domains} onChanged={load} /> : null}
             {section === "monitoring" ? <MonitoringModule /> : null}
             {section === "staff" ? <StaffModule /> : null}
+            {section === "customer-access" ? <CustomerAccessModule /> : null}
           </main>
     </AdminLayout>
   );

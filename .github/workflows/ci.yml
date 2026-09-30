@@ -183,3 +183,19 @@ jobs:
       - name: Production build
         run: bun run build
 
+
+  client-access:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install isolated client access test dependencies
+        working-directory: tests/client-access
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Client access authorization, migration and mail tests
+        working-directory: tests/client-access
+        run: npm test
+      - name: Client access UI requests and shared navigation tests
+        run: node --experimental-strip-types --test scripts/client-access-api.test.ts packages/website-admin-core/test/navigation.test.ts

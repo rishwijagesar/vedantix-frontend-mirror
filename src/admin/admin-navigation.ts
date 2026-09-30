@@ -1,4 +1,4 @@
-export const operationSections = ["dashboard", "client-cases", "customers", "domains", "websites", "health", "monitoring", "staff"] as const;
+export const operationSections = ["dashboard", "client-cases", "customers", "domains", "websites", "customer-access", "health", "monitoring", "staff"] as const;
 export const billingSections = ["overview", "quotes", "quote-links", "contracts", "invoices", "payments", "online-payments", "administration", "customer-margin", "accounting", "email", "production", "subscriptions", "catalog", "customers", "company"] as const;
 export type OperationSection = typeof operationSections[number];
 export type BillingSection = typeof billingSections[number];
@@ -34,6 +34,7 @@ export const adminNavigation: AdminNavGroup[] = [
   ] },
   { id: "services", label: "Websites & e-mail", items: [
     operation("websites", "Websites", "monitor", "hosting projecten Google Analytics PageSpeed statistieken snelheid"),
+    operation("customer-access", "Klanttoegang", "user-cog", "klantaccounts websitebeheer uitnodigen toegang wachtwoord herstellen"),
     operation("domains", "Domeinen", "globe", "domeinnaam registrar"),
     operation("health", "E-mail & DNS", "mail", "mailbox migadu reserveadres wachtwoord aws route53"),
     { id: "previews", label: "Website previews", href: "/admin/previews", icon: "external", keywords: "voorbeeld klantlink concept" },

@@ -1,0 +1,53 @@
+.va-shell{--va-primary:#173963;--va-primary-soft:#e6eef9;--va-background:#f5f7fb;--va-surface:#fff;--va-text:#213653;--va-muted:#687b94;--va-border:#dfe6ef;display:flex;min-height:100dvh;background:var(--va-background);color:var(--va-text);font-family:Manrope,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.5;isolation:isolate}
+.va-shell,.va-shell *,.va-shell *::before,.va-shell *::after{box-sizing:border-box}
+.va-shell .va-sidebar{position:sticky;top:0;display:flex;flex-direction:column;flex-shrink:0;width:252px;height:100dvh;padding:30px 18px 22px;background:var(--va-surface);border-right:1px solid var(--va-border);overflow-y:auto;overscroll-behavior:contain}
+.va-shell .va-sidebar-brand{padding:0 12px 28px}
+.va-shell .va-brand{display:inline-flex;align-items:flex-start;color:var(--va-primary);font-size:31px;font-weight:800;line-height:1;letter-spacing:-1.5px;text-decoration:none}
+.va-shell .va-brand span{margin:3px 0 0 3px;font-size:12px;letter-spacing:0}
+.va-shell .va-site{display:flex;gap:12px;align-items:center;padding:16px 10px;margin-bottom:18px;border-top:1px solid var(--va-border);border-bottom:1px solid var(--va-border)}
+.va-shell .va-site-logo{display:block;flex-shrink:0;width:44px;height:44px;object-fit:contain;border:1px solid var(--va-border);border-radius:9px;background:white}
+.va-shell .va-site-info{min-width:0}
+.va-shell .va-site-info strong{display:block;font-size:12px;font-weight:700;overflow-wrap:anywhere}
+.va-shell .va-site-info span{display:block;font-size:10px;color:var(--va-muted);margin-top:3px}
+.va-shell .va-nav{flex:1;min-height:0}
+.va-shell .va-nav-group{margin:0 0 20px}
+.va-shell .va-nav-label{margin:0;padding:0 12px 7px;font-size:10px;font-weight:700;line-height:1.5;letter-spacing:1.5px;text-transform:uppercase;color:var(--va-muted)}
+.va-shell .va-nav-list{margin:0;padding:0;list-style:none}
+.va-shell .va-nav-list>li{margin:3px 0;padding:0;list-style:none}
+.va-shell .va-nav-button{display:flex;gap:11px;align-items:center;width:100%;min-height:43px;border:0;border-radius:7px;background:transparent;color:var(--va-muted);padding:11px 12px;text-align:left;font:inherit;font-size:12px;line-height:1.4;cursor:pointer}
+.va-shell .va-nav-button:hover{background:#f0f4f9;color:var(--va-primary)}
+.va-shell .va-nav-button-active{background:var(--va-primary-soft);color:var(--va-primary);font-weight:700}
+.va-shell .va-nav-icon{display:grid;place-items:center;flex-shrink:0;width:18px;height:18px}
+.va-shell .va-nav-icon>svg{width:18px;height:18px}
+.va-shell .va-module-dot{display:block;flex-shrink:0;width:6px;height:6px;border-radius:50%;background:currentColor;margin:0 6px}
+.va-shell .va-account{padding:20px 10px 0;margin-top:16px;border-top:1px solid var(--va-border)}
+.va-shell .va-account-info{display:flex;gap:10px;align-items:center;min-width:0}
+.va-shell .va-avatar{display:grid;place-items:center;flex-shrink:0;width:31px;height:31px;background:var(--va-primary-soft);color:var(--va-primary);font-size:11px;font-weight:700;border-radius:50%}
+.va-shell .va-account-info>div{min-width:0}
+.va-shell .va-account-info strong,.va-shell .va-account-info>div>span{display:block;font-size:10px;overflow-wrap:anywhere}
+.va-shell .va-account-info>div>span{color:var(--va-muted);margin-top:2px}
+.va-shell .va-signout{display:flex;align-items:center;gap:10px;margin-top:17px;padding:8px 0;border:0;background:transparent;color:var(--va-primary);font:inherit;font-size:11px;cursor:pointer}
+.va-shell .va-signout:disabled{opacity:.55;cursor:wait}
+.va-shell .va-account>small{display:block;color:var(--va-muted);font-size:9px;margin-top:18px}
+.va-shell .va-main-column{display:flex;flex:1;flex-direction:column;min-width:0}
+.va-shell .va-topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:76px;padding:14px 38px;background:var(--va-surface);border-bottom:1px solid var(--va-border)}
+.va-shell .va-topbar-title{display:flex;align-items:center;gap:13px;min-width:0}
+.va-shell .va-topbar-title>div{min-width:0}
+.va-shell .va-topbar-eyebrow{display:block;color:var(--va-muted);font-size:10px;line-height:1.3;overflow-wrap:anywhere}
+.va-shell .va-topbar-title strong{display:block;color:var(--va-text);font-size:13px;font-weight:700;line-height:1.5;margin-top:2px;overflow-wrap:anywhere}
+.va-shell .va-topbar-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.va-shell .va-public-link{display:inline-flex;align-items:center;gap:8px;color:var(--va-primary);font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap}
+.va-shell .va-menu-button,.va-shell .va-icon-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:40px;min-height:40px;padding:8px 10px;color:var(--va-primary);background:var(--va-surface);border:1px solid var(--va-border);border-radius:7px;font:inherit;font-size:11px;cursor:pointer}
+.va-shell .va-menu-button{display:none}
+.va-shell .va-content{width:100%;flex:1;min-width:0;padding:36px 38px 48px;outline:none}
+.va-shell .va-status{padding:13px 38px;border-bottom:1px solid var(--va-border);font-size:12px}
+.va-shell .va-bottom-bar{position:sticky;bottom:0;z-index:25;padding:16px 38px;background:var(--va-surface);border-top:1px solid var(--va-border)}
+.va-shell .va-menu-dialog{position:fixed;inset:0 auto 0 0;margin:0;padding:0;width:310px;max-width:calc(100vw - 35px);height:100dvh;max-height:none;border:0;color:var(--va-text);background:var(--va-surface);overflow:auto}
+.va-shell .va-menu-dialog::backdrop{background:rgb(14 32 57 / 50%)}
+.va-shell .va-dialog-inner{display:flex;flex-direction:column;min-height:100%;padding:24px 18px}
+.va-shell .va-mobile-brand{display:flex;align-items:center;justify-content:space-between;padding:0 10px 25px;gap:15px}
+.va-shell .va-skip-link{position:fixed;top:8px;left:8px;z-index:100;transform:translateY(-160%);padding:11px 16px;background:var(--va-primary);color:white;border-radius:6px;text-decoration:none}
+.va-shell .va-skip-link:focus{transform:translateY(0)}
+.va-shell .va-nav-button:focus-visible,.va-shell .va-public-link:focus-visible,.va-shell .va-brand:focus-visible,.va-shell .va-menu-button:focus-visible,.va-shell .va-icon-button:focus-visible,.va-shell .va-signout:focus-visible{outline:3px solid #4687dc;outline-offset:3px}
+@media(max-width:1023px){.va-shell .va-sidebar{display:none}.va-shell .va-menu-button{display:inline-flex}.va-shell .va-topbar{padding:13px 22px}.va-shell .va-content{padding:28px 22px 36px}.va-shell .va-status{padding:12px 22px}.va-shell .va-bottom-bar{padding:14px 22px}}
+@media(max-width:600px){.va-shell .va-topbar{padding:11px 14px;gap:10px;min-height:70px;align-items:center;flex-wrap:wrap}.va-shell .va-topbar-actions{gap:8px}.va-shell .va-public-link>span{display:none}.va-shell .va-public-link{min-width:40px;min-height:40px;justify-content:center}.va-shell .va-content{padding:24px 15px 32px}.va-shell .va-status{padding:12px 15px}.va-shell .va-bottom-bar{padding:12px 15px}.va-shell .va-topbar-title{gap:10px}.va-shell .va-menu-button>span{display:none}}
