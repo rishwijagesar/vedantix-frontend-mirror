@@ -15,6 +15,7 @@ export default function NavBar(){
  useEffect(()=>{close();},[location.pathname]);
  useEffect(()=>{if(!home)document.body.setAttribute('data-has-fixed-navbar','true');else document.body.removeAttribute('data-has-fixed-navbar');const scroll=()=>setScrolled(scrollY>40);scroll();window.addEventListener('scroll',scroll,{passive:true});return()=>{document.body.removeAttribute('data-has-fixed-navbar');window.removeEventListener('scroll',scroll);};},[home]);
  useEffect(()=>{const outside=e=>{if(!root.current?.contains(e.target))close();};document.addEventListener('pointerdown',outside);return()=>{document.removeEventListener('pointerdown',outside);cancel();};},[]);
+ useEffect(()=>{const escape=e=>{if(e.key==='Escape'&&(services||mobile)){e.preventDefault();cancel();close();(services?trigger.current:menuToggle.current)?.focus();}};document.addEventListener('keydown',escape);return()=>document.removeEventListener('keydown',escape);},[services,mobile]);
  function key(event){if(event.key==='Escape'){event.preventDefault();const wasServices=services;close();(wasServices?trigger.current:menuToggle.current)?.focus();}}
  return <header ref={root} className={`site-header${scrolled||!home||services||mobile?' is-solid': ' is-home'}`} onKeyDown={key} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))close();}}><div className="site-header-inner">
   <Link to="/" className="site-brand" aria-label="Vedantix home"><VedantixLogo variant="full" size="md" theme={scrolled||!home||services||mobile?'dark':'light'}/></Link>
