@@ -291,7 +291,7 @@ export default function Home({ initialCases = null }) {
                   </h2>
                   <p className="section-p">
                     We maken afspraken over inbegrepen gebruik, wijzigingen,
-                    uitbreiding, beheer en dataverwerking. Geen onbeperkte beloftes.
+                    uitbreiding, planning, kosten, beheer en dataverwerking.
                   </p>
                 </div>
 
@@ -323,7 +323,7 @@ export default function Home({ initialCases = null }) {
                   <p className="section-p">
                     Naast software bouwen we websites en verbeteren we
                     zoek- en AI-vindbaarheid. Duidelijke inhoud helpt systemen
-                    je bedrijf begrijpen; een vermelding is niet gegarandeerd.
+                    je bedrijf begrijpen en je expertise beoordelen.
                   </p>
                 </div>
 
