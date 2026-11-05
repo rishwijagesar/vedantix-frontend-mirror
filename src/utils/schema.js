@@ -173,7 +173,7 @@ export function createAboutPageSchema({
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": ORGANIZATION_ID },
     publisher: { "@id": ORGANIZATION_ID },
-    dateModified = undefined,
+    ...(dateModified ? { dateModified } : {}),
   };
 }
 

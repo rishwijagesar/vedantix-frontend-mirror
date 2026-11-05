@@ -5,4 +5,10 @@ Extended profile: https://vedantix.nl/llms-full.txt
 Services: https://vedantix.nl/diensten
 Current prices including scope and VAT: https://vedantix.nl/prijzen
 
-Vedantix builds websites, AI solutions, webapps, mobile apps and integrations for businesses in the Netherlands. Reviewed 2026-09-24.
+Software die meegroeit met jouw bedrijf. Vedantix in Den Bosch builds custom business software for SMEs and independent professionals across all sectors in the Netherlands. AI supports development; Vedantix professionally reviews and tests the result. Websites, hosting and business email remain full services with existing prices.
+
+Custom software: https://vedantix.nl/software-op-maat
+About Vedantix: https://vedantix.nl/over-ons
+Business scan: https://vedantix.nl/contact#contact-form
+
+Custom software is quoted with startup costs and a fixed monthly amount for agreed functionality, hosting, storage, maintenance and support. Usage, changes, expansion, external subscriptions, security measures and handover/export are agreed beforehand. Named external tools are potential connections to investigate, not delivered integrations or partners. Consult the canonical profiles above for details and limitations.

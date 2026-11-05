@@ -14,6 +14,6 @@ export default function SEO({ title, description, canonical, schemas = [], inclu
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hrefLang="nl-NL" href={canonical} />
     <link rel="alternate" hrefLang="x-default" href={canonical} />
-    {structuredData.map((schema, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\u003c") }} />)}
+    {structuredData.map((schema, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />)}
   </>;
 }
