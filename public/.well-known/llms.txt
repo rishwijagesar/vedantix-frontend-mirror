@@ -12,3 +12,8 @@ About Vedantix: https://vedantix.nl/over-ons
 Business scan: https://vedantix.nl/contact#contact-form
 
 Custom software is quoted with startup costs and a fixed monthly amount for agreed functionality, hosting, storage, maintenance and support. Usage, changes, expansion, external subscriptions, security measures and handover/export are agreed beforehand. Named external tools are potential connections to investigate, not delivered integrations or partners. Consult the canonical profiles above for details and limitations.
+
+Online marketing: https://vedantix.nl/online-marketing
+AI-assisted marketing: https://vedantix.nl/ai-marketing
+Maintenance and support: https://vedantix.nl/onderhoud-support
+Marketing is quoted; advertising budgets and external tool/model costs are agreed separately. ChatGPT and Claude are potential tools selected per client with human review before publication.

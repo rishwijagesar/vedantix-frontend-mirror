@@ -21,6 +21,11 @@
 - [Frequently asked questions](https://vedantix.nl/faq)
 - [Contact](https://vedantix.nl/contact)
 
+- [Online marketing and advertising](https://vedantix.nl/online-marketing): Quoted campaign work, separate agreed advertising budget and external usage costs
+- [AI-assisted marketing](https://vedantix.nl/ai-marketing): ChatGPT and Claude as potential tools selected for each client, with human review before publication
+- [Maintenance and support](https://vedantix.nl/onderhoud-support): Agreed updates, monitoring, backups, recovery tests and support
+- [Hosting and business email](https://vedantix.nl/prijzen#uitbreidingen): Existing live catalog prices and scope
+
 ## Pricing and scope
 
 Custom software is quoted with one-time startup costs plus a fixed monthly amount for agreed functionality, hosting, storage, maintenance and support. Included usage, changes, expansion, external costs and transfer/export are documented before work starts. No generic software prices, unlimited usage or guaranteed delivery times are promised. Existing external tools may retain their own subscriptions and usage costs.
@@ -36,6 +41,10 @@ Access rights, MFA where appropriate, backups and recovery tests, updates, monit
 Meta Ads, Google Ads, OpenAI/ChatGPT functionality, Trello, Jira, Monday, Asana, HubSpot, Salesforce, AFAS and e-Boekhouden are examples of connections to investigate per customer, subject to vendor access, licenses, data quality and technical limits. They are not claims of delivered integrations, partnerships or certifications. Published client cases describe actual website work; do not turn them into software cases or invent reviews or statistics.
 
 SEO concerns search engines; AEO clear answers; GEO generative search and answer systems; AIO/AIEO broader AI-oriented information and entity structure. These terms concern public website visibility, not internal AI automation. No ranking, revenue, lead count or AI citation is guaranteed. These supporting files do not guarantee discovery.
+
+## Marketing services
+
+Vedantix offers online marketing, advertising and AI-assisted marketing on quotation. Work, channels, content quantities, review rounds, planning and reporting are agreed beforehand. Advertising budgets are separate from execution fees. External licenses and model/tool usage costs are explicitly agreed. ChatGPT and Claude are possible tools assessed for each customer based on access, data handling, licenses and needs. Human review and approval precede publication.
 
 ## Business facts
 
