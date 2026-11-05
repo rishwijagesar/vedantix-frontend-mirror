@@ -3,11 +3,11 @@ import { fetchPublicCatalog } from "@/lib/public-content";
 import { publicHead } from "@/lib/public-head";
 import { SERVICES } from "@/data/services";
 import Page from "@/pages/ServiceDetail";
-const service = SERVICES.find(item => item.slug === "koppelingen-automatisering")!;
+const service = SERVICES.find(item => item.slug === "koppelingen-automatisering");
 export const Route = createFileRoute("/koppelingen-automatisering")({
   loader: () => fetchPublicCatalog().catch(() => null),
   staleTime: 0,
-  head: () => publicHead(service.title, service.description, "/koppelingen-automatisering"),
+  head: () => publicHead(service?.title ?? "Diensten | Vedantix", service?.description ?? "Bekijk de diensten van Vedantix voor mkb en zelfstandigen.", "/koppelingen-automatisering"),
   component: function ServiceRoute() {
     return <Page slug="koppelingen-automatisering" initialProducts={Route.useLoaderData()} />;
   },

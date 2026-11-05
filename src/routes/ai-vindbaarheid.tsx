@@ -1,3 +1,4 @@
+import { publicHead } from "@/lib/public-head";
 import { createFileRoute } from "@tanstack/react-router";
 import Page from "@/pages/AiVindbaarheid";
 
@@ -6,15 +7,6 @@ const description =
   "Vedantix in Den Bosch bouwt websites en helpt lokale ondernemers met SEO, AEO, GEO, AIO, AI-vindbaarheid en hosting.";
 
 export const Route = createFileRoute("/ai-vindbaarheid")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => publicHead("SEO, AEO, GEO en AIO voor bedrijven | Vedantix", "SEO, AEO, GEO en AIO voor mkb en zelfstandigen. Websitevindbaarheid naast bedrijfssoftware op maat, vanuit Den Bosch met landelijke dienstverlening.", "/ai-vindbaarheid"),
   component: Page,
 });

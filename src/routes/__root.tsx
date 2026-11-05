@@ -93,12 +93,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           title: isNotFound
             ? "Pagina niet gevonden | Vedantix"
-            : "Vedantix | Websites, AI-oplossingen & apps voor bedrijven",
+            : "Vedantix | Software op maat, websites en hosting",
         },
         {
           name: "description",
           content:
-            "Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk.",
+            "Bedrijfssoftware op maat, websites en hosting voor het mkb en zelfstandigen. Vanuit Den Bosch, voor heel Nederland.",
         },
         {
           name: "robots",
@@ -109,12 +109,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "author", content: "Vedantix" },
         {
           property: "og:title",
-          content: "Vedantix | Websites, AI-oplossingen & apps voor bedrijven",
+          content: "Vedantix | Software op maat, websites en hosting",
         },
         {
           property: "og:description",
           content:
-            "Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk.",
+            "Bedrijfssoftware op maat, websites en hosting voor het mkb en zelfstandigen. Vanuit Den Bosch, voor heel Nederland.",
         },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "Vedantix" },

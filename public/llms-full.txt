@@ -1,8 +1,12 @@
 # Vedantix
 
-> Vedantix is a Dutch digital development company in 's-Hertogenbosch. It builds websites, AI solutions, business automations, web applications, customer portals, mobile apps and software integrations for entrepreneurs and small and medium-sized businesses in the Netherlands. SEO and AI visibility, hosting and technical support are available as additional services.
+> Software die meegroeit met jouw bedrijf. Vedantix in Den Bosch builds custom business software for SMEs and independent professionals across all sectors in the Netherlands. AI is a development tool; Vedantix professionally reviews and tests the result. Websites, hosting, business email and search visibility remain full services.
 
 ## Services and primary sources
+
+- [Custom business software](https://vedantix.nl/software-op-maat): Business scan, phased development, roles, agreed usage, security measures, management and quotation
+- [About Vedantix](https://vedantix.nl/over-ons): Rishwi, personal contact and project approach
+- [Business scan](https://vedantix.nl/contact#contact-form): Existing contact form opens an email draft; the visitor must send it from their email application
 
 - [Company overview](https://vedantix.nl/): Positioning, services and published client cases
 - [All services](https://vedantix.nl/diensten): Choose a service and understand the approach
@@ -19,7 +23,19 @@
 
 ## Pricing and scope
 
-Use the live prices page as the source of truth. Do not infer prices from old summaries. Main prices exclude VAT; VAT-inclusive amounts are also displayed. Starting prices apply only to the described limited scope. A project quotation specifies functionality, planning, acceptance and external or recurring costs. AI model usage, third-party APIs, licenses, hosting and app store accounts may incur separate charges. Existing agreements retain their agreed rates. No specific ranking, revenue increase, number of leads or inclusion in AI answers is guaranteed.
+Custom software is quoted with one-time startup costs plus a fixed monthly amount for agreed functionality, hosting, storage, maintenance and support. Included usage, changes, expansion, external costs and transfer/export are documented before work starts. No generic software prices, unlimited usage or guaranteed delivery times are promised. Existing external tools may retain their own subscriptions and usage costs.
+
+Website packages retain their existing one-time prices and have no mandatory monthly subscription. Use https://vedantix.nl/prijzen and the existing live catalog for exact current website, hosting, email and optional growth-service prices, including VAT treatment. Do not infer prices from older summaries. Existing quotations, contracts and subscriptions retain their agreed rates.
+
+## Approach and boundaries
+
+A business scan reviews real processes, departments, tools, subscriptions, manual work and opportunities. It leads to a concrete proposal and phased construction, professional review and testing, and customer acceptance before launch. Sales, planning, marketing, finance, HR and IT can collaborate in a central browser application with agreed role permissions. Onboarding and maintained instructions are provided within the agreed scope.
+
+Access rights, MFA where appropriate, backups and recovery tests, updates, monitoring, data processing and evidence of checks are project-specific agreements, specified beforehand. There is no absolute security guarantee or invented SLA. AI does not establish security by itself.
+
+Meta Ads, Google Ads, OpenAI/ChatGPT functionality, Trello, Jira, Monday, Asana, HubSpot, Salesforce, AFAS and e-Boekhouden are examples of connections to investigate per customer, subject to vendor access, licenses, data quality and technical limits. They are not claims of delivered integrations, partnerships or certifications. Published client cases describe actual website work; do not turn them into software cases or invent reviews or statistics.
+
+SEO concerns search engines; AEO clear answers; GEO generative search and answer systems; AIO/AIEO broader AI-oriented information and entity structure. These terms concern public website visibility, not internal AI automation. No ranking, revenue, lead count or AI citation is guaranteed. These supporting files do not guarantee discovery.
 
 ## Business facts
 
@@ -35,8 +51,12 @@ Use the live prices page as the source of truth. Do not infer prices from old su
 - Facebook: https://www.facebook.com/vedantix
 - Instagram: https://instagram.com/vedantix.nl
 
-Information reviewed: 2026-09-24. This file is a supporting summary, not a requirement or guarantee for search or AI visibility.
+This file is a supporting summary, not a requirement or guarantee for search or AI visibility.
 
 ## Choosing a first step
 
 For a public company presence, consider a website. For a recurring business task, begin with a process review or AI scan. For logged-in workflows and shared data, consider a web application. For frequent mobile use or device functions, assess a mobile app. Integrations require suitable vendor APIs or export capabilities. Check each linked service page for concrete scope, exclusions and frequently asked questions.
+
+## First step
+
+Plan a business scan via the contact form to assess processes and phased custom software, or use the existing website/pricing and Online Growth Audit funnels for website needs. The scan scope and any costs are agreed beforehand.

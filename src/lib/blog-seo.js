@@ -85,13 +85,11 @@ export function createBlogHead(slug) {
       { property: "og:description", content: seo.description },
       { property: "og:type", content: "article" },
       { property: "og:url", content: seo.canonical },
-      { property: "og:image", content: `${SITE_URL}/preview.png` },
       { property: "og:site_name", content: "Vedantix" },
       { property: "og:locale", content: "nl_NL" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: seo.title },
       { name: "twitter:description", content: seo.description },
-      { name: "twitter:image", content: `${SITE_URL}/preview.png` },
     ],
     links: [
       { rel: "canonical", href: seo.canonical },
