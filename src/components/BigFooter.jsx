@@ -1,3 +1,4 @@
+import { SERVICE_GROUPS } from "../data/service-navigation";
 import { Link } from "@/lib/router-compat";
 
 import "../styles/footer.css";
@@ -71,7 +72,7 @@ export default function BigFooter() {
                   <Link to="/software-op-maat">Software op maat voor jouw bedrijf</Link>
                 </li>
                 <li>
-                  <Link to="/groeimodel">SEO en online zichtbaarheid</Link>
+                  <Link to="/online-marketing">Online marketing en advertenties</Link>
                 </li>
                 <li>
                   <Link to="/ai-vindbaarheid">
@@ -79,7 +80,7 @@ export default function BigFooter() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/prijzen">Hosting en onderhoud</Link>
+                  <Link to="/prijzen#uitbreidingen">Hosting en zakelijke e-mail</Link>
                 </li>
               </ul>
 
@@ -156,32 +157,8 @@ export default function BigFooter() {
             <div className="big-footer__col">
               <div className="big-footer__col-title">Diensten</div>
               <ul className="big-footer__links">
-                <li><Link to="/software-op-maat">Bedrijfssoftware op maat</Link></li>
                 <li><Link to="/diensten">Alle diensten</Link></li>
-                <li><Link to="/ai-oplossingen">AI & automatisering</Link></li>
-                <li><Link to="/webapps-klantportalen">Webapps & klantportalen</Link></li>
-                <li><Link to="/mobiele-apps">Mobiele apps</Link></li>
-                <li><Link to="/koppelingen-automatisering">Koppelingen & beheer</Link></li>
-                <li>
-                  <Link to="/website-laten-maken">Website laten maken</Link>
-                </li>
-                <li>
-                  <Link to="/groeimodel">SEO optimalisatie</Link>
-                </li>
-                <li>
-                  <Link to="/blog/beter-gevonden-in-google-lokale-ondernemer">
-                    Lokale vindbaarheid
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/prijzen">Website onderhoud</Link>
-                </li>
-                <li>
-                  <Link to="/prijzen">Hosting</Link>
-                </li>
-                <li>
-                  <Link to="/ai-vindbaarheid">AEO, GEO en AI-vindbaarheid</Link>
-                </li>
+                {SERVICE_GROUPS.flatMap(group => group.items).map(item => <li key={item.href}><Link to={item.href}>{item.label}</Link></li>)}
               </ul>
             </div>
 

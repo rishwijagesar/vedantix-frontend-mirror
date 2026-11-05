@@ -881,3 +881,14 @@
   .hero--photo .hero-ctas { margin: 23px 0 13px; gap: 9px; }
   .hero--photo .hero-cta-note { font-size: 0.62rem; }
 }
+
+/* The requested split workspace hero; scoped so legacy public heroes remain intact. */
+.hero.hero--workspace{background:var(--vx-hero);min-height:0;padding:142px 5% 76px;isolation:isolate}
+.hero--workspace::before{display:none}.hero--workspace .hero-container{max-width:1400px;grid-template-columns:minmax(0,1fr) minmax(0,1.04fr);gap:66px;align-items:center}.hero--workspace .hero-content{max-width:580px;width:100%}
+.hero--workspace h1{font-size:3.4rem;line-height:1.1;margin:0 0 24px;letter-spacing:0;color:var(--vx-paper)}.hero--workspace h1 span{background:var(--vx-highlight);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero--workspace .hero-eyebrow{background:transparent;border:0;padding:0;font-size:.58rem;letter-spacing:0;color:var(--vx-on-dark);margin-bottom:23px}.hero--workspace .hero-eyebrow::before{background:var(--vx-accent);animation:none}
+.hero--workspace .hero-sub{color:var(--vx-on-dark);font-size:1.05rem;line-height:1.75;max-width:490px;margin:0 0 28px}.hero--workspace .hero-ctas{gap:12px;margin:0 0 16px}.hero--workspace .hero-cta-note{color:var(--vx-on-dark);font-size:.69rem;font-weight:400}.hero-product-visual{min-width:0;width:100%}
+@media(min-width:1600px){.hero.hero--workspace{padding-block:155px 95px}.hero--workspace h1{font-size:3.7rem}}
+@media(max-width:1180px){.hero--workspace .hero-container{gap:32px}.hero--workspace h1{font-size:2.8rem}.hero--workspace .hero-sub{font-size:.96rem}}
+@media(max-width:900px){.hero.hero--workspace{padding:108px 6% 36px}.hero--workspace .hero-container{grid-template-columns:1fr;max-width:640px;gap:30px}.hero--workspace .hero-content{max-width:none}.hero--workspace h1{font-size:2.9rem}.hero-product-visual{max-width:580px;margin:auto}.hero--workspace .hero-ctas{flex-direction:row}.hero--workspace .hero-btn-primary,.hero--workspace .hero-btn-ghost{width:auto}}
+@media(max-width:480px){.hero.hero--workspace{padding:97px 5% 28px}.hero--workspace h1{font-size:2.15rem;margin-bottom:16px}.hero--workspace .hero-sub{font-size:.9rem;line-height:1.65;margin-bottom:21px}.hero--workspace .hero-eyebrow{font-size:.49rem;margin-bottom:18px}.hero--workspace .hero-ctas{gap:8px}.hero--workspace .hero-btn-primary,.hero--workspace .hero-btn-ghost{font-size:.69rem;padding:11px 10px}.hero--workspace .hero-cta-note{font-size:.6rem}.hero--workspace .hero-container{gap:26px}}

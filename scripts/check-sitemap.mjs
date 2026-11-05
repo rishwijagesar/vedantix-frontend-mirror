@@ -27,7 +27,7 @@ function assertSupportedIndustryPath(pathname) {
 }
 
 assert.ok(urls.length > 0, "The sitemap must contain public URLs");
-for (const path of ["/software-op-maat", "/over-ons", "/diensten", "/website-laten-maken"]) {
+for (const path of ["/software-op-maat", "/over-ons", "/diensten", "/website-laten-maken", "/online-marketing", "/ai-marketing", "/onderhoud-support"]) {
   assert.ok(paths.has(path), `Public service page is missing: ${path}`);
 }
 assert.equal(paths.size, urls.length, "Sitemap URLs must be unique");
