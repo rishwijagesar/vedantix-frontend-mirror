@@ -55,7 +55,7 @@ function formatDate(value?: string | null) {
 }
 
 function customerName(customer: Record<string, string>) {
-  return customer.company_name || customer.contact_name || "Klant";
+  return customer["company_name"] || customer["contact_name"] || "Klant";
 }
 
 export default function PublicQuote({ token }: { token: string }) {
@@ -79,7 +79,7 @@ export default function PublicQuote({ token }: { token: string }) {
     } else {
       const next = data as PublicQuoteData;
       setQuote(next);
-      setName(next.responded_by_name || next.customer.contact_name || "");
+      setName(next.responded_by_name || next.customer["contact_name"] || "");
       setNote(next.response_note || "");
     }
     setLoading(false);
@@ -156,7 +156,7 @@ export default function PublicQuote({ token }: { token: string }) {
           <div className="border-b border-slate-100 bg-slate-950 px-6 py-7 text-white sm:px-9">
             <div className="flex flex-wrap items-start justify-between gap-5">
               <div>
-                <div className="text-xl font-black tracking-tight">{company.trade_name || "Vedantix"}</div>
+                <div className="text-xl font-black tracking-tight">{company["trade_name"] || "Vedantix"}</div>
                 <p className="mt-1 text-sm text-slate-400">Professionele websites & online groei</p>
               </div>
               <div className="text-right">
@@ -170,11 +170,11 @@ export default function PublicQuote({ token }: { token: string }) {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Voor</p>
               <h1 className="mt-2 text-2xl font-bold">{customerName(customer)}</h1>
-              {customer.contact_name && customer.company_name ? <p className="mt-1 text-sm text-slate-500">t.a.v. {customer.contact_name}</p> : null}
+              {customer["contact_name"] && customer["company_name"] ? <p className="mt-1 text-sm text-slate-500">t.a.v. {customer["contact_name"]}</p> : null}
               <div className="mt-3 text-sm leading-6 text-slate-500">
-                {customer.address_line1 ? <div>{customer.address_line1}</div> : null}
-                {customer.address_line2 ? <div>{customer.address_line2}</div> : null}
-                {customer.postal_code || customer.city ? <div>{[customer.postal_code, customer.city].filter(Boolean).join(" ")}</div> : null}
+                {customer["address_line1"] ? <div>{customer["address_line1"]}</div> : null}
+                {customer["address_line2"] ? <div>{customer["address_line2"]}</div> : null}
+                {customer["postal_code"] || customer["city"] ? <div>{[customer["postal_code"], customer["city"]].filter(Boolean).join(" ")}</div> : null}
               </div>
             </div>
             <dl className="grid min-w-52 grid-cols-2 gap-x-5 gap-y-2 text-sm">
@@ -254,7 +254,7 @@ export default function PublicQuote({ token }: { token: string }) {
         ) : error ? <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
 
         <footer className="px-2 pb-4 text-center text-xs text-slate-400">
-          {company.email || "info@vedantix.nl"} · {company.website || "https://vedantix.nl"}
+          {company["email"] || "info@vedantix.nl"} · {company["website"] || "https://vedantix.nl"}
         </footer>
       </div>
     </main>

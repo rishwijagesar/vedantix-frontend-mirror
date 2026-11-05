@@ -68,13 +68,13 @@ export async function getAuditFunnelStats(days = 30): Promise<AuditFunnelStats> 
 
   const daily = Array.isArray(raw.daily)
     ? raw.daily
-        .filter((item) => item && typeof item === "object" && events.includes(item.event))
-        .map((item) => ({
+        .filter((item: unknown): item is { date?: unknown; event: AuditFunnelEvent; count?: unknown } => Boolean(item && typeof item === "object" && "event" in item && events.includes(item.event as AuditFunnelEvent)))
+        .map((item: { date?: unknown; event: AuditFunnelEvent; count?: unknown }) => ({
           date: String(item.date || ""),
           event: item.event as AuditFunnelEvent,
           count: asCount(item.count),
         }))
-        .filter((item) => /^\d{4}-\d{2}-\d{2}$/.test(item.date))
+        .filter((item: AuditFunnelDailyPoint) => /^\d{4}-\d{2}-\d{2}$/.test(item.date))
     : [];
 
   return {

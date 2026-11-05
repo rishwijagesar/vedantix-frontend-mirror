@@ -234,6 +234,7 @@ export async function createManualLead(input: {
       .select("id")
       .single();
     fail(error);
+    if (!customer) throw new Error("Klant kon niet worden aangemaakt.");
     customerId = customer.id as string;
   }
 
@@ -260,6 +261,7 @@ export async function createManualLead(input: {
       .select("id")
       .single();
     fail(error);
+    if (!lead) throw new Error("Lead kon niet worden aangemaakt.");
     leadId = lead.id as string;
   }
 

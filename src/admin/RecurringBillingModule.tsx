@@ -138,7 +138,7 @@ function Metric({ label, value, caption }: { label: string; value: string; capti
   return <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100"><Repeat2 size={18}/></div><p className="text-sm text-slate-500">{label}</p><strong className="mt-1 block text-2xl font-bold">{value}</strong><span className="mt-1 block text-xs text-slate-400">{caption}</span></article>;
 }
 
-function SubscriptionCard({ subscription, items, customer, onChanged }: { subscription: Subscription; items: SubscriptionItem[]; customer?: Customer; onChanged: () => Promise<void> }) {
+function SubscriptionCard({ subscription, items, customer, onChanged }: { subscription: Subscription; items: SubscriptionItem[]; customer?: Customer | undefined; onChanged: () => Promise<void> }) {
   const [nextDate, setNextDate] = useState(subscription.next_invoice_date);
   const [saving, setSaving] = useState(false);
   const estimate = estimateSubscriptionInvoice(subscription, items);

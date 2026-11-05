@@ -21,6 +21,6 @@ export async function websiteReport(websiteId: string, runId: string, includeNot
     try { const body = await error.context?.json(); if (typeof body?.error === 'string') message = body.error; } catch { /* Keep safe fallback. */ }
     throw new Error(message);
   }
-  if (!(data instanceof Blob) || !['application/pdf', 'application/octet-stream'].includes(data.type.split(';')[0]) || await data.slice(0, 5).text() !== '%PDF-') throw new Error('Er is geen geldig PDF-rapport ontvangen. Probeer opnieuw.');
+  if (!(data instanceof Blob) || !['application/pdf', 'application/octet-stream'].includes(data.type.split(';')[0] ?? '') || await data.slice(0, 5).text() !== '%PDF-') throw new Error('Er is geen geldig PDF-rapport ontvangen. Probeer opnieuw.');
   return new Blob([data], { type: 'application/pdf' });
 }

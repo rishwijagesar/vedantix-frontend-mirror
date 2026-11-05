@@ -21,7 +21,7 @@ function Metric({ title, value, note, negative = false }: { title: string; value
 }
 
 function CostEditor({ data, previous, customerId, busy, onSave, onCancel }: {
-  data: MarginData; previous?: CustomerCost; customerId: string; busy: boolean;
+  data: MarginData; previous?: CustomerCost | undefined; customerId: string; busy: boolean;
   onSave: (cost: Omit<CustomerCost, 'id' | 'revision' | 'updated_at'>, ids: string[], previous?: CustomerCost) => Promise<void>; onCancel: () => void;
 }) {
   const [name, setName] = useState(previous?.name || '');
@@ -63,7 +63,7 @@ function CostEditor({ data, previous, customerId, busy, onSave, onCancel }: {
   </form>;
 }
 
-function RevenueEditor({ profile, annual, busy, onSave }: { profile?: MarginProfile; annual: number | null; busy: boolean; onSave: (changes: Partial<MarginProfile>) => Promise<void> }) {
+function RevenueEditor({ profile, annual, busy, onSave }: { profile?: MarginProfile | undefined; annual: number | null; busy: boolean; onSave: (changes: Partial<MarginProfile>) => Promise<void> }) {
   const [amount, setAmount] = useState(profile?.revenue_amount != null ? String(profile.revenue_amount) : annual !== null ? String(annual / 100) : '');
   const [period, setPeriod] = useState<Period>(profile?.revenue_amount != null ? profile.revenue_period : 'YEARLY');
   const [note, setNote] = useState(profile?.revenue_note || '');

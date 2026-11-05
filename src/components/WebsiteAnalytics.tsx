@@ -13,7 +13,7 @@ export default function WebsiteAnalytics() {
     let cancelled = false;
     if (consent !== 'granted' || !analyticsPublicPath(path)) { stop(); return; }
     // Read public ID on each navigation; paused/disconnected sites stop sending page views.
-    void supabase.rpc('website_analytics_config', { p_origin: window.location.origin }).then(({ data, error }) => {
+    void Promise.resolve(supabase.rpc('website_analytics_config', { p_origin: window.location.origin })).then(({ data, error }) => {
       if (cancelled || error || readMarketingConsent() !== 'granted') return;
       if (typeof data !== 'string' || !/^G-[A-Z0-9]+$/.test(data)) { stop(); return; }
       const w = window as any;

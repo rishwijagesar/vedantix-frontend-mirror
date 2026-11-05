@@ -88,8 +88,8 @@ export async function listRecurringBillingRuns(limit = 10): Promise<RecurringBil
 
 export async function updateSubscription(id: string, changes: Partial<Pick<Subscription, "status" | "next_invoice_date" | "auto_finalize">>) {
   const payload: Record<string, unknown> = { ...changes, updated_at: new Date().toISOString() };
-  if (changes.status === "CANCELLED") payload.cancelled_at = new Date().toISOString();
-  if (changes.status === "ACTIVE") payload.cancelled_at = null;
+  if (changes.status === "CANCELLED") payload["cancelled_at"] = new Date().toISOString();
+  if (changes.status === "ACTIVE") payload["cancelled_at"] = null;
   const { data, error } = await supabase.from("subscriptions").update(payload).eq("id", id).select("*").single();
   fail(error);
   return data as Subscription;

@@ -93,8 +93,8 @@ export function buildContractSuggestion(source: ContractSource, customerId: stri
   ].filter(Boolean).join("\n\n");
   const recurring = source.items.filter(item => item.billing_type !== "ONE_TIME");
   const fields: Record<string, string> = { project_name: text(source.title), price_terms: prices };
-  if (scope) fields.project_scope = scope;
-  if (recurring.length) fields.maintenance_terms = `Terugkerende diensten volgens ${reference}:\n${recurring.map(item => `- ${quantity(item.quantity)} × ${text(item.description)} (${frequency[item.billing_type]}).`).join("\n")}\nBedragen en eventuele documentkorting staan bij de prijs- en betalingsafspraken.`;
+  if (scope) fields["project_scope"] = scope;
+  if (recurring.length) fields["maintenance_terms"] = `Terugkerende diensten volgens ${reference}:\n${recurring.map(item => `- ${quantity(item.quantity)} × ${text(item.description)} (${frequency[item.billing_type]}).`).join("\n")}\nBedragen en eventuele documentkorting staan bij de prijs- en betalingsafspraken.`;
   const notes = ["Controleer de opleverplanning en het aantal revisierondes; deze worden niet afgeleid uit het document."];
   if (source.kind === "catalog") notes.push("Dit is een voorstel op basis van de huidige catalogusprijs. Controleer of het pakket en bedrag met de klant zijn afgesproken en vul betaalmomenten of termijnen aan.");
   if (source.kind === "invoice") notes.push("Controleer of deze factuur de volledige opdracht betreft of slechts een termijn, periode of onderdeel daarvan.");

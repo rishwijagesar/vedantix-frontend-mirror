@@ -91,7 +91,7 @@ export default function MailManagement({domains,onChanged}:{domains:Domain[];onC
     </div>}
   </section>;
 }
-type Editor={kind:"create"|"edit"|"password"|"delete"|"address";box?:Mailbox}|null;
+type Editor={kind:"create"|"edit"|"password"|"delete"|"address";box?:Mailbox | undefined}|null;
 function DomainMail({domain,onChanged,onContactChange}:{domain:Domain;onChanged:()=>Promise<void>;onContactChange:()=>void}) {
   const [details,setDetails]=useState<MailDomain|null>(null);
   const [records,setRecords]=useState<DnsRecord[]|null>(null);
@@ -141,34 +141,34 @@ function DomainMail({domain,onChanged,onContactChange}:{domain:Domain;onChanged:
     const part=editor.box?.local_part||String(values.get("local_part")||"");
     const action=editor.kind==="create"?"create_mailbox":editor.kind==="edit"?"update_mailbox":editor.kind==="address"?"set_primary_address":editor.kind==="password"?(manual?"reset_password":"send_invitation"):"delete_mailbox";
     const body:Record<string,unknown>={local_part:part};
-    if((editor.kind==="create"||editor.kind==="password")&&manual)body.password=password;
+    if((editor.kind==="create"||editor.kind==="password")&&manual)body["password"]=password;
     if(editor.kind==="create"){
-      body.password_method=passwordMethod;
-      body.password_recovery_email=backupEmail.trim();
-      if(!manual&&values.get("confirm_send")==="on")body.confirm_invitation_email=backupEmail.trim();
+      body["password_method"]=passwordMethod;
+      body["password_recovery_email"]=backupEmail.trim();
+      if(!manual&&values.get("confirm_send")==="on")body["confirm_invitation_email"]=backupEmail.trim();
     }
-    if(editor.kind==="create"||editor.kind==="edit")body.name=String(values.get("name")||"");
+    if(editor.kind==="create"||editor.kind==="edit")body["name"]=String(values.get("name")||"");
     if(editor.kind==="edit"){
-      body.password_recovery_email=backupEmail.trim();
+      body["password_recovery_email"]=backupEmail.trim();
       for(const key of ["may_send","may_receive","may_access_imap","may_access_pop3"])body[key]=values.get(key)==="on";
     }
     if(editor.kind==="password"&&!manual&&values.get("confirm_send")==="on"){
-      body.confirm_address=part+"@"+domain.domain_name;
-      body.confirm_recovery_email=editor.box?.password_recovery_email||"";
+      body["confirm_address"]=part+"@"+domain.domain_name;
+      body["confirm_recovery_email"]=editor.box?.password_recovery_email||"";
     }
     if(editor.kind==="address"&&values.get("confirm_address_change")==="on"){
-      body.new_local_part=newPart.trim().toLowerCase();
-      body.confirm_address=part+"@"+domain.domain_name;
-      body.confirm_new_address=newPart.trim().toLowerCase()+"@"+domain.domain_name;
+      body["new_local_part"]=newPart.trim().toLowerCase();
+      body["confirm_address"]=part+"@"+domain.domain_name;
+      body["confirm_new_address"]=newPart.trim().toLowerCase()+"@"+domain.domain_name;
     }
-    if(editor.kind==="delete")body.confirm_address=String(values.get("confirm_address")||"");
+    if(editor.kind==="delete")body["confirm_address"]=String(values.get("confirm_address")||"");
     await run(action,body,editor.kind==="create"?"Mailbox aangemaakt.":editor.kind==="password"?"Het nieuwe wachtwoord is ingesteld. Werk het ook bij in de mailapp.":editor.kind==="delete"?"Mailbox verwijderd. Het bewaarde reserveadres blijft beschikbaar.":editor.kind==="address"?"Het gewenste e-mailadres is ingesteld voor dezelfde inbox. Gebruik dit adres in de mailapp; het mailboxwachtwoord blijft hetzelfde.":"Mailbox en reserveadres bijgewerkt.");
     setFormKey(v=>v+1);
   }
   function open(kind:NonNullable<Editor>["kind"],box?:Mailbox){
     setEditor({kind,box});setError("");setMessage("");setFormKey(v=>v+1);
     setPasswordMethod("invitation");setBackupEmail(box?.password_recovery_email||"");
-    setNewPart(box?.primary_address&&box.primary_address!==box.address?box.primary_address.split("@")[0]:"info");
+    setNewPart(box?.primary_address&&box.primary_address!==box.address?(box.primary_address.split("@")[0] ?? "info"):"info");
   }
   const active=details?.domain?.can_receive===true&&details?.domain?.can_send===true;
   return <div className="space-y-4">

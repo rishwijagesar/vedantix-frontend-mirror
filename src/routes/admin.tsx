@@ -12,7 +12,7 @@ function AdminPage() {
 }
 
 export const Route = createFileRoute("/admin")({
-  validateSearch: (search: Record<string, unknown>) => ({ ...search, section: typeof search.section === "string" ? search.section : undefined }),
+  validateSearch: (search: Record<string, unknown>): Record<string, unknown> & { section?: string | undefined } => ({ ...search, section: typeof search["section"] === "string" ? search["section"] : undefined }),
   head: () => ({
     meta: [
       { title: "Vedantix Control Center" },

@@ -39,7 +39,7 @@ export function purchaseBalance(entry: Entry, bank: Bank[], end: string) {
 }
 export function eligibleSale(s: Sale) { return s.is_active !== false && !!s.finalized_at && !!s.invoice_number && !/^TEST(?:\b|[-_])/i.test(s.invoice_number) && ['FINALIZED','SENT','PARTIALLY_PAID','PAID','OVERDUE','CREDITED'].includes(s.status); }
 export function eligibleCredit(c: Credit) { return !!c.finalized_at && ['FINALIZED','SENT'].includes(c.status); }
-export function eligiblePayment(p: Payment) { return !p.voided_at && String(p.metadata?.test_fixture || '').toLowerCase() !== 'true' && String(p.metadata?.mollie_mode || '').toLowerCase() !== 'test'; }
+export function eligiblePayment(p: Payment) { return !p.voided_at && String(p.metadata?.["test_fixture"] || '').toLowerCase() !== 'true' && String(p.metadata?.["mollie_mode"] || '').toLowerCase() !== 'test'; }
 function sum<T>(rows: T[], value: (r: T) => number) { return rows.reduce((n,r) => n + cents(value(r)), 0) / 100; }
 // Allocate invoice-level discounts/rounding to VAT groups while preserving document totals.
 export function allocate(total: number, weights: number[]) {
@@ -48,8 +48,8 @@ export function allocate(total: number, weights: number[]) {
   const amount = Math.abs(cents(total));
   const raw = weights.map(w => denominator ? amount * Math.abs(w) / denominator : amount / weights.length);
   const result = raw.map(Math.floor);
-  const order = raw.map((v,i) => ({ i, remainder: v - result[i] })).sort((a,b) => b.remainder - a.remainder);
-  for (let n = amount - result.reduce((a,b) => a+b, 0), i = 0; i < n; i++) result[order[i % order.length].i]++;
+  const order = raw.map((v,i) => ({ i, remainder: v - (result[i] ?? 0) })).sort((a,b) => b.remainder - a.remainder);
+  for (let n = amount - result.reduce((a,b) => a+b, 0), i = 0; i < n; i++) { const slot = order[i % order.length]; if (slot) result[slot.i] = (result[slot.i] ?? 0) + 1; }
   return result.map(v => (total < 0 ? -v : v) / 100);
 }
 export function summarize(data: AdminData, p: Period) {
@@ -76,7 +76,7 @@ export function summarize(data: AdminData, p: Period) {
     if (!rates.length) rates.push('Onbekend');
     const bases = allocate(Number(doc.total_ex_vat),rates.map(rate => sum(items.filter(i => String(i.vat_rate) === rate),i => Number(i.line_total_ex_vat))));
     const vats = allocate(Number(doc.vat_total),rates.map(rate => sum(items.filter(i => String(i.vat_rate) === rate),i => Number(i.line_vat))));
-    rates.forEach((rate,i) => { const g = groups[rate] || { base: 0, vat: 0 }; groups[rate] = { base: (cents(g.base)+cents(bases[i]))/100, vat: (cents(g.vat)+cents(vats[i]))/100 }; });
+    rates.forEach((rate,i) => { const g = groups[rate] || { base: 0, vat: 0 }; groups[rate] = { base: (cents(g.base)+cents(bases[i] ?? 0))/100, vat: (cents(g.vat)+cents(vats[i] ?? 0))/100 }; });
   }
   return { sales, credits, entries, bank, revenue, costs, result: (cents(revenue)-cents(costs))/100, outputVat, inputVat, vatDifference: (cents(outputVat)-cents(inputVat))/100, outstanding, payable, supplierCredit, investments: sum(entries.filter(e => e.treatment === 'ASSET'),e => entryAmounts(e).cost), cashIn: sum(bank.filter(b => Number(b.amount)>0),b => Number(b.amount)), cashOut: -sum(bank.filter(b => Number(b.amount)<0),b => Number(b.amount)), groups,
     missingEvidence: entries.filter(e => !data.documents.some(d => d.entry_id === e.id && d.status === 'READY')).length,

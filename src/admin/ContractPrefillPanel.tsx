@@ -55,7 +55,7 @@ export default function ContractPrefillPanel({ draft, customerName, disabled, on
     catch (e) { return { suggestion: null, error: e instanceof Error ? e.message : "Voorstel maken mislukt." }; }
   }, [source, draft.customer_id]);
   const suggestion = result.suggestion;
-  const schema = draft.template_snapshot?.variables_schema || {};
+  const schema = draft.template_snapshot?.["variables_schema"] || {};
   const fieldKeys = Object.keys(suggestion?.fields || {}).filter(key =>
     (key === "project_name" || Object.hasOwn(schema, key)) && suggestion?.fields[key]?.trim());
   // Re-check which fields are empty after every manual edit, so a stale preview never overwrites new input.

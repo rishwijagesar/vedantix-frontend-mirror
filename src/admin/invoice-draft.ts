@@ -54,7 +54,8 @@ function discount(net: bigint, type: DiscountType, value: number) {
 export function previewInvoice(invoice: Invoice, items: BillingItem[], edits: InvoiceLineEdits, document?: InvoiceDocumentDraft | null) {
   const doc = document ? parseDocumentDraft(document) : invoice;
   const lines = items.map(item => {
-    const next = edits[item.id] ? { ...item, ...parseLineDraft(edits[item.id]) } : item;
+    const edit = edits[item.id];
+    const next = edit ? { ...item, ...parseLineDraft(edit) } : item;
     const subtotal = rounded(scaled(next.quantity) * scaled(next.unit_price_ex_vat), 100n);
     const reduction = discount(subtotal, next.discount_type, Number(next.discount_value));
     const net = subtotal - reduction;
