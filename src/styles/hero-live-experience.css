@@ -32,3 +32,4 @@
 @media(prefers-reduced-motion:reduce){.workspace-scene *{animation:none!important;transition:none!important}.workspace-tool{display:none}.workspace-notification{opacity:1;transform:none}}
 @media(max-width:640px){.workspace-scene{aspect-ratio:.88}.workspace-dashboard{inset:13% 0 12%}.workspace-notification{bottom:3%}.workspace-tool-2,.workspace-tool-3{top:66%}}
 @media(max-width:360px){.workspace-scene{aspect-ratio:.72}.workspace-heading strong{font-size:.72rem}.workspace-tag{display:none}.workspace-tool-2,.workspace-tool-3{top:68%}}
+@media(max-width:360px){.workspace-scene{height:450px;aspect-ratio:auto}.workspace-dashboard{top:52px;bottom:54px}.workspace-task small{line-height:1.5}}
