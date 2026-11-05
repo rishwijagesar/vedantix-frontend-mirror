@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { websiteEnquiryUrl } from "../lib/website-enquiry";
 
 // Ensure mobile viewport
 if (typeof document !== "undefined") {
@@ -17,6 +18,7 @@ if (typeof document !== "undefined") {
 
 const NAV_MENUS = [
   { label: "Diensten", items: [
+    { href: "/software-op-maat", label: "Software op maat" },
     { href: "/Starters", label: "Configurator" },
     { href: "/Templates", label: "Template gallery" },
     { href: "/VoorWie", label: "Voor wie" },
@@ -63,7 +65,7 @@ function Nav() {
         @media(max-width:768px){.vd-menu{display:none}.vd-hbg{display:flex}}
       `}</style>
       <nav className="vd-nav">
-        <a href="/VedantixHome" className="vd-logo">Vedantix</a>
+        <a href="/" className="vd-logo">Vedantix</a>
         <ul className="vd-menu">
           {NAV_MENUS.map(m => (
             <li key={m.label} className="vd-menu-item"
@@ -86,7 +88,7 @@ function Nav() {
           ))}
         </ul>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <a href="#contact" className="vd-cta">Offerte aanvragen</a>
+          <a href="/contact#contact-form" className="vd-cta">Plan een bedrijfsscan</a>
           <button className="vd-hbg" onClick={() => setMob(p => !p)} aria-label="Menu">
             <span/><span/><span/>
           </button>
@@ -136,7 +138,7 @@ function WAWidget() {
               <div className="wa-av">V</div>
               <div>
                 <div className="wa-nm">Vedantix</div>
-                <div className="wa-st">Gemiddeld binnen 1 uur antwoord</div>
+                <div className="wa-st">Direct contact met Vedantix</div>
               </div>
               <button className="wa-x" onClick={() => setOpen(false)}>✕</button>
             </div>
@@ -147,7 +149,6 @@ function WAWidget() {
           </div>
         )}
         <button className="wa-btn" onClick={() => setOpen(p => !p)} aria-label="WhatsApp">
-          {!open && <div className="wa-badge">1</div>}
           <svg viewBox="0 0 24 24" width="28" height="28" fill="#fff">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
           </svg>
@@ -163,29 +164,34 @@ function ContactForm() {
     return (
       <div style={{ background: "#f0fdf4", border: "2px solid #10b981", borderRadius: 12, padding: 32, textAlign: "center" }}>
         <div style={{ fontSize: "2rem", marginBottom: 12 }}>✅</div>
-        <h3 style={{ color: "#065f46", marginBottom: 8 }}>Verstuurd!</h3>
-        <p style={{ color: "#047857" }}>We nemen binnen 24 uur contact op.</p>
+        <h3 style={{ color: "#065f46", marginBottom: 8 }}>E-mail voorbereid</h3>
+        <p style={{ color: "#047857" }}>Verstuur het bericht vanuit je e-mailprogramma om je aanvraag te verzenden.</p>
       </div>
     );
   }
   return (
-    <form onSubmit={e => { e.preventDefault(); setSent(true); }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+    <form onSubmit={e => {
+      e.preventDefault();
+      const data = new FormData(e.currentTarget);
+      window.location.href = websiteEnquiryUrl("Websiteaanvraag Vedantix", Object.fromEntries(data));
+      setSent(true);
+    }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-        <input type="text" placeholder="Naam" required style={iStyle} />
-        <input type="text" placeholder="Bedrijfsnaam" style={iStyle} />
+        <input name="name" type="text" placeholder="Naam" required style={iStyle} />
+        <input name="company" type="text" placeholder="Bedrijfsnaam" style={iStyle} />
       </div>
-      <input type="email" placeholder="E-mailadres" required style={iStyle} />
-      <input type="tel" placeholder="Telefoonnummer" style={iStyle} />
-      <select style={iStyle}>
+      <input name="email" type="email" placeholder="E-mailadres" required style={iStyle} />
+      <input name="phone" type="tel" placeholder="Telefoonnummer" style={iStyle} />
+      <select name="package" style={iStyle}>
         <option value="">Welk pakket interesseert u?</option>
         <option>Starter — Bekijk prijzen</option>
-        <option>Business — Bekijk prijzen</option>
-        <option>Premium — Bekijk prijzen</option>
+        <option>Growth — Bekijk prijzen</option>
+        <option>Pro — Bekijk prijzen</option>
         <option>Weet ik nog niet</option>
       </select>
-      <textarea placeholder="Vertel kort over uw bedrijf en wat u zoekt..." rows={4} style={{ ...iStyle, resize: "vertical" }} />
+      <textarea name="message" placeholder="Vertel kort over uw bedrijf en wat u zoekt..." rows={4} style={{ ...iStyle, resize: "vertical" }} />
       <button type="submit" style={{ background: "#1a73e8", color: "#fff", padding: "13px", borderRadius: 9, fontWeight: 700, fontSize: "0.93rem", border: "none", cursor: "pointer", width: "100%" }}>
-        Offerte aanvragen →
+        Open e-mail met je aanvraag →
       </button>
     </form>
   );
@@ -298,18 +304,18 @@ export default function VedantixHome() {
       {/* HERO */}
       <section className="hero">
         <div className="hi">
-          <div className="hbadge">⚡ Website binnen 48 uur live</div>
+          <div className="hbadge">Website op maat · afspraken vooraf</div>
           <h1>Jouw bedrijf verdient een<br/><em>professionele website</em></h1>
-          <p>Van kapper tot aannemer — wij bouwen jouw website snel, betaalbaar en volledig verzorgd. Inclusief hosting, domein en SSL.</p>
+          <p>Voor mkb en zelfstandigen in alle sectoren: een professionele website met duidelijke afspraken. Ook voor software op maat die meegroeit met jouw bedrijf.</p>
           <div className="hbtns">
             <a href="#contact" className="btn-p">Gratis offerte aanvragen</a>
             <a href="/Templates" className="btn-g">Bekijk templates</a>
           </div>
           <div className="hstats">
-            <div className="stat"><strong>48u</strong><span>Gemiddelde levertijd</span></div>
+            <div className="stat"><strong>Op afspraak</strong><span>Planning en oplevering</span></div>
             <div className="stat"><strong>Bekijk prijzen</strong><span>Vanaf prijs</span></div>
-            <div className="stat"><strong>100%</strong><span>Inclusief hosting</span></div>
-            <div className="stat"><strong>24/7</strong><span>Online bereikbaar</span></div>
+            <div className="stat"><strong>Hosting</strong><span>Bekijk actuele diensten</span></div>
+            <div className="stat"><strong>Direct</strong><span>Contact met Vedantix</span></div>
           </div>
         </div>
       </section>
@@ -324,9 +330,9 @@ export default function VedantixHome() {
         <div className="steps">
           {[
             ["1","Vertel ons over je bedrijf","Vul ons korte formulier in. Naam, branche, diensten — meer hebben we niet nodig."],
-            ["2","Wij bouwen jouw website","Ons team levert binnen 48 uur een professionele, mobielvriendelijke website op."],
+            ["2","Wij bouwen jouw website","We bouwen de afgesproken website en testen samen voor livegang."],
             ["3","Live — klaar voor klanten","Domein, hosting, SSL — volledig ingericht en klaar voor gebruik."],
-            ["4","Aanpassingen wanneer jij wil","Later iets aanpassen? Snel geregeld tegen een vaste lage prijs."],
+            ["4","Aanpassingen wanneer jij wil","Aanpassingen en uitbreiding krijgen vooraf een duidelijke scope en prijsafspraak."],
           ].map(([n, h, p]) => (
             <div key={n} className="step">
               <div className="step-n">{n}</div>
@@ -357,7 +363,7 @@ export default function VedantixHome() {
         <div className="center">
           <span className="tag">Prijzen</span>
           <h2>Transparante prijzen,<br/>geen verrassingen</h2>
-          <p className="sub">Eenmalige betaling. Geen maandelijkse verborgen kosten.</p>
+          <p className="sub">Websitepakketten zijn eenmalig, zonder verplicht maandabonnement. Hosting, zakelijke e-mail en optionele groei staan met hun actuele prijzen op /prijzen. Software op maat heeft opstartkosten en een vast maandbedrag op offerte.</p>
         </div>
         <div className="pgrid">
           <div className="pc">
@@ -366,33 +372,33 @@ export default function VedantixHome() {
             <div className="pd">Eenmalig — ideaal voor starters</div>
             <ul className="pl">
               <li>1-pagina professionele website</li><li>Mobielvriendelijk design</li>
-              <li>Contactformulier</li><li>Hosting (1 jaar) + 500 MB opslag</li>
-              <li>SSL-certificaat</li><li>Levering binnen 48 uur</li>
+              <li>Contactformulier</li><li>Hosting en opslag volgens afspraak</li>
+              <li>SSL-certificaat</li><li>Technische SEO-basis</li>
             </ul>
             <a href="#contact" className="pb pb-out">Start configuratie</a>
           </div>
           <div className="pc hot">
-            <div className="hbadge2">MEEST GEKOZEN</div>
-            <div className="pn">Business</div>
+            <div className="hbadge2">GROWTH</div>
+            <div className="pn">Growth</div>
             <div className="pp"><a href="/prijzen">Actuele prijs</a></div>
             <div className="pd">Eenmalig — voor groeiende bedrijven</div>
             <ul className="pl">
               <li>Tot 5 pagina's</li><li>Mobielvriendelijk design</li>
-              <li>Contactformulier + Google Maps</li><li>Hosting (1 jaar) + 2 GB opslag</li>
-              <li>SSL-certificaat</li><li>SEO-basisoptimalisatie</li>
-              <li>Levering binnen 48 uur</li><li>1x gratis aanpassing achteraf</li>
+              <li>Contactformulier + Google Maps</li><li>Hosting en opslag volgens afspraak</li>
+              <li>SSL-certificaat</li><li>SEO + lokale SEO + AEO-basis</li>
+              <li>Planning en acceptatie vooraf afgesproken</li><li>Wijzigingen volgens afspraak</li>
             </ul>
             <a href="#contact" className="pb pb-fill">Start configuratie</a>
           </div>
           <div className="pc">
-            <div className="pn">Premium</div>
+            <div className="pn">Pro</div>
             <div className="pp"><a href="/prijzen">Actuele prijs</a></div>
             <div className="pd">Eenmalig — voor serieuze ondernemers</div>
             <ul className="pl">
               <li>Tot 10 pagina's</li><li>Custom design op maat</li>
-              <li>Geavanceerde contactfuncties</li><li>Hosting (1 jaar) + 10 GB opslag</li>
-              <li>SSL-certificaat</li><li>Volledige SEO-optimalisatie</li>
-              <li>Google Analytics koppeling</li><li>3x gratis aanpassingen achteraf</li>
+              <li>Geavanceerde contactfuncties</li><li>Hosting en opslag volgens afspraak</li>
+              <li>SSL-certificaat</li><li>Uitgebreidere SEO + AEO + GEO/AIO-basis</li>
+              <li>Google Analytics koppeling</li><li>Uitbreiding volgens afspraak</li>
             </ul>
             <a href="#contact" className="pb pb-out">Start configuratie</a>
           </div>
@@ -408,12 +414,12 @@ export default function VedantixHome() {
         </div>
         <div className="wgrid">
           {[
-            ["⚡","Levering binnen 48 uur","Geen weken wachten. Jouw website is live voordat jij het weet."],
-            ["💰","Eerlijke prijzen","Geen verborgen kosten of dure abonnementen. Eenmalig betalen, klaar."],
-            ["📱","100% mobielvriendelijk","Elke website werkt perfect op telefoon, tablet en computer."],
-            ["🔒","Hosting & SSL inbegrepen","Wij regelen domein, hosting en beveiliging. Jij hoeft niets te doen."],
-            ["🛠️","Aanpassingen op aanvraag","Wil je later iets veranderen? Snel en goedkoop geregeld."],
-            ["🤝","Persoonlijk contact","Je hebt altijd direct contact met ons team. Geen callcenters."],
+            ["⚡","Heldere planning","We spreken fases, controles en acceptatie vooraf af."],
+            ["💰","Eerlijke prijzen","Websitepakketten zijn eenmalig. Beheer, hosting en softwarediensten hebben afzonderlijke afspraken."],
+            ["📱","Getest op mobiel","We testen de afgesproken pagina’s en functies op telefoon, tablet en computer."],
+            ["🔒","Hosting & SSL op afspraak","Hosting, updates en monitoring worden met verantwoordelijkheden en kosten vooraf vastgelegd."],
+            ["🛠️","Aanpassingen op aanvraag","Wil je later iets veranderen? Met vooraf een duidelijke scope en prijsafspraak."],
+            ["🤝","Persoonlijk contact","Je bespreekt je project direct met Vedantix."],
           ].map(([ic, h, p]) => (
             <div key={h} className="wyc">
               <span className="ic">{ic}</span>

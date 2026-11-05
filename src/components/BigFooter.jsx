@@ -59,16 +59,16 @@ export default function BigFooter() {
             <div className="big-footer__brand">
               <div className="big-footer__brand-name">Vedantix</div>
               <h2 className="big-footer__brand-heading">
-                Digitale groei voor ondernemers
+                Software die meegroeit met jouw bedrijf.
               </h2>
               <p className="big-footer__brand-text">
-                Vedantix helpt ondernemers met websites, AI-oplossingen, webapps,
-                mobiele apps, koppelingen en vindbaarheid. Vanuit Den Bosch, voor heel Nederland.
+                Bedrijfssoftware op maat voor het mkb en zelfstandigen.
+                Zorgvuldig gebouwd, getest en beheerd. Ook voor websites, hosting en vindbaarheid. Vanuit Den Bosch, voor heel Nederland.
               </p>
 
               <ul className="big-footer__links" aria-label="Vedantix diensten">
                 <li>
-                  <Link to="/voorwie">Websites voor lokale ondernemers</Link>
+                  <Link to="/software-op-maat">Software op maat voor jouw bedrijf</Link>
                 </li>
                 <li>
                   <Link to="/groeimodel">SEO en online zichtbaarheid</Link>
@@ -130,7 +130,7 @@ export default function BigFooter() {
                   <Link to="/proces">Proces</Link>
                 </li>
                 <li>
-                  <Link to="/groeimodel">Waarom Vedantix</Link>
+                  <Link to="/over-ons">Over Vedantix</Link>
                 </li>
                 <li>
                   <Link to="/resultaten">Resultaten</Link>
@@ -156,6 +156,7 @@ export default function BigFooter() {
             <div className="big-footer__col">
               <div className="big-footer__col-title">Diensten</div>
               <ul className="big-footer__links">
+                <li><Link to="/software-op-maat">Bedrijfssoftware op maat</Link></li>
                 <li><Link to="/diensten">Alle diensten</Link></li>
                 <li><Link to="/ai-oplossingen">AI & automatisering</Link></li>
                 <li><Link to="/webapps-klantportalen">Webapps & klantportalen</Link></li>
@@ -185,7 +186,7 @@ export default function BigFooter() {
             </div>
 
             <div className="big-footer__col">
-              <div className="big-footer__col-title">Branches</div>
+              <div className="big-footer__col-title">Websitevoorbeelden per branche</div>
               <ul className="big-footer__links">
                 <li>
                   <Link to="/website/personal-trainer">
@@ -255,8 +256,8 @@ export default function BigFooter() {
                 </div>
               </div>
 
-              <Link className="big-footer__cta" to="/online-groei-audit">
-                Gratis Online Groei Audit
+              <Link className="big-footer__cta" to="/contact#contact-form">
+                Plan een bedrijfsscan
               </Link>
             </div>
           </div>

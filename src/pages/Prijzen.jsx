@@ -211,8 +211,8 @@ export default function Prijzen({ initialProducts = null }) {
   return (
     <>
       <SEO
-        title="Prijzen voor websites, AI-oplossingen & apps | Vedantix"
-        description="Actuele tarieven voor websitepakketten, AI-automatisering, webapps, mobiele apps en SEO. Bekijk de scope, vanafprijzen en bedragen inclusief en exclusief btw."
+        title="Software op offerte, websiteprijzen en hosting | Vedantix"
+        description="Software op maat met opstartkosten en een vast maandbedrag op offerte. Bekijk de bestaande websiteprijzen, hosting, e-mail en optionele groeidiensten."
         canonical={canonical}
         schemas={[breadcrumbSchema, faqSchema, { "@context": "https://schema.org", "@type": "OfferCatalog", name: "Vedantix diensten en prijzen", itemListElement: products.map(p => ({ "@type": "Offer", url: canonical, itemOffered: { "@type": "Service", name: p.name, description: p.description, provider: { "@id": "https://vedantix.nl/#localbusiness" } }, priceSpecification: { "@type": "UnitPriceSpecification", [p.from_price ? "minPrice" : "price"]: Number(p.price_ex_vat), priceCurrency: "EUR", valueAddedTaxIncluded: false, ...(p.billing_type === "MONTHLY" ? { billingDuration: "P1M" } : p.billing_type === "YEARLY" ? { billingDuration: "P1Y" } : {}) } })) }]}
       />
@@ -230,12 +230,12 @@ export default function Prijzen({ initialProducts = null }) {
                 </div>
                 <h1 id="pricing-title">{heading}</h1>
                 <p>
-                  Kies een websitepakket of start met een afgebakende AI-oplossing, webapp of mobiele app.
-                  Je ziet wat de eerste stap kost; maatwerk, externe kosten en beheer spreken we vooraf af.
+                  Bedrijfssoftware op maat heeft opstartkosten en een vast maandbedrag op offerte voor de afgesproken dienstverlening.
+                  Websitepakketten houden hun bestaande eenmalige prijzen, zonder verplicht maandabonnement.
                 </p>
               </header>
 
-              <nav className="pricing-service-links" aria-label="Prijscategorieën"><a href="#websites">Websitepakketten</a><a href="#apps-ai">AI & apps</a><a href="#groei">SEO & AI-vindbaarheid</a><a href="#uitbreidingen">Hosting & uitbreidingen</a></nav>
+              <nav className="pricing-service-links" aria-label="Prijscategorieën"><a href="#websites">Websitepakketten</a><a href="#apps-ai">Software op offerte</a><a href="#groei">SEO & AI-vindbaarheid</a><a href="#uitbreidingen">Hosting & uitbreidingen</a></nav>
               <h2 id="websites">Websitepakketten</h2>
               {loading ? <p role="status">Actuele prijzen laden…</p> : null}
               {error ? <p role="alert">De prijzen zijn tijdelijk niet beschikbaar. Neem contact op voor een offerte.</p> : null}
@@ -301,7 +301,7 @@ export default function Prijzen({ initialProducts = null }) {
             </div>
           </section>
 
-          <section className="pricing-section" id="apps-ai"><div className="pricing-container"><div className="pricing-section-heading"><div className="pricing-kicker">Slimmer werken en digitaal uitbreiden</div><h2>AI, apps, koppelingen en beheer.</h2><p>Vanafprijzen voor een afgebakende eerste versie. Bekijk per dienst welke functies en werkzaamheden inbegrepen zijn.</p></div><ServicePrices products={projectProducts} details /><p className="service-scope">Je ontvangt vooraf een offerte met scope, planning en acceptatieafspraken. Hosting, model- en API-gebruik, licenties en appstorekosten worden apart begroot. Vanafprijzen zijn geen prijs voor iedere denkbare uitvoering. Bestaande offertes, contracten en abonnementen behouden hun afgesproken tarieven.</p><a href="/diensten">Vergelijk de diensten en toepassingen →</a></div></section>
+          <section className="pricing-section" id="apps-ai"><div className="pricing-container"><div className="pricing-section-heading"><div className="pricing-kicker">Slimmer werken en digitaal uitbreiden</div><h2>Bedrijfssoftware op maat: heldere afspraken op offerte.</h2><p>Een bedrijfsscan leidt tot een concreet voorstel. Opstartkosten en het vaste maandbedrag dekken de afgesproken functionaliteit, hosting, opslag, onderhoud en support. Inbegrepen gebruik, wijzigingen, uitbreiding, dataverwerking en export spreken we vooraf af.</p><p>Behoud je externe tools, dan kunnen hun abonnementskosten blijven gelden. Onderstaande catalogusdiensten zijn losse, afgebakende diensten; hun vanafprijzen zijn geen prijs voor een complete maatwerkapplicatie.</p><a className="pricing-secondary-cta" href="/software-op-maat">Meer over software op maat →</a></div><ServicePrices products={projectProducts} details /><p className="service-scope">Je ontvangt vooraf een offerte met scope, planning en acceptatieafspraken. Hosting, model- en API-gebruik, licenties en appstorekosten worden apart begroot. Vanafprijzen zijn geen prijs voor iedere denkbare uitvoering. Bestaande offertes, contracten en abonnementen behouden hun afgesproken tarieven.</p><a href="/diensten">Vergelijk de diensten en toepassingen →</a></div></section>
           <section className="pricing-section pricing-payment-section" id="vindbaarheid">
             <div className="pricing-container">
               <div className="pricing-section-heading">
@@ -539,15 +539,15 @@ export default function Prijzen({ initialProducts = null }) {
             <div className="pricing-container pricing-final-cta-inner">
               <div>
                 <span>Klaar om te starten?</span>
-                <h2>Begin met de website. Groei wanneer jij eraan toe bent.</h2>
+                <h2>Begin bij wat jouw bedrijf nodig heeft.</h2>
                 <p>
                   Vertel ons wat je bedrijf nodig heeft. Je krijgt een duidelijk advies zonder
                   dat we je in een onnodig groot abonnement stoppen.
                 </p>
               </div>
               <div className="pricing-final-actions">
-                <Link className="pricing-primary-cta" to="/planning">
-                  Plan een kennismaking <ArrowRight size={17} aria-hidden="true" />
+                <Link className="pricing-primary-cta" to="/contact#contact-form">
+                  Plan een bedrijfsscan <ArrowRight size={17} aria-hidden="true" />
                 </Link>
                 <a
                   className="pricing-whatsapp-cta"

@@ -4,6 +4,11 @@ Disallow: /admin
 Disallow: /klantenportaal
 Disallow: /clientportal
 Disallow: /login
+Disallow: /offerte/
+Disallow: /factuur/
+Disallow: /contract/
+Disallow: /betaling/
+Disallow: /preview/
 
 User-agent: ChatGPT-User
 Allow: /
@@ -11,6 +16,11 @@ Disallow: /admin
 Disallow: /klantenportaal
 Disallow: /clientportal
 Disallow: /login
+Disallow: /offerte/
+Disallow: /factuur/
+Disallow: /contract/
+Disallow: /betaling/
+Disallow: /preview/
 
 User-agent: GPTBot
 Allow: /
@@ -18,6 +28,11 @@ Disallow: /admin
 Disallow: /klantenportaal
 Disallow: /clientportal
 Disallow: /login
+Disallow: /offerte/
+Disallow: /factuur/
+Disallow: /contract/
+Disallow: /betaling/
+Disallow: /preview/
 
 User-agent: ClaudeBot
 Allow: /
@@ -25,6 +40,11 @@ Disallow: /admin
 Disallow: /klantenportaal
 Disallow: /clientportal
 Disallow: /login
+Disallow: /offerte/
+Disallow: /factuur/
+Disallow: /contract/
+Disallow: /betaling/
+Disallow: /preview/
 
 User-agent: Claude-User
 Allow: /
@@ -32,6 +52,11 @@ Disallow: /admin
 Disallow: /klantenportaal
 Disallow: /clientportal
 Disallow: /login
+Disallow: /offerte/
+Disallow: /factuur/
+Disallow: /contract/
+Disallow: /betaling/
+Disallow: /preview/
 
 User-agent: Claude-SearchBot
 Allow: /
@@ -39,6 +64,11 @@ Disallow: /admin
 Disallow: /klantenportaal
 Disallow: /clientportal
 Disallow: /login
+Disallow: /offerte/
+Disallow: /factuur/
+Disallow: /contract/
+Disallow: /betaling/
+Disallow: /preview/
 
 User-agent: *
 Allow: /
@@ -46,5 +76,10 @@ Disallow: /admin
 Disallow: /klantenportaal
 Disallow: /clientportal
 Disallow: /login
+Disallow: /offerte/
+Disallow: /factuur/
+Disallow: /contract/
+Disallow: /betaling/
+Disallow: /preview/
 
 Sitemap: https://vedantix.nl/sitemap.xml

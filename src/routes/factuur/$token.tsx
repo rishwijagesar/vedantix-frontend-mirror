@@ -7,6 +7,10 @@ export const Route = createFileRoute("/factuur/$token")({
   head: () => ({
     meta: [
       { title: "Factuur | Vedantix" },
+    { property: "og:title", content: "Factuur | Vedantix" },
+    { property: "og:description", content: "Beveiligde Vedantix factuur." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow, noarchive" },
       { name: "description", content: "Beveiligde Vedantix factuur." },
     ],

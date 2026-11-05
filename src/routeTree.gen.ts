@@ -22,11 +22,13 @@ import { Route as GroeimodelRouteImport } from './routes/groeimodel'
 import { Route as KoppelingenAutomatiseringRouteImport } from './routes/koppelingen-automatisering'
 import { Route as MobieleAppsRouteImport } from './routes/mobiele-apps'
 import { Route as OnlineGroeiAuditRouteImport } from './routes/online-groei-audit'
+import { Route as OverOnsRouteImport } from './routes/over-ons'
 import { Route as PlanningRouteImport } from './routes/planning'
 import { Route as PrijzenRouteImport } from './routes/prijzen'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProcesRouteImport } from './routes/proces'
 import { Route as ResultatenRouteImport } from './routes/resultaten'
+import { Route as SoftwareOpMaatRouteImport } from './routes/software-op-maat'
 import { Route as StartersRouteImport } from './routes/starters'
 import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -122,6 +124,11 @@ const OnlineGroeiAuditRoute = OnlineGroeiAuditRouteImport.update({
   path: '/online-groei-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OverOnsRoute = OverOnsRouteImport.update({
+  id: '/over-ons',
+  path: '/over-ons',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlanningRoute = PlanningRouteImport.update({
   id: '/planning',
   path: '/planning',
@@ -145,6 +152,11 @@ const ProcesRoute = ProcesRouteImport.update({
 const ResultatenRoute = ResultatenRouteImport.update({
   id: '/resultaten',
   path: '/resultaten',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoftwareOpMaatRoute = SoftwareOpMaatRouteImport.update({
+  id: '/software-op-maat',
+  path: '/software-op-maat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StartersRoute = StartersRouteImport.update({
@@ -303,11 +315,13 @@ export interface FileRoutesByFullPath {
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/over-ons': typeof OverOnsRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
   '/privacy': typeof PrivacyRoute
   '/proces': typeof ProcesRoute
   '/resultaten': typeof ResultatenRoute
+  '/software-op-maat': typeof SoftwareOpMaatRoute
   '/starters': typeof StartersRoute
   '/templates': typeof TemplatesRoute
   '/terms': typeof TermsRoute
@@ -351,11 +365,13 @@ export interface FileRoutesByTo {
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/over-ons': typeof OverOnsRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
   '/privacy': typeof PrivacyRoute
   '/proces': typeof ProcesRoute
   '/resultaten': typeof ResultatenRoute
+  '/software-op-maat': typeof SoftwareOpMaatRoute
   '/starters': typeof StartersRoute
   '/templates': typeof TemplatesRoute
   '/terms': typeof TermsRoute
@@ -400,11 +416,13 @@ export interface FileRoutesById {
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/over-ons': typeof OverOnsRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
   '/privacy': typeof PrivacyRoute
   '/proces': typeof ProcesRoute
   '/resultaten': typeof ResultatenRoute
+  '/software-op-maat': typeof SoftwareOpMaatRoute
   '/starters': typeof StartersRoute
   '/templates': typeof TemplatesRoute
   '/terms': typeof TermsRoute
@@ -450,11 +468,13 @@ export interface FileRouteTypes {
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
     | '/online-groei-audit'
+    | '/over-ons'
     | '/planning'
     | '/prijzen'
     | '/privacy'
     | '/proces'
     | '/resultaten'
+    | '/software-op-maat'
     | '/starters'
     | '/templates'
     | '/terms'
@@ -498,11 +518,13 @@ export interface FileRouteTypes {
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
     | '/online-groei-audit'
+    | '/over-ons'
     | '/planning'
     | '/prijzen'
     | '/privacy'
     | '/proces'
     | '/resultaten'
+    | '/software-op-maat'
     | '/starters'
     | '/templates'
     | '/terms'
@@ -546,11 +568,13 @@ export interface FileRouteTypes {
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
     | '/online-groei-audit'
+    | '/over-ons'
     | '/planning'
     | '/prijzen'
     | '/privacy'
     | '/proces'
     | '/resultaten'
+    | '/software-op-maat'
     | '/starters'
     | '/templates'
     | '/terms'
@@ -595,11 +619,13 @@ export interface RootRouteChildren {
   KoppelingenAutomatiseringRoute: typeof KoppelingenAutomatiseringRoute
   MobieleAppsRoute: typeof MobieleAppsRoute
   OnlineGroeiAuditRoute: typeof OnlineGroeiAuditRoute
+  OverOnsRoute: typeof OverOnsRoute
   PlanningRoute: typeof PlanningRoute
   PrijzenRoute: typeof PrijzenRoute
   PrivacyRoute: typeof PrivacyRoute
   ProcesRoute: typeof ProcesRoute
   ResultatenRoute: typeof ResultatenRoute
+  SoftwareOpMaatRoute: typeof SoftwareOpMaatRoute
   StartersRoute: typeof StartersRoute
   TemplatesRoute: typeof TemplatesRoute
   TermsRoute: typeof TermsRoute
@@ -723,6 +749,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnlineGroeiAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/over-ons': {
+      id: '/over-ons'
+      path: '/over-ons'
+      fullPath: '/over-ons'
+      preLoaderRoute: typeof OverOnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/planning': {
       id: '/planning'
       path: '/planning'
@@ -756,6 +789,13 @@ declare module '@tanstack/react-router' {
       path: '/resultaten'
       fullPath: '/resultaten'
       preLoaderRoute: typeof ResultatenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/software-op-maat': {
+      id: '/software-op-maat'
+      path: '/software-op-maat'
+      fullPath: '/software-op-maat'
+      preLoaderRoute: typeof SoftwareOpMaatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/starters': {
@@ -971,11 +1011,13 @@ const rootRouteChildren: RootRouteChildren = {
   KoppelingenAutomatiseringRoute: KoppelingenAutomatiseringRoute,
   MobieleAppsRoute: MobieleAppsRoute,
   OnlineGroeiAuditRoute: OnlineGroeiAuditRoute,
+  OverOnsRoute: OverOnsRoute,
   PlanningRoute: PlanningRoute,
   PrijzenRoute: PrijzenRoute,
   PrivacyRoute: PrivacyRoute,
   ProcesRoute: ProcesRoute,
   ResultatenRoute: ResultatenRoute,
+  SoftwareOpMaatRoute: SoftwareOpMaatRoute,
   StartersRoute: StartersRoute,
   TemplatesRoute: TemplatesRoute,
   TermsRoute: TermsRoute,

@@ -1,3 +1,4 @@
+import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_FAQS, SCAN_URL } from "../data/positioning";
 import { Suspense } from "react";
 import {
   ArrowRight,
@@ -30,81 +31,31 @@ import "../styles/home.css";
 import "../styles/home-hero.css";
 
 const BENEFITS = [
-  {
-    title: "Meer klanten",
-    text: "Word gevonden door mensen die actief zoeken naar jouw diensten.",
-    icon: Users,
-  },
-  {
-    title: "Meer vertrouwen",
-    text: "Een professionele uitstraling die bezoekers omzet in klanten.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Meer aanvragen",
-    text: "Meer telefoontjes, WhatsApp-berichten en offerteaanvragen.",
-    icon: MessageCircle,
-  },
-  {
-    title: "Meer tijd",
-    text: "Bespaar handwerk met slimme apps, koppelingen en automatisering.",
-    icon: Clock,
-  },
+ { title: "Minder dubbel werk", text: "Gebruik dezelfde informatie in je werkproces, zonder steeds opnieuw overtypen.", icon: Users },
+ { title: "Minder wisselen", text: "Breng taken en informatie samen in een centrale applicatie op maat.", icon: Network },
+ { title: "Eenvoudiger onboarding", text: "Geef nieuwe collega’s toegang tot hun taken en instructies binnen de afgesproken scope.", icon: MessageCircle },
+ { title: "Meer overzicht", text: "Laat afdelingen samenwerken met actuele informatie en passende rolrechten.", icon: Clock },
 ];
 
 const ROADMAP = [
-  { title: "Website", icon: Globe2 },
-  { title: "Vindbaarheid", icon: Search },
-  { title: "Content", icon: FileText },
-  { title: "Reviews", icon: Star },
-  { title: "Vertrouwen", icon: ShieldCheck },
-  { title: "Aanvragen", icon: MessageCircle },
-  { title: "Groei", icon: TrendingUp },
+ { title: "Bedrijfsscan", icon: Search }, { title: "Voorstel", icon: FileText },
+ { title: "Bouwen", icon: Wrench }, { title: "Testen", icon: ShieldCheck },
+ { title: "Accepteren", icon: Users }, { title: "Beheren", icon: LifeBuoy }, { title: "Uitbreiden", icon: TrendingUp },
 ];
 
 const ECOSYSTEM = [
-  { label: "Website", icon: Globe2 },
-  { label: "Hosting", icon: Zap },
-  { label: "Zakelijke E-mail", icon: Mail },
-  { label: "SEO", icon: Search },
-  { label: "Google Optimalisatie", icon: Target },
-  { label: "AI & automatisering", icon: Sparkles },
-  { label: "Apps & portalen", icon: Network },
-  { label: "Onderhoud", icon: Wrench },
-  { label: "Support", icon: LifeBuoy },
+ { label: "Sales", icon: Users }, { label: "Planning", icon: Clock }, { label: "Marketing", icon: Target },
+ { label: "Finance", icon: FileText }, { label: "HR", icon: Users }, { label: "IT", icon: Wrench },
+ { label: "Rolrechten", icon: ShieldCheck }, { label: "Instructies", icon: FileText }, { label: "Support", icon: LifeBuoy },
 ];
 
 const DIFFERENCES = [
-  {
-    title: "Focus op groei",
-    text: "We kijken eerst naar wat jouw bedrijf nodig heeft om meer zichtbaar, betrouwbaarder en makkelijker benaderbaar te worden.",
-    icon: TrendingUp,
-  },
-  {
-    title: "Focus op lokale ondernemers",
-    text: "De aanpak is gemaakt voor ondernemers die in hun regio meer klanten willen aantrekken.",
-    icon: Users,
-  },
-  {
-    title: "SEO vanaf dag één",
-    text: "Vindbaarheid wordt niet later geplakt, maar vanaf de basis meegenomen als groeimiddel.",
-    icon: Search,
-  },
-  {
-    title: "Geen standaard templates",
-    text: "Je krijgt een uitstraling die past bij jouw bedrijf, doelgroep en vertrouwen dat je wilt opbouwen.",
-    icon: Sparkles,
-  },
-  {
-    title: "Persoonlijke samenwerking",
-    text: "Je werkt met één aanspreekpunt dat meedenkt over zichtbaarheid, aanvragen en groei.",
-    icon: MessageCircle,
-  },
-  {
-    title: "Doorlopende ondersteuning",
-    text: "Ook na livegang blijven onderhoud, verbeteringen en nieuwe groeikansen in beeld.",
-    icon: LifeBuoy,
-  },
+ { title: "Jouw processen eerst", text: "We brengen je huidige werkwijze, tools, abonnementen en handwerk in kaart.", icon: Search },
+ { title: "Voor mkb en zelfstandigen", text: "Geen vaste niche: we beoordelen wat jouw bedrijf nodig heeft, vanuit Den Bosch voor heel Nederland.", icon: Users },
+ { title: "AI als hulpmiddel", text: "Snel ontwikkelen met AI, met professionele controle en tests door Vedantix.", icon: Sparkles },
+ { title: "Acceptatie voor livegang", text: "Jouw team beoordeelt de afgesproken functionaliteit voordat een fase live gaat.", icon: ShieldCheck },
+ { title: "Persoonlijk contact", text: "Je hebt direct contact met Vedantix; contactmomenten en support leggen we vooraf vast.", icon: MessageCircle },
+ { title: "Heldere beheerafspraken", text: "Gebruik, onderhoud, wijzigingen, uitbreiding en export krijgen een concrete plek in de offerte.", icon: LifeBuoy },
 ];
 
 const AI_READINESS_CARDS = [
@@ -139,49 +90,11 @@ const SCAN_ITEMS = [
   "Downloadbaar PDF-rapport",
 ];
 
-const CTA_META = [
-  "Vrijblijvend",
-  "Voor lokale ondernemers",
-  "Focus op groei",
-  "Eén aanspreekpunt",
-];
+const CTA_META = ["Alle sectoren", "Processen centraal", "Gefaseerde aanpak", "Heldere afspraken"];
 
-const HOMEPAGE_FAQS = [
-  {
-    question: "Wat doet Vedantix?",
-    answer:
-      "Vedantix bouwt websites, AI-oplossingen, webapps en mobiele apps voor ondernemers en het mkb. We helpen ook met koppelingen, SEO, AI-vindbaarheid, hosting en beheer. Vanuit Den Bosch werken we voor bedrijven in heel Nederland.",
-  },
-  {
-    question:
-      "Hoe helpt Vedantix ondernemers beter gevonden te worden in Google?",
-    answer:
-      "Vedantix bouwt websites met een duidelijke paginastructuur, lokale zoekwoorden, snelle techniek, goede metadata en content die aansluit op vragen van potentiële klanten.",
-  },
-  {
-    question: "Waarom is een professionele website belangrijk?",
-    answer:
-      "Een professionele website wekt vertrouwen, maakt duidelijk wat je aanbiedt en verlaagt de drempel om contact op te nemen via telefoon, WhatsApp of een offerteaanvraag.",
-  },
-  {
-    question: "Waarom kiezen ondernemers voor Vedantix?",
-    answer:
-      "Ondernemers kiezen voor Vedantix omdat website, hosting, onderhoud, SEO en ondersteuning onder één dak worden geregeld met focus op zichtbaarheid en groei.",
-  },
-  {
-    question:
-      "Is Vedantix een bedrijf voor websites, webdesign, hosting en SEO?",
-    answer:
-      "Ja. Vedantix combineert webdesign, webontwikkeling, managed hosting, SSL, onderhoud, SEO, AEO, GEO en AI-vindbaarheid voor lokale ondernemers en zzp’ers.",
-  },
-  {
-    question: "Werkt Vedantix alleen in Den Bosch?",
-    answer:
-      "Nee. Vedantix is gevestigd in 's-Hertogenbosch en werkt voor lokale ondernemers in heel Nederland. De samenwerking kan grotendeels online verlopen.",
-  },
-];
+const HOMEPAGE_FAQS = SOFTWARE_FAQS.filter((_, index) => [0, 1, 2, 3, 7, 9].includes(index));
 
-function SectionCta({ title, text, dark = false }) {
+function SectionCta({ title, text, dark = false, website = false }) {
   return (
     <div className={`mini-cta ${dark ? "dark" : ""}`}>
       <div>
@@ -189,8 +102,8 @@ function SectionCta({ title, text, dark = false }) {
         <p>{text}</p>
       </div>
       <div className="mini-cta-actions">
-        <a href="/online-groei-audit" className="btn-lead">
-          Gratis Online Groei Audit <ArrowRight size={17} aria-hidden="true" />
+        <a href={website ? "/online-groei-audit" : SCAN_URL} className="btn-lead">
+          {website ? "Gratis Online Groei Audit" : "Plan een bedrijfsscan"} <ArrowRight size={17} aria-hidden="true" />
         </a>
         <a
           href={CONTACT.WHATSAPP_URL}
@@ -219,7 +132,7 @@ function IconCard({ title, text, icon: Icon }) {
 
 export default function Home({ initialCases = null }) {
   const meetingUrl = `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent(
-    "Hallo Vedantix, ik wil graag een kennismaking plannen over online groei.",
+    "Hallo Vedantix, ik wil graag een bedrijfsscan bespreken.",
   )}`;
   const canonical = "https://vedantix.nl/";
   const faqSchema = createFAQSchema(HOMEPAGE_FAQS);
@@ -230,8 +143,8 @@ export default function Home({ initialCases = null }) {
   return (
     <>
       <SEO
-        title="Vedantix | Websites, AI-oplossingen & apps voor bedrijven"
-        description="Vedantix helpt ondernemers met websites, AI-automatisering, webapps, mobiele apps en SEO. Vanuit Den Bosch bouwen we aan meer zichtbaarheid en minder handwerk."
+        title={SOFTWARE_TITLE}
+        description={SOFTWARE_DESCRIPTION}
         canonical={canonical}
         schemas={[faqSchema, breadcrumbSchema]}
       />
@@ -241,7 +154,7 @@ export default function Home({ initialCases = null }) {
 
         <main>
           <HomeHero />
-          <section className="home-services" aria-labelledby="home-services-title"><div className="services-wrap"><span className="services-kicker">Websites · AI · Apps</span><h2 id="home-services-title">Meer klanten. Slimmer werken.</h2><p>Van een sterke website tot een eigen app of slimme automatisering: we bouwen digitale oplossingen die passen bij jouw bedrijf, klanten en dagelijkse werk.</p><ServiceCards /></div></section>
+          <section className="home-services" aria-labelledby="home-services-title"><div className="services-wrap"><span className="services-kicker">Software · Websites · Hosting</span><h2 id="home-services-title">Jouw bedrijf centraal. Niet je losse tools.</h2><p>Van bedrijfssoftware op maat tot een sterke website: we bouwen vanuit jouw werkprocessen. Websites, hosting, e-mail en vindbaarheid blijven beschikbaar met hun bestaande prijzen en funnels.</p><ServiceCards /></div></section>
 
           <Suspense fallback={null}>
             <section
@@ -266,12 +179,12 @@ export default function Home({ initialCases = null }) {
                     Wat levert Vedantix jou op?
                   </div>
                   <h2 className="section-h2">
-                    Meer resultaat uit je online aanwezigheid
+                    Meer ruimte voor het werk dat ertoe doet
                   </h2>
                   <p className="section-p">
-                    Vedantix helpt lokale ondernemers groeien door meer
-                    zichtbaarheid, meer vertrouwen, meer aanvragen en minder
-                    technische zorgen.
+                    Een centrale applicatie kan dubbel werk en wisselen tussen
+                    tools verminderen. Met duidelijke rollen en bijgehouden
+                    instructies binnen de afgesproken dienstverlening.
                   </p>
                 </div>
 
@@ -282,8 +195,8 @@ export default function Home({ initialCases = null }) {
                 </div>
 
                 <SectionCta
-                  title="Benieuwd waar jouw grootste online groeikans ligt?"
-                  text="Begin met een gratis check van één openbare pagina: van vindbaarheidssignalen tot contactmogelijkheden."
+                  title="Waar verlies je nu tijd aan handwerk?"
+                  text="Een bedrijfsscan brengt processen, tools, abonnementen en kansen in kaart. Daarna volgt een concreet voorstel."
                 />
               </div>
             </section>
@@ -293,19 +206,19 @@ export default function Home({ initialCases = null }) {
             <section className="section-shell anchor-section" id="how">
               <div className="section-wrap">
                 <div className="section-header center">
-                  <div className="section-label">Het Vedantix Groei Model</div>
+                  <div className="section-label">Van bedrijfsscan naar software</div>
                   <h2 className="section-h2">
-                    Van zichtbaar worden naar aanvragen krijgen
+                    Een werkbare eerste stap, daarna gericht uitbreiden
                   </h2>
                   <p className="section-p">
-                    Online groei ontstaat wanneer techniek, content, snelheid,
-                    reviews en vertrouwen samenwerken.
+                    We spreken functionaliteit, gebruik, kosten en controles vooraf
+                    af. AI helpt bij het bouwen; Vedantix controleert en test.
                   </p>
                 </div>
 
                 <div
                   className="growth-roadmap"
-                  aria-label="Het Vedantix Groei Model roadmap"
+                  aria-label="Van bedrijfsscan naar software roadmap"
                 >
                   {ROADMAP.map(({ title, icon: Icon }, index) => (
                     <div className="growth-roadmap-step" key={title}>
@@ -322,7 +235,7 @@ export default function Home({ initialCases = null }) {
 
                 <SectionCta
                   title="Wil je weten welke stap jouw bedrijf nu mist?"
-                  text="De Online Groei Audit geeft verbeterpunten voor de gecontroleerde pagina, op volgorde van prioriteit."
+                  text="We bepalen met jouw team de prioriteiten, opstartkosten, het vaste maandbedrag en de fases."
                 />
               </div>
             </section>
@@ -337,8 +250,9 @@ export default function Home({ initialCases = null }) {
                     Eén partij. Eén aanspreekpunt. Minder rompslomp.
                   </h2>
                   <p className="section-p">
-                    Geen losse leveranciers. Geen technische rompslomp. Alles
-                    wat je online nodig hebt komt samen in één groeiplatform.
+                    Sales, planning, marketing, finance, HR en IT kunnen samenwerken
+                    in één webapp met rolrechten. Je hoeft je bedrijf niet rond
+                    losse tools te organiseren.
                   </p>
                 </div>
 
@@ -359,7 +273,7 @@ export default function Home({ initialCases = null }) {
 
                 <SectionCta
                   title="Meer overzicht, minder losse lijntjes."
-                  text="Start met een websitecheck en bespreek welke verbeteringen passen bij jouw bedrijf."
+                  text="Bestaande tools kunnen blijven waar ze waarde toevoegen. Hun externe abonnementskosten kunnen dan ook blijven gelden."
                 />
               </div>
             </section>
@@ -373,11 +287,11 @@ export default function Home({ initialCases = null }) {
                     Wat maakt Vedantix anders?
                   </div>
                   <h2 className="section-h2">
-                    Geen standaard webdesigner, maar groeipartner
+                    Praktisch bouwen, zorgvuldig controleren
                   </h2>
                   <p className="section-p">
-                    We vertalen techniek naar ondernemersvoordeel:
-                    zichtbaarheid, vertrouwen, aanvragen en rust.
+                    We maken afspraken over inbegrepen gebruik, wijzigingen,
+                    uitbreiding, beheer en dataverwerking. Geen onbeperkte beloftes.
                   </p>
                 </div>
 
@@ -407,9 +321,9 @@ export default function Home({ initialCases = null }) {
                     andere AI-platformen.
                   </p>
                   <p className="section-p">
-                    Wij zorgen ervoor dat jouw website niet alleen mooi is, maar
-                    ook begrijpelijk is voor moderne zoekmachines en
-                    AI-systemen.
+                    Naast software bouwen we websites en verbeteren we
+                    zoek- en AI-vindbaarheid. Duidelijke inhoud helpt systemen
+                    je bedrijf begrijpen; een vermelding is niet gegarandeerd.
                   </p>
                 </div>
 
@@ -431,6 +345,7 @@ export default function Home({ initialCases = null }) {
                 </p>
 
                 <SectionCta
+                  website
                   title="Vraag een gratis Online Groei Audit aan"
                   text="Bekijk of de teksten en structuur van de opgegeven pagina zoekmachines en AI helpen je bedrijf te begrijpen."
                 />
@@ -482,11 +397,11 @@ export default function Home({ initialCases = null }) {
                 <div className="section-header center">
                   <div className="section-label">Direct antwoord</div>
                   <h2 className="section-h2" id="home-faq-title">
-                    Veelgestelde vragen over online groei
+                    Veelgestelde vragen over software en websites
                   </h2>
                   <p className="section-p">
                     Korte antwoorden op vragen die ondernemers vaak stellen
-                    voordat ze hun online zichtbaarheid willen verbeteren.
+                    voordat ze software, een website of beheer afspreken.
                   </p>
                 </div>
 
@@ -505,15 +420,15 @@ export default function Home({ initialCases = null }) {
           <Suspense fallback={null}>
             <section id="cta" className="cta-section anchor-section">
               <div className="cta-inner">
-                <h2>Klaar om online meer klanten aan te trekken?</h2>
+                <h2>Klaar om jouw processen samen te brengen?</h2>
                 <p>
-                  Plan een vrijblijvende kennismaking en ontdek waar jouw
-                  bedrijf online sneller kan groeien.
+                  Plan een bedrijfsscan en bespreek waar handwerk, losse tools
+                  en abonnementen jouw bedrijf in de weg zitten.
                 </p>
 
                 <div className="cta-actions">
-                  <a href="/online-groei-audit" className="btn-dark">
-                    Gratis Online Groei Audit →
+                  <a href={SCAN_URL} className="btn-dark">
+                    Plan een bedrijfsscan →
                   </a>
 
                   <a

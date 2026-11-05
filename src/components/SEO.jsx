@@ -1,124 +1,11 @@
-import { useEffect } from "react";
-import {
-  createLocalBusinessSchema,
-  createOrganizationSchema,
-  createWebSiteSchema,
-} from "../utils/schema.js";
+import { createLocalBusinessSchema, createOrganizationSchema, createWebSiteSchema } from "../utils/schema.js";
 
-export default function SEO({
-  title,
-  description,
-  canonical,
-  schemas = [],
-  includeBaseSchemas = true,
-}) {
-  useEffect(() => {
-    const head = document.head;
-    // TanStack/React own the route's head elements. Removing them externally
-    // crashes client navigation when React later tries to remove the same node.
-    const ownedElements = [];
-
-    document.title = title;
-
-    const appendElement = (tagName, attributes, textContent) => {
-      const identity =
-        tagName === "meta"
-          ? attributes.name
-            ? { name: attributes.name }
-            : { property: attributes.property }
-          : tagName === "link"
-            ? {
-                rel: attributes.rel,
-                ...(attributes.hreflang
-                  ? { hreflang: attributes.hreflang }
-                  : {}),
-              }
-            : null;
-      const alreadyExists =
-        tagName === "script" && attributes.type === "application/ld+json"
-          ? Array.from(
-              head.querySelectorAll('script[type="application/ld+json"]'),
-            ).some((element) => element.textContent === textContent)
-          : identity
-            ? Array.from(head.querySelectorAll(tagName)).some((element) =>
-                Object.entries(identity).every(
-                  ([name, value]) => element.getAttribute(name) === value,
-                ),
-              )
-            : false;
-
-      if (alreadyExists) return;
-
-      const element = document.createElement(tagName);
-      element.setAttribute("data-vedantix-seo", "true");
-
-      Object.entries(attributes).forEach(([name, value]) => {
-        if (value) {
-          element.setAttribute(name, value);
-        }
-      });
-
-      if (textContent) {
-        element.textContent = textContent;
-      }
-
-      head.appendChild(element);
-      ownedElements.push(element);
-      return element;
-    };
-
-    appendElement("meta", { name: "description", content: description });
-    appendElement("meta", {
-      name: "robots",
-      content:
-        "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
-    });
-    appendElement("link", { rel: "canonical", href: canonical });
-    appendElement("link", {
-      rel: "alternate",
-      hreflang: "nl-NL",
-      href: canonical,
-    });
-    appendElement("link", {
-      rel: "alternate",
-      hreflang: "x-default",
-      href: canonical,
-    });
-    appendElement("meta", { property: "og:title", content: title });
-    appendElement("meta", { property: "og:description", content: description });
-    appendElement("meta", { property: "og:type", content: "website" });
-    appendElement("meta", { property: "og:url", content: canonical });
-    appendElement("meta", {
-      property: "og:image",
-      content: "https://vedantix.nl/preview.png",
-    });
-    appendElement("meta", {
-      property: "og:image:alt",
-      content: "Vedantix websites, AI-oplossingen en apps voor bedrijven",
-    });
-    appendElement("meta", { property: "og:site_name", content: "Vedantix" });
-    appendElement("meta", { property: "og:locale", content: "nl_NL" });
-    appendElement("meta", {
-      name: "twitter:card",
-      content: "summary_large_image",
-    });
-    appendElement("meta", { name: "twitter:title", content: title });
-    appendElement("meta", {
-      name: "twitter:description",
-      content: description,
-    });
-    appendElement("meta", {
-      name: "twitter:image",
-      content: "https://vedantix.nl/preview.png",
-    });
-    appendElement("meta", {
-      name: "twitter:image:alt",
-      content: "Vedantix websites, AI-oplossingen en apps voor bedrijven",
-    });
-
-    return () => ownedElements.forEach((element) => element.remove());
-  }, [title, description, canonical, schemas, includeBaseSchemas]);
-
+/**
+ * @param {{title: string, description: string, canonical: string, schemas?: object[], includeBaseSchemas?: boolean}} props
+ */
+export default function SEO({ title, description, canonical, schemas = [], includeBaseSchemas = true }) {
+  // Route head() owns all title/social tags. React 19 hoists these links and
+  // emits the visible-content schemas during SSR without manual DOM mutation.
   const structuredData = [
     ...(includeBaseSchemas ? [createOrganizationSchema(), createLocalBusinessSchema(), createWebSiteSchema()] : []),
     ...schemas,
@@ -130,4 +17,3 @@ export default function SEO({
     {structuredData.map((schema, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />)}
   </>;
 }
-

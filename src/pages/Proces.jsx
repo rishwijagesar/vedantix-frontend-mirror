@@ -1,3 +1,4 @@
+import { SOFTWARE_STEPS } from "../data/positioning";
 import { Link } from "@/lib/router-compat";
 import {
   ArrowRight,
@@ -545,69 +546,114 @@ const PROCESS_STYLES = `
 
 const processSteps = [
   {
-    title: "Kennismaking",
-    intro: "We starten met een kort gesprek over jouw situatie, wensen en groeidoelen.",
-    topicsTitle: "Wat we bespreken",
-    topics: ["Jouw bedrijf", "Jouw doelgroep", "Jouw doelen", "Jouw wensen"],
-    benefits: ["Duidelijkheid", "Persoonlijk advies", "Inzicht in kansen", "Geen verplichtingen"],
-    result: "Je weet precies welke kansen er liggen voor jouw online aanwezigheid.",
+    "title": "Bedrijfsscan",
+    "intro": "We brengen je echte werkwijze in kaart met de mensen die ermee werken.",
+    "topicsTitle": "Wat we onderzoeken",
+    "topics": [
+      "Processen en afdelingen",
+      "Bestaande tools",
+      "Abonnementskosten",
+      "Handwerk en knelpunten"
+    ],
+    "benefits": [
+      "Een gedeeld vertrekpunt",
+      "Kansen op minder dubbel werk",
+      "Keuze tussen behoud en maatwerk"
+    ],
+    "result": "Een concreet beeld van wat een eerste fase moet oplossen."
   },
   {
-    title: "Strategie & Plan",
-    intro: "Voordat we beginnen bepalen we hoe jouw website moet bijdragen aan jouw bedrijf.",
-    topicsTitle: "Wij kijken onder andere naar",
-    topics: ["Structuur", "Vindbaarheid", "Concurrentie", "Gebruiksvriendelijkheid"],
-    benefits: ["Een duidelijke richting", "Minder kans op verkeerde keuzes", "Een website die gericht is op groei"],
-    result: "Een sterk fundament voor online succes.",
+    "title": "Voorstel en afspraken",
+    "intro": "Je krijgt een voorstel met fases en kosten voordat we bouwen.",
+    "topicsTitle": "Wat we vastleggen",
+    "topics": [
+      "Functionaliteit en rolrechten",
+      "Opstartkosten en vast maandbedrag",
+      "Inbegrepen gebruik en externe kosten",
+      "Wijzigingen, uitbreiding en acceptatie"
+    ],
+    "benefits": [
+      "Een afgebakende eerste fase",
+      "Heldere kosten",
+      "Beheer en overdracht vooraf besproken"
+    ],
+    "result": "Een voorstel dat je kunt beoordelen, zonder onbeperkte claims."
   },
   {
-    title: "Ontwikkeling",
-    intro: "Wij bouwen jouw website met focus op snelheid, mobiel gebruik en gebruiksvriendelijkheid.",
-    topicsTitle: "Wij regelen",
-    topics: ["Design", "Hosting", "Techniek", "Mobiele optimalisatie"],
-    benefits: ["Professionele uitstraling", "Meer vertrouwen", "Gebruiksgemak", "Geen technisch gedoe"],
-    result: "Een website die jouw bedrijf professioneel vertegenwoordigt.",
+    "title": "Gefaseerde ontwikkeling",
+    "intro": "AI helpt bij het bouwen; Vedantix controleert het resultaat professioneel.",
+    "topicsTitle": "Wat we uitwerken",
+    "topics": [
+      "Echte bedrijfsprocessen",
+      "Een centrale webapp",
+      "Passende toegangsrechten",
+      "Instructies binnen de scope"
+    ],
+    "benefits": [
+      "Stapsgewijze feedback",
+      "Controleerbare resultaten",
+      "Aansluiting op het dagelijks werk"
+    ],
+    "result": "Een werkende fase die klaar is voor de afgesproken tests."
   },
   {
-    title: "Lancering",
-    intro: "Voordat jouw website live gaat controleren wij alles zorgvuldig.",
-    topicsTitle: "Wij verzorgen onder andere",
-    topics: ["Technische controles", "Snelheidscontroles", "Google indexatie", "Kwaliteitscontrole"],
-    benefits: ["Een zorgeloze livegang", "Een goede eerste indruk", "Een sterke start"],
-    result: "Jouw bedrijf is professioneel online zichtbaar.",
+    "title": "Testen en accepteren",
+    "intro": "We controleren de afgesproken functies, rollen en foutgevallen samen met je team.",
+    "topicsTitle": "Voor livegang",
+    "topics": [
+      "Functionele tests",
+      "Toegangscontroles",
+      "Projectspecifieke hersteltests",
+      "Jouw acceptatie"
+    ],
+    "benefits": [
+      "Bevindingen vastgelegd",
+      "Een beoordeelde oplevering",
+      "Duidelijke uitleg voor gebruikers"
+    ],
+    "result": "Pas na acceptatie gaat de betreffende fase live."
   },
   {
-    title: "Groei & Ondersteuning",
-    intro: "Voor ons stopt het niet bij oplevering.",
-    topicsTitle: "Wij blijven ondersteunen met",
-    topics: ["Onderhoud", "Optimalisaties", "Advies", "Content", "Online zichtbaarheid"],
-    benefits: ["Meer rust", "Doorlopende verbeteringen", "Een website die blijft meegroeien"],
-    result: "Een website die ook op de lange termijn waarde toevoegt aan jouw bedrijf.",
-  },
+    "title": "Beheer en uitbreiding",
+    "intro": "Hosting, opslag, onderhoud en support volgen de overeengekomen dienstverlening.",
+    "topicsTitle": "Doorlopende afspraken",
+    "topics": [
+      "Gebruik en support",
+      "Updates en monitoring",
+      "Backups en herstel",
+      "Instructies, uitbreiding en export"
+    ],
+    "benefits": [
+      "Heldere verantwoordelijkheden",
+      "Bijgehouden instructies binnen scope",
+      "Uitbreiden wanneer nodig"
+    ],
+    "result": "Afspraken over continuïteit, kosten en overdraagbaarheid op maat."
+  }
 ];
 
 const timeCards = [
   {
-    title: "Kennismaking",
-    time: "± 30 minuten",
-    text: "We bespreken jouw wensen en doelen.",
+    "title": "Bedrijfsscan",
+    "time": "Omvang vooraf afgesproken",
+    "text": "Je team helpt de huidige werkwijze, tools en knelpunten in kaart te brengen."
   },
   {
-    title: "Content aanleveren",
-    time: "± 1 tot 2 uur",
-    text: "Teksten, foto's en informatie verzamelen.",
+    "title": "Voorbereiding",
+    "time": "Per project afgestemd",
+    "text": "We spreken af welke gegevens, voorbeelden en informatie nodig zijn."
   },
   {
-    title: "Feedback geven",
-    time: "± 15 minuten per feedbackronde",
-    text: "Wij verwerken de wijzigingen.",
+    "title": "Feedback en acceptatie",
+    "time": "Per fase gepland",
+    "text": "De betrokken gebruikers beoordelen de afgesproken functies en tests."
   },
   {
-    title: "Wij regelen de rest",
-    time: "Geen technisch werk voor jou",
-    text: "Hosting, techniek, ontwikkeling, livegang en onderhoud.",
-    highlight: true,
-  },
+    "title": "Beheer",
+    "time": "Binnen afgesproken scope",
+    "text": "Hosting, opslag, onderhoud, support en instructies volgen de offerte.",
+    "highlight": true
+  }
 ];
 
 const expectations = [
@@ -618,7 +664,7 @@ const expectations = [
   },
   {
     title: "Duidelijke communicatie",
-    text: "Je weet altijd waar je aan toe bent.",
+    text: "We leggen scope, verantwoordelijkheden en contactmomenten vast.",
     icon: MessageCircle,
   },
   {
@@ -628,7 +674,7 @@ const expectations = [
   },
   {
     title: "Focus op resultaat",
-    text: "Niet alleen een mooie website.",
+    text: "Een oplossing voor jouw echte werkproces.",
     icon: Target,
   },
   {
@@ -638,40 +684,30 @@ const expectations = [
   },
   {
     title: "Ondersteuning na oplevering",
-    text: "Wij blijven beschikbaar.",
+    text: "Support en opvolging volgens de afgesproken dienstverlening.",
     icon: LifeBuoy,
   },
 ];
 
-const visualSteps = [
-  { title: "Kennismaking", text: "helder vertrekpunt", icon: MessageCircle },
-  { title: "Strategie", text: "gericht op groei", icon: Target },
-  { title: "Website", text: "professioneel zichtbaar", icon: Globe2 },
-  { title: "Lancering", text: "zorgeloos live", icon: Rocket },
-  { title: "Groei", text: "blijvend verbeteren", icon: TrendingUp },
-];
+const visualSteps = SOFTWARE_STEPS.map((step, index) => ({ ...step, icon: [MessageCircle, Target, Globe2, ShieldCheck, LifeBuoy][index] }));
 
 const PROCESS_FAQS = [
   {
-    question: "Hoe verloopt het traject bij Vedantix?",
-    answer:
-      "Vedantix start met een kennismaking, maakt daarna een plan, ontwikkelt de website, begeleidt de lancering en blijft ondersteunen met onderhoud en optimalisatie.",
+    "question": "Hoe verloopt het traject bij Vedantix?",
+    "answer": "Bedrijfsscan, concreet voorstel, gefaseerde ontwikkeling, testen en acceptatie voor livegang, daarna beheer volgens afspraak. Voor een website spreken we een passende eigen scope af."
   },
   {
-    question: "Moet ik zelf technische kennis hebben?",
-    answer:
-      "Nee. Vedantix regelt techniek, hosting, livegang, onderhoud en ondersteuning. Jij levert vooral bedrijfsinformatie aan en geeft feedback op de inhoud.",
+    "question": "Moet ik zelf technische kennis hebben?",
+    "answer": "Nee. Je brengt je bedrijfsprocessen en voorbeelden mee en geeft feedback. We leggen de aanpak in gewone taal uit. Onboarding en bijgehouden instructies stemmen we af op de afgesproken dienstverlening."
   },
   {
-    question: "Hoe helpt het proces bij betere vindbaarheid?",
-    answer:
-      "Tijdens strategie en ontwikkeling kijkt Vedantix naar structuur, lokale zoekvragen, gebruiksvriendelijkheid en content. Daardoor krijgt je website een betere basis voor Google en moderne AI-systemen.",
+    "question": "Hoe wordt beveiliging afgesproken?",
+    "answer": "We leggen vooraf toegangsrechten, MFA waar passend, backups en hersteltests, updates, monitoring en dataverwerking vast. Maatregelen en bewijs van controles worden afgestemd op het project, zonder absolute veiligheidsgarantie."
   },
   {
-    question: "Wat gebeurt er na livegang?",
-    answer:
-      "Na livegang blijft Vedantix beschikbaar voor onderhoud, verbeteringen, advies, content en online zichtbaarheid zodat de website met je bedrijf kan meegroeien.",
-  },
+    "question": "Wat gebeurt er na livegang?",
+    "answer": "Het vaste maandbedrag geldt voor afgesproken functionaliteit, hosting, opslag, onderhoud en support. Inbegrepen gebruik, wijzigingen, uitbreiding, externe kosten en overdracht/export zijn vooraf vastgelegd."
+  }
 ];
 
 function CheckList({ items }) {
@@ -711,8 +747,8 @@ export default function Proces() {
   return (
     <>
       <SEO
-        title="Ons Proces | Van idee naar online groei | Vedantix"
-        description="Ontdek hoe Vedantix ondernemers stap voor stap helpt naar meer online zichtbaarheid, vertrouwen en groei."
+        title="Werkwijze | Van bedrijfsscan tot beheerde software | Vedantix"
+        description="Van bedrijfsscan en concreet voorstel tot gefaseerd bouwen, testen, acceptatie en beheer. Heldere afspraken voor software en websites bij Vedantix."
         canonical={canonical}
         schemas={[breadcrumbSchema, faqSchema]}
       />
@@ -728,21 +764,21 @@ export default function Proces() {
               <div>
                 <div className="proces-kicker">
                   <Sparkles size={16} aria-hidden="true" />
-                  Van idee naar online groei
+                  Van bedrijfsscan naar werkende software
                 </div>
-                <h1>Van eerste gesprek naar meer online zichtbaarheid</h1>
+                <h1>Van jouw werkproces naar een passende applicatie</h1>
                 <div className="proces-hero-text">
-                  <p>Geen ingewikkeld traject.</p>
-                  <p>Geen technische rompslomp.</p>
+                  <p>Eerst begrijpen wat jouw bedrijf nodig heeft.</p>
+                  <p>Daarna helder afspreken en in fases bouwen.</p>
                   <p>
-                    Wij begeleiden je stap voor stap naar een professionele online aanwezigheid
-                    die vertrouwen uitstraalt, beter gevonden wordt en meer kansen creëert op
-                    nieuwe klanten.
+                    We bespreken processen, tools, abonnementen en handwerk. Je krijgt
+                    een concreet voorstel met opstartkosten en een vast maandbedrag voor
+                    de afgesproken dienstverlening.
                   </p>
                 </div>
                 <div className="proces-actions" aria-label="Belangrijkste acties">
-                  <Link className="proces-btn proces-btn-primary" to="/planning">
-                    Plan een kennismaking <ArrowRight size={18} aria-hidden="true" />
+                  <Link className="proces-btn proces-btn-primary" to="/contact#contact-form">
+                    Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" />
                   </Link>
                   <Link className="proces-btn proces-btn-secondary" to="/prijzen">
                     Bekijk onze pakketten
@@ -814,8 +850,8 @@ export default function Proces() {
               <div className="proces-section-heading">
                 <p className="proces-label">Tijdsinvestering</p>
                 <h2 id="tijd-title">Hoeveel tijd kost dit jou?</h2>
-                <p>Ondernemers denken vaak dat een nieuwe website veel tijd kost.</p>
-                <p>In werkelijkheid valt dat meestal mee.</p>
+                <p>We plannen gesprekken, informatie, feedback en acceptatie samen met de betrokken mensen.</p>
+                <p>De tijdsinvestering en planning hangen af van het project; we beloven geen algemene levertijd.</p>
               </div>
 
               <div className="proces-time-grid">
@@ -858,11 +894,11 @@ export default function Proces() {
             <div className="proces-shell">
               <div className="proces-section-heading center">
                 <p className="proces-label">AI-readiness</p>
-                <h2 id="proces-ai-title">Toekomstbestendig voor AI</h2>
-                <p>De manier waarop mensen zoeken verandert.</p>
+                <h2 id="proces-ai-title">Professionele controle, ook met AI</h2>
+                <p>AI is een ontwikkelhulpmiddel, geen kwaliteits- of veiligheidsgarantie.</p>
                 <p>
-                  Wij zorgen ervoor dat jouw website voorbereid is op zowel traditionele
-                  zoekmachines als moderne AI-platformen.
+                  Vedantix controleert de code en test de afgesproken processen.
+                  Beveiliging, dataverwerking en beheer krijgen projectspecifieke afspraken.
                 </p>
               </div>
 
@@ -884,15 +920,15 @@ export default function Proces() {
                   <p className="proces-label">Waarom Vedantix</p>
                   <h2 id="waarom-title">Waarom ondernemers voor Vedantix kiezen</h2>
                   <div className="proces-closing-copy">
-                    <p>Veel bureaus leveren een website op en gaan door naar de volgende klant.</p>
+                    <p>We kijken naar het werk dat jouw bedrijf dagelijks doet.</p>
                     <p>
-                      Wij geloven dat een website pas waarde heeft als deze bijdraagt aan de groei
-                      van jouw bedrijf.
+                      Een oplossing moet passen bij je mensen, gegevens en werkprocessen.
+                      Websites en hosting blijven beschikbaar als zelfstandige diensten.
                     </p>
                     <p>Daarom kijken wij verder dan alleen design.</p>
                     <p>
-                      Wij helpen met zichtbaarheid, vertrouwen, gebruiksvriendelijkheid en online
-                      groei.
+                      Wij leggen scope, gebruik, support en beheer vooraf vast. Overdracht en
+                      exportmogelijkheden spreken we samen af.
                     </p>
                   </div>
                 </div>
@@ -901,8 +937,8 @@ export default function Proces() {
                   <Link className="proces-btn proces-btn-primary" to="/prijzen">
                     Bekijk onze pakketten <ArrowRight size={18} aria-hidden="true" />
                   </Link>
-                  <Link className="proces-btn proces-btn-secondary" to="/planning">
-                    Plan een kennismaking
+                  <Link className="proces-btn proces-btn-secondary" to="/contact#contact-form">
+                    Plan een bedrijfsscan
                   </Link>
                 </div>
               </div>

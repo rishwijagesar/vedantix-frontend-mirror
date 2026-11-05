@@ -21,8 +21,9 @@ const SOCIAL_PROFILES = [
 
 const SERVICE_CATALOG = {
   "@type": "OfferCatalog",
-  name: "Websites, AI-oplossingen, apps en vindbaarheid voor bedrijven",
+  name: "Bedrijfssoftware op maat, websites, hosting en vindbaarheid",
   itemListElement: [
+    "Bedrijfssoftware op maat voor mkb en zelfstandigen",
     "Webdesign en webontwikkeling",
     "AI-oplossingen en bedrijfsautomatisering",
     "Webapps en klantportalen",
@@ -50,7 +51,7 @@ export const vedantixEntity = {
   email: "info@vedantix.nl",
   telephone: "+31626219989",
   description:
-    "Vedantix is een digitaal ontwikkelbureau in 's-Hertogenbosch voor websites, AI-oplossingen, automatisering, webapps, mobiele apps, koppelingen, SEO en AI-vindbaarheid. Voor ondernemers en het mkb in Nederland.",
+    "Vedantix in Den Bosch maakt bedrijfssoftware op maat voor het mkb en zelfstandigen in alle sectoren. AI ondersteunt de ontwikkeling; Vedantix controleert en test professioneel. Ook voor websites, hosting en vindbaarheid, met landelijke dienstverlening.",
 };
 
 export function createOrganizationSchema() {
@@ -90,7 +91,10 @@ export function createOrganizationSchema() {
       { "@type": "Country", name: "Nederland" },
     ],
     knowsAbout: [
-      "Webdesign voor lokale ondernemers",
+      "Software op maat mkb",
+      "Bedrijfssoftware op maat",
+      "Webapplicatie laten maken",
+      "Webdesign voor ondernemers",
       "Webontwikkeling",
       "AI-oplossingen en automatisering",
       "Webapps en klantportalen",
@@ -116,12 +120,10 @@ export function createLocalBusinessSchema() {
     "@id": LOCAL_BUSINESS_ID,
     name: vedantixEntity.name,
     url: vedantixEntity.url,
-    image: `${SITE_URL}/preview.png`,
     logo: `${SITE_URL}/vedantix_logo.png`,
     email: vedantixEntity.email,
     telephone: vedantixEntity.telephone,
     description: vedantixEntity.description,
-    priceRange: "€€",
     address: ADDRESS,
     sameAs: SOCIAL_PROFILES,
     areaServed: [
@@ -157,7 +159,7 @@ export function createAboutPageSchema({
   name,
   description,
   url,
-  dateModified,
+  dateModified = undefined,
 }) {
   return {
     "@context": "https://schema.org",
@@ -170,7 +172,7 @@ export function createAboutPageSchema({
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": ORGANIZATION_ID },
     publisher: { "@id": ORGANIZATION_ID },
-    dateModified,
+    ...(dateModified ? { dateModified } : {}),
   };
 }
 

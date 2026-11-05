@@ -89,17 +89,11 @@ export function createIndustryHead(branche, stad) {
       { property: "og:description", content: seo.seoDescription },
       { property: "og:type", content: "website" },
       { property: "og:url", content: seo.canonical },
-      { property: "og:image", content: `${SITE_URL}/preview.png` },
-      {
-        property: "og:image:alt",
-        content: "Vedantix webdesign en online groei voor lokale ondernemers",
-      },
       { property: "og:site_name", content: "Vedantix" },
       { property: "og:locale", content: "nl_NL" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: seo.seoTitle },
       { name: "twitter:description", content: seo.seoDescription },
-      { name: "twitter:image", content: `${SITE_URL}/preview.png` },
     ],
     links: [
       { rel: "canonical", href: seo.canonical },

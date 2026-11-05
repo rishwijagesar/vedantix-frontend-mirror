@@ -529,30 +529,10 @@ const challenges = [
 ];
 
 const categories = [
-  {
-    title: "Gezondheid & Coaching",
-    examples: ["Personal trainers", "Coaches", "Masseurs", "Fysiotherapeuten"],
-    result: "Meer afspraken en meer zichtbaarheid in jouw regio.",
-    icon: HeartPulse,
-  },
-  {
-    title: "Bouw & Techniek",
-    examples: ["Schilders", "Installateurs", "Dakdekkers", "Hoveniers"],
-    result: "Meer offerteaanvragen via jouw website.",
-    icon: Wrench,
-  },
-  {
-    title: "Horeca & Gastvrijheid",
-    examples: ["Restaurants", "Lunchrooms", "Cafés"],
-    result: "Meer reserveringen en een sterkere online aanwezigheid.",
-    icon: Utensils,
-  },
-  {
-    title: "Zakelijke Dienstverlening",
-    examples: ["Consultants", "Boekhouders", "Adviseurs"],
-    result: "Meer vertrouwen en kwalitatieve leads.",
-    icon: BriefcaseBusiness,
-  },
+ { title: "Zelfstandigen", examples: ["Eigen planning", "Klantopvolging", "Offertes en administratie"], result: "Een passende oplossing voor je eigen werkproces, zonder een grote organisatie nodig te hebben.", icon: BriefcaseBusiness },
+ { title: "Mkb met meerdere afdelingen", examples: ["Sales en marketing", "Planning en uitvoering", "Finance, HR en IT"], result: "Samenwerken rond gedeelde informatie en passende rolrechten.", icon: Wrench },
+ { title: "Bedrijven die willen uitbreiden", examples: ["Nieuwe collega’s onboarden", "Werk verdelen", "Instructies bijhouden"], result: "Gefaseerd bouwen rond de onderdelen die nu waarde toevoegen.", icon: TrendingUp },
+ { title: "Alle sectoren", examples: ["Dienstverlening en handel", "Bouw, zorg en horeca", "Andere bedrijfsprocessen"], result: "Geen vaste niche. De bedrijfsscan bepaalt of maatwerk of behoud van tools passend is.", icon: BriefcaseBusiness },
 ];
 
 const benefits = [
@@ -583,26 +563,15 @@ const benefits = [
   },
 ];
 
-const notMatch = [
-  "Je zoekt alleen de goedkoopste website.",
-  "Je wilt geen tijd investeren in je online aanwezigheid.",
-  "Je ziet een website alleen als visitekaartje.",
-  "Je wilt geen groei realiseren via online kanalen.",
-];
+const notMatch = ["Je verwacht onbeperkte functies of wijzigingen voor één vast bedrag.", "Je wilt zonder afstemming of tests direct live.", "Je zoekt een garantie op omzet, levertijd of volledige veiligheid.", "Je wilt geen afspraken maken over toegang en gegevens."];
 
-const goodMatch = [
-  "Je wilt beter gevonden worden.",
-  "Je wilt professioneler overkomen.",
-  "Je wilt meer uit je website halen.",
-  "Je zoekt een partij die met je meedenkt.",
-  "Je wilt een website die meegroeit met je bedrijf.",
-];
+const goodMatch = ["Je wilt minder dubbel werk.", "Je wilt processen en tools onderzoeken.", "Je wilt in afgebakende fases bouwen.", "Je wilt heldere afspraken over kosten en beheer.", "Je wilt gebruikers laten testen en accepteren."];
 
 const VOORWIE_FAQS = [
   {
     question: "Voor wie is Vedantix bedoeld?",
     answer:
-      "Vedantix is bedoeld voor lokale ondernemers die professioneler zichtbaar willen worden, beter gevonden willen worden en meer aanvragen uit hun online aanwezigheid willen halen.",
+      "Vedantix is bedoeld voor het mkb en zelfstandigen in alle sectoren. We onderzoeken jouw bedrijfsprocessen en bouwen software op maat waar dat waarde toevoegt. Websites, hosting en vindbaarheid blijven volwaardige diensten.",
   },
   {
     question: "Waarom is Vedantix geschikt voor lokale ondernemers?",
@@ -660,8 +629,8 @@ export default function VoorWie() {
   return (
     <>
       <SEO
-        title="Voor wie is Vedantix? | Websites voor ondernemers die willen groeien"
-        description="Ontdek of Vedantix bij jouw bedrijf past. Voor ondernemers die meer zichtbaarheid, meer vertrouwen en meer aanvragen uit hun online aanwezigheid willen halen."
+        title="Software en websites voor mkb en zelfstandigen | Vedantix"
+        description="Voor mkb en zelfstandigen in alle sectoren: bedrijfssoftware op maat, websites en hosting. Vanuit Den Bosch, voor heel Nederland."
         canonical={canonical}
         schemas={[breadcrumbSchema, faqSchema]}
       />
@@ -679,12 +648,12 @@ export default function VoorWie() {
                   <Sparkles size={16} aria-hidden="true" />
                   Voor ondernemers die willen groeien
                 </div>
-                <h1>Voor ondernemers die online willen groeien</h1>
+                <h1>Voor mkb en zelfstandigen in alle sectoren</h1>
                 <div className="voorwie-hero-text">
-                  <p>Je website moet meer doen dan alleen bestaan.</p>
+                  <p>Jouw bedrijfsproces is het vertrekpunt.</p>
                   <p>
-                    Hij moet vertrouwen wekken, beter gevonden worden en bijdragen aan de groei
-                    van jouw bedrijf.
+                    We onderzoeken handwerk, tools en samenwerking. Daarna kiezen we
+                    wat je kunt samenbrengen, behouden of gefaseerd verbeteren.
                   </p>
                   <p>Daar helpen wij bij.</p>
                 </div>
@@ -692,8 +661,8 @@ export default function VoorWie() {
                   <Link className="voorwie-btn voorwie-btn-primary" to="/prijzen">
                     Bekijk onze pakketten <ArrowRight size={18} aria-hidden="true" />
                   </Link>
-                  <Link className="voorwie-btn voorwie-btn-secondary" to="/planning">
-                    Plan een kennismaking
+                  <Link className="voorwie-btn voorwie-btn-secondary" to="/contact#contact-form">
+                    Plan een bedrijfsscan
                   </Link>
                 </div>
               </div>
@@ -741,9 +710,9 @@ export default function VoorWie() {
           <section className="voorwie-section voorwie-section-muted" aria-labelledby="ondernemers-title">
             <div className="voorwie-shell">
               <div className="voorwie-section-heading">
-                <p className="voorwie-label">Lokale ondernemers</p>
+                <p className="voorwie-label">Geen vaste niche</p>
                 <h2 id="ondernemers-title">Voor welke ondernemers werken wij?</h2>
-                <p>Wij werken vooral met lokale ondernemers en dienstverleners.</p>
+                <p>We werken voor alle sectoren, vanuit Den Bosch met landelijke dienstverlening.</p>
               </div>
 
               <div className="voorwie-category-grid">
@@ -839,17 +808,17 @@ export default function VoorWie() {
               <div className="voorwie-closing-card">
                 <div>
                   <p className="voorwie-label">Waar het echt om gaat</p>
-                  <h2 id="closing-title">Je hebt geen website nodig. Je hebt klanten nodig.</h2>
+                  <h2 id="closing-title">Je tools moeten jouw bedrijf ondersteunen.</h2>
                   <div className="voorwie-closing-copy">
-                    <p>Een website is slechts een middel.</p>
+                    <p>Software en websites zijn middelen, geen doel op zich.</p>
                     <p>
-                      Het echte doel is meer zichtbaarheid, meer vertrouwen en meer kansen op
-                      nieuwe klanten.
+                      Het doel is een werkbare oplossing voor jouw processen, met minder
+                      dubbel werk en heldere verantwoordelijkheden.
                     </p>
                     <p>Daarom kijken wij verder dan design alleen.</p>
                     <p>
-                      Wij combineren websites, SEO, content, gebruiksvriendelijkheid en online
-                      zichtbaarheid tot één complete oplossing.
+                      We bespreken maatwerk en bestaande tools, en leggen functionaliteit,
+                      gebruik, kosten, controle en beheer vooraf vast.
                     </p>
                   </div>
                 </div>

@@ -68,14 +68,14 @@ describe("Live public content", () => {
 
 describe("Service expansion uses the current catalog", () => {
   const ai = { ...product, code:"AI_AUTOMATION", name:"AI-automatisering", category:"AI", price_ex_vat:1001.23, price_incl_vat:1211.49, from_price:true };
-  test("new services display exact live amounts, VAT and starting-price scope in both entry points", () => {
+  test("catalog keeps live AI prices while custom software details do not advertise a generic project amount", () => {
     const pricing=renderToStaticMarkup(<Prijzen initialProducts={[product,ai]}/>);
     const detail=renderToStaticMarkup(<ServiceDetail slug="ai-oplossingen" initialProducts={[product,ai]}/>);
-    for(const html of [pricing,detail]) { expect(html).toContain("1.001,23"); expect(html).toContain("1.211,49"); expect(html).toContain("Vanaf"); }
-    expect(detail).toContain("Model-, API- en softwaregebruik");
+    expect(pricing).toContain("1.001,23"); expect(pricing).toContain("1.211,49");
+    expect(detail).not.toContain("1.001,23"); expect(detail).not.toContain("1.211,49");
     expect(detail).not.toContain("603,79");
     const changed=renderToStaticMarkup(<ServiceDetail slug="ai-oplossingen" initialProducts={[{...ai,price_ex_vat:1111.11,price_incl_vat:1344.44}]}/>);
-    expect(changed).toContain("1.111,11"); expect(changed).toContain("1.344,44"); expect(changed).not.toContain("1.001,23");
+    expect(changed).not.toContain("1.111,11"); expect(changed).not.toContain("1.344,44"); expect(changed).not.toContain("1.001,23");
   });
   test("an unavailable service price leaves useful content and an enquiry path without inventing an amount", () => {
     const html=renderToStaticMarkup(<ServiceDetail slug="mobiele-apps" initialProducts={[]}/>);
@@ -84,10 +84,10 @@ describe("Service expansion uses the current catalog", () => {
     expect(html).not.toContain('class="service-price"');
     expect(html).toContain("Veelgestelde vragen");
   });
-  test("recurring care displays its frequency and is separate from AI implementation", () => {
+  test("generic recurring care does not establish a mandatory software subscription price", () => {
     const care={...ai,code:"TECH_CARE",name:"Technisch Beheer Basis",category:"CARE",billing_type:"MONTHLY",from_price:false};
     const html=renderToStaticMarkup(<ServiceDetail slug="koppelingen-automatisering" initialProducts={[care,ai]}/>);
-    expect(html).toContain("per maand"); expect(html).toContain("Technisch Beheer Basis");
+    expect(html).not.toContain("1.001,23"); expect(html).not.toContain("1.211,49");
     expect(html).not.toContain("<h3>AI-automatisering</h3>");
   });
 });

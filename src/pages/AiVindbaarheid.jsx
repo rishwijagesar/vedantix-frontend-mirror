@@ -154,8 +154,8 @@ export default function AiVindbaarheid() {
   return (
     <>
       <SEO
-        title="SEO, AEO, GEO en AIO voor lokale bedrijven | Vedantix"
-        description="Vedantix in Den Bosch bouwt websites en helpt lokale ondernemers met SEO, AEO, GEO, AIO, AI-vindbaarheid en hosting."
+        title="SEO, AEO, GEO en AIO voor bedrijven | Vedantix"
+        description="SEO, AEO, GEO en AIO voor mkb en zelfstandigen. Websitevindbaarheid naast bedrijfssoftware op maat, vanuit Den Bosch met landelijke dienstverlening."
         canonical={canonical}
         schemas={[aboutPageSchema, serviceSchema, faqSchema, breadcrumbSchema]}
       />

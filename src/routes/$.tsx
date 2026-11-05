@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { publicHead } from "@/lib/public-head";
 import CustomerPreviewPage from "@/pages/CustomerPreviewPage";
 
 /**
@@ -39,6 +40,7 @@ const LEGACY_REDIRECTS: Record<string, string> = {
 };
 
 export const Route = createFileRoute("/$")({
+  head: () => publicHead("Klantpreview | Vedantix", "Tijdelijke klantpreview van Vedantix.", "/", { noindex: true }),
   beforeLoad: ({ params }) => {
     const splat = (params._splat ?? "").replace(/^\/+|\/+$/g, "");
     const raw = `/${splat}`;

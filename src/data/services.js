@@ -1,5 +1,20 @@
-// Public service content; all monetary amounts come from the live catalog.
+// Public service content; website and standalone catalog prices remain in the existing live catalog.
 export const SERVICES = [
+  {
+    "slug": "software-op-maat",
+    "name": "Bedrijfssoftware op maat",
+    "short": "Eén applicatie rond jouw processen. Met heldere rol- en beheerafspraken.",
+    "icon": "LayoutDashboard",
+    "title": "Software op maat voor mkb | Vedantix Den Bosch",
+    "description": "Bedrijfssoftware op maat voor mkb en zelfstandigen. Centrale webapp met rolrechten, AI-ondersteunde ontwikkeling en professionele tests.",
+    "headline": "Software die meegroeit met jouw bedrijf.",
+    "intro": "Breng je bedrijfsprocessen samen in een applicatie op maat. We beginnen met een bedrijfsscan, maken een concreet voorstel en bouwen in fases.",
+    "codes": [],
+    "useCases": [],
+    "deliverables": [],
+    "scope": "Opstartkosten en een vast maandbedrag op offerte voor afgesproken functionaliteit, hosting, opslag, onderhoud en support.",
+    "faqs": []
+  },
   {
     "slug": "website-laten-maken",
     "name": "Websites & vindbaarheid",
@@ -49,7 +64,7 @@ export const SERVICES = [
     "title": "AI-oplossingen & automatisering voor bedrijven | Vedantix",
     "description": "AI-oplossingen voor het mkb: van een praktische AI-scan tot een kennisassistent of geautomatiseerde workflow. Vedantix maakt toepassingen en kosten concreet.",
     "headline": "Laat AI het herhaalwerk doen.",
-    "intro": "Van terugkerende klantvragen tot het voorbereiden van offertes: we zoeken één proces waar AI of automatisering nuttig kan zijn. Daarna bouwen en testen we een afgebakende oplossing met jouw team.",
+    "intro": "We onderzoeken waar AI of gewone automatisering handwerk kan verminderen. Bijvoorbeeld door informatie voor te bereiden in jouw centrale applicatie. We spreken menselijke controle en toetsbare resultaten af; AI is geen garantie op juiste of veilige uitkomsten.",
     "codes": [
       "AI_SCAN",
       "AI_AUTOMATION"
@@ -65,7 +80,7 @@ export const SERVICES = [
       "Afspraken over toegang, gegevensgebruik, menselijke controle en foutafhandeling.",
       "Uitleg voor je team en inzicht in terugkerende tool- en gebruikskosten."
     ],
-    "scope": "De AI-scan omvat één intake van 60 minuten, analyse van één proces en een beknopt advies. De vanafprijs voor automatisering geldt voor één eenvoudige workflow met één bestaande bron of koppeling. Complexe documentverwerking, extra koppelingen en doorlopend beheer krijgen een aparte offerte. Model-, API- en softwaregebruik worden apart begroot.",
+    "scope": "De bedrijfsscan bepaalt of AI nuttig is. Maatwerk bedrijfssoftware krijgt een offerte met opstartkosten en een vast maandbedrag voor de afgesproken dienstverlening. Voor losse toepassingen specificeren we functies, inbegrepen modelgebruik, externe kosten, controles en beheer. Bestaande catalogusdiensten behouden hun eigen afgebakende scope en prijzen.",
     "faqs": [
       {
         "question": "Waar kan mijn bedrijf het beste beginnen met AI?",
@@ -92,8 +107,8 @@ export const SERVICES = [
     "icon": "LayoutDashboard",
     "title": "Webapp of klantportaal laten maken | Vedantix",
     "description": "Laat een webapp, dashboard of klantportaal op maat maken. Vedantix helpt bedrijven met processen, gebruikersrollen en koppelingen aan bestaande software.",
-    "headline": "Van losse lijstjes naar één werkbare app.",
-    "intro": "Geef klanten en medewerkers een centrale plek voor informatie en acties. Een webapp werkt in de browser en kan helpen om afspraken, aanvragen of de voortgang van opdrachten overzichtelijk te beheren.",
+    "headline": "Een webapplicatie rond jouw dagelijkse werk.",
+    "intro": "Breng klanten, medewerkers en werkprocessen samen in één centrale webapp. Sales, planning, marketing, finance, HR en IT kunnen samenwerken met toegang die past bij hun rol. We beginnen bij jouw echte bedrijfsprocessen, niet bij losse lijstjes of tools.",
     "codes": [
       "WEBAPP"
     ],
@@ -108,7 +123,7 @@ export const SERVICES = [
       "Formulieren, gegevensopslag en overzichtsschermen voor dat kernproces.",
       "Functionele controles, uitleg en een plan voor beheer en verdere ontwikkeling."
     ],
-    "scope": "De vanafprijs geldt voor een compacte eerste versie met één kernproces, maximaal 5 schermen en 2 gebruikersrollen. Datamigraties, betalingen en externe koppelingen zijn apart te begroten. Hosting, databasegebruik en onderhoud zijn terugkerende kosten die we vooraf specificeren.",
+    "scope": "Maatwerk begint met een bedrijfsscan en een offerte met opstartkosten en een vast maandbedrag voor de afgesproken functionaliteit, hosting, opslag, onderhoud en support. Schermen, rollen, inbegrepen gebruik, migratie, koppelingen, wijzigingen en uitbreiding leggen we vooraf vast. Externe tools kunnen eigen abonnementskosten houden.",
     "faqs": [
       {
         "question": "Wat is het verschil tussen een website en een webapp?",
@@ -121,6 +136,10 @@ export const SERVICES = [
       {
         "question": "Kan mijn bestaande software gekoppeld worden?",
         "answer": "Vaak wel, als de software een geschikte API of exportmogelijkheid biedt. We onderzoeken rechten, datakwaliteit en beperkingen voordat we de koppeling begroten."
+      },
+      {
+        "question": "Hoe wordt de webapp getest en beheerd?",
+        "answer": "AI ondersteunt de ontwikkeling. Vedantix controleert en test de afgesproken processen, rollen en foutgevallen. Jouw acceptatie gaat vooraf aan livegang. Updates, monitoring, backups, hersteltests, gegevensverwerking en export worden afgestemd op het project en vooraf afgesproken."
       }
     ]
   },
@@ -171,7 +190,7 @@ export const SERVICES = [
     "title": "API-koppelingen en bedrijfsautomatisering | Vedantix",
     "description": "Koppel je website, CRM of boekhouding en verminder dubbel invoeren. Vedantix bouwt afgebakende API-koppelingen en biedt technisch beheer.",
     "headline": "Voer het één keer in. Gebruik het waar het nodig is.",
-    "intro": "Losse systemen kosten tijd als je informatie steeds opnieuw moet overtypen. We koppelen bestaande software waar dat mogelijk is, met duidelijke afspraken over gegevens, controles en beheer.",
+    "intro": "Laat informatie op de juiste plek aankomen zonder dubbel invoeren. Tijdens de bedrijfsscan onderzoeken we welke bestaande tools waarde houden en welke gegevens jouw centrale applicatie nodig heeft. Koppelingen worden alleen toegezegd na haalbaarheidsonderzoek.",
     "codes": [
       "INTEGRATION",
       "TECH_CARE"
@@ -179,7 +198,8 @@ export const SERVICES = [
     "useCases": [
       "Een aanvraag van je website klaarzetten in je CRM.",
       "Goedgekeurde klantgegevens doorgeven aan je boekhoudsoftware.",
-      "Meldingen krijgen wanneer een overdracht mislukt en opnieuw moet worden uitgevoerd."
+      "Meldingen krijgen wanneer een overdracht mislukt en opnieuw moet worden uitgevoerd.",
+      "Mogelijkheden onderzoeken met Meta Ads, Google Ads, OpenAI/ChatGPT, Trello, Jira, Monday, Asana, HubSpot, Salesforce, AFAS en e-Boekhouden; geen claim over geleverde integraties of partnerschappen."
     ],
     "deliverables": [
       "Een inventarisatie van bron, bestemming, velden en toegangsrechten.",
@@ -200,6 +220,10 @@ export const SERVICES = [
       {
         "question": "Is beheer verplicht?",
         "answer": "Nee. Je kunt beheer apart afspreken. We leggen wel vast wie updates, storingen en wijzigingen bij externe leveranciers opvolgt."
+      },
+      {
+        "question": "Blijf ik betalen voor externe tools?",
+        "answer": "Als je bestaande tools behoudt, kunnen hun abonnementen en gebruikskosten blijven gelden. We benoemen die externe kosten en de toegangsvoorwaarden vooraf, naast de kosten voor bouw en beheer."
       }
     ]
   }

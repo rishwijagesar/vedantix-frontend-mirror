@@ -17,6 +17,10 @@ export const Route = createFileRoute("/offerte/$token")({
   head: () => ({
     meta: [
       { title: "Offerte bekijken | Vedantix" },
+    { property: "og:title", content: "Offerte bekijken | Vedantix" },
+    { property: "og:description", content: "Beveiligde Vedantix-offerte bekijken en beantwoorden." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow, noarchive" },
       { name: "description", content: "Beveiligde Vedantix-offerte bekijken en beantwoorden." },
     ],
