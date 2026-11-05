@@ -27,6 +27,9 @@ function assertSupportedIndustryPath(pathname) {
 }
 
 assert.ok(urls.length > 0, "The sitemap must contain public URLs");
+for (const path of ["/software-op-maat", "/over-ons", "/diensten", "/website-laten-maken"]) {
+  assert.ok(paths.has(path), `Public service page is missing: ${path}`);
+}
 assert.equal(paths.size, urls.length, "Sitemap URLs must be unique");
 for (const url of urls) {
   assert.equal(url.origin, "https://vedantix.nl", "Only the canonical site belongs in its sitemap");

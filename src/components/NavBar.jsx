@@ -9,6 +9,8 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+
   useEffect(() => {
     if (!isHomePage) {
       document.body.setAttribute("data-has-fixed-navbar", "true");
@@ -58,7 +60,7 @@ export default function NavBar() {
             <Link to="/contact" className="site-nav-link">Contact</Link>
           </div>
 
-          <Link to="/contact#contact-form" className="site-nav-cta">
+          <Link to="/contact#contact-form" className="site-nav-cta" onClick={() => setMenuOpen(false)}>
             Plan een bedrijfsscan →
           </Link>
         </nav>
