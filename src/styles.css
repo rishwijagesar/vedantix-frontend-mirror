@@ -82,3 +82,12 @@
     color: hsl(var(--muted-foreground));
   }
 }
+
+/* Vedantix public workspace and navigation roles, matching the existing palette. */
+:root {
+ --vx-hero: #0a1428; --vx-ink: #122039; --vx-paper: #ffffff; --vx-soft: #f4f7fc;
+ --vx-muted: #60718a; --vx-line: #dfe7f1; --vx-on-dark: #d0d9e9; --vx-accent: #74adff;
+ --vx-success: #087b62; --vx-success-soft: #e8f6ef; --vx-dark-line: #31415b;
+ --vx-accent-fill: #eaf2ff; --vx-highlight: linear-gradient(105deg, #74adff, #b29aff);
+ --vx-shadow: 0 22px 65px #020a1e40; --vx-menu-shadow: 0 20px 50px #12203926;
+}
