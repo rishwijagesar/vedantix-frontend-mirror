@@ -1,11 +1,12 @@
+import { SOFTWARE_HEADLINE, SOFTWARE_INTRO, SCAN_URL } from "../data/positioning";
 import HeroLiveExperience from "../components/home/HeroLiveExperience";
 import "../styles/home-hero.css";
 
 const HERO_CHECKS = [
-  "Meer klanten",
-  "Meer zichtbaarheid",
-  "Minder handwerk",
-  "Alles onder één dak",
+  "Jouw processen centraal",
+  "Minder dubbel werk",
+  "Zorgvuldig getest",
+  "Heldere beheerafspraken",
 ];
 
 export default function HomeHero() {
@@ -14,41 +15,36 @@ export default function HomeHero() {
       <section className="hero hero--photo">
         <div className="hero-container">
           <div className="hero-content">
-            <div className="hero-eyebrow">Websites, AI & apps voor ondernemers</div>
+            <div className="hero-eyebrow">Software op maat voor mkb en zelfstandigen</div>
 
             <h1>
-              Meer klanten.
+              Software die meegroeit
               <br />
-              <span>Meer zichtbaarheid.</span>
-              <br />
-              Minder gedoe.
+              <span>met jouw bedrijf.</span>
             </h1>
 
             <p className="hero-sub">
-              Websites die klanten aantrekken. AI en apps die werk uit handen nemen.
-              Wij helpen jouw bedrijf groeien én slimmer werken.
+              {SOFTWARE_INTRO}
             </p>
 
             <div className="hero-ctas">
               <a
-                href="/online-groei-audit"
+                href={SCAN_URL}
                 className="hero-btn-primary"
               >
-                Gratis Online Groei Audit →
+                Plan een bedrijfsscan →
               </a>
 
               <a
-                href="https://wa.me/31626219989?text=Hallo%20Vedantix%2C%20ik%20wil%20graag%20een%20kennismaking%20plannen%20over%20online%20groei."
-                target="_blank"
-                rel="noreferrer"
+                href="/website-laten-maken"
                 className="hero-btn-ghost"
               >
-                Plan een Kennismaking →
+                Website laten maken →
               </a>
             </div>
 
             <div className="hero-cta-note">
-              Vrijblijvend advies · focus op groei · geen technische rompslomp
+              Processen eerst · gefaseerd bouwen · afspraken vooraf
             </div>
           </div>
 

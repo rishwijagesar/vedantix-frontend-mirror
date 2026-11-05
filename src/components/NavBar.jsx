@@ -49,16 +49,17 @@ export default function NavBar() {
         <nav className="site-nav" aria-label="Hoofdnavigatie" onKeyDown={event => { if (event.key === "Escape") setMenuOpen(false); }}>
           <button type="button" className="site-menu-toggle" aria-expanded={menuOpen} aria-controls="site-main-links" onClick={() => setMenuOpen(open => !open)}>{menuOpen ? "Sluiten ✕" : "Menu ☰"}</button>
           <div id="site-main-links" className={`site-nav-links${menuOpen ? " is-open" : ""}`} onClick={() => setMenuOpen(false)}>
+            <Link to="/software-op-maat" className="site-nav-link">Software op maat</Link>
             <Link to="/diensten" className="site-nav-link">Diensten</Link>
             <Link to="/prijzen" className="site-nav-link">Prijzen</Link>
             <Link to="/proces" className="site-nav-link">Werkwijze</Link>
             <Link to="/resultaten" className="site-nav-link">Resultaten</Link>
-            <Link to="/blog" className="site-nav-link">Blog</Link>
+            <Link to="/over-ons" className="site-nav-link">Over ons</Link>
             <Link to="/contact" className="site-nav-link">Contact</Link>
           </div>
 
-          <Link to="/online-groei-audit" className="site-nav-cta">
-            Gratis Audit →
+          <Link to="/contact#contact-form" className="site-nav-cta">
+            Plan een bedrijfsscan →
           </Link>
         </nav>
       </div>

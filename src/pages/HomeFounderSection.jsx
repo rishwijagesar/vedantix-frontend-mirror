@@ -173,8 +173,8 @@ const FOUNDER_SECTION_STYLES = `
 const FOUNDER_POINTS = [
   "Direct contact zonder lagen of accountmanagers",
   "Snelle communicatie via WhatsApp of telefoon",
-  "Praktische focus op duidelijke websites die verkopen",
-  "Ook geschikt als je nog geen bestaande website hebt",
+  "Jouw werkprocessen als vertrekpunt",
+  "Software, websites en beheer met heldere afspraken",
 ];
 
 export default function HomeFounderSection() {
@@ -193,21 +193,21 @@ export default function HomeFounderSection() {
 
         <div className="founder-card">
           <div className="section-label">Achter Vedantix</div>
-          <h2 className="section-h2">Persoonlijk contact, snelle oplevering en focus op resultaat</h2>
+          <h2 className="section-h2">Persoonlijk contact en een praktische aanpak</h2>
 
           <p>
-            Vedantix is er voor lokale ondernemers die een professionele website willen zonder lang traject,
-            vage communicatie of technisch gedoe.
+            Vedantix is er voor het mkb en zelfstandigen in alle sectoren. Vanuit Den Bosch helpen we
+            bedrijven in heel Nederland met software op maat, websites en hosting.
           </p>
 
           <p>
-            Je hebt direct contact, een duidelijke prijs en een praktische aanpak. Het doel is simpel:
-            een website neerzetten die professioneel oogt en sneller tot actie leidt.
+            Je hebt direct contact met Rishwi. We brengen eerst jouw werkprocessen en wensen in kaart,
+            en maken daarna afspraken over functionaliteit, kosten, testen en beheer.
           </p>
 
           <p>
-            Heb je nog geen bestaande website, geen reviews of nog geen uitgebreide content? Dan bouwen we juist
-            vanuit eenvoud en duidelijkheid een sterke basis.
+            AI is een hulpmiddel om snel te ontwikkelen. De code en het resultaat worden professioneel
+            gecontroleerd en getest. Je beoordeelt de afgesproken functies voordat we live gaan.
           </p>
 
           <div className="founder-points">
@@ -233,8 +233,8 @@ export default function HomeFounderSection() {
             </div>
 
             <p className="founder-mini-quote">
-              Ik help lokale ondernemers aan een website die niet alleen mooi oogt, maar vooral
-              duidelijker vertrouwen opwekt en sneller tot contact of aanvragen leidt.
+              Ik begin bij hoe jouw bedrijf werkt. Dan kunnen we samen bepalen wat in één applicatie
+              thuishoort, welke tools waarde houden en hoe we stap voor stap verder bouwen.
             </p>
           </div>
         </div>
