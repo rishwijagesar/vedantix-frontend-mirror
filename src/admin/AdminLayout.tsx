@@ -43,10 +43,10 @@ export function AdminNavigation({ activeId, onNavigate }: { activeId: string; on
         const open = Boolean(query.trim()) || (expanded[group.id] ?? (group.id !== "settings" || group.items.some(item => item.id === activeId)));
         const target = `${groupId}-${group.id}`;
         return <div key={group.id}><button type="button" aria-expanded={open} aria-controls={target} onClick={() => setExpanded(current => ({ ...current, [group.id]: !open }))} className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 hover:bg-white/5 hover:text-white focus-visible:outline-2 focus-visible:outline-white"><span>{group.label}</span><ChevronDown size={13} className={open ? "" : "-rotate-90"} aria-hidden="true"/></button><ul id={target} hidden={!open} className="space-y-0.5">{group.items.map(item => {
-          const Icon = icons[item.icon];
+          const Icon = icons[item.icon] ?? LayoutDashboard;
           const active = item.id === activeId;
-          const [pathname, search = ""] = item.href.split("?");
-          return <li key={item.id}><Link ref={active ? activeLink : undefined} to={pathname} search={Object.fromEntries(new URLSearchParams(search))} aria-current={active ? "page" : undefined} onClick={onNavigate} className={`flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm transition focus-visible:outline-2 focus-visible:outline-white ${active ? "bg-white font-semibold text-slate-950" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}><Icon size={17} className="shrink-0" aria-hidden="true"/><span>{item.label}</span></Link></li>;
+          const [pathname = "/admin", search = ""] = item.href.split("?");
+          return <li key={item.id}><Link ref={active ? activeLink : undefined} to={pathname} search={() => Object.fromEntries(new URLSearchParams(search))} aria-current={active ? "page" : undefined} onClick={onNavigate} className={`flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm transition focus-visible:outline-2 focus-visible:outline-white ${active ? "bg-white font-semibold text-slate-950" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}><Icon size={17} className="shrink-0" aria-hidden="true"/><span>{item.label}</span></Link></li>;
         })}</ul></div>;
       })}
       {!groups.length && <p role="status" className="px-3 py-5 text-sm leading-6 text-slate-400">Geen pagina gevonden. Probeer bijvoorbeeld ‘facturen’, ‘bonnetjes’ of ‘mailbox’.</p>}

@@ -320,8 +320,9 @@ export function InvoicesModuleV2({ customers }: { customers: BillingCustomer[] }
   }
 
   async function saveLine(id: string) {
-    if (!lineEdits[id]) return;
-    await runDraftAction(() => saveInvoiceLineEdits({ [id]: lineEdits[id] }, updateInvoiceItem, savedLine), "Factuurregel opgeslagen.");
+    const edit = lineEdits[id];
+    if (!edit) return;
+    await runDraftAction(() => saveInvoiceLineEdits({ [id]: edit }, updateInvoiceItem, savedLine), "Factuurregel opgeslagen.");
   }
 
   async function removeLine(id: string) {

@@ -25,7 +25,7 @@ export function evidenceForPeriod(data: AdminData,p: Period) {
   const invoices=new Set(data.invoices.filter(i=>inPeriod(i.invoice_date,p)).map(i=>i.id));
   return data.documents.filter(d=>inPeriod(d.document_date,p) || (d.entry_id && entries.has(d.entry_id)) || (d.bank_id && bank.has(d.bank_id)) || (d.invoice_id && invoices.has(d.invoice_id)));
 }
-export function exportFiles(data: AdminData,p: Period) {
+export function exportFiles(data: AdminData,p: Period): { name: string; bytes: Uint8Array }[] {
   const s=summarize(data,p), documents=evidenceForPeriod(data,p);
   const entries=data.entries.filter(e=>inPeriod(e.entry_date,p)),bank=data.bank.filter(b=>inPeriod(b.transaction_date,p));
   const text=(name:string,content:string)=>({name,bytes:new TextEncoder().encode(content)});
@@ -44,6 +44,6 @@ export async function makeAdministrationZip(data:AdminData,p:Period,read:(d:Evid
   const docs=evidenceForPeriod(data,p).filter(d=>d.status==='READY');
   if(docs.reduce((n,d)=>n+d.byte_size,0)>200*1024*1024)throw new Error('Deze selectie bevat meer dan 200 MB bewijs. Exporteer per kwartaal of download grote bestanden afzonderlijk.');
   const files=exportFiles(data,p);files.push({name:'wijzigingshistorie.json',bytes:new TextEncoder().encode(JSON.stringify(history,null,2))});
-  for(let i=0;i<docs.length;i++){const d=docs[i];files.push({name:`bewijsstukken/${d.id}-${safeFilename(d.filename)}`,bytes:await read(d)});progress?.(i+1,docs.length);}
+  for(let i=0;i<docs.length;i++){const d=docs[i];if(!d)continue;files.push({name:`bewijsstukken/${d.id}-${safeFilename(d.filename)}`,bytes:await read(d)});progress?.(i+1,docs.length);}
   return zipStore(files);
 }

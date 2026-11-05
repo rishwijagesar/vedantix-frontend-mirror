@@ -128,7 +128,7 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
   const customerAddress = addressLines(customer);
   const companyAddress = addressLines(company);
   const title = isQuote ? "Offerte" : isInvoice ? "Factuur" : "Creditnota";
-  const accent = String(company.accent_hex || "#3b82f6");
+  const accent = String(company["accent_hex"] || "#3b82f6");
 
   const invoice = document as Invoice;
   const recurringLines = isInvoice ? invoiceRecurringExplanation(invoice, items, amount => euro.format(amount)) : [];
@@ -141,7 +141,7 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
       <strong>Omschrijving:</strong> ${esc(invoicePaymentDescription(invoice))}</p>
       <a class="payment-button" href="${esc(paymentUrl)}" target="_blank" rel="noopener noreferrer">Betaal factuur online</a>
       <p class="payment-hint">Klik op de knop of scan de QR-code met je telefooncamera.</p>
-      ${company.iban ? `<p class="payment-hint">Liever overmaken? IBAN ${esc(company.iban)}<br>Vermeld: ${esc(invoicePaymentReference(invoice))}</p>` : ""}
+      ${company["iban"] ? `<p class="payment-hint">Liever overmaken? IBAN ${esc(company["iban"])}<br>Vermeld: ${esc(invoicePaymentReference(invoice))}</p>` : ""}
     </div>
     <a class="payment-qr" href="${esc(paymentUrl)}" target="_blank" rel="noopener noreferrer"><img src="${esc(invoiceQrUrl(invoice.public_token))}" width="140" height="140" alt="Scan om factuur ${esc(invoice.invoice_number)} te betalen" referrerpolicy="no-referrer"><span>Scan om te betalen</span></a>
   </section>` : "";
@@ -182,8 +182,8 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
     .printbar{display:flex;justify-content:flex-end;gap:8px;padding:12px}.printbar button{border:0;background:#0f172a;color:white;padding:10px 14px;border-radius:9px;font-weight:700;cursor:pointer}.printbar .secondary{background:white;color:#0f172a;border:1px solid #cbd5e1}@media print{.printbar{display:none}.page{max-width:none}}
   </style></head><body><div class="printbar"><button class="secondary" onclick="window.close()">Sluiten</button><button onclick="window.print()">Opslaan als PDF / printen</button></div><main class="page">
     <section class="top"><div>${vedantixLogoSvg()}</div><div class="doc-title"><h1>${title}</h1><div class="doc-no">${esc(number || "Concept")}</div><div class="accent"></div></div></section>
-    <section class="grid"><div class="block"><h3>Van</h3><strong>${esc(company.trade_name || "Vedantix")}</strong>${company.legal_name ? `<div>${esc(company.legal_name)}</div>` : ""}${companyAddress.map((x)=>`<div>${esc(x)}</div>`).join("")}<div>${esc(company.email || "")}</div>${company.phone ? `<div>${esc(company.phone)}</div>` : ""}</div>
-      <div class="block"><h3>Aan</h3><strong>${esc(customer.company_name || "Klant")}</strong>${customer.contact_name ? `<div>${esc(customer.contact_name)}</div>` : ""}${customerAddress.map((x)=>`<div>${esc(x)}</div>`).join("")}${customer.email ? `<div>${esc(customer.email)}</div>` : ""}
+    <section class="grid"><div class="block"><h3>Van</h3><strong>${esc(company["trade_name"] || "Vedantix")}</strong>${company["legal_name"] ? `<div>${esc(company["legal_name"])}</div>` : ""}${companyAddress.map((x)=>`<div>${esc(x)}</div>`).join("")}<div>${esc(company["email"] || "")}</div>${company["phone"] ? `<div>${esc(company["phone"])}</div>` : ""}</div>
+      <div class="block"><h3>Aan</h3><strong>${esc(customer["company_name"] || "Klant")}</strong>${customer["contact_name"] ? `<div>${esc(customer["contact_name"])}</div>` : ""}${customerAddress.map((x)=>`<div>${esc(x)}</div>`).join("")}${customer["email"] ? `<div>${esc(customer["email"])}</div>` : ""}
       <div class="meta"><div><span>Datum</span><strong>${dateNl(docDate)}</strong></div>${isQuote ? `<div><span>Geldig tot</span><strong>${dateNl((document as Quote).valid_until)}</strong></div>` : ""}${isInvoice ? `<div><span>Leverdatum</span><strong>${dateNl((document as Invoice).delivery_date)}</strong></div><div><span>Vervaldatum</span><strong>${dateNl((document as Invoice).due_date)}</strong></div><div><span>Betalingskenmerk</span><strong>${esc(invoicePaymentReference(invoice) || "—")}</strong></div>` : ""}</div></div></section>
     ${isQuote && (document as Quote).intro_text ? `<div class="intro">${esc((document as Quote).intro_text).replaceAll("\n","<br>")}</div>` : ""}
     <table class="items"><thead><tr><th>Omschrijving</th><th>Termijn</th><th class="num">Aantal</th><th class="num">Prijs excl.</th><th class="num">BTW</th><th class="num">Korting</th><th class="num">Totaal excl.</th></tr></thead><tbody>${itemRows}</tbody></table>
@@ -191,7 +191,7 @@ export function renderBillingDocumentHtml(kind: DocumentKind, document: BillingD
     ${recurringSection}
     ${paymentSection}
     ${(isQuote && ((document as Quote).notes || (document as Quote).terms)) || (isInvoice && (document as Invoice).notes) || (isCredit && (document as CreditNote).reason) ? `<section class="notes"><h4>${isCredit ? "Reden creditnota" : "Opmerkingen"}</h4><div>${esc(isQuote ? ((document as Quote).notes || (document as Quote).terms) : isInvoice ? (document as Invoice).notes : (document as CreditNote).reason).replaceAll("\n","<br>")}</div></section>` : ""}
-    <footer class="footer"><div><strong>${esc(company.trade_name || "Vedantix")}</strong><br>${esc(company.website || "vedantix.nl")} · ${esc(company.email || "")}</div><div>${company.kvk_number ? `KVK ${esc(company.kvk_number)}<br>` : ""}${company.vat_number ? `BTW-ID ${esc(company.vat_number)}<br>` : ""}${company.iban ? `IBAN ${esc(company.iban)}` : ""}</div>${isInvoice && company.default_payment_term_days ? `<div>Betaling binnen ${esc(company.default_payment_term_days)} dagen.</div>` : ""}</footer>
+    <footer class="footer"><div><strong>${esc(company["trade_name"] || "Vedantix")}</strong><br>${esc(company["website"] || "vedantix.nl")} · ${esc(company["email"] || "")}</div><div>${company["kvk_number"] ? `KVK ${esc(company["kvk_number"])}<br>` : ""}${company["vat_number"] ? `BTW-ID ${esc(company["vat_number"])}<br>` : ""}${company["iban"] ? `IBAN ${esc(company["iban"])}` : ""}</div>${isInvoice && company["default_payment_term_days"] ? `<div>Betaling binnen ${esc(company["default_payment_term_days"])} dagen.</div>` : ""}</footer>
   </main></body></html>`;
 }
 

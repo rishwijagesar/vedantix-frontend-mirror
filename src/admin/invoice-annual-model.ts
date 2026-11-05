@@ -3,7 +3,8 @@ export function annualInvoicePlan<T extends Line>(invoice: { status: string; is_
   const items = lines.filter(i => i.billing_type === 'YEARLY');
   let nextDate = '';
   if (/^\d{4}-\d{2}-\d{2}$/.test(start) && Number.isFinite(Date.parse(start)) && new Date(start).toISOString().slice(0, 10) === start) {
-    const [year, month, day] = start.split('-').map(Number);
+    const parsed = new Date(start);
+    const year = parsed.getUTCFullYear(), month = parsed.getUTCMonth() + 1, day = parsed.getUTCDate();
     const lastDay = new Date(Date.UTC(year + 1, month, 0)).getUTCDate();
     nextDate = `${year + 1}-${String(month).padStart(2, '0')}-${String(Math.min(day, lastDay)).padStart(2, '0')}`;
   }

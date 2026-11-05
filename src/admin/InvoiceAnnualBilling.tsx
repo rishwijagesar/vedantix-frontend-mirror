@@ -8,7 +8,7 @@ const money = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR
 const dateLabel = (value: string) => value.split('-').reverse().join('-');
 type Existing = { subscription_number: string; next_invoice_date: string; status: string; auto_finalize: boolean };
 export default function InvoiceAnnualBilling({ invoice, items }: { invoice: Invoice & { is_active: boolean }; items: BillingItem[] }) {
-  const [start, setStart] = useState(invoice.delivery_date || invoice.invoice_date);
+  const [start, setStart] = useState(invoice.delivery_date || invoice.invoice_date || "");
   const [autoFinalize, setAutoFinalize] = useState(false);
   const [existing, setExisting] = useState<Existing | null>(null);
   const [loading, setLoading] = useState(true), [busy, setBusy] = useState(false), [error, setError] = useState('');

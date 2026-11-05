@@ -70,7 +70,7 @@ function stageTone(stage: LeadStage) {
 }
 
 function leadAuditScore(lead: SalesLead) {
-  const value = lead.latest_audit?.results?.overallScore;
+  const value = lead.latest_audit?.results?.["overallScore"];
   return typeof value === "number" ? value : null;
 }
 
@@ -122,13 +122,13 @@ export default function LeadsPipeline() {
         {error ? <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
         <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {[
+          {([
             ["Open leads", stats.open, Target],
             ["Nieuw", stats.new, Plus],
             ["Opvolging nodig", stats.due, CalendarClock],
             ["Offertefase", stats.quote, FileText],
             ["Gewonnen", stats.won, CheckCircle2],
-          ].map(([label, value, Icon]) => (
+          ] as const).map(([label, value, Icon]) => (
             <article key={String(label)} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <Icon size={17} className="mb-3 text-slate-500" />
               <p className="text-xs text-slate-500">{String(label)}</p>

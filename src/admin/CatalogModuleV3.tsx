@@ -102,7 +102,7 @@ function CatalogRow({ product, onChanged, onDeleted, onError }: { product: Catal
   const [vatRate, setVatRate] = useState(product.vat_rate);
   const [billingType, setBillingType] = useState<BillingType>(product.billing_type);
   const [active, setActive] = useState(product.active);
-  const [websitePublic, setWebsitePublic] = useState(product.metadata?.public_package === true);
+  const [websitePublic, setWebsitePublic] = useState(product.metadata?.["public_package"] === true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -112,11 +112,11 @@ function CatalogRow({ product, onChanged, onDeleted, onError }: { product: Catal
     setVatRate(product.vat_rate);
     setBillingType(product.billing_type);
     setActive(product.active);
-    setWebsitePublic(product.metadata?.public_package === true);
+    setWebsitePublic(product.metadata?.["public_package"] === true);
   }, [product]);
 
   const calculatedInclVat = useMemo(() => inclVat(priceExVat, vatRate), [priceExVat, vatRate]);
-  const dirty = name !== product.name || priceExVat !== product.price_ex_vat || vatRate !== product.vat_rate || billingType !== product.billing_type || active !== product.active || websitePublic !== (product.metadata?.public_package === true);
+  const dirty = name !== product.name || priceExVat !== product.price_ex_vat || vatRate !== product.vat_rate || billingType !== product.billing_type || active !== product.active || websitePublic !== (product.metadata?.["public_package"] === true);
 
   async function save() {
     setSaving(true);

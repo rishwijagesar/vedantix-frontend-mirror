@@ -63,7 +63,7 @@ export function activeAdminItem(pathname: string, search = ""): AdminNavItem {
     : path === "/admin/billing" ? `billing:${billingSection(requested)}`
     : path === "/admin/monitoring" ? "operations:monitoring" : null;
   const items = adminNavigation.flatMap(group => group.items);
-  return items.find(item => id ? item.id === id : item.href === path) || items[0];
+  return items.find(item => id ? item.id === id : item.href === path) || operation("dashboard", "Dashboard", "dashboard");
 }
 
 const normalize = (value: string) => value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();

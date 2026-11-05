@@ -12,11 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AiOplossingenRouteImport } from './routes/ai-oplossingen'
 import { Route as AiVindbaarheidRouteImport } from './routes/ai-vindbaarheid'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DataDeletionRouteImport } from './routes/data-deletion'
+import { Route as DienstenRouteImport } from './routes/diensten'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GroeimodelRouteImport } from './routes/groeimodel'
+import { Route as KoppelingenAutomatiseringRouteImport } from './routes/koppelingen-automatisering'
+import { Route as MobieleAppsRouteImport } from './routes/mobiele-apps'
 import { Route as OnlineGroeiAuditRouteImport } from './routes/online-groei-audit'
 import { Route as PlanningRouteImport } from './routes/planning'
 import { Route as PrijzenRouteImport } from './routes/prijzen'
@@ -28,16 +32,27 @@ import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VedantixhomeRouteImport } from './routes/vedantixhome'
 import { Route as VoorwieRouteImport } from './routes/voorwie'
+import { Route as WebappsKlantportalenRouteImport } from './routes/webapps-klantportalen'
 import { Route as WebsiteFotograafRouteImport } from './routes/website-fotograaf'
 import { Route as WebsiteKapperRouteImport } from './routes/website-kapper'
 import { Route as WebsiteKlusbedrijfRouteImport } from './routes/website-klusbedrijf'
+import { Route as WebsiteLatenMakenRouteImport } from './routes/website-laten-maken'
 import { Route as WebsiteRestaurantRouteImport } from './routes/website-restaurant'
 import { Route as WebsiteSalonRouteImport } from './routes/website-salon'
 import { Route as WebsiteSchoonmaakbedrijfRouteImport } from './routes/website-schoonmaakbedrijf'
 import { Route as WebsiteZzpRouteImport } from './routes/website-zzp'
+import { Route as AdminBillingRouteImport } from './routes/admin_.billing'
+import { Route as AdminGrowthRouteImport } from './routes/admin_.growth'
+import { Route as AdminLeadsRouteImport } from './routes/admin_.leads'
 import { Route as AdminMonitoringRouteImport } from './routes/admin_.monitoring'
+import { Route as AdminPreviewsRouteImport } from './routes/admin_.previews'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as ContractTokenRouteImport } from './routes/contract/$token'
+import { Route as FactuurTokenRouteImport } from './routes/factuur/$token'
+import { Route as OfferteTokenRouteImport } from './routes/offerte/$token'
+import { Route as PreviewTokenRouteImport } from './routes/preview/$token'
+import { Route as BetalingResultaatTokenRouteImport } from './routes/betaling/resultaat/$token'
 import { Route as WebsiteBrancheIndexRouteImport } from './routes/website/$branche/index'
 import { Route as WebsiteBrancheStadRouteImport } from './routes/website/$branche/$stad'
 
@@ -56,6 +71,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiOplossingenRoute = AiOplossingenRouteImport.update({
+  id: '/ai-oplossingen',
+  path: '/ai-oplossingen',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiVindbaarheidRoute = AiVindbaarheidRouteImport.update({
   id: '/ai-vindbaarheid',
   path: '/ai-vindbaarheid',
@@ -71,6 +91,11 @@ const DataDeletionRoute = DataDeletionRouteImport.update({
   path: '/data-deletion',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DienstenRoute = DienstenRouteImport.update({
+  id: '/diensten',
+  path: '/diensten',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -79,6 +104,17 @@ const FaqRoute = FaqRouteImport.update({
 const GroeimodelRoute = GroeimodelRouteImport.update({
   id: '/groeimodel',
   path: '/groeimodel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KoppelingenAutomatiseringRoute =
+  KoppelingenAutomatiseringRouteImport.update({
+    id: '/koppelingen-automatisering',
+    path: '/koppelingen-automatisering',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const MobieleAppsRoute = MobieleAppsRouteImport.update({
+  id: '/mobiele-apps',
+  path: '/mobiele-apps',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnlineGroeiAuditRoute = OnlineGroeiAuditRouteImport.update({
@@ -136,6 +172,11 @@ const VoorwieRoute = VoorwieRouteImport.update({
   path: '/voorwie',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WebappsKlantportalenRoute = WebappsKlantportalenRouteImport.update({
+  id: '/webapps-klantportalen',
+  path: '/webapps-klantportalen',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WebsiteFotograafRoute = WebsiteFotograafRouteImport.update({
   id: '/website-fotograaf',
   path: '/website-fotograaf',
@@ -149,6 +190,11 @@ const WebsiteKapperRoute = WebsiteKapperRouteImport.update({
 const WebsiteKlusbedrijfRoute = WebsiteKlusbedrijfRouteImport.update({
   id: '/website-klusbedrijf',
   path: '/website-klusbedrijf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteLatenMakenRoute = WebsiteLatenMakenRouteImport.update({
+  id: '/website-laten-maken',
+  path: '/website-laten-maken',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WebsiteRestaurantRoute = WebsiteRestaurantRouteImport.update({
@@ -172,9 +218,29 @@ const WebsiteZzpRoute = WebsiteZzpRouteImport.update({
   path: '/website-zzp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBillingRoute = AdminBillingRouteImport.update({
+  id: '/admin_/billing',
+  path: '/admin/billing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminGrowthRoute = AdminGrowthRouteImport.update({
+  id: '/admin_/growth',
+  path: '/admin/growth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/admin_/leads',
+  path: '/admin/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminMonitoringRoute = AdminMonitoringRouteImport.update({
   id: '/admin_/monitoring',
   path: '/admin/monitoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPreviewsRoute = AdminPreviewsRouteImport.update({
+  id: '/admin_/previews',
+  path: '/admin/previews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -185,6 +251,31 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractTokenRoute = ContractTokenRouteImport.update({
+  id: '/contract/$token',
+  path: '/contract/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FactuurTokenRoute = FactuurTokenRouteImport.update({
+  id: '/factuur/$token',
+  path: '/factuur/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfferteTokenRoute = OfferteTokenRouteImport.update({
+  id: '/offerte/$token',
+  path: '/offerte/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewTokenRoute = PreviewTokenRouteImport.update({
+  id: '/preview/$token',
+  path: '/preview/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BetalingResultaatTokenRoute = BetalingResultaatTokenRouteImport.update({
+  id: '/betaling/resultaat/$token',
+  path: '/betaling/resultaat/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WebsiteBrancheIndexRoute = WebsiteBrancheIndexRouteImport.update({
@@ -202,11 +293,15 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/admin': typeof AdminRoute
+  '/ai-oplossingen': typeof AiOplossingenRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
   '/data-deletion': typeof DataDeletionRoute
+  '/diensten': typeof DienstenRoute
   '/faq': typeof FaqRoute
   '/groeimodel': typeof GroeimodelRoute
+  '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
+  '/mobiele-apps': typeof MobieleAppsRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
@@ -218,16 +313,27 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/vedantixhome': typeof VedantixhomeRoute
   '/voorwie': typeof VoorwieRoute
+  '/webapps-klantportalen': typeof WebappsKlantportalenRoute
   '/website-fotograaf': typeof WebsiteFotograafRoute
   '/website-kapper': typeof WebsiteKapperRoute
   '/website-klusbedrijf': typeof WebsiteKlusbedrijfRoute
+  '/website-laten-maken': typeof WebsiteLatenMakenRoute
   '/website-restaurant': typeof WebsiteRestaurantRoute
   '/website-salon': typeof WebsiteSalonRoute
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
+  '/admin/billing': typeof AdminBillingRoute
+  '/admin/growth': typeof AdminGrowthRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/monitoring': typeof AdminMonitoringRoute
+  '/admin/previews': typeof AdminPreviewsRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/contract/$token': typeof ContractTokenRoute
+  '/factuur/$token': typeof FactuurTokenRoute
+  '/offerte/$token': typeof OfferteTokenRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/blog/': typeof BlogIndexRoute
+  '/betaling/resultaat/$token': typeof BetalingResultaatTokenRoute
   '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
   '/website/$branche/': typeof WebsiteBrancheIndexRoute
 }
@@ -235,11 +341,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/admin': typeof AdminRoute
+  '/ai-oplossingen': typeof AiOplossingenRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
   '/data-deletion': typeof DataDeletionRoute
+  '/diensten': typeof DienstenRoute
   '/faq': typeof FaqRoute
   '/groeimodel': typeof GroeimodelRoute
+  '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
+  '/mobiele-apps': typeof MobieleAppsRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
@@ -251,16 +361,27 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/vedantixhome': typeof VedantixhomeRoute
   '/voorwie': typeof VoorwieRoute
+  '/webapps-klantportalen': typeof WebappsKlantportalenRoute
   '/website-fotograaf': typeof WebsiteFotograafRoute
   '/website-kapper': typeof WebsiteKapperRoute
   '/website-klusbedrijf': typeof WebsiteKlusbedrijfRoute
+  '/website-laten-maken': typeof WebsiteLatenMakenRoute
   '/website-restaurant': typeof WebsiteRestaurantRoute
   '/website-salon': typeof WebsiteSalonRoute
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
+  '/admin/billing': typeof AdminBillingRoute
+  '/admin/growth': typeof AdminGrowthRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/monitoring': typeof AdminMonitoringRoute
+  '/admin/previews': typeof AdminPreviewsRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/contract/$token': typeof ContractTokenRoute
+  '/factuur/$token': typeof FactuurTokenRoute
+  '/offerte/$token': typeof OfferteTokenRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/blog': typeof BlogIndexRoute
+  '/betaling/resultaat/$token': typeof BetalingResultaatTokenRoute
   '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
   '/website/$branche': typeof WebsiteBrancheIndexRoute
 }
@@ -269,11 +390,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/admin': typeof AdminRoute
+  '/ai-oplossingen': typeof AiOplossingenRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
   '/data-deletion': typeof DataDeletionRoute
+  '/diensten': typeof DienstenRoute
   '/faq': typeof FaqRoute
   '/groeimodel': typeof GroeimodelRoute
+  '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
+  '/mobiele-apps': typeof MobieleAppsRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
@@ -285,16 +410,27 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/vedantixhome': typeof VedantixhomeRoute
   '/voorwie': typeof VoorwieRoute
+  '/webapps-klantportalen': typeof WebappsKlantportalenRoute
   '/website-fotograaf': typeof WebsiteFotograafRoute
   '/website-kapper': typeof WebsiteKapperRoute
   '/website-klusbedrijf': typeof WebsiteKlusbedrijfRoute
+  '/website-laten-maken': typeof WebsiteLatenMakenRoute
   '/website-restaurant': typeof WebsiteRestaurantRoute
   '/website-salon': typeof WebsiteSalonRoute
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
+  '/admin_/billing': typeof AdminBillingRoute
+  '/admin_/growth': typeof AdminGrowthRoute
+  '/admin_/leads': typeof AdminLeadsRoute
   '/admin_/monitoring': typeof AdminMonitoringRoute
+  '/admin_/previews': typeof AdminPreviewsRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/contract/$token': typeof ContractTokenRoute
+  '/factuur/$token': typeof FactuurTokenRoute
+  '/offerte/$token': typeof OfferteTokenRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/blog/': typeof BlogIndexRoute
+  '/betaling/resultaat/$token': typeof BetalingResultaatTokenRoute
   '/website/$branche/$stad': typeof WebsiteBrancheStadRoute
   '/website/$branche/': typeof WebsiteBrancheIndexRoute
 }
@@ -304,11 +440,15 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/admin'
+    | '/ai-oplossingen'
     | '/ai-vindbaarheid'
     | '/contact'
     | '/data-deletion'
+    | '/diensten'
     | '/faq'
     | '/groeimodel'
+    | '/koppelingen-automatisering'
+    | '/mobiele-apps'
     | '/online-groei-audit'
     | '/planning'
     | '/prijzen'
@@ -320,16 +460,27 @@ export interface FileRouteTypes {
     | '/terms'
     | '/vedantixhome'
     | '/voorwie'
+    | '/webapps-klantportalen'
     | '/website-fotograaf'
     | '/website-kapper'
     | '/website-klusbedrijf'
+    | '/website-laten-maken'
     | '/website-restaurant'
     | '/website-salon'
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
+    | '/admin/billing'
+    | '/admin/growth'
+    | '/admin/leads'
     | '/admin/monitoring'
+    | '/admin/previews'
     | '/blog/$slug'
+    | '/contract/$token'
+    | '/factuur/$token'
+    | '/offerte/$token'
+    | '/preview/$token'
     | '/blog/'
+    | '/betaling/resultaat/$token'
     | '/website/$branche/$stad'
     | '/website/$branche/'
   fileRoutesByTo: FileRoutesByTo
@@ -337,11 +488,15 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/admin'
+    | '/ai-oplossingen'
     | '/ai-vindbaarheid'
     | '/contact'
     | '/data-deletion'
+    | '/diensten'
     | '/faq'
     | '/groeimodel'
+    | '/koppelingen-automatisering'
+    | '/mobiele-apps'
     | '/online-groei-audit'
     | '/planning'
     | '/prijzen'
@@ -353,16 +508,27 @@ export interface FileRouteTypes {
     | '/terms'
     | '/vedantixhome'
     | '/voorwie'
+    | '/webapps-klantportalen'
     | '/website-fotograaf'
     | '/website-kapper'
     | '/website-klusbedrijf'
+    | '/website-laten-maken'
     | '/website-restaurant'
     | '/website-salon'
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
+    | '/admin/billing'
+    | '/admin/growth'
+    | '/admin/leads'
     | '/admin/monitoring'
+    | '/admin/previews'
     | '/blog/$slug'
+    | '/contract/$token'
+    | '/factuur/$token'
+    | '/offerte/$token'
+    | '/preview/$token'
     | '/blog'
+    | '/betaling/resultaat/$token'
     | '/website/$branche/$stad'
     | '/website/$branche'
   id:
@@ -370,11 +536,15 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/admin'
+    | '/ai-oplossingen'
     | '/ai-vindbaarheid'
     | '/contact'
     | '/data-deletion'
+    | '/diensten'
     | '/faq'
     | '/groeimodel'
+    | '/koppelingen-automatisering'
+    | '/mobiele-apps'
     | '/online-groei-audit'
     | '/planning'
     | '/prijzen'
@@ -386,16 +556,27 @@ export interface FileRouteTypes {
     | '/terms'
     | '/vedantixhome'
     | '/voorwie'
+    | '/webapps-klantportalen'
     | '/website-fotograaf'
     | '/website-kapper'
     | '/website-klusbedrijf'
+    | '/website-laten-maken'
     | '/website-restaurant'
     | '/website-salon'
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
+    | '/admin_/billing'
+    | '/admin_/growth'
+    | '/admin_/leads'
     | '/admin_/monitoring'
+    | '/admin_/previews'
     | '/blog/$slug'
+    | '/contract/$token'
+    | '/factuur/$token'
+    | '/offerte/$token'
+    | '/preview/$token'
     | '/blog/'
+    | '/betaling/resultaat/$token'
     | '/website/$branche/$stad'
     | '/website/$branche/'
   fileRoutesById: FileRoutesById
@@ -404,11 +585,15 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   AdminRoute: typeof AdminRoute
+  AiOplossingenRoute: typeof AiOplossingenRoute
   AiVindbaarheidRoute: typeof AiVindbaarheidRoute
   ContactRoute: typeof ContactRoute
   DataDeletionRoute: typeof DataDeletionRoute
+  DienstenRoute: typeof DienstenRoute
   FaqRoute: typeof FaqRoute
   GroeimodelRoute: typeof GroeimodelRoute
+  KoppelingenAutomatiseringRoute: typeof KoppelingenAutomatiseringRoute
+  MobieleAppsRoute: typeof MobieleAppsRoute
   OnlineGroeiAuditRoute: typeof OnlineGroeiAuditRoute
   PlanningRoute: typeof PlanningRoute
   PrijzenRoute: typeof PrijzenRoute
@@ -420,16 +605,27 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   VedantixhomeRoute: typeof VedantixhomeRoute
   VoorwieRoute: typeof VoorwieRoute
+  WebappsKlantportalenRoute: typeof WebappsKlantportalenRoute
   WebsiteFotograafRoute: typeof WebsiteFotograafRoute
   WebsiteKapperRoute: typeof WebsiteKapperRoute
   WebsiteKlusbedrijfRoute: typeof WebsiteKlusbedrijfRoute
+  WebsiteLatenMakenRoute: typeof WebsiteLatenMakenRoute
   WebsiteRestaurantRoute: typeof WebsiteRestaurantRoute
   WebsiteSalonRoute: typeof WebsiteSalonRoute
   WebsiteSchoonmaakbedrijfRoute: typeof WebsiteSchoonmaakbedrijfRoute
   WebsiteZzpRoute: typeof WebsiteZzpRoute
+  AdminBillingRoute: typeof AdminBillingRoute
+  AdminGrowthRoute: typeof AdminGrowthRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMonitoringRoute: typeof AdminMonitoringRoute
+  AdminPreviewsRoute: typeof AdminPreviewsRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  ContractTokenRoute: typeof ContractTokenRoute
+  FactuurTokenRoute: typeof FactuurTokenRoute
+  OfferteTokenRoute: typeof OfferteTokenRoute
+  PreviewTokenRoute: typeof PreviewTokenRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  BetalingResultaatTokenRoute: typeof BetalingResultaatTokenRoute
   WebsiteBrancheStadRoute: typeof WebsiteBrancheStadRoute
   WebsiteBrancheIndexRoute: typeof WebsiteBrancheIndexRoute
 }
@@ -457,6 +653,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ai-oplossingen': {
+      id: '/ai-oplossingen'
+      path: '/ai-oplossingen'
+      fullPath: '/ai-oplossingen'
+      preLoaderRoute: typeof AiOplossingenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ai-vindbaarheid': {
       id: '/ai-vindbaarheid'
       path: '/ai-vindbaarheid'
@@ -478,6 +681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataDeletionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diensten': {
+      id: '/diensten'
+      path: '/diensten'
+      fullPath: '/diensten'
+      preLoaderRoute: typeof DienstenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
@@ -490,6 +700,20 @@ declare module '@tanstack/react-router' {
       path: '/groeimodel'
       fullPath: '/groeimodel'
       preLoaderRoute: typeof GroeimodelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/koppelingen-automatisering': {
+      id: '/koppelingen-automatisering'
+      path: '/koppelingen-automatisering'
+      fullPath: '/koppelingen-automatisering'
+      preLoaderRoute: typeof KoppelingenAutomatiseringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobiele-apps': {
+      id: '/mobiele-apps'
+      path: '/mobiele-apps'
+      fullPath: '/mobiele-apps'
+      preLoaderRoute: typeof MobieleAppsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/online-groei-audit': {
@@ -569,6 +793,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VoorwieRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/webapps-klantportalen': {
+      id: '/webapps-klantportalen'
+      path: '/webapps-klantportalen'
+      fullPath: '/webapps-klantportalen'
+      preLoaderRoute: typeof WebappsKlantportalenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/website-fotograaf': {
       id: '/website-fotograaf'
       path: '/website-fotograaf'
@@ -588,6 +819,13 @@ declare module '@tanstack/react-router' {
       path: '/website-klusbedrijf'
       fullPath: '/website-klusbedrijf'
       preLoaderRoute: typeof WebsiteKlusbedrijfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-laten-maken': {
+      id: '/website-laten-maken'
+      path: '/website-laten-maken'
+      fullPath: '/website-laten-maken'
+      preLoaderRoute: typeof WebsiteLatenMakenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/website-restaurant': {
@@ -618,11 +856,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebsiteZzpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin_/billing': {
+      id: '/admin_/billing'
+      path: '/admin/billing'
+      fullPath: '/admin/billing'
+      preLoaderRoute: typeof AdminBillingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/growth': {
+      id: '/admin_/growth'
+      path: '/admin/growth'
+      fullPath: '/admin/growth'
+      preLoaderRoute: typeof AdminGrowthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/leads': {
+      id: '/admin_/leads'
+      path: '/admin/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/monitoring': {
       id: '/admin_/monitoring'
       path: '/admin/monitoring'
       fullPath: '/admin/monitoring'
       preLoaderRoute: typeof AdminMonitoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/previews': {
+      id: '/admin_/previews'
+      path: '/admin/previews'
+      fullPath: '/admin/previews'
+      preLoaderRoute: typeof AdminPreviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -637,6 +903,41 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contract/$token': {
+      id: '/contract/$token'
+      path: '/contract/$token'
+      fullPath: '/contract/$token'
+      preLoaderRoute: typeof ContractTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/factuur/$token': {
+      id: '/factuur/$token'
+      path: '/factuur/$token'
+      fullPath: '/factuur/$token'
+      preLoaderRoute: typeof FactuurTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offerte/$token': {
+      id: '/offerte/$token'
+      path: '/offerte/$token'
+      fullPath: '/offerte/$token'
+      preLoaderRoute: typeof OfferteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview/$token': {
+      id: '/preview/$token'
+      path: '/preview/$token'
+      fullPath: '/preview/$token'
+      preLoaderRoute: typeof PreviewTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/betaling/resultaat/$token': {
+      id: '/betaling/resultaat/$token'
+      path: '/betaling/resultaat/$token'
+      fullPath: '/betaling/resultaat/$token'
+      preLoaderRoute: typeof BetalingResultaatTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/website/$branche/': {
@@ -660,11 +961,15 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   AdminRoute: AdminRoute,
+  AiOplossingenRoute: AiOplossingenRoute,
   AiVindbaarheidRoute: AiVindbaarheidRoute,
   ContactRoute: ContactRoute,
   DataDeletionRoute: DataDeletionRoute,
+  DienstenRoute: DienstenRoute,
   FaqRoute: FaqRoute,
   GroeimodelRoute: GroeimodelRoute,
+  KoppelingenAutomatiseringRoute: KoppelingenAutomatiseringRoute,
+  MobieleAppsRoute: MobieleAppsRoute,
   OnlineGroeiAuditRoute: OnlineGroeiAuditRoute,
   PlanningRoute: PlanningRoute,
   PrijzenRoute: PrijzenRoute,
@@ -676,16 +981,27 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   VedantixhomeRoute: VedantixhomeRoute,
   VoorwieRoute: VoorwieRoute,
+  WebappsKlantportalenRoute: WebappsKlantportalenRoute,
   WebsiteFotograafRoute: WebsiteFotograafRoute,
   WebsiteKapperRoute: WebsiteKapperRoute,
   WebsiteKlusbedrijfRoute: WebsiteKlusbedrijfRoute,
+  WebsiteLatenMakenRoute: WebsiteLatenMakenRoute,
   WebsiteRestaurantRoute: WebsiteRestaurantRoute,
   WebsiteSalonRoute: WebsiteSalonRoute,
   WebsiteSchoonmaakbedrijfRoute: WebsiteSchoonmaakbedrijfRoute,
   WebsiteZzpRoute: WebsiteZzpRoute,
+  AdminBillingRoute: AdminBillingRoute,
+  AdminGrowthRoute: AdminGrowthRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
   AdminMonitoringRoute: AdminMonitoringRoute,
+  AdminPreviewsRoute: AdminPreviewsRoute,
   BlogSlugRoute: BlogSlugRoute,
+  ContractTokenRoute: ContractTokenRoute,
+  FactuurTokenRoute: FactuurTokenRoute,
+  OfferteTokenRoute: OfferteTokenRoute,
+  PreviewTokenRoute: PreviewTokenRoute,
   BlogIndexRoute: BlogIndexRoute,
+  BetalingResultaatTokenRoute: BetalingResultaatTokenRoute,
   WebsiteBrancheStadRoute: WebsiteBrancheStadRoute,
   WebsiteBrancheIndexRoute: WebsiteBrancheIndexRoute,
 }

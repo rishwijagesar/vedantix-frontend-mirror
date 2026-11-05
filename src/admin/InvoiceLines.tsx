@@ -31,7 +31,7 @@ export default function InvoiceLines({ invoice, items, products, edits, busy, on
       const product = item.catalog_product_id ? productMap.get(item.catalog_product_id) : null;
       const differentPrice = Boolean(product && (Number(value.unit_price_ex_vat) !== product.price_ex_vat || Number(value.vat_rate) !== product.vat_rate || value.billing_type !== product.billing_type));
       let total: number | null = Number(item.line_total_incl_vat);
-      if (changed) { try { total = previewInvoice(invoice, [item], edits).lines[0].line_total_incl_vat; } catch { total = null; } }
+      if (changed) { try { total = previewInvoice(invoice, [item], edits).lines[0]?.line_total_incl_vat ?? null; } catch { total = null; } }
       return <form key={item.id} onSubmit={event => { event.preventDefault(); void onSave(item.id); }} className={"rounded-xl border p-4 " + (changed ? "border-amber-300 bg-amber-50/40" : "border-slate-100")}>
         <fieldset disabled={!draft || busy} className="grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-6">
           <label className="text-sm font-medium md:col-span-2">Omschrijving<input required value={value.description} onChange={e => onChange(item.id, { ...value, description: e.target.value })} className={inputClass}/></label>

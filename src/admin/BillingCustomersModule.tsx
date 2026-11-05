@@ -89,7 +89,7 @@ function CustomerForm({
   onCancel,
   busy,
 }: {
-  initial?: Partial<CustomerFormValues>;
+  initial?: Partial<Omit<CustomerFormValues, "country" | "iban">> & { country?: string | null; iban?: string | null | undefined };
   submitLabel: string;
   onSubmit: (form: FormData) => Promise<void>;
   onCancel: () => void;
