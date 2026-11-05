@@ -191,12 +191,12 @@ function Dashboard({ overview, customers, domains, websites, loading }: { overvi
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map(([label, value, Icon, caption]) => <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={label}><div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100"><Icon size={18} /></div><p className="text-sm text-slate-500">{label}</p><strong className="mt-1 block text-3xl font-bold">{loading ? "—" : value}</strong><span className="mt-1 block text-xs text-slate-400">{caption}</span></article>)}
       </section>
-      <section aria-label="Monitoringstatus" className="rounded-2xl border border-(--cc-border) bg-(--cc-panel) px-5 py-4 shadow-sm">
+      <section aria-label="Monitoringstatus" className="rounded-2xl border border-border bg-card px-5 py-4 shadow-sm">
         <dl className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div><dt className="text-xs text-(--cc-muted)">Automatische monitoring</dt><dd className="mt-1 text-sm font-semibold text-(--cc-success)">ACTIEF</dd></div>
-          <div><dt className="text-xs text-(--cc-muted)">Laatste run</dt><dd className="mt-1 text-sm font-semibold">{overview.lastMonitoringAt ? new Date(overview.lastMonitoringAt).toLocaleString("nl-NL") : "Nog geen run"}</dd></div>
-          <div><dt className="text-xs text-(--cc-muted)">Status</dt><dd className="mt-1 break-words text-sm font-semibold">{overview.lastMonitoringStatus || "UNKNOWN"}</dd></div>
-          <div><dt className="text-xs text-(--cc-muted)">Planning</dt><dd className="mt-1 text-sm font-semibold">Dagelijks automatisch</dd></div>
+          <div><dt className="text-xs text-muted-foreground">Automatische monitoring</dt><dd className="mt-1 text-sm font-semibold"><Badge tone="success">ACTIEF</Badge></dd></div>
+          <div><dt className="text-xs text-muted-foreground">Laatste run</dt><dd className="mt-1 text-sm font-semibold">{overview.lastMonitoringAt ? new Date(overview.lastMonitoringAt).toLocaleString("nl-NL") : "Nog geen run"}</dd></div>
+          <div><dt className="text-xs text-muted-foreground">Status</dt><dd className="mt-1 break-words text-sm font-semibold">{overview.lastMonitoringStatus || "UNKNOWN"}</dd></div>
+          <div><dt className="text-xs text-muted-foreground">Planning</dt><dd className="mt-1 text-sm font-semibold">Dagelijks automatisch</dd></div>
         </dl>
       </section>
       <BillingDashboardCards />
@@ -275,7 +275,7 @@ function HealthModule({ domains, onChanged }: { domains: Domain[]; onChanged: ()
         const checks = snapshotChecks(domain);
         return (
           <Panel key={domain.id} title={domain.domain_name} subtitle={`${domain.email_provider || "Geen mailprovider"} · laatste scan ${domain.last_dns_snapshot_at ? new Date(domain.last_dns_snapshot_at).toLocaleString("nl-NL") : "nog niet uitgevoerd"}`}>
-            <p className="mb-3 text-xs text-(--cc-muted)">Domeinen worden ook dagelijks automatisch gecontroleerd.</p>
+            <p className="mb-3 text-xs text-muted-foreground">Domeinen worden ook dagelijks automatisch gecontroleerd.</p>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <Badge tone={domain.status === "HEALTHY" ? "success" : domain.status === "WARNING" ? "warning" : domain.status === "ERROR" ? "danger" : "neutral"}>{domain.status}</Badge>
               <button type="button" onClick={() => scan(domain)} disabled={scanning === domain.id} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"><ScanLine size={15} /> {scanning === domain.id ? "Scannen…" : "Scan opnieuw"}</button>
