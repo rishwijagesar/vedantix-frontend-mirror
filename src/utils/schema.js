@@ -124,7 +124,6 @@ export function createLocalBusinessSchema() {
     email: vedantixEntity.email,
     telephone: vedantixEntity.telephone,
     description: vedantixEntity.description,
-    priceRange: "€€",
     address: ADDRESS,
     sameAs: SOCIAL_PROFILES,
     areaServed: [

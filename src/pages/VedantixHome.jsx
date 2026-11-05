@@ -17,6 +17,7 @@ if (typeof document !== "undefined") {
 
 const NAV_MENUS = [
   { label: "Diensten", items: [
+    { href: "/software-op-maat", label: "Software op maat" },
     { href: "/Starters", label: "Configurator" },
     { href: "/Templates", label: "Template gallery" },
     { href: "/VoorWie", label: "Voor wie" },
@@ -63,7 +64,7 @@ function Nav() {
         @media(max-width:768px){.vd-menu{display:none}.vd-hbg{display:flex}}
       `}</style>
       <nav className="vd-nav">
-        <a href="/VedantixHome" className="vd-logo">Vedantix</a>
+        <a href="/" className="vd-logo">Vedantix</a>
         <ul className="vd-menu">
           {NAV_MENUS.map(m => (
             <li key={m.label} className="vd-menu-item"
@@ -86,7 +87,7 @@ function Nav() {
           ))}
         </ul>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <a href="#contact" className="vd-cta">Offerte aanvragen</a>
+          <a href="/contact#contact-form" className="vd-cta">Plan een bedrijfsscan</a>
           <button className="vd-hbg" onClick={() => setMob(p => !p)} aria-label="Menu">
             <span/><span/><span/>
           </button>
@@ -136,7 +137,7 @@ function WAWidget() {
               <div className="wa-av">V</div>
               <div>
                 <div className="wa-nm">Vedantix</div>
-                <div className="wa-st">Gemiddeld binnen 1 uur antwoord</div>
+                <div className="wa-st">Direct contact met Vedantix</div>
               </div>
               <button className="wa-x" onClick={() => setOpen(false)}>✕</button>
             </div>
@@ -164,12 +165,12 @@ function ContactForm() {
       <div style={{ background: "#f0fdf4", border: "2px solid #10b981", borderRadius: 12, padding: 32, textAlign: "center" }}>
         <div style={{ fontSize: "2rem", marginBottom: 12 }}>✅</div>
         <h3 style={{ color: "#065f46", marginBottom: 8 }}>Verstuurd!</h3>
-        <p style={{ color: "#047857" }}>We nemen binnen 24 uur contact op.</p>
+        <p style={{ color: "#047857" }}>Gebruik het contactformulier om je aanvraag te versturen.</p>
       </div>
     );
   }
   return (
-    <form onSubmit={e => { e.preventDefault(); setSent(true); }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+    <form onSubmit={e => { e.preventDefault(); window.location.href = `/contact#contact-form`; }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <input type="text" placeholder="Naam" required style={iStyle} />
         <input type="text" placeholder="Bedrijfsnaam" style={iStyle} />
@@ -179,8 +180,8 @@ function ContactForm() {
       <select style={iStyle}>
         <option value="">Welk pakket interesseert u?</option>
         <option>Starter — Bekijk prijzen</option>
-        <option>Business — Bekijk prijzen</option>
-        <option>Premium — Bekijk prijzen</option>
+        <option>Growth — Bekijk prijzen</option>
+        <option>Pro — Bekijk prijzen</option>
         <option>Weet ik nog niet</option>
       </select>
       <textarea placeholder="Vertel kort over uw bedrijf en wat u zoekt..." rows={4} style={{ ...iStyle, resize: "vertical" }} />
@@ -298,18 +299,18 @@ export default function VedantixHome() {
       {/* HERO */}
       <section className="hero">
         <div className="hi">
-          <div className="hbadge">⚡ Website binnen 48 uur live</div>
+          <div className="hbadge">Website op maat · afspraken vooraf</div>
           <h1>Jouw bedrijf verdient een<br/><em>professionele website</em></h1>
-          <p>Van kapper tot aannemer — wij bouwen jouw website snel, betaalbaar en volledig verzorgd. Inclusief hosting, domein en SSL.</p>
+          <p>Voor mkb en zelfstandigen in alle sectoren: een professionele website met duidelijke afspraken. Ook voor software op maat die meegroeit met jouw bedrijf.</p>
           <div className="hbtns">
             <a href="#contact" className="btn-p">Gratis offerte aanvragen</a>
             <a href="/Templates" className="btn-g">Bekijk templates</a>
           </div>
           <div className="hstats">
-            <div className="stat"><strong>48u</strong><span>Gemiddelde levertijd</span></div>
+            <div className="stat"><strong>Op afspraak</strong><span>Planning en oplevering</span></div>
             <div className="stat"><strong>Bekijk prijzen</strong><span>Vanaf prijs</span></div>
-            <div className="stat"><strong>100%</strong><span>Inclusief hosting</span></div>
-            <div className="stat"><strong>24/7</strong><span>Online bereikbaar</span></div>
+            <div className="stat"><strong>Hosting</strong><span>Bekijk actuele diensten</span></div>
+            <div className="stat"><strong>Direct</strong><span>Contact met Vedantix</span></div>
           </div>
         </div>
       </section>
@@ -324,9 +325,9 @@ export default function VedantixHome() {
         <div className="steps">
           {[
             ["1","Vertel ons over je bedrijf","Vul ons korte formulier in. Naam, branche, diensten — meer hebben we niet nodig."],
-            ["2","Wij bouwen jouw website","Ons team levert binnen 48 uur een professionele, mobielvriendelijke website op."],
+            ["2","Wij bouwen jouw website","We bouwen de afgesproken website en testen samen voor livegang."],
             ["3","Live — klaar voor klanten","Domein, hosting, SSL — volledig ingericht en klaar voor gebruik."],
-            ["4","Aanpassingen wanneer jij wil","Later iets aanpassen? Snel geregeld tegen een vaste lage prijs."],
+            ["4","Aanpassingen wanneer jij wil","Aanpassingen en uitbreiding krijgen vooraf een duidelijke scope en prijsafspraak."],
           ].map(([n, h, p]) => (
             <div key={n} className="step">
               <div className="step-n">{n}</div>
@@ -357,7 +358,7 @@ export default function VedantixHome() {
         <div className="center">
           <span className="tag">Prijzen</span>
           <h2>Transparante prijzen,<br/>geen verrassingen</h2>
-          <p className="sub">Eenmalige betaling. Geen maandelijkse verborgen kosten.</p>
+          <p className="sub">Websitepakketten zijn eenmalig, zonder verplicht maandabonnement. Hosting, zakelijke e-mail en optionele groei staan met hun actuele prijzen op /prijzen. Software op maat heeft opstartkosten en een vast maandbedrag op offerte.</p>
         </div>
         <div className="pgrid">
           <div className="pc">
@@ -366,33 +367,33 @@ export default function VedantixHome() {
             <div className="pd">Eenmalig — ideaal voor starters</div>
             <ul className="pl">
               <li>1-pagina professionele website</li><li>Mobielvriendelijk design</li>
-              <li>Contactformulier</li><li>Hosting (1 jaar) + 500 MB opslag</li>
-              <li>SSL-certificaat</li><li>Levering binnen 48 uur</li>
+              <li>Contactformulier</li><li>Hosting en opslag volgens afspraak</li>
+              <li>SSL-certificaat</li><li>Technische SEO-basis</li>
             </ul>
             <a href="#contact" className="pb pb-out">Start configuratie</a>
           </div>
           <div className="pc hot">
-            <div className="hbadge2">MEEST GEKOZEN</div>
-            <div className="pn">Business</div>
+            <div className="hbadge2">GROWTH</div>
+            <div className="pn">Growth</div>
             <div className="pp"><a href="/prijzen">Actuele prijs</a></div>
             <div className="pd">Eenmalig — voor groeiende bedrijven</div>
             <ul className="pl">
               <li>Tot 5 pagina's</li><li>Mobielvriendelijk design</li>
-              <li>Contactformulier + Google Maps</li><li>Hosting (1 jaar) + 2 GB opslag</li>
-              <li>SSL-certificaat</li><li>SEO-basisoptimalisatie</li>
-              <li>Levering binnen 48 uur</li><li>1x gratis aanpassing achteraf</li>
+              <li>Contactformulier + Google Maps</li><li>Hosting en opslag volgens afspraak</li>
+              <li>SSL-certificaat</li><li>SEO + lokale SEO + AEO-basis</li>
+              <li>Planning en acceptatie vooraf afgesproken</li><li>Wijzigingen volgens afspraak</li>
             </ul>
             <a href="#contact" className="pb pb-fill">Start configuratie</a>
           </div>
           <div className="pc">
-            <div className="pn">Premium</div>
+            <div className="pn">Pro</div>
             <div className="pp"><a href="/prijzen">Actuele prijs</a></div>
             <div className="pd">Eenmalig — voor serieuze ondernemers</div>
             <ul className="pl">
               <li>Tot 10 pagina's</li><li>Custom design op maat</li>
-              <li>Geavanceerde contactfuncties</li><li>Hosting (1 jaar) + 10 GB opslag</li>
-              <li>SSL-certificaat</li><li>Volledige SEO-optimalisatie</li>
-              <li>Google Analytics koppeling</li><li>3x gratis aanpassingen achteraf</li>
+              <li>Geavanceerde contactfuncties</li><li>Hosting en opslag volgens afspraak</li>
+              <li>SSL-certificaat</li><li>Uitgebreidere SEO + AEO + GEO/AIO-basis</li>
+              <li>Google Analytics koppeling</li><li>Uitbreiding volgens afspraak</li>
             </ul>
             <a href="#contact" className="pb pb-out">Start configuratie</a>
           </div>
@@ -408,12 +409,12 @@ export default function VedantixHome() {
         </div>
         <div className="wgrid">
           {[
-            ["⚡","Levering binnen 48 uur","Geen weken wachten. Jouw website is live voordat jij het weet."],
-            ["💰","Eerlijke prijzen","Geen verborgen kosten of dure abonnementen. Eenmalig betalen, klaar."],
-            ["📱","100% mobielvriendelijk","Elke website werkt perfect op telefoon, tablet en computer."],
-            ["🔒","Hosting & SSL inbegrepen","Wij regelen domein, hosting en beveiliging. Jij hoeft niets te doen."],
-            ["🛠️","Aanpassingen op aanvraag","Wil je later iets veranderen? Snel en goedkoop geregeld."],
-            ["🤝","Persoonlijk contact","Je hebt altijd direct contact met ons team. Geen callcenters."],
+            ["⚡","Heldere planning","We spreken fases, controles en acceptatie vooraf af."],
+            ["💰","Eerlijke prijzen","Websitepakketten zijn eenmalig. Beheer, hosting en softwarediensten hebben afzonderlijke afspraken."],
+            ["📱","Getest op mobiel","We testen de afgesproken pagina’s en functies op telefoon, tablet en computer."],
+            ["🔒","Hosting & SSL op afspraak","Hosting, updates en monitoring worden met verantwoordelijkheden en kosten vooraf vastgelegd."],
+            ["🛠️","Aanpassingen op aanvraag","Wil je later iets veranderen? Met vooraf een duidelijke scope en prijsafspraak."],
+            ["🤝","Persoonlijk contact","Je bespreekt je project direct met Vedantix."],
           ].map(([ic, h, p]) => (
             <div key={h} className="wyc">
               <span className="ic">{ic}</span>
