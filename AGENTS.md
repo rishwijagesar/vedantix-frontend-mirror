@@ -14,3 +14,6 @@
 - Business-software content is shared separately from live website/catalog pricing so software quote scope cannot silently change website prices or historical billing.
 - Preserve production canonical URLs independently of the preview origin so the migration retains existing search identities.
 - Website enquiry forms preserve entered details through a shared email-draft builder and never claim server delivery; the existing contact flow remains an explicit mailto handoff.
+- Shared service-navigation data drives the public megamenu, footer service links and service cards so every offered service has the same real destination.
+- The illustrative hero uses CSS timelines with pause state and reduced-motion end-state overrides; it is browser-safe and server-rendered without video or external product data.
+- Additional quotation-based services use a shared content page with leaf route metadata and visible-content Service/Breadcrumb schemas, separate from website pricing and admin catalog logic.
