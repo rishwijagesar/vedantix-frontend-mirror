@@ -3,13 +3,12 @@ import NavBar from "@/components/NavBar";
 import SEO from "@/components/SEO";
 import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_HEADLINE, SOFTWARE_INTRO, SOFTWARE_FAQS, SOFTWARE_STEPS, SCAN_URL } from "@/data/positioning";
 import { publicHead } from "@/lib/public-head";
-import { createBreadcrumbSchema, createServiceSchema, createFAQSchema } from "@/utils/schema";
+import { createBreadcrumbSchema, createServiceSchema } from "@/utils/schema";
 import "@/styles/services.css";
 
 const schemas = [
   createServiceSchema({ name: "Bedrijfssoftware op maat", slug: "software-op-maat", description: SOFTWARE_DESCRIPTION, audienceType: "Mkb en zelfstandigen in alle sectoren", serviceType: "Software op maat mkb" }),
   createBreadcrumbSchema([{ name: "Home", url: "https://vedantix.nl/" }, { name: "Software op maat", url: "https://vedantix.nl/software-op-maat" }]),
-  createFAQSchema(SOFTWARE_FAQS),
 ];
 
 export const Route = createFileRoute("/software-op-maat")({

@@ -1,5 +1,5 @@
-export const SOFTWARE_TITLE = "Software op maat voor mkb | Vedantix Den Bosch";
-export const SOFTWARE_DESCRIPTION = "Bedrijfssoftware op maat voor mkb en zelfstandigen. Eén webapp voor je processen, gebouwd met AI en professioneel getest. Vanuit Den Bosch, landelijk.";
+export const SOFTWARE_TITLE = "Bedrijfssoftware op maat | Webapplicatie laten maken | Vedantix";
+export const SOFTWARE_DESCRIPTION = "Laat bedrijfssoftware op maat maken rond sales, planning, finance, HR en IT. Bedrijfsscan, gefaseerde bouw, tests en beheer op offerte bij Vedantix.";
 export const SOFTWARE_HEADLINE = "Software die meegroeit met jouw bedrijf.";
 export const SOFTWARE_INTRO = "Breng je bedrijfsprocessen samen in één applicatie op maat. Snel ontwikkeld met behulp van AI, zorgvuldig getest en beheerd door Vedantix. Met eenmalige opstartkosten en een vast maandbedrag voor de afgesproken dienstverlening.";
 export const SCAN_URL = "/contact#contact-form";
