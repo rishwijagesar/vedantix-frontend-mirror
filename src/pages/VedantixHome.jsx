@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { websiteEnquiryUrl } from "../lib/website-enquiry";
 
 // Ensure mobile viewport
 if (typeof document !== "undefined") {
@@ -172,8 +173,7 @@ function ContactForm() {
     <form onSubmit={e => {
       e.preventDefault();
       const data = new FormData(e.currentTarget);
-      const body = ["name", "company", "email", "phone", "package", "message"].map(key => `${key}: ${data.get(key) || "-"}`).join("\n");
-      window.location.href = `mailto:info@vedantix.nl?subject=${encodeURIComponent("Websiteaanvraag Vedantix")}&body=${encodeURIComponent(body)}`;
+      window.location.href = websiteEnquiryUrl("Websiteaanvraag Vedantix", Object.fromEntries(data));
       setSent(true);
     }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>

@@ -217,8 +217,8 @@ export default function Starters() {
       <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a1628,#0d2146)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter',sans-serif" }}>
         <div style={{ background: "#fff", borderRadius: 24, padding: 48, textAlign: "center", maxWidth: 480, margin: "0 20px" }}>
           <div style={{ fontSize: "3rem", marginBottom: 16 }}>🎉</div>
-          <h2 style={{ fontSize: "1.8rem", fontWeight: 800, marginBottom: 12, color: "#0a1628" }}>Aanvraag verstuurd!</h2>
-          <p style={{ color: "#6b7280", marginBottom: 24 }}>We nemen binnen 24 uur contact op om jouw website te bespreken.</p>
+          <h2 style={{ fontSize: "1.8rem", fontWeight: 800, marginBottom: 12, color: "#0a1628" }}>E-mail voorbereid</h2>
+          <p style={{ color: "#6b7280", marginBottom: 24 }}>Verstuur het bericht vanuit je e-mailprogramma om je websiteaanvraag te verzenden.</p>
           <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 12, padding: 20, marginBottom: 24 }}>
             <p style={{ fontWeight: 700, color: "#0369a1", marginBottom: 8 }}>Jouw samenvatting:</p>
             {cleanedDomain && <p style={{ color: "#0c4a6e", fontSize: "0.9rem" }}>🌐 Domein: {cleanedDomain}.nl</p>}
@@ -458,7 +458,7 @@ export default function Starters() {
         {step === 4 && (
           <div>
             <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: 8 }}>📬 Verstuur jouw aanvraag</h2>
-            <p style={{ color: "#6b7280", marginBottom: 24 }}>Bijna klaar! Vul je gegevens in en we nemen binnen 24 uur contact op.</p>
+            <p style={{ color: "#6b7280", marginBottom: 24 }}>Vul je gegevens in. We openen een e-mail met je aanvraag; verstuur die vanuit je eigen e-mailprogramma.</p>
 
             <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 14, padding: 20, marginBottom: 28 }}>
               <p style={{ fontWeight: 700, color: "#1e40af", marginBottom: 8 }}>📋 Jouw samenvatting</p>
@@ -470,7 +470,16 @@ export default function Starters() {
               <p style={{ color: "#1e40af", fontWeight: 800, fontSize: "1rem", marginTop: 8 }}>Totaal: {priceLabel(totalPrice)}</p>
             </div>
 
-            <form onSubmit={e => { e.preventDefault(); setSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <form onSubmit={e => {
+              e.preventDefault();
+              window.location.href = websiteEnquiryUrl("Websiteaanvraag Vedantix", {
+                Naam: form.naam, Email: form.email, Telefoon: form.telefoon,
+                Bedrijfsnaam: bedrijfsnaam, Domein: cleanedDomain,
+                Pakket: PACKAGES.find(p => p.id === selectedPackage)?.name,
+                Template: urlTemplate, Extra: selectedFeatures.join(", "), Bericht: form.bericht,
+              });
+              setSubmitted(true);
+            }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 <input type="text" placeholder="Voornaam & achternaam" required value={form.naam} onChange={e => setForm({...form, naam: e.target.value})} />
                 <input type="tel" placeholder="Telefoonnummer" value={form.telefoon} onChange={e => setForm({...form, telefoon: e.target.value})} />
@@ -480,7 +489,7 @@ export default function Starters() {
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, alignItems: "center" }}>
                 <button type="button" className="step-btn-out" onClick={() => setStep(3)}>← Terug</button>
                 <button type="submit" style={{ background: "#10b981", color: "#fff", padding: "14px 32px", borderRadius: 10, fontWeight: 700, fontSize: "1rem", border: "none", cursor: "pointer" }}>
-                  Aanvraag versturen 🚀
+                  Open e-mail met je aanvraag →
                 </button>
               </div>
             </form>
