@@ -61,20 +61,20 @@ const benefitCards = [
 ];
 
 const websiteOnly = [
-  "Online visitekaartje",
-  "Weinig bezoekers",
-  "Geen strategie",
-  "Weinig groei",
+  "Dubbele invoer",
+  "Veel wisselen tussen tools",
+  "Verspreide instructies",
+  "Onduidelijke verantwoordelijkheden",
 ];
 
 const vedantixWay = [
-  "Website",
-  "SEO",
-  "Content",
-  "Reviews",
-  "Google zichtbaarheid",
-  "Onderhoud",
-  "Groei",
+  "Echte bedrijfsprocessen",
+  "Gedeelde informatie",
+  "Passende rolrechten",
+  "Professionele tests",
+  "Acceptatie voor livegang",
+  "Beheer volgens afspraak",
+  "Gericht uitbreiden",
 ];
 
 const approachSteps = [
@@ -100,7 +100,7 @@ const approachSteps = [
   },
   {
     title: "Groei",
-    text: "Je online aanwezigheid blijft meegroeien met je bedrijf en doelen.",
+    text: "We bouwen verder in afgesproken fases; gebruik, wijzigingen, uitbreiding en export worden vooraf vastgelegd.",
     icon: TrendingUp,
   },
 ];
@@ -125,7 +125,7 @@ const groeimodelFaqs = [
   {
     question: "Voor wie is Vedantix bedoeld?",
     answer:
-      "Vedantix is bedoeld voor lokale ondernemers die professioneel zichtbaar willen zijn, meer vertrouwen willen opbouwen en meer aanvragen uit hun online aanwezigheid willen halen.",
+      "Vedantix is bedoeld voor het mkb en zelfstandigen in alle sectoren. Vanuit Den Bosch werken we landelijk aan software op maat, websites en hosting.",
   },
   {
     question: "Wat doet Vedantix na oplevering?",
@@ -175,7 +175,7 @@ export default function Groeimodel() {
     <>
       <SEO
         title="Waarom ondernemers voor Vedantix kiezen"
-        description="Vedantix helpt lokale ondernemers met meer zichtbaarheid, vertrouwen, aanvragen en minder gedoe dan een standaard webdesigner."
+        description="Vedantix ontwikkelt software rond jouw bedrijfsprocessen, met AI als hulpmiddel, professionele tests en heldere afspraken. Ook voor websites en hosting."
         canonical={canonical}
         schemas={[serviceSchema, faqSchema, breadcrumbSchema]}
       />
@@ -193,25 +193,25 @@ export default function Groeimodel() {
                 </div>
                 <h1>Meer dan alleen een website</h1>
                 <p>
-                  Veel webdesigners leveren een website op en verdwijnen daarna.
+                  Je bedrijf hoeft niet te draaien om een verzameling losse tools.
                 </p>
                 <p>
                   Bij Vedantix kijken we verder.
                 </p>
                 <p>
-                  Wij helpen lokale ondernemers met een complete online aanwezigheid die
-                  vertrouwen uitstraalt, beter gevonden wordt en meer kansen creëert op nieuwe
-                  klanten.
+                  We brengen processen, tools en handwerk in kaart. Daarna bouwen we
+                  gefaseerd een centrale applicatie met rolrechten. Website, hosting en
+                  vindbaarheid blijven beschikbaar als volwaardige diensten.
                 </p>
-                <Link className="groei-btn groei-btn-primary" to="/planning">
-                  Plan een kennismaking <ArrowRight size={18} aria-hidden="true" />
+                <Link className="groei-btn groei-btn-primary" to="/contact#contact-form">
+                  Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" />
                 </Link>
               </div>
 
               <aside className="groei-hero-panel" aria-label="Vedantix voordelen">
                 <div className="groei-panel-logo">V</div>
                 <h2>Groei als uitgangspunt</h2>
-                <p>Niet alleen live gaan. Beter zichtbaar worden, meer vertrouwen opbouwen en meer aanvragen krijgen.</p>
+                <p>Eerst je werkprocessen begrijpen. Daarna afgesproken functies bouwen, testen en accepteren voor livegang.</p>
                 <div className="groei-panel-points">
                   <span>Meer zichtbaarheid</span>
                   <span>Meer vertrouwen</span>
@@ -246,12 +246,12 @@ export default function Groeimodel() {
             <div className="groei-shell">
               <div className="groei-section-heading">
                 <p className="groei-label">Waarom dit anders is</p>
-                <h2 id="compare-title">Waarom een website alleen niet genoeg is</h2>
+                <h2 id="compare-title">Bestaande tools behouden of processen samenbrengen</h2>
               </div>
 
               <div className="groei-compare-grid">
                 <article className="groei-compare-card bad">
-                  <h3>Alleen een website</h3>
+                  <h3>Waar handwerk kan ontstaan</h3>
                   <ComparisonList items={websiteOnly} type="bad" />
                 </article>
 
@@ -312,8 +312,8 @@ export default function Groeimodel() {
 
               <div className="groei-roof-copy">
                 <p>Eén aanspreekpunt.</p>
-                <p>Geen losse leveranciers.</p>
-                <p>Geen technisch gedoe.</p>
+                <p>Externe tools blijven waar ze waarde toevoegen.</p>
+                <p>Hun eigen abonnementskosten kunnen blijven gelden.</p>
               </div>
             </div>
           </section>
@@ -343,8 +343,8 @@ export default function Groeimodel() {
                   Of je nu net begint of al jaren onderneemt.
                 </p>
                 <p>
-                  Wij helpen je om online professioneler zichtbaar te worden en meer uit je
-                  website te halen.
+                  We helpen met minder dubbel werk, samenwerken met rolrechten en
+                  overzicht. AI ondersteunt het bouwen; Vedantix controleert en test.
                 </p>
                 <Link className="groei-btn groei-btn-primary" to="/prijzen">
                   Bekijk onze pakketten <ArrowRight size={18} aria-hidden="true" />

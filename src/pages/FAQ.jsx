@@ -1,12 +1,14 @@
+import { SOFTWARE_FAQS } from "../data/positioning";
 import { useState } from "react";
 import { Link } from "@/lib/router-compat";
 import SEO from "../components/SEO";
 import NavBar from "../components/NavBar";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 
-const FAQS = [
+export const FAQS = [
+  ...SOFTWARE_FAQS.map((faq, index) => ({ ...faq, id: 100 + index })),
   { id: 20, question: "Bouwt Vedantix ook AI-oplossingen en apps?", answer: "Ja. Naast websites bouwen we AI-automatiseringen, webapps, klantportalen, mobiele apps en koppelingen. Op onze dienstenpagina vind je toepassingen en scope; actuele tarieven staan op de prijzenpagina." },
-  { id: 21, question: "Zijn gebruikskosten van AI en apps inbegrepen?", answer: "De bouwprijs staat los van kosten voor hosting, modellen, API’s, softwarelicenties en appstoreaccounts. We specificeren verwachte externe en terugkerende kosten vooraf in de offerte." },
+  { id: 21, question: "Zijn gebruikskosten van AI en apps inbegrepen?", answer: "Bij maatwerk software benoemt de offerte wat het vaste maandbedrag dekt: functionaliteit, hosting, opslag, onderhoud en support binnen de afgesproken scope. Inbegrepen modelgebruik, externe licenties en eventueel extra verbruik leggen we vooraf vast. Losse diensten hebben hun eigen scope." },
   {
     id: 1,
     question: "Wat kost een website bij Vedantix?",
@@ -65,7 +67,7 @@ const FAQS = [
     id: 12,
     question: "Wat doet Vedantix?",
     answer:
-      "Vedantix helpt starters, zzp’ers en kleine bedrijven met betaalbare professionele websites, hosting, zakelijke e-mail, SEO, AEO, GEO/AIO, content en online groei. Je neemt alleen af wat je nodig hebt.",
+      "Vedantix maakt bedrijfssoftware op maat voor het mkb en zelfstandigen in alle sectoren. Met AI als hulpmiddel, professionele controle en tests. Websites, hosting, zakelijke e-mail en vindbaarheid blijven volwaardige diensten.",
   },
   {
     id: 13,
@@ -89,7 +91,7 @@ const FAQS = [
     id: 10,
     question: "Hoe kan ik starten met Vedantix?",
     answer:
-      "Je kunt starten door contact op te nemen via WhatsApp of het contactformulier. Daarna bespreken we je wensen, adviseren we welk websitepakket past en spreken we eventuele hosting of vindbaarheidsdiensten vooraf duidelijk af.",
+      "Plan een bedrijfsscan via het contactformulier. We bespreken processen, tools, abonnementen en handwerk en maken een concreet voorstel. Voor een website kun je ook direct je pakketvraag sturen via de bestaande contact- en WhatsApp-links.",
   },
 ];
 
@@ -377,7 +379,7 @@ const FAQ_STYLES = `
 `;
 
 export default function FAQ() {
-  const [openId, setOpenId] = useState(1);
+  const [openId, setOpenId] = useState(100);
 
   const canonical = "https://vedantix.nl/faq";
   const faqSchema = createFAQSchema(FAQS);
@@ -389,8 +391,8 @@ export default function FAQ() {
   return (
     <>
       <SEO
-        title="FAQ | Websites, AI-oplossingen, apps en prijzen | Vedantix"
-        description="Antwoorden over websites, AI-oplossingen, apps, prijzen, hosting, SEO en AI-vindbaarheid bij Vedantix."
+        title="FAQ over software op maat, websites en beheer | Vedantix"
+        description="Antwoorden over bedrijfsscans, software op offerte, gebruik, beveiligingsafspraken, websites, hosting en SEO bij Vedantix."
         canonical={canonical}
         schemas={[faqSchema, breadcrumbSchema]}
       />
@@ -408,8 +410,8 @@ export default function FAQ() {
 
             <h1 className="faq-title">Veelgestelde vragen</h1>
             <p className="faq-subtitle">
-              Duidelijke antwoorden over websiteprijzen, hosting, zakelijke e-mail,
-              SEO, AEO, GEO/AIO, oplevering en ondersteuning bij Vedantix.
+              Duidelijke antwoorden over software op maat, bedrijfsscans, maandkosten,
+              gebruik, beheer, websiteprijzen, hosting en vindbaarheid.
             </p>
           </div>
         </header>
@@ -419,9 +421,9 @@ export default function FAQ() {
             <section className="faq-intro" aria-labelledby="faq-overview-title">
               <h2 id="faq-overview-title">Antwoorden op de belangrijkste vragen</h2>
               <p>
-                Hieronder staan de vragen die het vaakst worden gesteld door ondernemers
-                die betaalbaar professioneel online willen en zelf willen bepalen hoeveel
-                hosting, ondersteuning en online groei ze afnemen.
+                Hieronder lees je wat we vooraf afspreken over software, gebruik, beheer en
+                uitbreiding. Websitepakketten blijven eenmalig, zonder verplicht
+                maandabonnement; software op maat krijgt een eigen offerte.
               </p>
             </section>
 
@@ -468,8 +470,8 @@ export default function FAQ() {
             <section className="faq-cta" aria-labelledby="faq-cta-title">
               <h2 id="faq-cta-title">Klaar om je idee te bespreken?</h2>
               <p>
-                Start met een professioneel websitepakket en voeg hosting of online
-                groei alleen toe wanneer jouw bedrijf dat nodig heeft.
+                Begin met je werkprocessen of je websitevraag. We bepalen samen een
+                passende eerste stap en leggen de afspraken vooraf vast.
               </p>
 
               <div className="faq-cta-actions">
@@ -478,11 +480,9 @@ export default function FAQ() {
                 </Link>
                 <a
                   className="faq-btn faq-btn-secondary"
-                  href="https://wa.me/310626219989?text=Hallo%20Vedantix%2C%20ik%20ben%20geinteresseerd%20in%20een%20website."
-                  target="_blank"
-                  rel="noreferrer"
+                  href="/contact#contact-form"
                 >
-                  Plan een gesprek
+                  Plan een bedrijfsscan
                 </a>
               </div>
             </section>

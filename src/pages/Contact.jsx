@@ -17,6 +17,8 @@ import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 
 const HELP_OPTIONS = [
+  "Bedrijfsscan",
+  "Bedrijfssoftware op maat",
   "Nieuwe website",
   "AI / automatisering",
   "Webapp / klantportaal",
@@ -24,11 +26,13 @@ const HELP_OPTIONS = [
   "Koppelingen",
   "Website verbeteren",
   "SEO / vindbaarheid",
-  "Onderhoud",
+  "Hosting / zakelijke e-mail",
+  "Onderhoud / support",
   "Anders",
 ];
 
 const CONTACT_CARDS = [
+  { title: "Bedrijfsscan en software op maat", text: "Breng processen, tools, abonnementen en handwerk in kaart. Daarna bespreken we een concrete eerste fase met opstartkosten en een vast maandbedrag voor afgesproken dienstverlening.", icon: Sparkles },
   {
     title: "Website laten maken",
     text: "Wil je een professionele website die past bij jouw bedrijf, doelgroep en huisstijl? We bouwen websites die mobielvriendelijk, snel en makkelijk te beheren zijn.",
@@ -57,12 +61,12 @@ const FAQS = [
   {
     question: "Kost een eerste gesprek geld?",
     answer:
-      "Nee, een eerste gesprek of adviesmoment is vrijblijvend. We kijken eerst wat je nodig hebt en welke aanpak daarbij past.",
+      "Een eerste contact is vrijblijvend. We bespreken vooraf de omvang en eventuele kosten van een bedrijfsscan. Daarna volgt een concreet voorstel; we starten niet met bouwen zonder afspraken.",
   },
   {
     question: "Voor welke bedrijven werkt Vedantix?",
     answer:
-      "Vedantix richt zich vooral op lokale ondernemers en kleine bedrijven die professioneel online zichtbaar willen zijn.",
+      "Vedantix werkt voor het mkb en zelfstandigen in alle sectoren. Vanuit Den Bosch bedienen we bedrijven in heel Nederland, voor software op maat, websites, hosting en vindbaarheid.",
   },
   {
     question: "Kan ik mijn website later zelf aanpassen?",
@@ -77,7 +81,7 @@ const FAQS = [
   {
     question: "Wat doet Vedantix precies?",
     answer:
-      "Vedantix helpt ondernemers met websites, AI-oplossingen, webapps, mobiele apps, koppelingen en vindbaarheid. We bespreken de scope, planning en kosten voordat we bouwen.",
+      "Vedantix bouwt bedrijfssoftware op maat met AI als hulpmiddel en professionele controle. Websites, hosting en vindbaarheid blijven volwaardige diensten. Scope, kosten, testen, acceptatie en beheer worden vooraf afgesproken.",
   },
   {
     question: "Waarom is een professionele website belangrijk?",
@@ -573,7 +577,7 @@ export default function Contact() {
 
   const whatsappUrl = useMemo(() => {
     const text = encodeURIComponent(
-      "Hallo Vedantix, ik wil graag vrijblijvend advies over een website, AI-oplossing of app."
+      "Hallo Vedantix, ik wil graag een bedrijfsscan of mijn websitevraag bespreken."
     );
     return `${CONTACT.WHATSAPP_URL}?text=${text}`;
   }, []);
@@ -588,9 +592,9 @@ export default function Contact() {
   const contactPageSchema = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
-    name: "Contact over websites, AI & apps | Vedantix",
+    name: "Plan een bedrijfsscan of bespreek je website | Vedantix",
     url: canonical,
-    about: "Contact opnemen met Vedantix voor websites, AI-oplossingen, apps en vindbaarheid.",
+    about: "Contact opnemen met Vedantix voor een bedrijfsscan, software op maat, websites en hosting.",
     mainEntity: {
       "@type": "Organization",
       name: "Vedantix",
@@ -647,8 +651,8 @@ export default function Contact() {
   return (
     <>
       <SEO
-        title="Contact over websites, AI & apps | Vedantix"
-        description="Bespreek je website, AI-oplossing, webapp of mobiele app met Vedantix in Den Bosch. Neem contact op voor een kennismaking."
+        title="Plan een bedrijfsscan of bespreek je website | Vedantix"
+        description="Plan een bedrijfsscan met Vedantix. Bespreek processen, tools, maatwerksoftware, een website of hosting. Vanuit Den Bosch voor heel Nederland."
         canonical={canonical}
         schemas={[contactPageSchema, faqSchema, breadcrumbSchema]}
       />
@@ -667,11 +671,11 @@ export default function Contact() {
                 </div>
                 <h1>Neem contact op met Vedantix</h1>
                 <p className="contact-hero-subtitle">
-                  Een nieuwe website, minder herhaalwerk met AI of een eigen app? Vertel wat je wilt bereiken. We denken met je mee over een haalbare aanpak, planning en kosten.
+                  Plan een bedrijfsscan: we bespreken processen, tools, abonnementen, handwerk en kansen. Of stel je vraag over een website, hosting of vindbaarheid. Je krijgt een concreet voorstel voordat we bouwen.
                 </p>
                 <div className="contact-hero-actions" aria-label="Contact acties">
                   <a className="contact-btn contact-btn-primary" href="#contact-form">
-                    Vrijblijvend advies aanvragen <ArrowRight size={18} aria-hidden="true" />
+                    Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" />
                   </a>
                   <a
                     className="contact-btn contact-btn-outline"
@@ -695,7 +699,7 @@ export default function Contact() {
             <div className="contact-shell">
               <div className="contact-intro-card">
                 <p>
-                  Vedantix helpt ondernemers met websites, AI en automatisering, webapps en mobiele apps. Of je nu meer aanvragen wilt, tijd wilt besparen of klanten beter wilt helpen: we beginnen bij jouw vraag en bespreken wat daarvoor nodig is.
+                  Je hoeft je bedrijf niet rond losse tools te organiseren. We onderzoeken wat in één applicatie kan samenkomen en wat je beter behoudt. Voor maatwerk leggen we opstartkosten, het vaste maandbedrag, inbegrepen gebruik, beheer en uitbreiding vooraf vast.
                 </p>
                 <div className="contact-link-row" aria-label="Relevante pagina's">
                   <Link className="contact-link-pill" to="/prijzen">
@@ -704,8 +708,8 @@ export default function Contact() {
                   <Link className="contact-link-pill" to="/proces">
                     Werkwijze bekijken
                   </Link>
-                  <Link className="contact-link-pill" to="/website-kapper">
-                    Voor lokale bedrijven
+                  <Link className="contact-link-pill" to="/software-op-maat">
+                    Software voor jouw bedrijf
                   </Link>
                 </div>
               </div>
@@ -741,9 +745,9 @@ export default function Contact() {
               <section className="contact-panel contact-form-panel" id="contact-form">
                 <div className="contact-section-header">
                   <p className="contact-label">Stuur ons een bericht</p>
-                  <h2 id="contact-form-title">Stuur ons een bericht</h2>
+                  <h2 id="contact-form-title">Plan je bedrijfsscan of stel je vraag</h2>
                   <p className="contact-section-copy">
-                    Vertel kort waar je mee geholpen wilt worden. Je aanvraag is vrijblijvend.
+                    Vertel waar je dubbel werk hebt, welke tools je gebruikt en wat je wilt verbeteren. Je aanvraag is vrijblijvend.
                   </p>
                 </div>
 
