@@ -1,4 +1,4 @@
-import { SOFTWARE_HEADLINE, SOFTWARE_INTRO, SCAN_URL } from "../data/positioning";
+import { SCAN_URL } from "../data/positioning";
 import HeroLiveExperience from "../components/home/HeroLiveExperience";
 import "../styles/home-hero.css";
 
@@ -12,7 +12,7 @@ const HERO_CHECKS = [
 export default function HomeHero() {
   return (
     <>
-      <section className="hero hero--photo">
+      <section className="hero hero--workspace">
         <div className="hero-container">
           <div className="hero-content">
             <div className="hero-eyebrow">Software op maat voor mkb en zelfstandigen</div>
@@ -24,7 +24,7 @@ export default function HomeHero() {
             </h1>
 
             <p className="hero-sub">
-              {SOFTWARE_INTRO}
+              Breng je bedrijfsprocessen samen in één app op maat. Snel ontwikkeld met AI, zorgvuldig getest en beheerd door Vedantix.
             </p>
 
             <div className="hero-ctas">
@@ -48,24 +48,7 @@ export default function HomeHero() {
             </div>
           </div>
 
-        </div>
-        <div className="hero-visual">
-          <picture>
-            <source
-              srcSet="/images/vedantix-ondernemers-hero-small.webp 768w, /images/vedantix-ondernemers-hero.webp 1536w"
-              sizes="(max-width: 900px) 100vw, 68vw"
-              type="image/webp"
-            />
-            <img
-              src="/images/vedantix-ondernemers-hero.webp"
-              alt="Sfeerbeeld van twee ondernemers die tevreden samen aan een laptop werken."
-              width="1536"
-              height="1024"
-              fetchPriority="high"
-              decoding="async"
-            />
-          </picture>
-          <HeroLiveExperience />
+          <div className="hero-product-visual"><HeroLiveExperience /></div>
         </div>
       </section>
 

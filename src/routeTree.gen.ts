@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AiMarketingRouteImport } from './routes/ai-marketing'
 import { Route as AiOplossingenRouteImport } from './routes/ai-oplossingen'
 import { Route as AiVindbaarheidRouteImport } from './routes/ai-vindbaarheid'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -21,7 +22,9 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GroeimodelRouteImport } from './routes/groeimodel'
 import { Route as KoppelingenAutomatiseringRouteImport } from './routes/koppelingen-automatisering'
 import { Route as MobieleAppsRouteImport } from './routes/mobiele-apps'
+import { Route as OnderhoudSupportRouteImport } from './routes/onderhoud-support'
 import { Route as OnlineGroeiAuditRouteImport } from './routes/online-groei-audit'
+import { Route as OnlineMarketingRouteImport } from './routes/online-marketing'
 import { Route as OverOnsRouteImport } from './routes/over-ons'
 import { Route as PlanningRouteImport } from './routes/planning'
 import { Route as PrijzenRouteImport } from './routes/prijzen'
@@ -73,6 +76,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiMarketingRoute = AiMarketingRouteImport.update({
+  id: '/ai-marketing',
+  path: '/ai-marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiOplossingenRoute = AiOplossingenRouteImport.update({
   id: '/ai-oplossingen',
   path: '/ai-oplossingen',
@@ -119,9 +127,19 @@ const MobieleAppsRoute = MobieleAppsRouteImport.update({
   path: '/mobiele-apps',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnderhoudSupportRoute = OnderhoudSupportRouteImport.update({
+  id: '/onderhoud-support',
+  path: '/onderhoud-support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnlineGroeiAuditRoute = OnlineGroeiAuditRouteImport.update({
   id: '/online-groei-audit',
   path: '/online-groei-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnlineMarketingRoute = OnlineMarketingRouteImport.update({
+  id: '/online-marketing',
+  path: '/online-marketing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OverOnsRoute = OverOnsRouteImport.update({
@@ -305,6 +323,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/admin': typeof AdminRoute
+  '/ai-marketing': typeof AiMarketingRoute
   '/ai-oplossingen': typeof AiOplossingenRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
@@ -314,7 +333,9 @@ export interface FileRoutesByFullPath {
   '/groeimodel': typeof GroeimodelRoute
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
+  '/onderhoud-support': typeof OnderhoudSupportRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/online-marketing': typeof OnlineMarketingRoute
   '/over-ons': typeof OverOnsRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
@@ -355,6 +376,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/admin': typeof AdminRoute
+  '/ai-marketing': typeof AiMarketingRoute
   '/ai-oplossingen': typeof AiOplossingenRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
@@ -364,7 +386,9 @@ export interface FileRoutesByTo {
   '/groeimodel': typeof GroeimodelRoute
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
+  '/onderhoud-support': typeof OnderhoudSupportRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/online-marketing': typeof OnlineMarketingRoute
   '/over-ons': typeof OverOnsRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
@@ -406,6 +430,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/admin': typeof AdminRoute
+  '/ai-marketing': typeof AiMarketingRoute
   '/ai-oplossingen': typeof AiOplossingenRoute
   '/ai-vindbaarheid': typeof AiVindbaarheidRoute
   '/contact': typeof ContactRoute
@@ -415,7 +440,9 @@ export interface FileRoutesById {
   '/groeimodel': typeof GroeimodelRoute
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
+  '/onderhoud-support': typeof OnderhoudSupportRoute
   '/online-groei-audit': typeof OnlineGroeiAuditRoute
+  '/online-marketing': typeof OnlineMarketingRoute
   '/over-ons': typeof OverOnsRoute
   '/planning': typeof PlanningRoute
   '/prijzen': typeof PrijzenRoute
@@ -458,6 +485,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/admin'
+    | '/ai-marketing'
     | '/ai-oplossingen'
     | '/ai-vindbaarheid'
     | '/contact'
@@ -467,7 +495,9 @@ export interface FileRouteTypes {
     | '/groeimodel'
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
+    | '/onderhoud-support'
     | '/online-groei-audit'
+    | '/online-marketing'
     | '/over-ons'
     | '/planning'
     | '/prijzen'
@@ -508,6 +538,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/admin'
+    | '/ai-marketing'
     | '/ai-oplossingen'
     | '/ai-vindbaarheid'
     | '/contact'
@@ -517,7 +548,9 @@ export interface FileRouteTypes {
     | '/groeimodel'
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
+    | '/onderhoud-support'
     | '/online-groei-audit'
+    | '/online-marketing'
     | '/over-ons'
     | '/planning'
     | '/prijzen'
@@ -558,6 +591,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/admin'
+    | '/ai-marketing'
     | '/ai-oplossingen'
     | '/ai-vindbaarheid'
     | '/contact'
@@ -567,7 +601,9 @@ export interface FileRouteTypes {
     | '/groeimodel'
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
+    | '/onderhoud-support'
     | '/online-groei-audit'
+    | '/online-marketing'
     | '/over-ons'
     | '/planning'
     | '/prijzen'
@@ -609,6 +645,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   AdminRoute: typeof AdminRoute
+  AiMarketingRoute: typeof AiMarketingRoute
   AiOplossingenRoute: typeof AiOplossingenRoute
   AiVindbaarheidRoute: typeof AiVindbaarheidRoute
   ContactRoute: typeof ContactRoute
@@ -618,7 +655,9 @@ export interface RootRouteChildren {
   GroeimodelRoute: typeof GroeimodelRoute
   KoppelingenAutomatiseringRoute: typeof KoppelingenAutomatiseringRoute
   MobieleAppsRoute: typeof MobieleAppsRoute
+  OnderhoudSupportRoute: typeof OnderhoudSupportRoute
   OnlineGroeiAuditRoute: typeof OnlineGroeiAuditRoute
+  OnlineMarketingRoute: typeof OnlineMarketingRoute
   OverOnsRoute: typeof OverOnsRoute
   PlanningRoute: typeof PlanningRoute
   PrijzenRoute: typeof PrijzenRoute
@@ -677,6 +716,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-marketing': {
+      id: '/ai-marketing'
+      path: '/ai-marketing'
+      fullPath: '/ai-marketing'
+      preLoaderRoute: typeof AiMarketingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai-oplossingen': {
@@ -742,11 +788,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MobieleAppsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onderhoud-support': {
+      id: '/onderhoud-support'
+      path: '/onderhoud-support'
+      fullPath: '/onderhoud-support'
+      preLoaderRoute: typeof OnderhoudSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/online-groei-audit': {
       id: '/online-groei-audit'
       path: '/online-groei-audit'
       fullPath: '/online-groei-audit'
       preLoaderRoute: typeof OnlineGroeiAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/online-marketing': {
+      id: '/online-marketing'
+      path: '/online-marketing'
+      fullPath: '/online-marketing'
+      preLoaderRoute: typeof OnlineMarketingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/over-ons': {
@@ -1001,6 +1061,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   AdminRoute: AdminRoute,
+  AiMarketingRoute: AiMarketingRoute,
   AiOplossingenRoute: AiOplossingenRoute,
   AiVindbaarheidRoute: AiVindbaarheidRoute,
   ContactRoute: ContactRoute,
@@ -1010,7 +1071,9 @@ const rootRouteChildren: RootRouteChildren = {
   GroeimodelRoute: GroeimodelRoute,
   KoppelingenAutomatiseringRoute: KoppelingenAutomatiseringRoute,
   MobieleAppsRoute: MobieleAppsRoute,
+  OnderhoudSupportRoute: OnderhoudSupportRoute,
   OnlineGroeiAuditRoute: OnlineGroeiAuditRoute,
+  OnlineMarketingRoute: OnlineMarketingRoute,
   OverOnsRoute: OverOnsRoute,
   PlanningRoute: PlanningRoute,
   PrijzenRoute: PrijzenRoute,
