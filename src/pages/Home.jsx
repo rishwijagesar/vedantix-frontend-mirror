@@ -1,5 +1,6 @@
 import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_FAQS, SCAN_URL } from "../data/positioning";
-import { Suspense } from "react";
+import { Suspense, useId, useState } from "react";
+import { safeLogoUrl } from "../lib/public-content";
 import {
   ArrowRight,
   Clock,
@@ -130,6 +131,41 @@ function IconCard({ title, text, icon: Icon }) {
   );
 }
 
+function ClientBanner({ clients }) {
+  const [paused, setPaused] = useState(false);
+  const headingId = useId();
+  if (!clients?.length) return null;
+
+  function renderClients() {
+    return clients.map(client => {
+      const logo = safeLogoUrl(client.logo);
+      return (
+        <li key={client.id} className="client-banner__client">
+          {logo && <img src={logo} alt="" width="40" height="40" loading="lazy" decoding="async" />}
+          <span>{client.name}</span>
+        </li>
+      );
+    });
+  }
+
+  return (
+    <section className="client-banner" aria-labelledby={headingId}>
+      <div className="client-banner__header">
+        <h2 id={headingId}>Klanten van Vedantix</h2>
+        <button type="button" onClick={() => setPaused(value => !value)}>
+          {paused ? "Banner afspelen" : "Banner pauzeren"}
+        </button>
+      </div>
+      <div className="client-banner__window">
+        <div className="client-banner__track" data-paused={paused}>
+          <ul>{renderClients()}</ul>
+          <ul aria-hidden="true">{renderClients()}</ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home({ initialCases = null }) {
   const meetingUrl = `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent(
     "Hallo Vedantix, ik wil graag een bedrijfsscan bespreken.",
@@ -154,6 +190,7 @@ export default function Home({ initialCases = null }) {
 
         <main>
           <HomeHero />
+          <ClientBanner clients={initialCases} />
           <section className="home-services" aria-labelledby="home-services-title"><div className="services-wrap"><span className="services-kicker">Software · Websites · Hosting</span><h2 id="home-services-title">Jouw bedrijf centraal. Niet je losse tools.</h2><p>Van bedrijfssoftware op maat tot een sterke website: we bouwen vanuit jouw werkprocessen. Websites, hosting, e-mail en vindbaarheid blijven beschikbaar met hun bestaande prijzen en funnels.</p><ServiceCards /></div></section>
 
           <Suspense fallback={null}>
