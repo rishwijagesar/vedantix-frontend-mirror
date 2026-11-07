@@ -35,10 +35,10 @@ console.log("Live terms PDF and private document access denial verified.");
 
 
 // Verify new public entry points and crawler-visible metadata before deployment promotion.
-for (const [path,codes] of [
+for (const [path,codes,quoteBased = false] of [
   ["/diensten",[]], ["/website-laten-maken",["STARTER","GROWTH","PRO"]],
-  ["/ai-oplossingen",["AI_SCAN","AI_AUTOMATION"]], ["/webapps-klantportalen",["WEBAPP"]],
-  ["/mobiele-apps",["MOBILE_APP"]], ["/koppelingen-automatisering",["INTEGRATION","TECH_CARE"]],
+  ["/ai-oplossingen",[],true], ["/webapps-klantportalen",[],true],
+  ["/mobiele-apps",["MOBILE_APP"]], ["/koppelingen-automatisering",[],true],
 ]) {
   const response=await fetch(site+path,{cache:"no-store"}); assert.equal(response.status,200,path);
   const html=await response.text();
@@ -46,10 +46,11 @@ for (const [path,codes] of [
   assert.equal((html.match(/<h1[ >]/g)||[]).length,1,path+" must contain one heading");
   const schemas=[...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]));
   assert(schemas.some(s=>s["@type"]==="Organization"),path+" SSR business schema missing");
-  if(codes.length) {
+  if(codes.length || quoteBased) {
     assert(schemas.some(s=>s["@type"]==="Service"),path+" service schema missing");
     assert(schemas.some(s=>s["@type"]==="FAQPage"),path+" FAQ schema missing");
     const text=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"").replace(/<[^>]+>/g,"").replace(/\s+/g," ");
+    if (quoteBased) assert(text.includes("vast maandbedrag op offerte"), path + " quote pricing missing");
     for(const code of codes) { const p=products.find(p=>p.code===code); assert(p,code+" catalog entry missing"); assert(text.includes(money(p.price_ex_vat)),code+" current price missing"); assert(text.includes(money(p.price_incl_vat)),code+" VAT price missing"); }
   }
 }
