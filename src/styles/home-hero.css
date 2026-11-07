@@ -964,3 +964,26 @@
   .client-banner__track { width: auto; animation: none; }
   .client-banner__track ul { min-width: 0; width: 100%; flex-wrap: wrap; justify-content: center; }
 }
+
+
+/* A still image of collaborating entrepreneurs, fading into the hero background. */
+.hero.hero--workspace::before {
+  display: block;
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url("/images/vedantix-ondernemers-hero.webp") right 44% / cover no-repeat;
+  opacity: .18;
+  mask-image: linear-gradient(90deg, transparent 7%, #000 80%);
+}
+
+@media (max-width: 900px) {
+  .hero.hero--workspace::before {
+    background-image: url("/images/vedantix-ondernemers-hero-small.webp");
+    background-position: 70% center;
+    opacity: .13;
+    mask-image: linear-gradient(180deg, transparent 5%, #000 58%, transparent);
+  }
+}
