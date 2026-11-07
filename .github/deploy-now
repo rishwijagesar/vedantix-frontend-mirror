@@ -1,2 +1,2 @@
-2026-09-30: publish shared login presentation endpoint and website-admin core 0.2.0 from PR #89.
-CI 36760756157 passed. Existing accounts, passwords and permissions remain unchanged.
+Publish the homepage client banner and subtle hero background from PR #92.
+CI 42416221281 passed.
