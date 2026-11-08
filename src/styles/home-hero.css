@@ -895,34 +895,49 @@
 
 
 .client-banner {
-  background: #0f172a;
-  color: #fff;
-  border-top: 1px solid #334155;
-  padding: 1rem 0 1.25rem;
+  background: #f7f7f7;
+  color: #191919;
+  padding: 1rem 0 1.15rem;
+}
+.client-banner__header,
+.client-banner__window {
+  width: calc(100% - 2rem);
+  max-width: 72rem;
+  margin: 0 auto;
 }
 .client-banner__header {
-  max-width: 72rem;
-  margin: 0 auto .75rem;
-  padding: 0 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: .75rem;
+  margin-bottom: .55rem;
 }
 .client-banner__header h2 {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: .95rem;
+  font-weight: 600;
+}
+.client-banner__header::after {
+  content: "";
+  order: 1;
+  flex: 1;
+  height: 4px;
+  background: radial-gradient(circle, #bdbdbd 1.4px, transparent 1.8px) left center / 12px 4px repeat-x;
 }
 .client-banner__header button {
+  order: 2;
   background: transparent;
-  color: inherit;
-  border: 1px solid #64748b;
-  border-radius: .5rem;
-  padding: .45rem .65rem;
-  font-size: .8rem;
+  border: 0;
+  padding: .4rem .2rem;
+  color: #555;
+  font-size: .75rem;
+  cursor: pointer;
 }
-.client-banner__window { overflow: hidden; }
+.client-banner__header button:hover { text-decoration: underline; }
+.client-banner__window {
+  container-type: inline-size;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
 .client-banner__track {
   display: flex;
   width: max-content;
@@ -933,38 +948,40 @@
   align-items: center;
   justify-content: space-around;
   flex: none;
-  min-width: 100vw;
-  gap: 1.25rem;
+  min-width: 100cqw;
+  gap: 2rem;
   margin: 0;
-  padding: 0 1rem;
+  padding: .1rem 1rem;
   list-style: none;
 }
 .client-banner__client {
   display: flex;
   align-items: center;
-  gap: .65rem;
+  gap: .55rem;
+  min-height: 2rem;
   white-space: nowrap;
-  padding: .65rem 1rem;
-  min-height: 3.75rem;
-  border: 1px solid #334155;
-  border-radius: .75rem;
-  background: #1e293b;
-  font-weight: 700;
+  color: #595959;
+  font-size: .92rem;
+  font-weight: 600;
 }
 .client-banner__client img {
+  width: auto;
+  max-width: 4.5rem;
+  height: 1.8rem;
   object-fit: contain;
-  background: #fff;
-  padding: 3px;
-  border-radius: .4rem;
+  filter: grayscale(1);
+  opacity: .68;
+  mix-blend-mode: multiply;
 }
 .client-banner__track[data-paused="true"] { animation-play-state: paused; }
 @keyframes client-banner-scroll { to { transform: translateX(-50%); } }
+
 @media (prefers-reduced-motion: reduce) {
   .client-banner__header button, .client-banner__track ul[aria-hidden="true"] { display: none; }
+  .client-banner__window { mask-image: none; }
   .client-banner__track { width: auto; animation: none; }
-  .client-banner__track ul { min-width: 0; width: 100%; flex-wrap: wrap; justify-content: center; }
+  .client-banner__track ul { min-width: 0; width: 100%; flex-wrap: wrap; justify-content: center; gap: .75rem 2rem; }
 }
-
 
 /* A still image of collaborating entrepreneurs, fading into the hero background. */
 .hero.hero--workspace::before {
