@@ -882,17 +882,116 @@
   .hero--photo .hero-cta-note { font-size: 0.62rem; }
 }
 
-/* The requested split workspace hero; scoped so legacy public heroes remain intact. */
-.hero.hero--workspace{background:var(--vx-hero);min-height:0;padding:142px 5% 76px;isolation:isolate}
-.hero--workspace::before{display:none}.hero--workspace .hero-container{max-width:1400px;grid-template-columns:minmax(0,1fr) minmax(0,1.04fr);gap:66px;align-items:center}.hero--workspace .hero-content{max-width:580px;width:100%}
-.hero--workspace h1{font-size:3.4rem;line-height:1.1;margin:0 0 24px;letter-spacing:0;color:var(--vx-paper)}.hero--workspace h1 span{background:var(--vx-highlight);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero--workspace .hero-eyebrow{background:transparent;border:0;padding:0;font-size:.58rem;letter-spacing:0;color:var(--vx-on-dark);margin-bottom:23px}.hero--workspace .hero-eyebrow::before{background:var(--vx-accent);animation:none}
-.hero--workspace .hero-sub{color:var(--vx-on-dark);font-size:1.05rem;line-height:1.75;max-width:490px;margin:0 0 28px}.hero--workspace .hero-ctas{gap:12px;margin:0 0 16px}.hero--workspace .hero-cta-note{color:var(--vx-on-dark);font-size:.69rem;font-weight:400}.hero-product-visual{min-width:0;width:100%}
-@media(min-width:1600px){.hero.hero--workspace{padding-block:155px 95px}.hero--workspace h1{font-size:3.7rem}}
-@media(max-width:1180px){.hero--workspace .hero-container{gap:32px}.hero--workspace h1{font-size:2.8rem}.hero--workspace .hero-sub{font-size:.96rem}}
-@media(max-width:900px){.hero.hero--workspace{padding:108px 6% 36px}.hero--workspace .hero-container{grid-template-columns:1fr;max-width:640px;gap:30px}.hero--workspace .hero-content{max-width:none}.hero--workspace h1{font-size:2.9rem}.hero-product-visual{max-width:580px;margin:auto}.hero--workspace .hero-ctas{flex-direction:row}.hero--workspace .hero-btn-primary,.hero--workspace .hero-btn-ghost{width:auto}}
-@media(max-width:480px){.hero.hero--workspace{padding:97px 5% 28px}.hero--workspace h1{font-size:2.15rem;margin-bottom:16px}.hero--workspace .hero-sub{font-size:.9rem;line-height:1.65;margin-bottom:21px}.hero--workspace .hero-eyebrow{font-size:.49rem;margin-bottom:18px}.hero--workspace .hero-ctas{gap:8px}.hero--workspace .hero-btn-primary,.hero--workspace .hero-btn-ghost{font-size:.69rem;padding:11px 10px}.hero--workspace .hero-cta-note{font-size:.6rem}.hero--workspace .hero-container{gap:26px}}
 
+.vedantix-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(6.5rem, 11vw, 10rem) 0 0;
+  color: #f8faff;
+  background: radial-gradient(ellipse at 78% 28%, #202d56 0%, transparent 48%), #0b1425;
+}
+.vedantix-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: linear-gradient(#a4b6ef12 1px, transparent 1px), linear-gradient(90deg, #a4b6ef12 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at 78% 34%, #000, transparent 67%);
+}
+.vedantix-hero__layout {
+  width: min(100% - 3rem, 75rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  padding-bottom: clamp(2.5rem, 5vw, 5rem);
+}
+.vedantix-hero__eyebrow,
+.vedantix-hero__example-heading p {
+  color: #adcbff;
+  margin: 0 0 .8rem;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.vedantix-hero h1 {
+  margin: 0;
+  font-size: clamp(2.35rem, 4.6vw, 4.4rem);
+  line-height: 1.04;
+  letter-spacing: -.045em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+.vedantix-hero h1 span { color: #aac7ff; }
+.vedantix-hero__intro {
+  max-width: 32rem;
+  margin: 1.25rem 0 1.5rem;
+  color: #d8e2f4;
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  line-height: 1.65;
+}
+.vedantix-hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
+.vedantix-hero__actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  min-height: 46px;
+  border-radius: .65rem;
+  font-size: .92rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.vedantix-hero__primary { background: #b4ccff; color: #101b30; padding: .7rem 1rem; }
+.vedantix-hero__primary:hover { background: #d3e1ff; }
+.vedantix-hero__secondary { color: #f5f7ff; }
+.vedantix-hero__secondary:hover { text-decoration: underline; }
+.vedantix-hero__note { margin: .85rem 0 0; color: #aebdd6; font-size: .86rem; }
+
+.vedantix-hero__example {
+  padding: clamp(1.1rem, 2.7vw, 2rem);
+  border: 1px solid #546789;
+  border-radius: 1.25rem;
+  background: linear-gradient(145deg, #182945, #111e34);
+  box-shadow: 0 18px 50px #03071355;
+}
+.vedantix-hero__example-heading h2 { margin: 0; font-size: clamp(1.25rem, 2.4vw, 1.65rem); line-height: 1.2; }
+.vedantix-hero__steps { list-style: none; margin: 1.15rem 0; padding: 0; display: grid; gap: .65rem; }
+.vedantix-hero__steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .75rem;
+  align-items: center;
+  padding: .65rem;
+  border-radius: .75rem;
+  background: #21324d;
+}
+.vedantix-hero__step-icon {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  border-radius: .6rem;
+  background: #324d79;
+  color: #c6d9ff;
+}
+.vedantix-hero__steps strong { font-size: .95rem; }
+.vedantix-hero__steps p { margin: .15rem 0 0; color: #c5d3e8; font-size: .82rem; line-height: 1.4; }
+.vedantix-hero__outcome { margin: 0; display: flex; align-items: center; gap: .55rem; color: #b9eadb; font-size: .85rem; }
+.vedantix-hero__outcome svg { flex: none; }
+
+@media (max-width: 800px) {
+  .vedantix-hero__layout { grid-template-columns: 1fr; max-width: 36rem; }
+  .vedantix-hero h1 { text-wrap: initial; }
+}
+@media (max-width: 420px) {
+  .vedantix-hero__layout { width: calc(100% - 2rem); }
+}
 
 .client-banner {
   background: #f7f7f7;
@@ -981,26 +1080,4 @@
   .client-banner__window { mask-image: none; }
   .client-banner__track { width: auto; animation: none; }
   .client-banner__track ul { min-width: 0; width: 100%; flex-wrap: wrap; justify-content: center; gap: .75rem 2rem; }
-}
-
-/* A still image of collaborating entrepreneurs, fading into the hero background. */
-.hero.hero--workspace::before {
-  display: block;
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: url("/images/vedantix-ondernemers-hero.webp") right 44% / cover no-repeat;
-  opacity: .18;
-  mask-image: linear-gradient(90deg, transparent 7%, #000 80%);
-}
-
-@media (max-width: 900px) {
-  .hero.hero--workspace::before {
-    background-image: url("/images/vedantix-ondernemers-hero-small.webp");
-    background-position: 70% center;
-    opacity: .13;
-    mask-image: linear-gradient(180deg, transparent 5%, #000 58%, transparent);
-  }
 }
