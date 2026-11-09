@@ -1081,3 +1081,31 @@
   .client-banner__track { width: auto; animation: none; }
   .client-banner__track ul { min-width: 0; width: 100%; flex-wrap: wrap; justify-content: center; gap: .75rem 2rem; }
 }
+
+.vedantix-hero__example--with-photo {
+  --example-padding: clamp(1.1rem, 2.7vw, 2rem);
+  overflow: hidden;
+  padding: 0 var(--example-padding) 1.25rem;
+}
+.vedantix-hero__photo {
+  position: relative;
+  margin: 0 calc(-1 * var(--example-padding)) 1rem;
+}
+.vedantix-hero__photo img {
+  display: block;
+  width: 100%;
+  height: clamp(9rem, 15vw, 12rem);
+  object-fit: cover;
+  object-position: center 34%;
+}
+.vedantix-hero__photo figcaption {
+  position: absolute;
+  right: .65rem;
+  bottom: .65rem;
+  border-radius: .35rem;
+  background: #101a2bea;
+  color: #fff;
+  padding: .2rem .45rem;
+  font-size: .7rem;
+}
+.vedantix-hero__example--with-photo .vedantix-hero__steps { margin-block: .75rem; }
