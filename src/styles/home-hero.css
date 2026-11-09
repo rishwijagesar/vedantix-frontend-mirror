@@ -894,12 +894,22 @@
 .vedantix-hero::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -12%;
   z-index: -1;
   pointer-events: none;
-  background-image: linear-gradient(#a4b6ef12 1px, transparent 1px), linear-gradient(90deg, #a4b6ef12 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: radial-gradient(ellipse at 78% 34%, #000, transparent 67%);
+  background:
+    radial-gradient(ellipse at 70% 32%, #647fd43d, transparent 52%),
+    radial-gradient(ellipse at 29% 70%, #476cb525, transparent 48%);
+  animation: vedantix-hero-glow 24s ease-in-out infinite alternate;
+}
+
+@keyframes vedantix-hero-glow {
+  from { transform: translate(-4%, 1%); opacity: .68; }
+  to { transform: translate(5%, -4%); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vedantix-hero::before { animation: none; opacity: .8; }
 }
 .vedantix-hero__layout {
   width: min(100% - 3rem, 75rem);
