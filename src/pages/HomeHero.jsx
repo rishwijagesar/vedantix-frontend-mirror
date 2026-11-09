@@ -18,7 +18,7 @@ export default function HomeHero({ children }) {
             <h1 id="vedantix-hero-title">Minder dubbel werk.<br /><span>Meer grip op je bedrijf.</span></h1>
             <p className="vedantix-hero__intro">
               Breng aanvragen, offertes en planning samen in één app op maat.
-              Vedantix bouwt en beheert de software, zodat jouw team sneller verder kan.
+              Vedantix bouwt en beheert de software, met AI waar het jouw team tijd bespaart.
             </p>
             <div className="vedantix-hero__actions">
               <a className="vedantix-hero__primary" href={SCAN_URL}>
@@ -30,7 +30,18 @@ export default function HomeHero({ children }) {
             </div>
             <p className="vedantix-hero__note">Samen brengen we in kaart waar jouw team tijd kan winnen.</p>
           </div>
-          <div className="vedantix-hero__example">
+          <div className="vedantix-hero__example vedantix-hero__example--with-photo">
+            <figure className="vedantix-hero__photo">
+              <img
+                src="/images/vedantix-ondernemers-hero-small.webp"
+                srcSet="/images/vedantix-ondernemers-hero-small.webp 768w, /images/vedantix-ondernemers-hero.webp 1536w"
+                sizes="(max-width: 800px) calc(100vw - 3rem), 500px"
+                alt="Twee ondernemers glimlachen terwijl ze samen op een laptop werken."
+                width="768"
+                height="512"
+              />
+              <figcaption>Sfeerbeeld</figcaption>
+            </figure>
             <div className="vedantix-hero__example-heading">
               <p>Voorbeeld van een werkproces</p>
               <h2>Van aanvraag naar opdracht</h2>
