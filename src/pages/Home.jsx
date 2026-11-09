@@ -189,8 +189,9 @@ export default function Home({ initialCases = null }) {
         <NavBar />
 
         <main>
-          <HomeHero />
-          <ClientBanner clients={initialCases} />
+          <HomeHero>
+            <ClientBanner clients={initialCases} />
+          </HomeHero>
           <section className="home-services" aria-labelledby="home-services-title"><div className="services-wrap"><span className="services-kicker">Software · Websites · Hosting</span><h2 id="home-services-title">Jouw bedrijf centraal. Niet je losse tools.</h2><p>Van bedrijfssoftware op maat tot een sterke website: we bouwen vanuit jouw werkprocessen. Websites, hosting, e-mail en vindbaarheid blijven beschikbaar met hun bestaande prijzen en funnels.</p><ServiceCards /></div></section>
 
           <Suspense fallback={null}>
