@@ -1078,9 +1078,6 @@
   max-width: 4.5rem;
   height: 1.8rem;
   object-fit: contain;
-  filter: grayscale(1);
-  opacity: .68;
-  mix-blend-mode: multiply;
 }
 .client-banner__track[data-paused="true"] { animation-play-state: paused; }
 @keyframes client-banner-scroll { to { transform: translateX(-50%); } }
