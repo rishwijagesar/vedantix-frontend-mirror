@@ -17,11 +17,12 @@ import {
   Wrench,
 } from "lucide-react";
 import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_FAQS, SCAN_URL } from "../data/positioning";
-import { COMMITMENTS, PAIN_POINTS } from "../data/proof";
+import { CLIENT_PHOTOS, COMMITMENTS, PAIN_POINTS } from "../data/proof";
 import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
 import CatalogPrice from "../components/CatalogPrice";
 import JotformReviewWidget from "../components/JotformReviewWidget";
+import Hero from "../components/home/Hero";
 import AppMock from "../components/home/AppMock";
 import ClientStrip from "../components/home/ClientStrip";
 import ClientCasesSection from "../components/home/ClientCasesSection";
@@ -70,42 +71,7 @@ export default function Home({ initialCases = null }) {
         <NavBar />
 
         <main>
-          {/* Hero: wie ben je, voor wie, wat levert het op */}
-          <section className="vx-hero" aria-labelledby="vx-hero-title">
-            <div className="vx-container vx-hero__layout">
-              <div className="vx-hero__copy">
-                <p className="vx-eyebrow">Software op maat voor het mkb · Den Bosch</p>
-                <h1 id="vx-hero-title" className="vx-h1">
-                  Stop met dubbel werk.
-                  <br />
-                  <span className="vx-grad">Eén app voor je hele bedrijf.</span>
-                </h1>
-                <p className="vx-lead">
-                  Aanvragen, offertes, planning en facturen in één app die past bij hoe jouw team werkt.
-                  Vaste prijs vooraf, gebouwd en beheerd door één vast aanspreekpunt.
-                </p>
-                <div className="vx-hero__actions">
-                  <a className="vx-btn vx-btn--primary" href={SCAN_URL}>
-                    Plan een bedrijfsscan <ArrowRight aria-hidden="true" />
-                  </a>
-                  <a className="vx-btn vx-btn--ghost" href="/prijzen">Bekijk prijzen</a>
-                </div>
-                <p className="vx-hero__note">Vrijblijvend kennismaken. Omvang en kosten van de scan spreken we vooraf af.</p>
-                <ul className="vx-hero__chips" aria-label="Waarom Vedantix">
-                  <li className="vx-chip"><Check aria-hidden="true" />Vaste prijs vooraf</li>
-                  <li className="vx-chip"><MapPin aria-hidden="true" />Gebouwd in Den Bosch</li>
-                  <li className="vx-chip"><Star aria-hidden="true" />5★ Google-review</li>
-                  <li className="vx-chip"><ShieldCheck aria-hidden="true" />KvK 42056482</li>
-                </ul>
-                <p className="vx-hero__alt">
-                  Alleen een website nodig? <a className="vx-link" href="/website-laten-maken">Bekijk de websitepakketten <ArrowRight aria-hidden="true" /></a>
-                </p>
-              </div>
-              <div className="vx-hero__visual">
-                <AppMock />
-              </div>
-            </div>
-          </section>
+          <Hero />
 
           {/* Bewijs 1: klanten */}
           <section className="vx-section vx-section--tight vx-proofbar" aria-labelledby="vx-clients-title">
@@ -170,6 +136,37 @@ export default function Home({ initialCases = null }) {
                 </div>
               </div>
             </div>
+          </section>
+
+          {/* Zo ziet het eruit + tevreden klanten (alleen echte foto's uit CLIENT_PHOTOS) */}
+          <section className="vx-section" aria-labelledby="vx-day-title">
+            <div className="vx-container vx-split vx-split--app">
+              <div>
+                <p className="vx-eyebrow">In de praktijk</p>
+                <h2 id="vx-day-title" className="vx-h2">Van aanvraag tot betaalde factuur, op één scherm</h2>
+                <p className="vx-lead">Je team ziet direct waar elke klant staat. Geen zoeken in mailtjes en spreadsheets meer.</p>
+                <ul className="vx-checks">
+                  <li><Check aria-hidden="true" />Elke aanvraag krijgt een vaste route</li>
+                  <li><Check aria-hidden="true" />Offertes en facturen komen uit dezelfde gegevens</li>
+                  <li><Check aria-hidden="true" />Eigenaar ziet in één blik wat openstaat</li>
+                </ul>
+              </div>
+              <AppMock />
+            </div>
+            {CLIENT_PHOTOS.length > 0 ? (
+              <div className="vx-container vx-happy">
+                <h3 className="vx-h3 vx-happy__title">Tevreden ondernemers</h3>
+                <ul className="vx-happy__list">
+                  {CLIENT_PHOTOS.map((person) => (
+                    <li key={person.id} className="vx-happy__card">
+                      <img src={person.src} alt={`${person.name}, ${person.company}`} width="320" height="320" loading="lazy" decoding="async" />
+                      <p><strong>{person.name}</strong><span>{person.company}</span></p>
+                      {person.quote ? <blockquote>{person.quote}</blockquote> : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </section>
 
           {/* Bewijs 2: eigen software + cases + review */}

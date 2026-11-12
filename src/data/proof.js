@@ -38,3 +38,9 @@ export const PAIN_POINTS = [
   { title: "Abonnementen stapelen zich op", text: "Elke tool kost per gebruiker en doet net niet wat jij nodig hebt. Je betaalt voor functies die je niet gebruikt." },
   { title: "Nieuwe collega’s lopen vast", text: "Inwerken kost weken omdat het werkproces verspreid zit over losse tools en losse mensen." },
 ];
+
+/**
+ * Foto's van tevreden klanten. Leeg laten tot er echte foto's zijn waarvoor toestemming is.
+ * Vorm: { id, src, name, company, quote? }. Alleen invullen met echte, toegestane gegevens.
+ */
+export const CLIENT_PHOTOS = [];
