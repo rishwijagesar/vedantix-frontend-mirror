@@ -280,7 +280,7 @@ const PAGE_STYLES = `
 `;
 
 export default function WebsiteFotograaf() {
-  const canonical = "https://vedantix.nl/website-fotograaf";
+  const canonical = "https://vedantix.nl/website/fotograaf";
 
   const pageTitle = "Website laten maken voor fotografen | Vedantix";
   const pageDescription =
@@ -339,7 +339,7 @@ export default function WebsiteFotograaf() {
                 </a>
 
                 <a
-                  href="https://wa.me/310626219989"
+                  href="https://wa.me/31626219989"
                   target="_blank"
                   rel="noreferrer"
                   className="fotograaf-btn fotograaf-btn-secondary"
@@ -554,7 +554,7 @@ export default function WebsiteFotograaf() {
             </div>
 
             <a
-              href="https://wa.me/310626219989"
+              href="https://wa.me/31626219989"
               target="_blank"
               rel="noreferrer"
               className="fotograaf-bottom-cta-link"

@@ -301,7 +301,7 @@ function WAWidget() {
     { from: "agent", text: "👋 Hoi! Welkom bij Vedantix. Heb je een vraag of wil je een offerte? Ik help je graag!" },
   ]);
 
-  const url = "https://wa.me/310626219989";
+  const url = "https://wa.me/31626219989";
 
   const sendMessage = () => {
     const trimmed = inputVal.trim();

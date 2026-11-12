@@ -310,7 +310,7 @@ export default function SeoCityPage() {
 
             <div className="seo-city-whatsapp-wrap">
               <a
-                href="https://wa.me/310626219989"
+                href="https://wa.me/31626219989"
                 target="_blank"
                 rel="noreferrer"
                 className="seo-city-whatsapp"

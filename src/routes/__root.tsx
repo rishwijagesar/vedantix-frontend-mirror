@@ -119,7 +119,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "Vedantix" },
         { property: "og:locale", content: "nl_NL" },
+        { property: "og:image", content: "https://vedantix.nl/images/og-vedantix.png" },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:image:alt", content: "Vedantix: software op maat voor het mkb, vanuit Den Bosch" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: "https://vedantix.nl/images/og-vedantix.png" },
+        { name: "theme-color", content: "#0a1428" },
       ],
       links: [
         {
@@ -127,6 +133,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           href: appCss,
         },
         { rel: "icon", href: "/vedantix_logo.png", type: "image/png" },
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+        { rel: "manifest", href: "/site.webmanifest" },
         { rel: "sitemap", href: "/sitemap.xml", type: "application/xml" },
         {
           rel: "alternate",

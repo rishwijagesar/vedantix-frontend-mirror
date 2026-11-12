@@ -299,7 +299,7 @@ const PAGE_STYLES = `
 `;
 
 export default function WebsiteSalon() {
-  const canonical = "https://vedantix.nl/website-salon";
+  const canonical = "https://vedantix.nl/website/salon";
 
   const serviceSchema = createServiceSchema({
     name: "Website laten maken voor salons",
@@ -360,7 +360,7 @@ export default function WebsiteSalon() {
                 </a>
 
                 <a
-                  href="https://wa.me/310626219989"
+                  href="https://wa.me/31626219989"
                   target="_blank"
                   rel="noreferrer"
                   className="salon-btn salon-btn-secondary"
@@ -610,7 +610,7 @@ export default function WebsiteSalon() {
             </div>
 
             <a
-              href="https://wa.me/310626219989"
+              href="https://wa.me/31626219989"
               target="_blank"
               rel="noreferrer"
               className="salon-bottom-cta-link"

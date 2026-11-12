@@ -280,7 +280,7 @@ const PAGE_STYLES = `
 `;
 
 export default function WebsiteSchoonmaakbedrijf() {
-  const canonical = "https://vedantix.nl/website-schoonmaakbedrijf";
+  const canonical = "https://vedantix.nl/website/schoonmaakbedrijf";
 
   const serviceSchema = createServiceSchema({
     name: "Website laten maken voor schoonmaakbedrijven",
@@ -340,7 +340,7 @@ export default function WebsiteSchoonmaakbedrijf() {
                 </a>
 
                 <a
-                  href="https://wa.me/310626219989"
+                  href="https://wa.me/31626219989"
                   target="_blank"
                   rel="noreferrer"
                   className="clean-btn clean-btn-secondary"
@@ -554,7 +554,7 @@ export default function WebsiteSchoonmaakbedrijf() {
             </div>
 
             <a
-              href="https://wa.me/310626219989"
+              href="https://wa.me/31626219989"
               target="_blank"
               rel="noreferrer"
               className="clean-bottom-cta-link"

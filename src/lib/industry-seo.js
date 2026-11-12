@@ -1,4 +1,4 @@
-import { industries, localSeoCities } from "../data/seoData";
+import { industries, localSeoCities, indexableCitySlugs } from "../data/seoData";
 import {
   createBreadcrumbSchema,
   createFAQSchema,
@@ -11,6 +11,8 @@ import {
 const SITE_URL = "https://vedantix.nl";
 const INDEX_ROBOTS =
   "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1";
+// Local pages without unique local content stay reachable for visitors, but are kept out of the index.
+const NOINDEX_ROBOTS = "noindex, follow";
 
 function cityForSlug(slug) {
   return slug ? localSeoCities.find((city) => city.slug === slug) : null;
@@ -53,8 +55,11 @@ export function getIndustrySeo(branche, stad) {
     ...(isCityPage ? [{ name: city.name, url: canonical }] : []),
   ]);
 
+  const indexable = !isCityPage || indexableCitySlugs.includes(city.slug);
+
   return {
     canonical,
+    indexable,
     seoTitle,
     seoDescription,
     schemas: [
@@ -84,14 +89,16 @@ export function createIndustryHead(branche, stad) {
     meta: [
       { title: seo.seoTitle },
       { name: "description", content: seo.seoDescription },
-      { name: "robots", content: INDEX_ROBOTS },
+      { name: "robots", content: seo.indexable ? INDEX_ROBOTS : NOINDEX_ROBOTS },
       { property: "og:title", content: seo.seoTitle },
       { property: "og:description", content: seo.seoDescription },
       { property: "og:type", content: "website" },
       { property: "og:url", content: seo.canonical },
       { property: "og:site_name", content: "Vedantix" },
       { property: "og:locale", content: "nl_NL" },
+      { property: "og:image", content: "https://vedantix.nl/images/og-vedantix.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://vedantix.nl/images/og-vedantix.png" },
       { name: "twitter:title", content: seo.seoTitle },
       { name: "twitter:description", content: seo.seoDescription },
     ],

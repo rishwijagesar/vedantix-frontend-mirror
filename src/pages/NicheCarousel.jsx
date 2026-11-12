@@ -120,7 +120,7 @@ export default function NicheCarousel() {
               <div className="niche-card-outcome">{demo.outcome}</div>
 
               <a
-                href={`https://wa.me/310626219989?text=${encodeURIComponent(demo.whatsappText)}`}
+                href={`https://wa.me/31626219989?text=${encodeURIComponent(demo.whatsappText)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="niche-card-cta"

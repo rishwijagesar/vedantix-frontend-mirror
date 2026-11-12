@@ -280,7 +280,7 @@ const PAGE_STYLES = `
 `;
 
 export default function WebsiteKapper() {
-  const canonical = "https://vedantix.nl/website-kapper";
+  const canonical = "https://vedantix.nl/website/kapper";
 
   const serviceSchema = createServiceSchema({
     name: "Website laten maken voor kappers",
@@ -335,7 +335,7 @@ export default function WebsiteKapper() {
                 </a>
 
                 <a
-                  href="https://wa.me/310626219989"
+                  href="https://wa.me/31626219989"
                   target="_blank"
                   rel="noreferrer"
                   className="kapper-btn kapper-btn-secondary"
@@ -548,7 +548,7 @@ export default function WebsiteKapper() {
             </div>
 
             <a
-              href="https://wa.me/310626219989"
+              href="https://wa.me/31626219989"
               target="_blank"
               rel="noreferrer"
               className="kapper-bottom-cta-link"

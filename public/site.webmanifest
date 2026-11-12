@@ -1,10 +1,14 @@
 {
   "name": "Vedantix",
   "short_name": "Vedantix",
-  "description": "Webdesign, websites, hosting, onderhoud, SEO, AEO, GEO en AI-vindbaarheid voor lokale ondernemers.",
+  "description": "Bedrijfssoftware op maat, websites en hosting voor het mkb en zelfstandigen. Vanuit Den Bosch, voor heel Nederland.",
   "lang": "nl-NL",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#111827"
+  "background_color": "#0a1428",
+  "theme_color": "#0a1428",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
 }

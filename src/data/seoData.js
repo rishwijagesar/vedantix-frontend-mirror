@@ -902,7 +902,7 @@ export const blogPosts = [
       {
         title: "Een website is meer dan een eenmalige oplevering",
         text:
-          "Een website heeft hosting, onderhoud, updates en optimalisatie nodig. Daarom kijken veel ondernemers naar een abonnement dat zorgen wegneemt.",
+          "Een website heeft hosting, onderhoud, updates en optimalisatie nodig. Je kunt die zaken zelf regelen of uitbesteden. Bij Vedantix bepaal je dat per onderdeel: hosting en onderhoud zijn losse, optionele diensten zonder verplicht maandabonnement.",
       },
       {
         title: "Goedkoop kan duur worden als groei ontbreekt",
@@ -912,7 +912,7 @@ export const blogPosts = [
       {
         title: "Kies een pakket dat past bij je fase",
         text:
-          "Starters hebben vaak een professionele basis nodig. Groeiende ondernemers hebben meer zichtbaarheid en optimalisatie nodig. Premium past bij doorlopende groei.",
+          "Starters hebben vaak een professionele basis nodig. Groeiende ondernemers hebben meer zichtbaarheid en optimalisatie nodig. Het Pro-pakket past bij een website die doorlopend moet meegroeien. Actuele prijzen staan altijd op de prijzenpagina.",
       },
     ],
     faqs: [
@@ -1374,6 +1374,10 @@ export const locationPages = Object.keys(niches).flatMap((nicheKey) =>
     city: city.slug,
   }))
 );
+
+// Only cities with unique local content belong in the index and the sitemap.
+// Add a slug here once its page has genuinely local content (own clients, examples, search behaviour).
+export const indexableCitySlugs = ["den-bosch"];
 
 export const industryPages = Object.values(industries).map((industry) => ({
   path: industry.path,

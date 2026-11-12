@@ -68,3 +68,6 @@ verify_jwt = false
 # Verified getUser JWT and exact Nature site authorization are enforced in the gateway.
 [functions.site-admin-naturehealing]
 verify_jwt = false
+
+[functions.contact-enquiry]
+verify_jwt = false

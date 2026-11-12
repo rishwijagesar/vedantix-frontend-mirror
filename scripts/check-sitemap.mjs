@@ -4,6 +4,7 @@ import {
   industries,
   industryLocationPages,
   industryPages,
+  indexableCitySlugs,
   localSeoCities,
 } from "../src/data/seoData.js";
 
@@ -39,12 +40,21 @@ for (const url of urls) {
   assertSupportedIndustryPath(url.pathname);
 }
 
-for (const page of [...industryPages, ...industryLocationPages]) {
+const indexableLocationPages = industryLocationPages.filter((page) => indexableCitySlugs.includes(page.path.split("/").pop()));
+for (const page of [...industryPages, ...indexableLocationPages]) {
   assert.ok(paths.has(page.path), `A supported industry page is missing: ${page.path}`);
+}
+for (const page of industryLocationPages) {
+  if (!indexableCitySlugs.includes(page.path.split("/").pop())) {
+    assert.ok(!paths.has(page.path), `A noindex local page must not be in the sitemap: ${page.path}`);
+  }
+}
+for (const legacy of ["/starters", "/templates", "/planning", "/vedantixhome", "/website-kapper", "/website-salon", "/website-klusbedrijf", "/website-restaurant", "/website-fotograaf", "/website-schoonmaakbedrijf"]) {
+  assert.ok(!paths.has(legacy), `Legacy or campaign page must not be in the sitemap: ${legacy}`);
 }
 
 console.log(
-  `Sitemap OK: ${urls.length} unique public URLs, including ${industryLocationPages.length} supported local pages.`,
+  `Sitemap OK: ${urls.length} unique public URLs, including ${indexableLocationPages.length} indexable local pages.`,
 );
 
 // Supply a running dev/preview origin to exercise SSR status handling as well.
@@ -61,7 +71,7 @@ if (origin) {
   const probes = [
     ["/website/kapper", 200],
     ["/website/kapper/den-bosch", 200],
-    ["/website/consultant/nijmegen", 200],
+    ["/website/consultant/nijmegen", 200, "noindex"],
     ["/website/kapper/amsterdam", 404],
     ["/website/kapper/niet-bestaande-stad", 404],
     ["/website/niet-bestaande-branche", 404],
@@ -69,7 +79,7 @@ if (origin) {
     ["/website/__proto__/den-bosch", 404],
     ...legacyPages.map((path) => [path, 200]),
   ];
-  for (const [path, status] of probes) {
+  for (const [path, status, directive] of probes) {
     const response = await fetch(new URL(path, origin), {
       redirect: "manual",
       signal: AbortSignal.timeout(30000),
@@ -80,7 +90,7 @@ if (origin) {
       .map(([tag]) => tag)
       .filter((tag) => /\bname=["']robots["']/i.test(tag));
     const noindex = robotTags.some((tag) => /noindex/i.test(tag));
-    assert.equal(noindex, status === 404, `${path} has the wrong indexing directive`);
+    assert.equal(noindex, status === 404 || directive === "noindex", `${path} has the wrong indexing directive`);
     assert.equal(robotTags.length, 1, `${path} must have one unambiguous robots directive`);
     if (status === 404) {
       assert.match(html, /<title>Pagina niet gevonden \| Vedantix<\/title>/);

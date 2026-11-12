@@ -299,7 +299,7 @@ const PAGE_STYLES = `
 `;
 
 export default function WebsiteKlusbedrijf() {
-  const canonical = "https://vedantix.nl/website-klusbedrijf";
+  const canonical = "https://vedantix.nl/website/klusbedrijf";
 
   const serviceSchema = createServiceSchema({
     name: "Website laten maken voor klusbedrijven",
@@ -360,7 +360,7 @@ export default function WebsiteKlusbedrijf() {
                 </a>
 
                 <a
-                  href="https://wa.me/310626219989"
+                  href="https://wa.me/31626219989"
                   target="_blank"
                   rel="noreferrer"
                   className="klus-btn klus-btn-secondary"
@@ -611,7 +611,7 @@ export default function WebsiteKlusbedrijf() {
             </div>
 
             <a
-              href="https://wa.me/310626219989"
+              href="https://wa.me/31626219989"
               target="_blank"
               rel="noreferrer"
               className="klus-bottom-cta-link"

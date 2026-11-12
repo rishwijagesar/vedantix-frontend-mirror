@@ -51,213 +51,111 @@ function IconMail() {
   );
 }
 
+const SOCIALS = [
+  { href: "https://www.linkedin.com/company/vedantix-nl", label: "LinkedIn", Icon: IconLinkedIn },
+  { href: "https://instagram.com/vedantix.nl", label: "Instagram", Icon: IconInstagram },
+  { href: "https://www.facebook.com/vedantix", label: "Facebook", Icon: IconFacebook },
+];
+
+const COMPANY_LINKS = [
+  ["/over-ons", "Over Vedantix"],
+  ["/proces", "Werkwijze"],
+  ["/resultaten", "Resultaten"],
+  ["/prijzen", "Prijzen"],
+  ["/voorwie", "Voor wie"],
+  ["/blog", "Blog"],
+  ["/faq", "Veelgestelde vragen"],
+  ["/online-groei-audit", "Gratis Online Groei Audit"],
+  ["/contact", "Contact"],
+];
+
+const INDUSTRY_LINKS = [
+  ["/website/personal-trainer", "Personal trainers"],
+  ["/website/fysiotherapeut", "Fysiotherapeuten"],
+  ["/website/coach", "Coaches"],
+  ["/website/schoonheidssalon", "Salons"],
+  ["/website/kapper", "Kappers"],
+  ["/website/installateur", "Installateurs"],
+];
+
 export default function BigFooter() {
+  const year = new Date().getFullYear();
   return (
-    <>
-      <footer className="big-footer">
-        <div className="big-footer__inner">
-          <div className="big-footer__grid">
-            <div className="big-footer__brand">
-              <div className="big-footer__brand-name">Vedantix</div>
-              <h2 className="big-footer__brand-heading">
-                Software die meegroeit met jouw bedrijf.
-              </h2>
-              <p className="big-footer__brand-text">
-                Bedrijfssoftware op maat voor het mkb en zelfstandigen.
-                Zorgvuldig gebouwd, getest en beheerd. Ook voor websites, hosting en vindbaarheid. Vanuit Den Bosch, voor heel Nederland.
-              </p>
+    <footer className="big-footer">
+      <div className="big-footer__inner">
+        <div className="big-footer__cta">
+          <div>
+            <h2>Klaar om dubbel werk te schrappen?</h2>
+            <p>Plan een bedrijfsscan en bespreek wat jouw team tijd kost.</p>
+          </div>
+          <Link className="big-footer__cta-btn" to="/contact#contact-form">Plan een bedrijfsscan</Link>
+        </div>
 
-              <ul className="big-footer__links" aria-label="Vedantix diensten">
-                <li>
-                  <Link to="/software-op-maat">Software op maat voor jouw bedrijf</Link>
-                </li>
-                <li>
-                  <Link to="/online-marketing">Online marketing en advertenties</Link>
-                </li>
-                <li>
-                  <Link to="/ai-vindbaarheid">
-                    SEO, AEO, GEO en AI-vindbaarheid
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/prijzen#uitbreidingen">Hosting en zakelijke e-mail</Link>
-                </li>
-              </ul>
-
-              <div className="big-footer__socials">
-                <a
-                  className="big-footer__social"
-                  href="https://instagram.com/vedantix.nl"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Instagram"
-                >
-                  <IconInstagram />
+        <div className="big-footer__grid">
+          <div className="big-footer__brand">
+            <div className="big-footer__brand-name">Vedantix</div>
+            <p className="big-footer__brand-text">
+              Bedrijfssoftware op maat voor het mkb en zelfstandigen. Ook websites, hosting en vindbaarheid. Vanuit Den Bosch, voor heel Nederland.
+            </p>
+            <ul className="big-footer__contact-list">
+              <li className="big-footer__contact-item">
+                <span className="big-footer__contact-icon"><IconLocation /></span>
+                <a href="https://www.google.com/maps/search/?api=1&query=Neercanne+6%2C+5235+HB%2C+%27s-Hertogenbosch" target="_blank" rel="noreferrer">Neercanne 6 · 5235 HB 's-Hertogenbosch</a>
+              </li>
+              <li className="big-footer__contact-item">
+                <span className="big-footer__contact-icon"><IconPhone /></span>
+                <a href="tel:+31626219989">+31 6 26 21 99 89</a>
+              </li>
+              <li className="big-footer__contact-item">
+                <span className="big-footer__contact-icon"><IconMail /></span>
+                <a href="mailto:info@vedantix.nl">info@vedantix.nl</a>
+              </li>
+            </ul>
+            <div className="big-footer__socials">
+              {SOCIALS.map(({ href, label, Icon }) => (
+                <a key={label} className="big-footer__social" href={href} target="_blank" rel="noreferrer" aria-label={`${label} (opent in een nieuw tabblad)`}>
+                  <Icon />
                 </a>
-                <a
-                  className="big-footer__social"
-                  href="https://www.facebook.com/vedantix"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Facebook"
-                >
-                  <IconFacebook />
-                </a>
-                <a
-                  className="big-footer__social"
-                  href="https://www.linkedin.com/company/vedantix-nl"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="LinkedIn"
-                >
-                  <IconLinkedIn />
-                </a>
-              </div>
-            </div>
-
-            <div className="big-footer__col">
-              <div className="big-footer__col-title">Pagina's</div>
-              <ul className="big-footer__links">
-                <li>
-                  <Link to="/">Home</Link>
-                </li>
-                <li>
-                  <Link to="/prijzen">Prijzen</Link>
-                </li>
-                <li>
-                  <Link to="/voorwie">Voor Wie</Link>
-                </li>
-                <li>
-                  <Link to="/proces">Proces</Link>
-                </li>
-                <li>
-                  <Link to="/over-ons">Over Vedantix</Link>
-                </li>
-                <li>
-                  <Link to="/resultaten">Resultaten</Link>
-                </li>
-                <li>
-                  <Link to="/online-groei-audit">Online Groei Audit</Link>
-                </li>
-                <li>
-                  <Link to="/ai-vindbaarheid">AI-vindbaarheid</Link>
-                </li>
-                <li>
-                  <Link to="/faq">FAQ</Link>
-                </li>
-                <li>
-                  <Link to="/contact">Contact</Link>
-                </li>
-                <li>
-                  <Link to="/blog">Blog</Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="big-footer__col">
-              <div className="big-footer__col-title">Diensten</div>
-              <ul className="big-footer__links">
-                <li><Link to="/diensten">Alle diensten</Link></li>
-                {SERVICE_GROUPS.flatMap(group => group.items).map(item => <li key={item.href}><Link to={item.href}>{item.label}</Link></li>)}
-              </ul>
-            </div>
-
-            <div className="big-footer__col">
-              <div className="big-footer__col-title">Websitevoorbeelden per branche</div>
-              <ul className="big-footer__links">
-                <li>
-                  <Link to="/website/personal-trainer">
-                    Website voor personal trainers
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/website/fysiotherapeut">
-                    Website voor fysiotherapeuten
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/website/coach">Website voor coaches</Link>
-                </li>
-                <li>
-                  <Link to="/website/schoonheidssalon">
-                    Website voor salons
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/website/kapper">Website voor kappers</Link>
-                </li>
-                <li>
-                  <Link to="/website/installateur">
-                    Website voor installateurs
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="big-footer__col">
-              <div className="big-footer__col-title">Contact & gegevens</div>
-
-              <ul className="big-footer__contact-list">
-                <li className="big-footer__contact-item">
-                  <span className="big-footer__contact-icon">
-                    <IconLocation />
-                  </span>
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=Neercanne+6%2C+5235+HB%2C+%27s-Hertogenbosch"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Neercanne 6 · 5235 HB 's-Hertogenbosch
-                  </a>
-                </li>
-                <li className="big-footer__contact-item">
-                  <span className="big-footer__contact-icon">
-                    <IconPhone />
-                  </span>
-                  <a href="tel:+31626219989">+31 6 26 21 99 89</a>
-                </li>
-                <li className="big-footer__contact-item">
-                  <span className="big-footer__contact-icon">
-                    <IconMail />
-                  </span>
-                  <a href="mailto:info@vedantix.nl">info@vedantix.nl</a>
-                </li>
-              </ul>
-
-              <div className="big-footer__company-meta">
-                <div className="big-footer__company-line">
-                  <strong>KvK:</strong> 42056482
-                </div>
-                <div className="big-footer__company-line">
-                  <strong>BTW:</strong> NL005461438B38
-                </div>
-              </div>
-
-              <Link className="big-footer__cta" to="/contact#contact-form">
-                Plan een bedrijfsscan
-              </Link>
+              ))}
             </div>
           </div>
 
-          <div className="big-footer__bottom">
-            <div className="big-footer__copyright">
-              © 2026 Vedantix. Alle rechten voorbehouden.
-            </div>
+          <nav className="big-footer__col" aria-label="Diensten">
+            <div className="big-footer__col-title">Diensten</div>
+            <ul className="big-footer__links">
+              {SERVICE_GROUPS.flatMap((group) => group.items).map((item) => (
+                <li key={item.href}><Link to={item.href}>{item.label}</Link></li>
+              ))}
+              <li><Link to="/diensten">Alle diensten</Link></li>
+            </ul>
+          </nav>
 
-            <div className="big-footer__bottom-links">
-              <Link to="/privacy">Privacy</Link>
-              <Link to="/terms">Voorwaarden</Link>
-              <Link to="/data-deletion">Gegevensverwijdering</Link>
-              <Link to="/contact">Contact</Link>
-              <Link to="/faq">FAQ</Link>
-              <Link to="/prijzen">Prijzen</Link>
-              <Link to="/resultaten">Resultaten</Link>
-              <Link to="/online-groei-audit">Online Groei Audit</Link>
-            </div>
+          <nav className="big-footer__col" aria-label="Bedrijf">
+            <div className="big-footer__col-title">Vedantix</div>
+            <ul className="big-footer__links">
+              {COMPANY_LINKS.map(([to, label]) => <li key={to}><Link to={to}>{label}</Link></li>)}
+            </ul>
+          </nav>
+
+          <nav className="big-footer__col" aria-label="Websites per branche">
+            <div className="big-footer__col-title">Websites voor</div>
+            <ul className="big-footer__links">
+              {INDUSTRY_LINKS.map(([to, label]) => <li key={to}><Link to={to}>{label}</Link></li>)}
+            </ul>
+          </nav>
+        </div>
+
+        <div className="big-footer__bottom">
+          <div className="big-footer__copyright">
+            © {year} Vedantix · KvK 42056482 · BTW NL005461438B38
+          </div>
+          <div className="big-footer__bottom-links">
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Voorwaarden</Link>
+            <Link to="/data-deletion">Gegevensverwijdering</Link>
           </div>
         </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   );
 }
-

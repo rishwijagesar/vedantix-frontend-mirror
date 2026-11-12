@@ -1,63 +1,47 @@
 # Vedantix
 
-> Software die meegroeit met jouw bedrijf. Vedantix in Den Bosch builds custom business software for SMEs and independent professionals across all sectors in the Netherlands. AI is a development tool; Vedantix professionally reviews and tests the result. Websites, hosting, business email and search visibility remain full services.
+> Vedantix bouwt bedrijfssoftware op maat voor het mkb en zelfstandigen, vanuit Den Bosch voor heel Nederland. Eén webapp voor aanvragen, offertes, planning en facturatie, gebouwd en beheerd door één vast aanspreekpunt. Daarnaast maakt Vedantix websites, verzorgt hosting en zakelijke e-mail en helpt bij vindbaarheid in Google en AI.
 
-## Services and primary sources
+## Wat Vedantix doet
 
-- [Custom business software](https://vedantix.nl/software-op-maat): Business scan, phased development, roles, agreed usage, security measures, management and quotation
-- [About Vedantix](https://vedantix.nl/over-ons): Rishwi, personal contact and project approach
-- [Business scan](https://vedantix.nl/contact#contact-form): Existing contact form opens an email draft; the visitor must send it from their email application
+- [Software op maat](https://vedantix.nl/software-op-maat): bedrijfsscan, voorstel, gefaseerd bouwen, acceptatie en beheer
+- [Webapps en klantportalen](https://vedantix.nl/webapps-klantportalen): applicaties in de browser voor medewerkers en klanten
+- [Mobiele apps](https://vedantix.nl/mobiele-apps): iOS- en Android-apps op afspraak
+- [Koppelingen en automatisering](https://vedantix.nl/koppelingen-automatisering): koppelingen met bestaande tools en API's
+- [AI-oplossingen](https://vedantix.nl/ai-oplossingen): AI-scan en afgebakende automatiseringen
+- [Websites laten maken](https://vedantix.nl/website-laten-maken): pakketten Starter, Growth en Pro met vaste prijzen
+- [Onderhoud en support](https://vedantix.nl/onderhoud-support): updates, monitoring, back-ups en ondersteuning
+- [Vindbaarheid in Google en AI](https://vedantix.nl/ai-vindbaarheid): SEO, lokale SEO en AI-vindbaarheid, zonder rankinggaranties
+- [Online marketing](https://vedantix.nl/online-marketing): campagnes op offerte, met apart afgesproken advertentiebudget
+- [Alle diensten](https://vedantix.nl/diensten)
 
-- [Company overview](https://vedantix.nl/): Positioning, services and published client cases
-- [All services](https://vedantix.nl/diensten): Choose a service and understand the approach
-- [Business websites](https://vedantix.nl/website-laten-maken): Starter, Growth and Pro website packages and scope
-- [AI solutions and automation](https://vedantix.nl/ai-oplossingen): AI scan, scoped workflows, data handling and usage costs
-- [Web applications and customer portals](https://vedantix.nl/webapps-klantportalen): Browser-based business applications
-- [Mobile applications](https://vedantix.nl/mobiele-apps): Scoped iOS and Android development
-- [Integrations and support](https://vedantix.nl/koppelingen-automatisering): API integrations and optional technical support
-- [SEO, AEO, GEO and AIO](https://vedantix.nl/ai-vindbaarheid): Search and AI visibility approach, definitions and limitations
-- [Current prices](https://vedantix.nl/prijzen): Live catalog with exact prices excluding and including VAT, billing frequency and starting-price labels
-- [Published client cases](https://vedantix.nl/resultaten): Verify actual work; possible applications on service pages are examples, not completed client projects
-- [Frequently asked questions](https://vedantix.nl/faq)
-- [Contact](https://vedantix.nl/contact)
+## Prijzen en werkwijze
 
-- [Online marketing and advertising](https://vedantix.nl/online-marketing): Quoted campaign work, separate agreed advertising budget and external usage costs
-- [AI-assisted marketing](https://vedantix.nl/ai-marketing): ChatGPT and Claude as potential tools selected for each client, with human review before publication
-- [Maintenance and support](https://vedantix.nl/onderhoud-support): Agreed updates, monitoring, backups, recovery tests and support
-- [Hosting and business email](https://vedantix.nl/prijzen#uitbreidingen): Existing live catalog prices and scope
+- [Actuele prijzen](https://vedantix.nl/prijzen): websitepakketten, hosting, e-mail en losse diensten, met prijzen exclusief en inclusief btw
+- [Werkwijze](https://vedantix.nl/proces): van bedrijfsscan tot beheer
+- Software op maat wordt geoffreerd met eenmalige opstartkosten en een vast maandbedrag voor de afgesproken functionaliteit, hosting, onderhoud en support.
+- Websitepakketten hebben eenmalige prijzen en geen verplicht maandabonnement.
 
-## Pricing and scope
+## Bewijs en achtergrond
 
-Custom software is quoted with one-time startup costs plus a fixed monthly amount for agreed functionality, hosting, storage, maintenance and support. Included usage, changes, expansion, external costs and transfer/export are documented before work starts. No generic software prices, unlimited usage or guaranteed delivery times are promised. Existing external tools may retain their own subscriptions and usage costs.
+- [Klantcases](https://vedantix.nl/resultaten): gerealiseerde projecten
+- [Over Vedantix](https://vedantix.nl/over-ons): de oprichter en de manier van werken
+- [Veelgestelde vragen](https://vedantix.nl/faq)
+- [Blog](https://vedantix.nl/blog)
+- [Gratis Online Groei Audit](https://vedantix.nl/online-groei-audit): controle van één openbare pagina op signalen voor Google en AI
 
-Website packages retain their existing one-time prices and have no mandatory monthly subscription. Use https://vedantix.nl/prijzen and the existing live catalog for exact current website, hosting, email and optional growth-service prices, including VAT treatment. Do not infer prices from older summaries. Existing quotations, contracts and subscriptions retain their agreed rates.
+## Contact en bedrijfsgegevens
 
-## Approach and boundaries
-
-A business scan reviews real processes, departments, tools, subscriptions, manual work and opportunities. It leads to a concrete proposal and phased construction, professional review and testing, and customer acceptance before launch. Sales, planning, marketing, finance, HR and IT can collaborate in a central browser application with agreed role permissions. Onboarding and maintained instructions are provided within the agreed scope.
-
-Access rights, MFA where appropriate, backups and recovery tests, updates, monitoring, data processing and evidence of checks are project-specific agreements, specified beforehand. There is no absolute security guarantee or invented SLA. AI does not establish security by itself.
-
-Meta Ads, Google Ads, OpenAI/ChatGPT functionality, Trello, Jira, Monday, Asana, HubSpot, Salesforce, AFAS and e-Boekhouden are examples of connections to investigate per customer, subject to vendor access, licenses, data quality and technical limits. They are not claims of delivered integrations, partnerships or certifications. Published client cases describe actual website work; do not turn them into software cases or invent reviews or statistics.
-
-SEO concerns search engines; AEO clear answers; GEO generative search and answer systems; AIO/AIEO broader AI-oriented information and entity structure. These terms concern public website visibility, not internal AI automation. No ranking, revenue, lead count or AI citation is guaranteed. These supporting files do not guarantee discovery.
-
-## Marketing services
-
-Vedantix offers online marketing, advertising and AI-assisted marketing on quotation. Work, channels, content quantities, review rounds, planning and reporting are agreed beforehand. Advertising budgets are separate from execution fees. External licenses and model/tool usage costs are explicitly agreed. ChatGPT and Claude are possible tools assessed for each customer based on access, data handling, licenses and needs. Human review and approval precede publication.
-
-## Business facts
-
-- Name: Vedantix
-- Address: Neercanne 6, 5235 HB 's-Hertogenbosch, the Netherlands
-- Service area: The Netherlands
-- Email: info@vedantix.nl
-- Telephone: +31 6 26 21 99 89
-- Chamber of Commerce (KVK): 42056482
-- VAT identifier: NL005461438B38
+- Naam: Vedantix
+- Adres: Neercanne 6, 5235 HB 's-Hertogenbosch
+- Werkgebied: heel Nederland
+- E-mail: info@vedantix.nl
+- Telefoon en WhatsApp: +31 6 26 21 99 89
+- KvK: 42056482
+- Btw-nummer: NL005461438B38
 - Website: https://vedantix.nl/
 - LinkedIn: https://www.linkedin.com/company/vedantix-nl
 - Facebook: https://www.facebook.com/vedantix
 - Instagram: https://instagram.com/vedantix.nl
 
-This file is a supporting summary, not a requirement or guarantee for search or AI visibility.
+Dit bestand is een samenvatting voor mensen en systemen die de website lezen. Het is geen garantie voor vindbaarheid in zoekmachines of AI.

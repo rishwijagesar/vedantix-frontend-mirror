@@ -1,47 +1,50 @@
-import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_FAQS, SCAN_URL } from "../data/positioning";
-import { Suspense, useId, useState } from "react";
-import { safeLogoUrl } from "../lib/public-content";
+import { Suspense } from "react";
 import {
   ArrowRight,
-  Clock,
+  Check,
+  CreditCard,
   FileText,
-  LifeBuoy,
+  LayoutDashboard,
+  Lock,
+  MapPin,
   MessageCircle,
-  Network,
+  Phone,
+  Receipt,
   Search,
   ShieldCheck,
-  TrendingUp,
+  Star,
   Users,
   Wrench,
 } from "lucide-react";
+import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_FAQS, SCAN_URL } from "../data/positioning";
+import { COMMITMENTS, PAIN_POINTS } from "../data/proof";
 import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
+import CatalogPrice from "../components/CatalogPrice";
 import JotformReviewWidget from "../components/JotformReviewWidget";
-import HomeHero from "./HomeHero";
+import AppMock from "../components/home/AppMock";
+import ClientStrip from "../components/home/ClientStrip";
 import ClientCasesSection from "../components/home/ClientCasesSection";
 import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
-import "../styles/home.css";
-import "../styles/services.css";
-import "../styles/home-hero.css";
+import "../styles/vx-home.css";
 
-const BENEFITS = [
- { title: "Minder dubbel werk", text: "Gebruik dezelfde informatie in je werkproces, zonder steeds opnieuw overtypen.", icon: Users },
- { title: "Minder wisselen", text: "Breng taken en informatie samen in een centrale applicatie op maat.", icon: Network },
- { title: "Eenvoudiger onboarding", text: "Geef nieuwe collega’s toegang tot hun taken en instructies binnen de afgesproken scope.", icon: MessageCircle },
- { title: "Meer overzicht", text: "Laat afdelingen samenwerken met actuele informatie en passende rolrechten.", icon: Clock },
+const HOMEPAGE_FAQS = SOFTWARE_FAQS.filter((_, index) => [0, 1, 2, 3, 4, 8, 9].includes(index));
+
+const PAIN_ICONS = [Users, FileText, CreditCard, Wrench];
+
+const PROCESS = [
+  { title: "Bedrijfsscan", text: "We lopen samen met jouw team door processen, tools, abonnementen en handwerk. Zo zien we waar tijd weglekt.", icon: Search },
+  { title: "Voorstel met vaste prijs", text: "Je krijgt een afgebakend voorstel met fases, opstartkosten en een vast maandbedrag. Geen verrassingen achteraf.", icon: FileText },
+  { title: "Bouwen en accepteren", text: "We bouwen in fases en testen echte situaties, rollen en foutgevallen. Jouw team akkoord, dan pas live.", icon: LayoutDashboard },
+  { title: "Beheren en uitbreiden", text: "Onderhoud, support en nieuwe functies volgen vaste afspraken. Overdracht en export leggen we vooraf vast.", icon: ShieldCheck },
 ];
 
-const ROADMAP = [
- { title: "Bedrijfsscan", icon: Search }, { title: "Voorstel", icon: FileText },
- { title: "Bouwen", icon: Wrench }, { title: "Testen", icon: ShieldCheck },
- { title: "Accepteren", icon: Users }, { title: "Beheren", icon: LifeBuoy }, { title: "Uitbreiden", icon: TrendingUp },
-];
-
-const HOME_SERVICES = [
-  { title: "Software op maat", href: "/software-op-maat", description: "Breng je werkprocessen samen in één app." },
-  { title: "Websites & hosting", href: "/website-laten-maken", description: "Laat je website bouwen en beheren." },
-  { title: "Vindbaarheid & marketing", href: "/ai-vindbaarheid", description: "Maak je bedrijf beter vindbaar in Google en AI." },
+const OWN_SOFTWARE = [
+  { title: "Klanten en leads", text: "Aanvragen en contactmomenten op één plek, met een duidelijke volgende stap.", icon: Users },
+  { title: "Offertes en contracten", text: "Offertes maken en contracten laten ondertekenen, vanuit dezelfde gegevens.", icon: FileText },
+  { title: "Facturen en betalingen", text: "Facturen versturen en betalingen volgen met online betaallinks.", icon: Receipt },
+  { title: "Beheer en monitoring", text: "Zicht op de technische gezondheid van websites en systemen.", icon: ShieldCheck },
 ];
 
 const SCAN_ITEMS = [
@@ -53,277 +56,311 @@ const SCAN_ITEMS = [
   "Downloadbaar PDF-rapport",
 ];
 
-const HOMEPAGE_FAQS = SOFTWARE_FAQS.filter((_, index) => [0, 1, 2, 3, 7, 9].includes(index));
-
-function IconCard({ title, text, icon: Icon }) {
-  return (
-    <article className="growth-card">
-      <div className="growth-card-icon">
-        <Icon size={24} aria-hidden="true" />
-      </div>
-      <h3>{title}</h3>
-      <p>{text}</p>
-    </article>
-  );
-}
-
-function ClientBanner({ clients }) {
-  const [paused, setPaused] = useState(false);
-  const headingId = useId();
-  if (!clients?.length) return null;
-
-  function renderClients() {
-    return clients.map(client => {
-      const logo = safeLogoUrl(client.logo);
-      return (
-        <li key={client.id} className="client-banner__client">
-          {logo && <img src={logo} alt="" width="40" height="40" loading="lazy" decoding="async" />}
-          <span>{client.name}</span>
-        </li>
-      );
-    });
-  }
-
-  return (
-    <section className="client-banner" aria-labelledby={headingId}>
-      <div className="client-banner__header">
-        <h2 id={headingId}>Klanten van Vedantix</h2>
-        <button type="button" onClick={() => setPaused(value => !value)}>
-          {paused ? "Banner afspelen" : "Banner pauzeren"}
-        </button>
-      </div>
-      <div className="client-banner__window">
-        <div className="client-banner__track" data-paused={paused}>
-          <ul>{renderClients()}</ul>
-          <ul aria-hidden="true">{renderClients()}</ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default function Home({ initialCases = null }) {
-  const meetingUrl = `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent(
-    "Hallo Vedantix, ik wil graag een bedrijfsscan bespreken.",
-  )}`;
   const canonical = "https://vedantix.nl/";
   const faqSchema = createFAQSchema(HOMEPAGE_FAQS);
-  const breadcrumbSchema = createBreadcrumbSchema([
-    { name: "Home", url: canonical },
-  ]);
+  const breadcrumbSchema = createBreadcrumbSchema([{ name: "Home", url: canonical }]);
+  const whatsappUrl = `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent("Hallo Vedantix, ik wil graag een bedrijfsscan bespreken.")}`;
 
   return (
     <>
-      <SEO
-        title={SOFTWARE_TITLE}
-        description={SOFTWARE_DESCRIPTION}
-        canonical={canonical}
-        schemas={[faqSchema, breadcrumbSchema]}
-      />
+      <SEO title={SOFTWARE_TITLE} description={SOFTWARE_DESCRIPTION} canonical={canonical} schemas={[faqSchema, breadcrumbSchema]} />
 
-      <div className="home-page">
+      <div className="vx-page home-page">
         <NavBar />
 
         <main>
-          <HomeHero>
-            <ClientBanner clients={initialCases} />
-          </HomeHero>
-          <section className="home-services" aria-labelledby="home-services-title">
-            <div className="services-wrap">
-              <h2 id="home-services-title">Waar we je mee helpen</h2>
-              <ul className="home-service-list">
-                {HOME_SERVICES.map(({ title, href, description }) => (
-                  <li key={href}>
-                    <a href={href}>
-                      <strong>{title}</strong>
-                      <ArrowRight size={18} aria-hidden="true" />
-                      <span>{description}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <a className="home-process-link" href="/diensten">
-                Bekijk alle diensten <ArrowRight size={16} aria-hidden="true" />
-              </a>
+          {/* Hero: wie ben je, voor wie, wat levert het op */}
+          <section className="vx-hero" aria-labelledby="vx-hero-title">
+            <div className="vx-container vx-hero__layout">
+              <div className="vx-hero__copy">
+                <p className="vx-eyebrow">Software op maat voor het mkb · Den Bosch</p>
+                <h1 id="vx-hero-title" className="vx-h1">
+                  Stop met dubbel werk.
+                  <br />
+                  <span className="vx-grad">Eén app voor je hele bedrijf.</span>
+                </h1>
+                <p className="vx-lead">
+                  Aanvragen, offertes, planning en facturen in één app die past bij hoe jouw team werkt.
+                  Vaste prijs vooraf, gebouwd en beheerd door één vast aanspreekpunt.
+                </p>
+                <div className="vx-hero__actions">
+                  <a className="vx-btn vx-btn--primary" href={SCAN_URL}>
+                    Plan een bedrijfsscan <ArrowRight aria-hidden="true" />
+                  </a>
+                  <a className="vx-btn vx-btn--ghost" href="/prijzen">Bekijk prijzen</a>
+                </div>
+                <p className="vx-hero__note">Vrijblijvend kennismaken. Omvang en kosten van de scan spreken we vooraf af.</p>
+                <ul className="vx-hero__chips" aria-label="Waarom Vedantix">
+                  <li className="vx-chip"><Check aria-hidden="true" />Vaste prijs vooraf</li>
+                  <li className="vx-chip"><MapPin aria-hidden="true" />Gebouwd in Den Bosch</li>
+                  <li className="vx-chip"><Star aria-hidden="true" />5★ Google-review</li>
+                  <li className="vx-chip"><ShieldCheck aria-hidden="true" />KvK 42056482</li>
+                </ul>
+                <p className="vx-hero__alt">
+                  Alleen een website nodig? <a className="vx-link" href="/website-laten-maken">Bekijk de websitepakketten <ArrowRight aria-hidden="true" /></a>
+                </p>
+              </div>
+              <div className="vx-hero__visual">
+                <AppMock />
+              </div>
             </div>
           </section>
 
-          <Suspense fallback={null}>
-            <section
-              className="home-review-strip"
-              aria-label="Reviews van Vedantix"
-            >
-              <div className="home-review-wrap">
-                <div className="home-review-widget">
+          {/* Bewijs 1: klanten */}
+          <section className="vx-section vx-section--tight vx-proofbar" aria-labelledby="vx-clients-title">
+            <div className="vx-container">
+              <h2 id="vx-clients-title" className="vx-proofbar__title">Ondernemers die met Vedantix werken</h2>
+              <ClientStrip clients={initialCases} />
+            </div>
+          </section>
+
+          {/* Doelgroep en probleem */}
+          <section className="vx-section" aria-labelledby="vx-pain-title">
+            <div className="vx-container">
+              <div className="vx-head">
+                <p className="vx-eyebrow">Voor wie</p>
+                <h2 id="vx-pain-title" className="vx-h2">Gebouwd voor mkb-bedrijven die uit Excel en losse tools groeien</h2>
+                <p className="vx-lead">Herken je een of meer van deze situaties? Dan kost je huidige manier van werken je elke week uren.</p>
+              </div>
+              <div className="vx-grid vx-grid--4">
+                {PAIN_POINTS.map((item, index) => {
+                  const Icon = PAIN_ICONS[index];
+                  return (
+                    <article key={item.title} className="vx-card vx-card--hover">
+                      <div className="vx-icon"><Icon aria-hidden="true" /></div>
+                      <h3 className="vx-h3">{item.title}</h3>
+                      <p className="vx-card__text">{item.text}</p>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Oplossing: voor en na */}
+          <section className="vx-section vx-section--soft" aria-labelledby="vx-solution-title">
+            <div className="vx-container vx-split">
+              <div>
+                <p className="vx-eyebrow">De oplossing</p>
+                <h2 id="vx-solution-title" className="vx-h2">Eén werkplek rond jouw processen</h2>
+                <p className="vx-lead">
+                  We bouwen een webapp waarin je team werkt met de rechten die bij de rol passen.
+                  Bestaande tools kunnen blijven waar ze waarde toevoegen.
+                </p>
+                <ul className="vx-checks">
+                  <li><Check aria-hidden="true" />Minder overtypen en minder wisselen tussen tools</li>
+                  <li><Check aria-hidden="true" />Nieuwe collega’s werken sneller zelfstandig</li>
+                  <li><Check aria-hidden="true" />Actueel overzicht voor eigenaar en team</li>
+                </ul>
+                <a className="vx-btn vx-btn--dark" href={SCAN_URL}>Bespreek jouw situatie <ArrowRight aria-hidden="true" /></a>
+              </div>
+              <div className="vx-compare" aria-label="Voor en na">
+                <div className="vx-compare__col">
+                  <h3 className="vx-compare__title">Nu</h3>
+                  <ul className="vx-compare__chips">
+                    {["Excel", "Mail", "Boekhoudpakket", "Planningstool", "Notities", "WhatsApp"].map((tool) => <li key={tool}>{tool}</li>)}
+                  </ul>
+                </div>
+                <div className="vx-compare__arrow" aria-hidden="true"><ArrowRight /></div>
+                <div className="vx-compare__col vx-compare__col--after">
+                  <h3 className="vx-compare__title">Straks</h3>
+                  <p className="vx-compare__one"><LayoutDashboard aria-hidden="true" /> Eén app op maat</p>
+                  <p className="vx-compare__sub">Met rollen, rechten en instructies</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Bewijs 2: eigen software + cases + review */}
+          <section className="vx-section" aria-labelledby="vx-own-title">
+            <div className="vx-container">
+              <div className="vx-head">
+                <p className="vx-eyebrow">Bewijs</p>
+                <h2 id="vx-own-title" className="vx-h2">Wij bouwen ook onze eigen bedrijfssoftware</h2>
+                <p className="vx-lead">
+                  Het Vedantix Control Center bundelt klanten, offertes, contracten, facturen, betalingen en monitoring.
+                  Zo ervaren we zelf wat goede bedrijfssoftware vraagt.
+                </p>
+              </div>
+              <div className="vx-grid vx-grid--4">
+                {OWN_SOFTWARE.map(({ title, text, icon: Icon }) => (
+                  <article key={title} className="vx-card vx-card--hover">
+                    <div className="vx-icon"><Icon aria-hidden="true" /></div>
+                    <h3 className="vx-h3">{title}</h3>
+                    <p className="vx-card__text">{text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="vx-section vx-section--soft vx-cases" aria-label="Klantcases en reviews">
+            <div className="vx-container">
+              <ClientCasesSection initialCases={initialCases} />
+              <Suspense fallback={null}>
+                <div className="vx-reviews">
                   <JotformReviewWidget />
                 </div>
+              </Suspense>
+            </div>
+          </section>
+
+          {/* Werkwijze */}
+          <section id="how" className="vx-section vx-section--dark anchor-section" aria-labelledby="vx-process-title">
+            <div className="vx-container">
+              <div className="vx-head vx-head--center">
+                <p className="vx-eyebrow">Werkwijze</p>
+                <h2 id="vx-process-title" className="vx-h2">Van eerste gesprek tot werkende software</h2>
+                <p className="vx-lead">Een werkbare eerste stap, daarna gericht uitbreiden. Functionaliteit, kosten en controles spreken we vooraf af.</p>
               </div>
-            </section>
-          </Suspense>
+              <ol className="vx-process">
+                {PROCESS.map(({ title, text, icon: Icon }, index) => (
+                  <li key={title} className="vx-process__step">
+                    <span className="vx-process__num" aria-hidden="true">{index + 1}</span>
+                    <div className="vx-process__icon"><Icon aria-hidden="true" /></div>
+                    <h3 className="vx-h3">{title}</h3>
+                    <p>{text}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
 
-          <ClientCasesSection initialCases={initialCases} />
-
-          <Suspense fallback={null}>
-            <section className="section-shell">
-              <div className="section-wrap">
-                <div className="section-header center">
-                  <div className="section-label">
-                    Wat levert Vedantix jou op?
-                  </div>
-                  <h2 className="section-h2">
-                    Meer ruimte voor het werk dat ertoe doet
-                  </h2>
-                  <p className="section-p">
-                    Een centrale applicatie kan dubbel werk en wisselen tussen
-                    tools verminderen. Met duidelijke rollen en bijgehouden
-                    instructies binnen de afgesproken dienstverlening.
-                  </p>
-                </div>
-
-                <div className="growth-benefit-grid">
-                  {BENEFITS.map((benefit) => (
-                    <IconCard key={benefit.title} {...benefit} />
-                  ))}
-                </div>
-
+          {/* Afspraken */}
+          <section className="vx-section" aria-labelledby="vx-commit-title">
+            <div className="vx-container">
+              <div className="vx-head vx-head--center">
+                <p className="vx-eyebrow">Wat je van ons mag verwachten</p>
+                <h2 id="vx-commit-title" className="vx-h2">Heldere afspraken, geen kleine lettertjes</h2>
               </div>
-            </section>
-          </Suspense>
-
-          <Suspense fallback={null}>
-            <section className="section-shell anchor-section" id="how">
-              <div className="section-wrap">
-                <div className="section-header center">
-                  <div className="section-label">Van bedrijfsscan naar software</div>
-                  <h2 className="section-h2">
-                    Een werkbare eerste stap, daarna gericht uitbreiden
-                  </h2>
-                  <p className="section-p">
-                    We spreken functionaliteit, gebruik, kosten en controles vooraf
-                    af. AI helpt bij het bouwen; Vedantix controleert en test.
-                  </p>
-                </div>
-
-                <div
-                  className="growth-roadmap"
-                  aria-label="Van bedrijfsscan naar software roadmap"
-                >
-                  {ROADMAP.map(({ title, icon: Icon }, index) => (
-                    <div className="growth-roadmap-step" key={title}>
-                      <div className="growth-roadmap-icon">
-                        <Icon size={22} aria-hidden="true" />
-                      </div>
-                      <span>{title}</span>
-                      {index < ROADMAP.length - 1 ? (
-                        <div className="growth-roadmap-arrow">↓</div>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-
-                <a className="home-process-link" href="/proces">
-                  Bekijk onze werkwijze <ArrowRight size={16} aria-hidden="true" />
-                </a>
+              <div className="vx-grid vx-grid--4">
+                {COMMITMENTS.map((item) => (
+                  <article key={item.title} className="vx-card">
+                    <div className="vx-icon"><Check aria-hidden="true" /></div>
+                    <h3 className="vx-h3">{item.title}</h3>
+                    <p className="vx-card__text">{item.text}</p>
+                  </article>
+                ))}
               </div>
-            </section>
-          </Suspense>
+            </div>
+          </section>
 
-          <Suspense fallback={null}>
-            <section
-              className="section-shell alt anchor-section"
-              id="online-groei-audit"
-            >
-              <div className="section-wrap">
-                <div className="lead-box growth-audit-box">
-                  <div>
-                    <div className="lead-badge">Gratis · vrijblijvend</div>
-                    <div className="lead-title">Gratis Online Groei Audit</div>
-                    <p className="lead-text">
-                      Laat één openbare pagina van je website controleren.
-                    </p>
-                    <p className="lead-text">
-                      Bekijk de gemeten signalen voor vindbaarheid en contact,
-                      ontvang verbeterpunten op prioriteit en download je rapport als PDF.
-                    </p>
-                  </div>
-
-                  <div className="lead-side">
-                    <h3>Dit krijg je:</h3>
-                    <ul>
-                      {SCAN_ITEMS.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                    <a href="/online-groei-audit" className="btn-wa">
-                      Vraag gratis Online Groei Audit aan →
-                    </a>
-                    <div className="lead-note">
-                      Scores alleen voor gemeten onderdelen. Vrijblijvend.
-                    </div>
-                  </div>
-                </div>
+          {/* Twee paden en prijs */}
+          <section className="vx-section vx-section--soft" aria-labelledby="vx-paths-title">
+            <div className="vx-container">
+              <div className="vx-head vx-head--center">
+                <p className="vx-eyebrow">Wat past bij jou?</p>
+                <h2 id="vx-paths-title" className="vx-h2">Software op maat of een snelle, sterke website</h2>
               </div>
-            </section>
-          </Suspense>
-
-          <Suspense fallback={null}>
-            <section className="section-shell" aria-labelledby="home-faq-title">
-              <div className="section-wrap">
-                <div className="section-header center">
-                  <div className="section-label">Direct antwoord</div>
-                  <h2 className="section-h2" id="home-faq-title">
-                    Veelgestelde vragen over software en websites
-                  </h2>
-                  <p className="section-p">
-                    Korte antwoorden op vragen die ondernemers vaak stellen
-                    voordat ze software, een website of beheer afspreken.
-                  </p>
-                </div>
-
-                <div className="faq-grid">
-                  {HOMEPAGE_FAQS.map((faq) => (
-                    <details className="faq-card" key={faq.question}>
-                      <summary>{faq.question}</summary>
-                      <p>{faq.answer}</p>
-                    </details>
-                  ))}
-                </div>
+              <div className="vx-paths">
+                <article className="vx-card vx-path vx-path--main">
+                  <span className="vx-path__tag">Voor mkb-bedrijven</span>
+                  <h3 className="vx-h2 vx-path__title">Software op maat</h3>
+                  <p className="vx-path__price">Offerte na bedrijfsscan</p>
+                  <p className="vx-card__text">Eenmalige opstartkosten en een vast maandbedrag voor afgesproken functionaliteit, hosting, onderhoud en support.</p>
+                  <ul className="vx-checks">
+                    <li><Check aria-hidden="true" />Gefaseerd bouwen en accepteren</li>
+                    <li><Check aria-hidden="true" />Rollen en rechten per medewerker</li>
+                    <li><Check aria-hidden="true" />Koppelingen met bestaande tools</li>
+                  </ul>
+                  <a className="vx-btn vx-btn--dark vx-btn--block" href={SCAN_URL}>Plan een bedrijfsscan <ArrowRight aria-hidden="true" /></a>
+                </article>
+                <article className="vx-card vx-path">
+                  <span className="vx-path__tag vx-path__tag--soft">Voor zelfstandigen en starters</span>
+                  <h3 className="vx-h2 vx-path__title">Website laten maken</h3>
+                  <p className="vx-path__price">Starter: <CatalogPrice code="STARTER" /></p>
+                  <p className="vx-card__text">Vaste prijzen per pakket en geen verplicht maandabonnement. Hosting en onderhoud kies je zelf erbij.</p>
+                  <ul className="vx-checks">
+                    <li><Check aria-hidden="true" />Pakketten Starter, Growth en Pro</li>
+                    <li><Check aria-hidden="true" />Gericht op lokale vindbaarheid</li>
+                    <li><Check aria-hidden="true" />Prijzen inclusief en exclusief btw</li>
+                  </ul>
+                  <a className="vx-btn vx-btn--outline vx-btn--block" href="/prijzen">Bekijk alle prijzen <ArrowRight aria-hidden="true" /></a>
+                </article>
               </div>
-            </section>
-          </Suspense>
+            </div>
+          </section>
 
-          <Suspense fallback={null}>
-            <section id="cta" className="cta-section anchor-section">
-              <div className="cta-inner">
-                <h2>Klaar om jouw processen samen te brengen?</h2>
-                <p>
-                  Plan een bedrijfsscan en bespreek waar handwerk, losse tools
-                  en abonnementen jouw bedrijf in de weg zitten.
+          {/* Over de bouwer */}
+          <section className="vx-section" aria-labelledby="vx-founder-title">
+            <div className="vx-container vx-founder">
+              <figure className="vx-founder__photo">
+                <img src="/images/founder.jpeg" alt="Rishwi, oprichter van Vedantix" width="400" height="400" loading="lazy" decoding="async" />
+              </figure>
+              <div>
+                <p className="vx-eyebrow">Over de bouwer</p>
+                <h2 id="vx-founder-title" className="vx-h2">Je praat altijd met degene die bouwt</h2>
+                <p className="vx-lead">
+                  Ik ben Rishwi, oprichter van Vedantix. Van het eerste gesprek tot het beheer houd je direct contact met mij.
+                  Geen accountmanagers ertussen: wat we afspreken, bouw ik.
                 </p>
-
-                <div className="cta-actions">
-                  <a href={SCAN_URL} className="btn-dark">
-                    Plan een bedrijfsscan →
-                  </a>
-
-                  <a
-                    href={meetingUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-wa"
-                  >
-                    Plan een Kennismaking
-                  </a>
-                </div>
-
-                <div className="cta-phone">
-                  Liever direct bellen?
-                  <strong>+31 6 26 21 99 89</strong>
+                <div className="vx-founder__actions">
+                  <a className="vx-btn vx-btn--dark" href="/over-ons">Lees meer over Vedantix</a>
+                  <a className="vx-btn vx-btn--outline" href={whatsappUrl} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Stuur een WhatsApp</a>
                 </div>
               </div>
-            </section>
-          </Suspense>
+            </div>
+          </section>
+
+          {/* Leadmagneet */}
+          <section id="online-groei-audit" className="vx-section vx-section--soft anchor-section" aria-labelledby="vx-audit-title">
+            <div className="vx-container">
+              <div className="vx-audit">
+                <div>
+                  <p className="vx-eyebrow">Gratis · vrijblijvend</p>
+                  <h2 id="vx-audit-title" className="vx-h2">Gratis Online Groei Audit voor je website</h2>
+                  <p className="vx-lead">Laat één openbare pagina controleren op signalen voor vindbaarheid in Google en AI, en op zichtbare contactmogelijkheden.</p>
+                  <a className="vx-btn vx-btn--dark" href="/online-groei-audit">Start de gratis audit <ArrowRight aria-hidden="true" /></a>
+                </div>
+                <ul className="vx-audit__list" aria-label="Dit krijg je">
+                  {SCAN_ITEMS.map((item) => <li key={item}><Check aria-hidden="true" />{item}</li>)}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="vx-section" aria-labelledby="home-faq-title">
+            <div className="vx-container">
+              <div className="vx-head vx-head--center">
+                <p className="vx-eyebrow">Direct antwoord</p>
+                <h2 id="home-faq-title" className="vx-h2">Veelgestelde vragen</h2>
+              </div>
+              <div className="vx-faq">
+                {HOMEPAGE_FAQS.map((faq) => (
+                  <details key={faq.question}>
+                    <summary>{faq.question}</summary>
+                    <p>{faq.answer}</p>
+                  </details>
+                ))}
+              </div>
+              <p className="vx-faq__more"><a className="vx-link" href="/faq">Alle vragen bekijken <ArrowRight aria-hidden="true" /></a></p>
+            </div>
+          </section>
+
+          {/* Slot-CTA */}
+          <section id="cta" className="vx-final anchor-section" aria-labelledby="vx-final-title">
+            <div className="vx-container vx-final__inner">
+              <h2 id="vx-final-title" className="vx-h2">Klaar om dubbel werk te schrappen?</h2>
+              <p className="vx-lead">Plan een bedrijfsscan en ontdek waar handwerk, losse tools en abonnementen jouw bedrijf in de weg zitten.</p>
+              <div className="vx-final__actions">
+                <a className="vx-btn vx-btn--primary" href={SCAN_URL}>Plan een bedrijfsscan <ArrowRight aria-hidden="true" /></a>
+                <a className="vx-btn vx-btn--ghost" href={whatsappUrl} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />WhatsApp ons</a>
+              </div>
+              <p className="vx-final__contact">
+                <a href={`tel:${CONTACT.PHONE_HREF}`}><Phone aria-hidden="true" /> {CONTACT.PHONE_DISPLAY}</a>
+                <a href={`mailto:${CONTACT.EMAIL}`}>{CONTACT.EMAIL}</a>
+                <span><Lock aria-hidden="true" /> Je gegevens gebruiken we alleen om je vraag te beantwoorden.</span>
+              </p>
+            </div>
+          </section>
         </main>
+
+        <div className="vx-sticky">
+          <a className="vx-btn vx-btn--primary" href={SCAN_URL}>Plan een bedrijfsscan</a>
+          <a className="vx-btn vx-btn--ghost" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="Stuur een WhatsApp-bericht"><MessageCircle aria-hidden="true" /></a>
+        </div>
       </div>
     </>
   );

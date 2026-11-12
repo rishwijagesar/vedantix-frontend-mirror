@@ -667,7 +667,7 @@ function getAvailableFutureDates(data) {
 function WhatsAppWidget() {
   const [open, setOpen] = useState(false);
   const url =
-    "https://wa.me/310626219989?text=" +
+    "https://wa.me/31626219989?text=" +
     encodeURIComponent("Hallo Vedantix! Ik heb een vraag.");
 
   return (

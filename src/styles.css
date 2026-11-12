@@ -3,6 +3,7 @@
 @import "tw-animate-css";
 @import "./vedantix-base.css";
 @import "./styles/accessibility.css";
+@import "./styles/vx.css";
 
 /*
  * Design system carried over 1:1 from the original Vedantix codebase.

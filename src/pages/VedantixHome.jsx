@@ -112,7 +112,7 @@ function Nav() {
 
 function WAWidget() {
   const [open, setOpen] = useState(false);
-  const url = "https://wa.me/310626219989?text=Hallo%20Vedantix!%20Ik%20heb%20een%20vraag.";
+  const url = "https://wa.me/31626219989?text=Hallo%20Vedantix!%20Ik%20heb%20een%20vraag.";
   return (
     <>
       <style>{`

@@ -280,7 +280,7 @@ const PAGE_STYLES = `
 `;
 
 export default function WebsiteRestaurant() {
-  const canonical = "https://vedantix.nl/website-restaurant";
+  const canonical = "https://vedantix.nl/website/restaurant";
 
   const serviceSchema = createServiceSchema({
     name: "Website laten maken voor restaurants",
@@ -337,7 +337,7 @@ export default function WebsiteRestaurant() {
                 </a>
 
                 <a
-                  href="https://wa.me/310626219989"
+                  href="https://wa.me/31626219989"
                   target="_blank"
                   rel="noreferrer"
                   className="restaurant-btn restaurant-btn-secondary"
@@ -548,7 +548,7 @@ export default function WebsiteRestaurant() {
             </div>
 
             <a
-              href="https://wa.me/310626219989"
+              href="https://wa.me/31626219989"
               target="_blank"
               rel="noreferrer"
               className="restaurant-bottom-cta-link"

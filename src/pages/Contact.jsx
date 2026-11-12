@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "@/lib/router-compat";
+import { submitContactEnquiry, websiteEnquiryUrl } from "@/lib/website-enquiry";
 import {
   ArrowRight,
   CheckCircle2,
@@ -573,6 +574,8 @@ export default function Contact() {
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [submitting, setSubmitting] = useState(false);
+  const [fallbackUrl, setFallbackUrl] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const canonical = "https://vedantix.nl/contact";
 
   const whatsappUrl = useMemo(() => {
@@ -609,7 +612,7 @@ export default function Contact() {
     setForm((current) => ({ ...current, [name]: value }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setStatus({ type: "idle", message: "" });
 
@@ -622,30 +625,32 @@ export default function Contact() {
     }
 
     setSubmitting(true);
-
-    window.setTimeout(() => {
-      const subject = encodeURIComponent(`Contactaanvraag Vedantix - ${form.helpType}`);
-      const body = encodeURIComponent(
-        [
-          `Naam: ${form.name}`,
-          `Bedrijfsnaam: ${form.companyName || "-"}`,
-          `E-mailadres: ${form.email}`,
-          `Telefoonnummer: ${form.phone || "-"}`,
-          `Waarmee kunnen we helpen: ${form.helpType}`,
-          "",
-          "Bericht:",
-          form.message,
-        ].join("\n")
-      );
-
-      window.location.href = `mailto:${CONTACT.EMAIL}?subject=${subject}&body=${body}`;
-      setSubmitting(false);
+    try {
+      await submitContactEnquiry({ ...form, website: honeypot });
+      setForm(initialForm);
       setStatus({
         type: "success",
-        message:
-          "Je e-mailprogramma is geopend met je aanvraag. Verstuur de e-mail om je bericht naar Vedantix te sturen.",
+        message: "Bedankt, je bericht is ontvangen. Vedantix neemt zo snel mogelijk contact met je op.",
       });
-    }, 350);
+    } catch (error) {
+      // The server did not confirm: never claim delivery. Offer the e-mail draft as an explicit fallback.
+      const subject = `Contactaanvraag Vedantix - ${form.helpType}`;
+      const draft = websiteEnquiryUrl(subject, {
+        Naam: form.name,
+        Bedrijfsnaam: form.companyName,
+        "E-mailadres": form.email,
+        Telefoonnummer: form.phone,
+        "Waarmee kunnen we helpen": form.helpType,
+        Bericht: form.message,
+      });
+      setFallbackUrl(draft);
+      setStatus({
+        type: "error",
+        message: `${error?.message || "Versturen is niet gelukt."} Je bericht is niet verzonden. Gebruik de knop hieronder om het per e-mail te sturen, of stuur een WhatsApp-bericht.`,
+      });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -785,6 +790,11 @@ export default function Contact() {
                     </div>
                   </div>
 
+                  <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+                    <label htmlFor="contact-website">Website (niet invullen)</label>
+                    <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(event) => setHoneypot(event.target.value)} />
+                  </div>
+
                   {status.type !== "idle" && (
                     <div
                       className={`contact-status ${
@@ -795,13 +805,18 @@ export default function Contact() {
                       {status.message}
                     </div>
                   )}
+                  {status.type === "error" && fallbackUrl && (
+                    <a className="contact-btn" href={fallbackUrl}>
+                      Open e-mailconcept <Mail size={18} aria-hidden="true" />
+                    </a>
+                  )}
 
                   <button className="contact-btn contact-btn-dark" type="submit" disabled={submitting}>
-                    {submitting ? "E-mail voorbereiden..." : "Open e-mail met je aanvraag"}
+                    {submitting ? "Versturen..." : "Verstuur je aanvraag"}
                     <Send size={18} aria-hidden="true" />
                   </button>
                   <p className="contact-form-microcopy">
-                    Dit opent je e-mailprogramma met je ingevulde bericht. Verstuur de e-mail daar om je aanvraag te verzenden. Je aanvraag is vrijblijvend.
+                    Je bericht gaat rechtstreeks naar Vedantix. Je aanvraag is vrijblijvend. Liever mailen of appen? Dat kan hieronder ook.
                   </p>
                 </form>
               </section>
