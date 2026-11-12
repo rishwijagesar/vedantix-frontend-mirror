@@ -5,30 +5,24 @@ import {
   ArrowRight,
   Clock,
   FileText,
-  Globe2,
   LifeBuoy,
-  Mail,
   MessageCircle,
   Network,
   Search,
   ShieldCheck,
-  Sparkles,
-  Star,
-  Target,
   TrendingUp,
   Users,
   Wrench,
-  Zap,
 } from "lucide-react";
 import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
 import JotformReviewWidget from "../components/JotformReviewWidget";
 import HomeHero from "./HomeHero";
-import ServiceCards from "../components/ServiceCards";
 import ClientCasesSection from "../components/home/ClientCasesSection";
 import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 import "../styles/home.css";
+import "../styles/services.css";
 import "../styles/home-hero.css";
 
 const BENEFITS = [
@@ -44,42 +38,10 @@ const ROADMAP = [
  { title: "Accepteren", icon: Users }, { title: "Beheren", icon: LifeBuoy }, { title: "Uitbreiden", icon: TrendingUp },
 ];
 
-const ECOSYSTEM = [
- { label: "Sales", icon: Users }, { label: "Planning", icon: Clock }, { label: "Marketing", icon: Target },
- { label: "Finance", icon: FileText }, { label: "HR", icon: Users }, { label: "IT", icon: Wrench },
- { label: "Rolrechten", icon: ShieldCheck }, { label: "Instructies", icon: FileText }, { label: "Support", icon: LifeBuoy },
-];
-
-const DIFFERENCES = [
- { title: "Jouw processen eerst", text: "We brengen je huidige werkwijze, tools, abonnementen en handwerk in kaart.", icon: Search },
- { title: "Voor mkb en zelfstandigen", text: "Geen vaste niche: we beoordelen wat jouw bedrijf nodig heeft, vanuit Den Bosch voor heel Nederland.", icon: Users },
- { title: "AI als hulpmiddel", text: "Snel ontwikkelen met AI, met professionele controle en tests door Vedantix.", icon: Sparkles },
- { title: "Acceptatie voor livegang", text: "Jouw team beoordeelt de afgesproken functionaliteit voordat een fase live gaat.", icon: ShieldCheck },
- { title: "Persoonlijk contact", text: "Je hebt direct contact met Vedantix; contactmomenten en support leggen we vooraf vast.", icon: MessageCircle },
- { title: "Heldere beheerafspraken", text: "Gebruik, onderhoud, wijzigingen, uitbreiding en export krijgen een concrete plek in de offerte.", icon: LifeBuoy },
-];
-
-const AI_READINESS_CARDS = [
-  {
-    title: "SEO",
-    text: "Beter gevonden worden in Google.",
-    icon: Search,
-  },
-  {
-    title: "AI-vriendelijke websites",
-    text: "Klaar voor ChatGPT, Gemini en andere AI-platformen.",
-    icon: Sparkles,
-  },
-  {
-    title: "Google Business",
-    text: "Meer lokale zichtbaarheid.",
-    icon: Target,
-  },
-  {
-    title: "Conversie",
-    text: "Meer kansen op aanvragen.",
-    icon: TrendingUp,
-  },
+const HOME_SERVICES = [
+  { title: "Software op maat", href: "/software-op-maat", description: "Breng je werkprocessen samen in één app." },
+  { title: "Websites & hosting", href: "/website-laten-maken", description: "Laat je website bouwen en beheren." },
+  { title: "Vindbaarheid & marketing", href: "/ai-vindbaarheid", description: "Maak je bedrijf beter vindbaar in Google en AI." },
 ];
 
 const SCAN_ITEMS = [
@@ -91,33 +53,7 @@ const SCAN_ITEMS = [
   "Downloadbaar PDF-rapport",
 ];
 
-const CTA_META = ["Alle sectoren", "Processen centraal", "Gefaseerde aanpak", "Heldere afspraken"];
-
 const HOMEPAGE_FAQS = SOFTWARE_FAQS.filter((_, index) => [0, 1, 2, 3, 7, 9].includes(index));
-
-function SectionCta({ title, text, dark = false, website = false }) {
-  return (
-    <div className={`mini-cta ${dark ? "dark" : ""}`}>
-      <div>
-        <h3>{title}</h3>
-        <p>{text}</p>
-      </div>
-      <div className="mini-cta-actions">
-        <a href={website ? "/online-groei-audit" : SCAN_URL} className="btn-lead">
-          {website ? "Gratis Online Groei Audit" : "Plan een bedrijfsscan"} <ArrowRight size={17} aria-hidden="true" />
-        </a>
-        <a
-          href={CONTACT.WHATSAPP_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="btn-outline"
-        >
-          Plan een kennismaking
-        </a>
-      </div>
-    </div>
-  );
-}
 
 function IconCard({ title, text, icon: Icon }) {
   return (
@@ -192,7 +128,25 @@ export default function Home({ initialCases = null }) {
           <HomeHero>
             <ClientBanner clients={initialCases} />
           </HomeHero>
-          <section className="home-services" aria-labelledby="home-services-title"><div className="services-wrap"><span className="services-kicker">Software · Websites · Hosting</span><h2 id="home-services-title">Jouw bedrijf centraal. Niet je losse tools.</h2><p>Van bedrijfssoftware op maat tot een sterke website: we bouwen vanuit jouw werkprocessen. Websites, hosting, e-mail en vindbaarheid blijven beschikbaar met hun bestaande prijzen en funnels.</p><ServiceCards /></div></section>
+          <section className="home-services" aria-labelledby="home-services-title">
+            <div className="services-wrap">
+              <h2 id="home-services-title">Waar we je mee helpen</h2>
+              <ul className="home-service-list">
+                {HOME_SERVICES.map(({ title, href, description }) => (
+                  <li key={href}>
+                    <a href={href}>
+                      <strong>{title}</strong>
+                      <ArrowRight size={18} aria-hidden="true" />
+                      <span>{description}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a className="home-process-link" href="/diensten">
+                Bekijk alle diensten <ArrowRight size={16} aria-hidden="true" />
+              </a>
+            </div>
+          </section>
 
           <Suspense fallback={null}>
             <section
@@ -232,10 +186,6 @@ export default function Home({ initialCases = null }) {
                   ))}
                 </div>
 
-                <SectionCta
-                  title="Waar verlies je nu tijd aan handwerk?"
-                  text="Een bedrijfsscan brengt processen, tools, abonnementen en kansen in kaart. Daarna volgt een concreet voorstel."
-                />
               </div>
             </section>
           </Suspense>
@@ -271,122 +221,9 @@ export default function Home({ initialCases = null }) {
                   ))}
                 </div>
 
-                <SectionCta
-                  title="Wil je weten welke stap jouw bedrijf nu mist?"
-                  text="We bepalen met jouw team de prioriteiten, opstartkosten, het vaste maandbedrag en de fases."
-                />
-              </div>
-            </section>
-          </Suspense>
-
-          <Suspense fallback={null}>
-            <section className="section-shell alt">
-              <div className="section-wrap growth-ecosystem-wrap">
-                <div className="section-header center">
-                  <div className="section-label">Alles onder één dak</div>
-                  <h2 className="section-h2">
-                    Eén partij. Eén aanspreekpunt. Minder rompslomp.
-                  </h2>
-                  <p className="section-p">
-                    Sales, planning, marketing, finance, HR en IT kunnen samenwerken
-                    in één webapp met rolrechten. Je hoeft je bedrijf niet rond
-                    losse tools te organiseren.
-                  </p>
-                </div>
-
-                <div className="growth-ecosystem">
-                  <div className="growth-ecosystem-center">
-                    <Network size={34} aria-hidden="true" />
-                    <strong>Vedantix</strong>
-                  </div>
-                  <div className="growth-ecosystem-items">
-                    {ECOSYSTEM.map(({ label, icon: Icon }) => (
-                      <div className="growth-ecosystem-item" key={label}>
-                        <Icon size={21} aria-hidden="true" />
-                        <span>{label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <SectionCta
-                  title="Meer overzicht, minder losse lijntjes."
-                  text="Bestaande tools kunnen blijven waar ze waarde toevoegen. Hun externe abonnementskosten kunnen dan ook blijven gelden."
-                />
-              </div>
-            </section>
-          </Suspense>
-
-          <Suspense fallback={null}>
-            <section className="section-shell">
-              <div className="section-wrap">
-                <div className="section-header center">
-                  <div className="section-label">
-                    Wat maakt Vedantix anders?
-                  </div>
-                  <h2 className="section-h2">
-                    Praktisch bouwen, zorgvuldig controleren
-                  </h2>
-                  <p className="section-p">
-                    We maken afspraken over inbegrepen gebruik, wijzigingen,
-                    uitbreiding, planning, kosten, beheer en dataverwerking.
-                  </p>
-                </div>
-
-                <div className="growth-difference-grid">
-                  {DIFFERENCES.map((difference) => (
-                    <IconCard key={difference.title} {...difference} />
-                  ))}
-                </div>
-
-              </div>
-            </section>
-          </Suspense>
-
-          <Suspense fallback={null}>
-            <section
-              className="section-shell alt"
-              aria-labelledby="ai-readiness-title"
-            >
-              <div className="section-wrap">
-                <div className="section-header center">
-                  <div className="section-label">AI-readiness</div>
-                  <h2 className="section-h2" id="ai-readiness-title">
-                    Gevonden worden in Google én AI
-                  </h2>
-                  <p className="section-p">
-                    Steeds meer mensen zoeken via Google, ChatGPT, Gemini en
-                    andere AI-platformen.
-                  </p>
-                  <p className="section-p">
-                    Naast software bouwen we websites en verbeteren we
-                    zoek- en AI-vindbaarheid. Duidelijke inhoud helpt systemen
-                    je bedrijf begrijpen en je expertise beoordelen.
-                  </p>
-                </div>
-
-                <div className="growth-difference-grid">
-                  {AI_READINESS_CARDS.map((card) => (
-                    <IconCard key={card.title} {...card} />
-                  ))}
-                </div>
-
-                <p
-                  className="section-p"
-                  style={{ margin: "24px auto 0", textAlign: "center" }}
-                >
-                  Lees hoe Vedantix werkt aan{" "}
-                  <a href="/ai-vindbaarheid">
-                    SEO, AEO, GEO en AI-vindbaarheid
-                  </a>
-                  .
-                </p>
-
-                <SectionCta
-                  website
-                  title="Vraag een gratis Online Groei Audit aan"
-                  text="Bekijk of de teksten en structuur van de opgegeven pagina zoekmachines en AI helpen je bedrijf te begrijpen."
-                />
+                <a className="home-process-link" href="/proces">
+                  Bekijk onze werkwijze <ArrowRight size={16} aria-hidden="true" />
+                </a>
               </div>
             </section>
           </Suspense>
@@ -445,10 +282,10 @@ export default function Home({ initialCases = null }) {
 
                 <div className="faq-grid">
                   {HOMEPAGE_FAQS.map((faq) => (
-                    <article className="faq-card" key={faq.question}>
-                      <h3>{faq.question}</h3>
+                    <details className="faq-card" key={faq.question}>
+                      <summary>{faq.question}</summary>
                       <p>{faq.answer}</p>
-                    </article>
+                    </details>
                   ))}
                 </div>
               </div>
@@ -477,15 +314,6 @@ export default function Home({ initialCases = null }) {
                   >
                     Plan een Kennismaking
                   </a>
-                </div>
-
-                <div className="cta-meta">
-                  {CTA_META.map((item) => (
-                    <div key={item} className="cta-meta-item">
-                      <span style={{ color: "#22c55e" }}>✓</span>
-                      <span>{item}</span>
-                    </div>
-                  ))}
                 </div>
 
                 <div className="cta-phone">
