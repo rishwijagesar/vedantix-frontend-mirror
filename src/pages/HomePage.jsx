@@ -199,7 +199,7 @@ export default function HomePage() {
         .step h3{font-size:1.05rem;font-weight:700;margin-bottom:10px}
         .step p{color:var(--muted);font-size:0.9rem}
         .grid-who{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-top:44px}
-        .who-card{background:#fff;border:2px solid #e8eef5;border-radius:13px;padding:22px 14px;text-align:center;transition:all 0.2s}
+        .who-card{background:#fff;border:2px solid #c3d3ea;border-radius:13px;padding:22px 14px;text-align:center;transition:all 0.2s}
         .who-card:hover{border-color:#1a73e8;transform:translateY(-2px)}
         .who-card .ic{font-size:1.9rem;margin-bottom:9px;display:block}
         .who-card span{font-size:0.85rem;font-weight:600}
@@ -238,7 +238,7 @@ export default function HomePage() {
         .c-row span{font-size:0.9rem;font-weight:500}
         form.contact-form{display:flex;flex-direction:column;gap:14px}
         .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-        input,textarea,select{width:100%;padding:12px 15px;border:2px solid #e5e7eb;border-radius:9px;font-size:0.9rem;font-family:inherit;outline:none;background:#f7f9fc;transition:border-color 0.2s}
+        input,textarea,select{width:100%;padding:12px 15px;border:2px solid #c3d3ea;border-radius:9px;font-size:0.9rem;font-family:inherit;outline:none;background:#f7f9fc;transition:border-color 0.2s}
         input:focus,textarea:focus,select:focus{border-color:#1a73e8;background:#fff}
         textarea{resize:vertical;min-height:110px}
         .btn-send{background:#1a73e8;color:#fff;padding:13px;border-radius:9px;font-weight:700;font-size:0.93rem;border:none;cursor:pointer;transition:background 0.2s;width:100%}

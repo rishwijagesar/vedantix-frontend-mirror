@@ -366,7 +366,7 @@
   gap:10px;
   align-items:center;
   box-shadow:0 1px 4px rgba(0,0,0,.04);
-  border:1px solid #f3f4f6;
+  border:1px solid #c3d3ea;
   font-size:.74rem;
   font-weight:800;
   color:#111827;
@@ -380,7 +380,7 @@
 .mockup-actions{
   padding:8px 10px;
   background:#fff;
-  border-top:1px solid #f3f4f6;
+  border-top:1px solid #c3d3ea;
   display:flex;
   gap:8px;
 }

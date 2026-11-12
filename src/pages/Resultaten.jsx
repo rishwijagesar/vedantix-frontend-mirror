@@ -1,301 +1,10 @@
-import ClientCasesSection from "../components/home/ClientCasesSection";
-import {
-  ArrowRight,
-  BarChart3,
-  MessageCircle,
-  Search,
-  ShieldCheck,
-  Sparkles,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowRight, BarChart3, MessageCircle, Search, ShieldCheck, Sparkles } from "lucide-react";
 import { Link } from "@/lib/router-compat";
+import ClientCasesSection from "../components/home/ClientCasesSection";
 import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
 import { createBreadcrumbSchema, createFAQSchema, createServiceSchema } from "../utils/schema";
-
-const RESULT_STYLES = `
-  * { box-sizing: border-box; }
-
-  .results-page {
-    min-height: 100vh;
-    background: linear-gradient(180deg, #f8fafc 0%, #eef4fb 100%);
-    color: #0f172a;
-  }
-
-  .results-shell {
-    width: min(1160px, calc(100% - 32px));
-    margin: 0 auto;
-    padding: 116px 0 76px;
-  }
-
-  .results-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
-    gap: 34px;
-    align-items: stretch;
-  }
-
-  .results-panel {
-    background: rgba(255,255,255,0.92);
-    border: 1px solid #dbe7f5;
-    border-radius: 22px;
-    box-shadow: 0 24px 58px rgba(15,23,42,0.08);
-    padding: 34px;
-  }
-
-  .results-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #1d4ed8;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 999px;
-    padding: 8px 12px;
-    font-size: 0.78rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .results-hero h1 {
-    font-size: clamp(2.45rem, 5vw, 4.7rem);
-    line-height: 0.98;
-    letter-spacing: -0.04em;
-    margin: 0 0 18px;
-  }
-
-  .results-lead {
-    max-width: 720px;
-    color: #475569;
-    line-height: 1.75;
-    font-size: 1.08rem;
-    margin: 0 0 26px;
-  }
-
-  .results-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .results-primary,
-  .results-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 46px;
-    padding: 0 18px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 850;
-    font-size: 0.92rem;
-  }
-
-  .results-primary {
-    background: #0f172a;
-    color: #fff;
-    box-shadow: 0 16px 32px rgba(15,23,42,0.14);
-  }
-
-  .results-secondary {
-    background: #fff;
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
-  }
-
-  .results-scorecard {
-    background: linear-gradient(145deg, #0f172a 0%, #172554 100%);
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .results-scorecard::after {
-    content: "";
-    position: absolute;
-    inset: auto -80px -90px auto;
-    width: 220px;
-    height: 220px;
-    border-radius: 999px;
-    background: radial-gradient(circle, rgba(96,165,250,0.34), transparent 66%);
-    pointer-events: none;
-  }
-
-  .results-score-grid {
-    display: grid;
-    gap: 12px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .results-score-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 14px 16px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-  }
-
-  .results-score-row strong {
-    font-size: 1.1rem;
-  }
-
-  .results-section {
-    margin-top: 34px;
-  }
-
-  .results-section-header {
-    max-width: 760px;
-    margin-bottom: 22px;
-  }
-
-  .results-section-header.center {
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
-
-  .results-section-label {
-    color: #2563eb;
-    font-size: 0.78rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .results-section h2 {
-    font-size: clamp(1.9rem, 3.6vw, 3rem);
-    letter-spacing: -0.035em;
-    line-height: 1.05;
-    margin: 0 0 12px;
-  }
-
-  .results-section p {
-    color: #64748b;
-    line-height: 1.75;
-    margin: 0;
-  }
-
-  .results-card-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .results-card {
-    background: #fff;
-    border: 1px solid #dbe7f5;
-    border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 16px 34px rgba(15,23,42,0.05);
-  }
-
-  .results-card svg {
-    color: #2563eb;
-    margin-bottom: 14px;
-  }
-
-  .results-card h3 {
-    margin: 0 0 8px;
-    font-size: 1rem;
-  }
-
-  .results-case {
-    display: grid;
-    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
-    gap: 18px;
-  }
-
-  .results-case-list {
-    display: grid;
-    gap: 12px;
-    margin: 20px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .results-case-list li {
-    display: grid;
-    grid-template-columns: 22px 1fr;
-    gap: 10px;
-    color: #334155;
-    line-height: 1.55;
-  }
-
-  .results-case-list svg {
-    color: #10b981;
-    margin-top: 2px;
-  }
-
-  .results-faq-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .results-faq {
-    background: #fff;
-    border: 1px solid #dbe7f5;
-    border-radius: 16px;
-    padding: 20px;
-  }
-
-  .results-faq h3 {
-    margin: 0 0 8px;
-    font-size: 1rem;
-  }
-
-  .results-bottom {
-    text-align: center;
-    background: linear-gradient(135deg, #0f172a, #1e3a8a);
-    color: #fff;
-  }
-
-  .results-bottom p {
-    color: rgba(255,255,255,0.74);
-    max-width: 680px;
-    margin: 0 auto 22px;
-  }
-
-  @media (max-width: 920px) {
-    .results-hero,
-    .results-case {
-      grid-template-columns: 1fr;
-    }
-
-    .results-card-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 640px) {
-    .results-shell {
-      width: min(100% - 24px, 1160px);
-      padding: 98px 0 54px;
-    }
-
-    .results-panel {
-      padding: 24px 20px;
-      border-radius: 18px;
-    }
-
-    .results-card-grid,
-    .results-faq-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .results-actions {
-      flex-direction: column;
-    }
-  }
-`;
+import "../styles/vx-home.css";
 
 const IMPROVEMENTS = [
   {
@@ -368,106 +77,81 @@ export default function Resultaten({ initialCases = null }) {
         schemas={[serviceSchema, faqSchema, breadcrumbSchema]}
       />
 
-      <style>{RESULT_STYLES}</style>
-
-      <div className="results-page">
+      <div className="vx-page">
         <NavBar />
-        <main className="results-shell">
-          <section className="results-hero" aria-labelledby="results-title">
-            <div className="results-panel">
-              <div className="results-kicker">
-                <TrendingUp size={16} aria-hidden="true" />
-                Klantcases
-              </div>
-              <h1 id="results-title">Ons werk voor ondernemers</h1>
-              <p className="results-lead">
-                Bekijk de websites die we hebben gebouwd, lees wat er is gerealiseerd
-                en ontdek welke aanpak bij jouw bedrijf past.
+        <main>
+          <section className="vx-pagehero" aria-labelledby="results-title">
+            <div className="vx-container vx-pagehero__inner">
+              <p className="vx-eyebrow">Klantcases</p>
+              <h1 id="results-title" className="vx-h1">Ons werk voor <span className="vx-grad">ondernemers</span></h1>
+              <p className="vx-lead">
+                Bekijk de websites die we hebben gebouwd, lees wat er is gerealiseerd en ontdek welke aanpak bij jouw bedrijf past.
               </p>
-              <div className="results-actions">
-                <a href="/online-groei-audit" className="results-primary">
-                  Vraag een gratis Online Groei Audit aan
-                  <ArrowRight size={17} aria-hidden="true" />
-                </a>
-                <Link to="/prijzen" className="results-secondary">
-                  Bekijk pakketten
-                </Link>
+              <div className="vx-pagehero__actions">
+                <a href="/online-groei-audit" className="vx-btn vx-btn--primary">Vraag een gratis Online Groei Audit aan <ArrowRight aria-hidden="true" /></a>
+                <Link to="/prijzen" className="vx-btn vx-btn--ghost">Bekijk pakketten</Link>
               </div>
+              <ul className="vx-pagehero__facts" aria-label="Waar we aan werken">
+                {[["Zichtbaarheid", "Google"], ["Vertrouwen", "Reviews"], ["Contact", "WhatsApp"], ["Groei", "Aanvragen"]].map(([label, value]) => (
+                  <li key={label}><span>{label}</span><strong>{value}</strong></li>
+                ))}
+              </ul>
             </div>
-
-            <aside className="results-panel results-scorecard" aria-label="Waar we aan werken">
-              <div className="results-section-label">Onze aanpak</div>
-              <h2 style={{ color: "#fff", marginBottom: 18 }}>Van eerste indruk naar contact</h2>
-              <div className="results-score-grid">
-                <div className="results-score-row">
-                  <span>Zichtbaarheid</span>
-                  <strong>Google</strong>
-                </div>
-                <div className="results-score-row">
-                  <span>Vertrouwen</span>
-                  <strong>Reviews</strong>
-                </div>
-                <div className="results-score-row">
-                  <span>Contact</span>
-                  <strong>WhatsApp</strong>
-                </div>
-                <div className="results-score-row">
-                  <span>Groei</span>
-                  <strong>Aanvragen</strong>
-                </div>
-              </div>
-            </aside>
           </section>
 
-          <ClientCasesSection initialCases={initialCases} placement="results" />
+          <section className="vx-section vx-section--soft vx-cases" aria-label="Klantcases">
+            <div className="vx-container">
+              <ClientCasesSection initialCases={initialCases} placement="results" />
+            </div>
+          </section>
 
-          <section className="results-section" aria-labelledby="improvements-title">
-            <div className="results-section-header center">
-              <div className="results-section-label">Wat wij verbeteren</div>
-              <h2 id="improvements-title">Wat een goede website voor je kan doen</h2>
-              <p>
-                Vedantix vertaalt technische onderdelen naar ondernemersvoordeel:
-                zichtbaarheid, vertrouwen, contact en groei.
+          <section className="vx-section" aria-labelledby="improvements-title">
+            <div className="vx-container">
+              <div className="vx-head vx-head--center">
+                <p className="vx-eyebrow">Wat wij verbeteren</p>
+                <h2 id="improvements-title" className="vx-h2">Wat een goede website voor je kan doen</h2>
+                <p className="vx-lead">Vedantix vertaalt technische onderdelen naar ondernemersvoordeel: zichtbaarheid, vertrouwen, contact en groei.</p>
+              </div>
+              <div className="vx-grid vx-grid--4">
+                {IMPROVEMENTS.map(({ title, text, icon: Icon }) => (
+                  <article className="vx-card vx-card--hover" key={title}>
+                    <div className="vx-icon"><Icon aria-hidden="true" /></div>
+                    <h3 className="vx-h3">{title}</h3>
+                    <p className="vx-card__text">{text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="vx-section vx-section--soft" aria-labelledby="results-faq-title">
+            <div className="vx-container">
+              <div className="vx-head vx-head--center">
+                <p className="vx-eyebrow">Veelgestelde vragen</p>
+                <h2 id="results-faq-title" className="vx-h2">Vragen over resultaten</h2>
+              </div>
+              <div className="vx-faq">
+                {FAQS.map((faq, index) => (
+                  <details key={faq.question} open={index === 0}>
+                    <summary>{faq.question}</summary>
+                    <p>{faq.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="vx-final" aria-labelledby="results-cta-title">
+            <div className="vx-container vx-final__inner">
+              <BarChart3 aria-hidden="true" className="vx-final__icon" />
+              <h2 id="results-cta-title" className="vx-h2">Ontdek waar jouw website groei laat liggen</h2>
+              <p className="vx-lead">
+                De gratis Online Groei Audit laat zien hoe je website scoort op vindbaarheid, vertrouwen, snelheid, mobiel gebruik en contactmomenten.
               </p>
+              <div className="vx-final__actions">
+                <a href="/online-groei-audit" className="vx-btn vx-btn--primary">Vraag een gratis Online Groei Audit aan <ArrowRight aria-hidden="true" /></a>
+              </div>
             </div>
-
-            <div className="results-card-grid">
-              {IMPROVEMENTS.map(({ title, text, icon: Icon }) => (
-                <article className="results-card" key={title}>
-                  <Icon size={28} aria-hidden="true" />
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="results-section" aria-labelledby="results-faq-title">
-            <div className="results-section-header center">
-              <div className="results-section-label">Veelgestelde vragen</div>
-              <h2 id="results-faq-title">Vragen over resultaten</h2>
-            </div>
-            <div className="results-faq-grid">
-              {FAQS.map((faq) => (
-                <article className="results-faq" key={faq.question}>
-                  <h3>{faq.question}</h3>
-                  <p>{faq.answer}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="results-section results-panel results-bottom">
-            <BarChart3 size={34} aria-hidden="true" />
-            <h2>Ontdek waar jouw website groei laat liggen</h2>
-            <p>
-              De gratis Online Groei Audit laat zien hoe je website scoort op vindbaarheid,
-              vertrouwen, snelheid, mobiel gebruik en contactmomenten.
-            </p>
-            <a href="/online-groei-audit" className="results-primary">
-              Vraag een gratis Online Groei Audit aan
-              <ArrowRight size={17} aria-hidden="true" />
-            </a>
           </section>
         </main>
       </div>

@@ -35,7 +35,7 @@ const BLOG_STYLES = `
   }
 
   .blog-card {
-    border: 1px solid #e5e7eb;
+    border: 1px solid #c3d3ea;
     border-radius: 16px;
     padding: 22px;
     background: #fff;

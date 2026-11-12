@@ -29,7 +29,7 @@
   align-items:stretch;
   margin:0 0 30px;
   padding:16px;
-  border:1px solid #dbe4f0;
+  border:1px solid #c3d3ea;
   border-radius:20px;
   background:#f8fafc;
 }
@@ -38,7 +38,7 @@
   padding:14px 16px;
   border-radius:15px;
   background:#fff;
-  border:1px solid #e5e7eb;
+  border:1px solid #c3d3ea;
 }
 
 .pricing-payment-choice span{
@@ -156,7 +156,7 @@
   padding:8px 12px;
   border-radius:999px;
   background:#f8fafc;
-  border:1px solid #e5e7eb;
+  border:1px solid #c3d3ea;
   color:#475569;
   font-size:.72rem;
   font-weight:800;
@@ -211,7 +211,7 @@
   padding:10px 12px;
   border-radius:12px;
   background:#f8fafc;
-  border:1px solid #e5e7eb;
+  border:1px solid #c3d3ea;
   font-size:.73rem;
   color:#475569;
   line-height:1.55;
@@ -229,7 +229,7 @@
   padding:10px 12px;
   border-radius:12px;
   background:#f8fafc;
-  border:1px solid #e5e7eb;
+  border:1px solid #c3d3ea;
   font-size:.74rem;
   color:#475569;
   line-height:1.5;
@@ -299,7 +299,7 @@
 .p-cta.default{
   background:#f8fafc;
   color:#374151;
-  border:1.5px solid #e5e7eb;
+  border:1.5px solid #c3d3ea;
 }
 
 .p-cta.default:hover{
@@ -341,7 +341,7 @@
   padding:20px 22px;
   border-radius:18px;
   background:#f8fafc;
-  border:1px solid #e5e7eb;
+  border:1px solid #c3d3ea;
   text-align:center;
 }
 
@@ -361,7 +361,7 @@
 .pricing-empty{
   grid-column:1 / -1;
   padding:18px;
-  border:1px solid #e5e7eb;
+  border:1px solid #c3d3ea;
   border-radius:18px;
   background:#f8fafc;
   color:#475569;

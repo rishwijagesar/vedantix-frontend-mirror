@@ -234,7 +234,7 @@ export default function VedantixHome() {
         .step h3{font-size:1rem;font-weight:700;margin-bottom:8px}
         .step p{color:#6b7280;font-size:0.9rem}
         .grid-who{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-top:44px}
-        .wc{background:#fff;border:2px solid #e8eef5;border-radius:13px;padding:22px 14px;text-align:center;transition:all 0.2s;text-decoration:none;color:inherit;display:block}
+        .wc{background:#fff;border:2px solid #c3d3ea;border-radius:13px;padding:22px 14px;text-align:center;transition:all 0.2s;text-decoration:none;color:inherit;display:block}
         .wc:hover{border-color:#1a73e8;transform:translateY(-2px)}
         .wc .ic{font-size:1.9rem;margin-bottom:9px;display:block}
         .wc span:last-child{font-size:0.85rem;font-weight:600}

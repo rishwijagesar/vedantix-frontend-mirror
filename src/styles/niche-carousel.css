@@ -27,7 +27,7 @@
     width:42px;
     height:42px;
     border-radius:12px;
-    border:1px solid #e5e7eb;
+    border:1px solid #c3d3ea;
     background:#fff;
     color:#111827;
     font-size:1rem;
@@ -52,7 +52,7 @@
   
   .niche-card{
     background:#fff;
-    border:1px solid #e5e7eb;
+    border:1px solid #c3d3ea;
     border-radius:20px;
     overflow:hidden;
     box-shadow:0 10px 30px rgba(0,0,0,.04);
@@ -141,7 +141,7 @@
     padding:12px 14px;
     border-radius:12px;
     background:#f8fafc;
-    border:1px solid #eef2f7;
+    border:1px solid #c3d3ea;
     font-size:.8rem;
     color:#334155;
     font-weight:700;

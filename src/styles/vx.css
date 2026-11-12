@@ -36,13 +36,13 @@
 .vx-head { max-width: 760px; margin-bottom: clamp(28px, 4vw, 52px); }
 .vx-head--center { margin-inline: auto; text-align: center; }
 .vx-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--vx-success); margin-bottom: 14px; }
-.vx-section--dark .vx-eyebrow, .vx-hero .vx-eyebrow { color: var(--vx-accent); }
+.vx-section--dark .vx-eyebrow, .vx-hero .vx-eyebrow, .vx-pagehero .vx-eyebrow, .vx-final .vx-eyebrow { color: var(--vx-accent); }
 .vx-eyebrow::before { content: ""; width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
 .vx-h1 { font-size: clamp(2.15rem, 5.2vw + .4rem, 4.1rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 800; }
 .vx-h2 { font-size: clamp(1.7rem, 2.6vw + .7rem, 2.75rem); line-height: 1.1; letter-spacing: -.03em; font-weight: 800; }
 .vx-h3 { font-size: 1.12rem; line-height: 1.3; letter-spacing: -.01em; font-weight: 700; }
 .vx-lead { font-size: clamp(1.02rem, .5vw + .92rem, 1.22rem); line-height: 1.6; color: var(--vx-muted); margin-top: 16px; }
-.vx-section--dark .vx-lead, .vx-hero .vx-lead { color: var(--vx-on-dark); }
+.vx-section--dark .vx-lead, .vx-hero .vx-lead, .vx-pagehero .vx-lead { color: var(--vx-on-dark); }
 .vx-grad { background: var(--vx-highlight); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* Buttons ----------------------------------------------------------- */
@@ -63,7 +63,7 @@
 .vx-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--vx-success); text-decoration: none; }
 .vx-link:hover { text-decoration: underline; text-underline-offset: 4px; }
 .vx-link svg { width: 16px; height: 16px; }
-.vx-hero .vx-link, .vx-section--dark .vx-link { color: var(--vx-accent); }
+.vx-hero .vx-link, .vx-pagehero .vx-link, .vx-section--dark .vx-link { color: var(--vx-accent); }
 
 /* Cards & chips ------------------------------------------------------ */
 .vx-card { position: relative; overflow: hidden; background: linear-gradient(180deg, #ffffff, #f7faff); border: 1px solid var(--vx-card-line); border-radius: var(--vx-radius-lg); padding: clamp(20px, 2.4vw, 32px); box-shadow: var(--vx-card-shadow); }
@@ -106,3 +106,20 @@ body:has(.site-nav-links.is-open) .vx-sticky { display: none; }
 .vx-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--vx-highlight); }
 .vx-card .vx-h3 { color: var(--vx-hero); }
 .vx-card__text { color: #44556f; }
+
+/* Paginakop en gedeelde onderdelen voor binnenpagina's -------------------------- */
+.vx-pagehero { position: relative; overflow: hidden; background: var(--vx-hero); color: var(--vx-paper); padding-block: calc(72px + clamp(36px, 6vw, 72px)) clamp(44px, 6vw, 80px); }
+.vx-pagehero::before { content: ""; position: absolute; inset: -30% -10% auto auto; width: min(800px, 120vw); height: min(800px, 120vw); background: radial-gradient(closest-side, #74adff2e, transparent 70%); pointer-events: none; }
+.vx-pagehero::after { content: ""; position: absolute; inset: auto auto -40% -10%; width: min(600px, 100vw); height: min(600px, 100vw); background: radial-gradient(closest-side, #b29aff22, transparent 70%); pointer-events: none; }
+.vx-pagehero__inner { position: relative; z-index: 1; max-width: 960px; margin-inline: 0; }
+@media (min-width: 1280px) { .vx-pagehero__inner { margin-inline: auto; max-width: var(--vx-max); } .vx-pagehero__inner > .vx-lead { max-width: 720px; } }
+.vx-pagehero .vx-h1 { font-size: clamp(2.1rem, 3vw + 1.4rem, 3.6rem); max-width: 18ch; }
+.vx-pagehero .vx-lead { max-width: 720px; }
+.vx-pagehero__actions { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+@media (min-width: 480px) { .vx-pagehero__actions { flex-direction: row; flex-wrap: wrap; } }
+.vx-pagehero__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 36px; max-width: 720px; }
+.vx-pagehero__facts li { display: grid; gap: 4px; padding: 14px 16px; border-radius: 14px; background: #ffffff0d; border: 1px solid var(--vx-dark-line); }
+.vx-pagehero__facts span { font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9fb0cb; }
+.vx-pagehero__facts strong { font-size: 1.05rem; color: var(--vx-paper); }
+@media (min-width: 768px) { .vx-pagehero__facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.vx-final__icon { width: 34px; height: 34px; margin: 0 auto 14px; color: var(--vx-accent); }

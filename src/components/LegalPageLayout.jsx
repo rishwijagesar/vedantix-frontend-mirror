@@ -61,7 +61,7 @@ const LEGAL_STYLES = `
 
   .legal-pill {
     background: #fff;
-    border: 1px solid #d8e3f2;
+    border: 1px solid #c3d3ea;
     border-radius: 999px;
     color: #52657f;
     display: inline-flex;
@@ -79,7 +79,7 @@ const LEGAL_STYLES = `
   .legal-card,
   .legal-contact {
     background: #fff;
-    border: 1px solid #d8e3f2;
+    border: 1px solid #c3d3ea;
     border-radius: 14px;
     box-shadow: 0 16px 45px rgba(15,23,42,0.06);
   }

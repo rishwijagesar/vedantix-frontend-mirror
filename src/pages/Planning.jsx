@@ -70,7 +70,7 @@ const PAGE_STYLES = `
 
   .planning-progress{
     background:#fff;
-    border-bottom:1px solid #e5e7eb;
+    border-bottom:1px solid #c3d3ea;
     padding:0 5%;
   }
 
@@ -141,7 +141,7 @@ const PAGE_STYLES = `
 
   .date-card{
     width:100%;
-    border:2px solid #e5e7eb;
+    border:2px solid #c3d3ea;
     border-radius:14px;
     padding:18px 20px;
     cursor:pointer;
@@ -187,7 +187,7 @@ const PAGE_STYLES = `
     width:24px;
     height:24px;
     border-radius:50%;
-    border:2px solid #e5e7eb;
+    border:2px solid #c3d3ea;
     background:transparent;
     display:flex;
     align-items:center;
@@ -210,7 +210,7 @@ const PAGE_STYLES = `
 
   .time-slot{
     padding:10px 18px;
-    border:2px solid #e5e7eb;
+    border:2px solid #c3d3ea;
     border-radius:10px;
     cursor:pointer;
     font-weight:600;
@@ -316,7 +316,7 @@ const PAGE_STYLES = `
   .form-input{
     width:100%;
     padding:13px 16px;
-    border:2px solid #e5e7eb;
+    border:2px solid #c3d3ea;
     border-radius:10px;
     font-size:.93rem;
     outline:none;

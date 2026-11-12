@@ -65,7 +65,7 @@
 .google-review-card {
   flex: 0 0 min(100%, 340px);
   scroll-snap-align: start;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #c3d3ea;
   border-radius: 8px;
   padding: 20px;
   background: #fff;

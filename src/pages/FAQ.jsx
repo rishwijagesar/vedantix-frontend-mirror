@@ -192,7 +192,7 @@ const FAQ_STYLES = `
 
   .faq-item {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #c3d3ea;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
@@ -267,7 +267,7 @@ const FAQ_STYLES = `
 
   .faq-answer {
     padding: 0 22px 20px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #c3d3ea;
     color: #374151;
     line-height: 1.8;
     font-size: 0.97rem;

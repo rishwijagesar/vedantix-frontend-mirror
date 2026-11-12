@@ -136,7 +136,7 @@ const PAGE_STYLES = `
     padding: 16px;
     border-radius: 12px;
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #c3d3ea;
   }
 
   .salon-secondary-highlight-box strong {
@@ -198,7 +198,7 @@ const PAGE_STYLES = `
   .salon-blog-link {
     display: block;
     padding: 18px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #c3d3ea;
     border-radius: 14px;
     text-decoration: none;
     color: #111827;

@@ -61,7 +61,7 @@ const INDUSTRY_STYLES = `
 
   .industry-panel {
     background: rgba(255,255,255,0.94);
-    border: 1px solid #dbe7f5;
+    border: 1px solid #c3d3ea;
     border-radius: 22px;
     box-shadow: 0 22px 52px rgba(15,23,42,0.08);
     padding: 34px;
@@ -229,7 +229,7 @@ const INDUSTRY_STYLES = `
 
   .industry-card {
     background: #fff;
-    border: 1px solid #dbe7f5;
+    border: 1px solid #c3d3ea;
     border-radius: 18px;
     padding: 22px;
     box-shadow: 0 16px 34px rgba(15,23,42,0.05);
@@ -291,7 +291,7 @@ const INDUSTRY_STYLES = `
     gap: 8px;
     border-radius: 999px;
     background: #fff;
-    border: 1px solid #dbe7f5;
+    border: 1px solid #c3d3ea;
     color: #0f172a;
     text-decoration: none;
     padding: 10px 14px;
@@ -307,7 +307,7 @@ const INDUSTRY_STYLES = `
 
   .industry-faq {
     background: #fff;
-    border: 1px solid #dbe7f5;
+    border: 1px solid #c3d3ea;
     border-radius: 16px;
     padding: 20px;
   }
@@ -328,7 +328,7 @@ const INDUSTRY_STYLES = `
     text-decoration: none;
     color: #0f172a;
     background: #fff;
-    border: 1px solid #dbe7f5;
+    border: 1px solid #c3d3ea;
     border-radius: 16px;
     padding: 18px;
   }

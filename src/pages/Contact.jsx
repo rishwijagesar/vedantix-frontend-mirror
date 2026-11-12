@@ -278,7 +278,7 @@ const CONTACT_STYLES = `
 
   .contact-intro-card {
     padding: 24px;
-    border: 1px solid #d8e4f2;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #ffffff;
     box-shadow: 0 18px 50px rgba(15,23,42,0.06);
@@ -317,7 +317,7 @@ const CONTACT_STYLES = `
 
   .contact-card {
     padding: 22px;
-    border: 1px solid #d8e4f2;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #ffffff;
     box-shadow: 0 14px 38px rgba(15,23,42,0.05);
@@ -356,7 +356,7 @@ const CONTACT_STYLES = `
   }
 
   .contact-panel {
-    border: 1px solid #d8e4f2;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #ffffff;
     box-shadow: 0 18px 50px rgba(15,23,42,0.07);
@@ -457,7 +457,7 @@ const CONTACT_STYLES = `
     display: grid;
     gap: 4px;
     padding: 14px;
-    border: 1px solid #d8e4f2;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #ffffff;
   }
@@ -488,7 +488,7 @@ const CONTACT_STYLES = `
 
   .contact-faq-card {
     padding: 20px;
-    border: 1px solid #d8e4f2;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #ffffff;
   }

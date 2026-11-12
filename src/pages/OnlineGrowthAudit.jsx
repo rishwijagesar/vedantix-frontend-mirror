@@ -884,7 +884,7 @@ const AUDIT_STYLES = `
 .audit-progress-card,
 .audit-result-hero,
 .audit-final-cta {
-  border: 1px solid #dbe4f0;
+  border: 1px solid #c3d3ea;
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 20px 60px rgba(15, 23, 42, .07);
@@ -1250,7 +1250,7 @@ const AUDIT_STYLES = `
 .audit-score-card,
 .audit-priority-card {
   padding: 17px;
-  border: 1px solid #dbe4f0;
+  border: 1px solid #c3d3ea;
   border-radius: 8px;
   background: #f8fafc;
 }
@@ -1463,7 +1463,7 @@ const AUDIT_STYLES = `
 .audit-table-wrap th,
 .audit-table-wrap td {
   padding: 12px 10px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #c3d3ea;
   text-align: left;
   vertical-align: top;
 }
@@ -1534,7 +1534,7 @@ const AUDIT_STYLES = `
   max-height: min(760px, calc(100vh - 36px));
   overflow-y: auto;
   padding: clamp(24px, 5vw, 36px);
-  border: 1px solid #dbe4f0;
+  border: 1px solid #c3d3ea;
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 30px 90px rgba(2, 6, 23, .3);
@@ -1548,7 +1548,7 @@ const AUDIT_STYLES = `
   width: 38px;
   height: 38px;
   place-items: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #c3d3ea;
   border-radius: 999px;
   background: #fff;
   color: #475569;

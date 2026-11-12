@@ -283,7 +283,7 @@ const PAGE_STYLES = `
   .voorwie-match-card,
   .voorwie-faq-card,
   .voorwie-closing-card {
-    border: 1px solid #dbe4f0;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #fff;
     box-shadow: 0 18px 45px rgba(15, 23, 42, .065);

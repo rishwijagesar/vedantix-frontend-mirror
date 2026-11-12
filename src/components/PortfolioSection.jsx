@@ -94,7 +94,7 @@ export default function PortfolioSection() {
   return (
     <section id="portfolio" style={{ padding: "90px 5%", background: "#f7f9fc" }}>
       <style>{`
-        .pf-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;transition:all 0.25s;cursor:pointer}
+        .pf-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid #c3d3ea;transition:all 0.25s;cursor:pointer}
         .pf-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,0.12);border-color:transparent}
         .pf-img{width:100%;height:210px;object-fit:cover;display:block;transition:transform 0.4s}
         .pf-card:hover .pf-img{transform:scale(1.04)}
@@ -103,7 +103,7 @@ export default function PortfolioSection() {
         .pf-card:hover .pf-overlay{background:rgba(10,22,40,0.35)}
         .pf-view-btn{background:#fff;color:#0a1628;padding:9px 22px;border-radius:100px;font-weight:700;font-size:0.82rem;opacity:0;transform:translateY(8px);transition:all 0.2s;text-decoration:none;border:none;cursor:pointer}
         .pf-card:hover .pf-view-btn{opacity:1;transform:translateY(0)}
-        .pf-cat-btn{padding:8px 20px;border-radius:100px;font-weight:600;font-size:0.84rem;cursor:pointer;border:2px solid #e5e7eb;background:#fff;color:#475569;transition:all 0.15s;white-space:nowrap}
+        .pf-cat-btn{padding:8px 20px;border-radius:100px;font-weight:600;font-size:0.84rem;cursor:pointer;border:2px solid #c3d3ea;background:#fff;color:#475569;transition:all 0.15s;white-space:nowrap}
         .pf-cat-btn.active{background:#0a1628;color:#fff;border-color:#0a1628}
         .pf-cat-btn:hover:not(.active){border-color:#0a1628;color:#0a1628}
         @media(max-width:768px){

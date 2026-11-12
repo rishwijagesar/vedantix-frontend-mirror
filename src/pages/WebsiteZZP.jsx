@@ -139,7 +139,7 @@ const PAGE_STYLES = `
   .zzp-blog-link {
     display: block;
     padding: 18px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #c3d3ea;
     border-radius: 14px;
     text-decoration: none;
     color: #111827;

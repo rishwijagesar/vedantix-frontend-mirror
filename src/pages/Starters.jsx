@@ -244,15 +244,15 @@ export default function Starters() {
         .step-btn:disabled{background:#9ca3af;cursor:not-allowed;transform:none}
         .step-btn-out{background:transparent;color:#1a73e8;padding:13px 28px;border-radius:10px;font-weight:600;font-size:0.95rem;border:2px solid #1a73e8;cursor:pointer;transition:all 0.2s}
         .step-btn-out:hover{background:#1a73e8;color:#fff}
-        .domain-input{width:100%;padding:16px 20px;border:2px solid #e5e7eb;border-radius:12px;font-size:1.05rem;outline:none;background:#fff;transition:border-color 0.2s}
+        .domain-input{width:100%;padding:16px 20px;border:2px solid #c3d3ea;border-radius:12px;font-size:1.05rem;outline:none;background:#fff;transition:border-color 0.2s}
         .domain-input:focus{border-color:#1a73e8}
-        .feat-chip{padding:10px 16px;border-radius:100px;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:2px solid #e5e7eb;background:#fff;color:#374151}
+        .feat-chip{padding:10px 16px;border-radius:100px;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:2px solid #c3d3ea;background:#fff;color:#374151}
         .feat-chip.selected{background:#1a73e8;color:#fff;border-color:#1a73e8}
         .feat-chip:hover{border-color:#1a73e8}
-        .pkg-card{border:2px solid #e5e7eb;border-radius:16px;padding:28px;cursor:pointer;transition:all 0.2s;background:#fff}
+        .pkg-card{border:2px solid #c3d3ea;border-radius:16px;padding:28px;cursor:pointer;transition:all 0.2s;background:#fff}
         .pkg-card.selected{border-color:#1a73e8;background:#eff6ff}
         .pkg-card:hover{border-color:#1a73e8}
-        input[type=text],input[type=email],input[type=tel],textarea{width:100%;padding:13px 16px;border:2px solid #e5e7eb;border-radius:10px;font-size:0.93rem;outline:none;background:#fff;transition:border-color 0.2s}
+        input[type=text],input[type=email],input[type=tel],textarea{width:100%;padding:13px 16px;border:2px solid #c3d3ea;border-radius:10px;font-size:0.93rem;outline:none;background:#fff;transition:border-color 0.2s}
         input:focus,textarea:focus{border-color:#1a73e8}
         textarea{resize:vertical;min-height:100px}
       `}</style>

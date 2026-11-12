@@ -253,7 +253,7 @@ const PROCESS_STYLES = `
   .proces-time-card,
   .proces-expect-card,
   .proces-closing-card {
-    border: 1px solid #dbe4f0;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #fff;
     box-shadow: 0 18px 45px rgba(15, 23, 42, .065);
@@ -309,7 +309,7 @@ const PROCESS_STYLES = `
 
   .proces-mini-box {
     padding: 14px;
-    border: 1px solid #dbe4f0;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #f8fafc;
   }
@@ -382,7 +382,7 @@ const PROCESS_STYLES = `
 
   .proces-faq-card {
     padding: 22px;
-    border: 1px solid #dbe4f0;
+    border: 1px solid #c3d3ea;
     border-radius: 8px;
     background: #fff;
     box-shadow: 0 18px 45px rgba(15, 23, 42, .055);

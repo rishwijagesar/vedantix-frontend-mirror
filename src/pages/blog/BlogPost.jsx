@@ -111,7 +111,7 @@ export default function BlogPost() {
           .blogpost-related-card {
             display: block;
             padding: 18px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #c3d3ea;
             border-radius: 14px;
             text-decoration: none;
             color: #111827;
@@ -123,7 +123,7 @@ export default function BlogPost() {
           .blogpost-faq-card {
             display: block;
             padding: 18px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #c3d3ea;
             border-radius: 14px;
             background: #fff;
           }
