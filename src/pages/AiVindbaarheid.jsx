@@ -4,7 +4,6 @@ import {
   CheckCircle2,
   Globe2,
   HelpCircle,
-  MapPin,
   MessageSquareText,
   Search,
   ServerCog,
@@ -196,10 +195,6 @@ export default function AiVindbaarheid() {
                   GEO en AIO beschrijven werk aan begrijpelijke informatie voor AI-systemen.
                   De basis overlapt: nuttige inhoud, toegankelijke techniek en betrouwbare bedrijfsinformatie.
                 </p>
-                <div className="ai-location">
-                  <MapPin size={18} aria-hidden="true" />
-                  Neercanne 6, 5235 HB 's-Hertogenbosch
-                </div>
               </aside>
             </div>
           </header>

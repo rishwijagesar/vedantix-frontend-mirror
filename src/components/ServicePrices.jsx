@@ -1,5 +1,5 @@
 import { serviceForCode } from "../data/services";
-export const money = value => new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(Number(value));
+export const money = value => { const amount = Number(value); const digits = Number.isInteger(amount) ? 0 : 2; return new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR", minimumFractionDigits: digits, maximumFractionDigits: digits }).format(amount); };
 export const period = type => type === "MONTHLY" ? "per maand" : type === "YEARLY" ? "per jaar" : "eenmalig";
 export default function ServicePrices({ products = [], details = false }) {
   return <div className="service-price-grid">{products.map(product => <article className="service-price" key={product.code}>

@@ -2,8 +2,8 @@
   --pricing-ink: #122039;
   --pricing-muted: #4f5d76;
   --pricing-line: #c3d3ea;
-  --pricing-blue: #315efb;
-  --pricing-green: #20c978;
+  --pricing-blue: #087b62;
+  --pricing-green: #087b62;
   min-height: 100vh;
   background: #eaf1fc;
   color: var(--pricing-ink);
@@ -29,8 +29,8 @@
   padding: 116px 0 28px;
   color: #fff;
   background:
-    radial-gradient(circle at 8% 24%, rgba(64, 112, 255, 0.2), transparent 31%),
-    radial-gradient(circle at 92% 46%, rgba(32, 201, 120, 0.14), transparent 30%),
+    radial-gradient(circle at 8% 24%, rgba(116, 173, 255, 0.2), transparent 31%),
+    radial-gradient(circle at 92% 46%, rgba(178, 154, 255, 0.14), transparent 30%),
     linear-gradient(145deg, #071225 0%, #0b1730 55%, #0d2135 100%);
 }
 
@@ -54,7 +54,7 @@
   width: 760px;
   height: 520px;
   border-radius: 50%;
-  background: rgba(72, 113, 255, 0.16);
+  background: rgba(116, 173, 255, 0.16);
   filter: blur(110px);
   transform: translateX(-50%);
   pointer-events: none;
@@ -79,7 +79,7 @@
 
 .pricing-eyebrow,
 .pricing-kicker {
-  color: #8ea8ff;
+  color: #74adff;
   font-size: 0.73rem;
   font-weight: 850;
   letter-spacing: 0.14em;
@@ -98,8 +98,8 @@
   width: 7px;
   height: 7px;
   border-radius: 99px;
-  background: #31df8e;
-  box-shadow: 0 0 0 6px rgba(49, 223, 142, 0.12);
+  background: #74adff;
+  box-shadow: 0 0 0 6px rgba(116, 173, 255, 0.14);
 }
 
 .pricing-hero h1 {
@@ -165,7 +165,7 @@
 }
 
 .pricing-mode-switch button.active strong {
-  color: #315efb;
+  color: #087b62;
 }
 
 .pricing-package-grid {
@@ -195,11 +195,11 @@
 }
 
 .pricing-package-card.recommended {
-  border-color: rgba(57, 218, 140, 0.72);
+  border-color: rgba(116, 173, 255, 0.8);
   background:
     linear-gradient(180deg, rgba(38, 207, 127, 0.12), rgba(255, 255, 255, 0.06) 45%),
     rgba(255, 255, 255, 0.06);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(57, 218, 140, 0.08);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(116, 173, 255, 0.12);
 }
 
 .pricing-recommended-badge {
@@ -228,7 +228,7 @@
 .pricing-card-label {
   display: block;
   margin-bottom: 4px;
-  color: #9aafff;
+  color: #74adff;
   font-size: 0.67rem;
   font-weight: 850;
   letter-spacing: 0.09em;
@@ -299,7 +299,7 @@
   align-items: center;
   gap: 7px;
   margin-top: 4px;
-  color: #75efad;
+  color: #74adff;
   font-size: 0.74rem;
   font-weight: 750;
 }
@@ -360,7 +360,7 @@
 .pricing-feature-list svg {
   flex: 0 0 auto;
   margin-top: 1px;
-  color: #54e69b;
+  color: #74adff;
 }
 
 .pricing-card-cta {
@@ -481,7 +481,7 @@
 }
 
 .pricing-payment-grid article.selected {
-  border-color: #9ab1ff;
+  border-color: #74adff;
   background: #f4f7ff;
   box-shadow: 0 18px 50px rgba(37, 76, 190, 0.1);
 }
@@ -643,12 +643,12 @@
 
 .pricing-online-options a:hover {
   transform: translateY(-3px);
-  border-color: #9ab1ff;
+  border-color: #74adff;
   box-shadow: 0 15px 35px rgba(35, 67, 150, 0.1);
 }
 
 .pricing-online-options a.featured {
-  border-color: #7a98ff;
+  border-color: #74adff;
   box-shadow: inset 0 0 0 1px rgba(49, 94, 251, 0.08);
 }
 
@@ -671,7 +671,7 @@
 
 .pricing-online-options b {
   margin-top: 5px;
-  color: #1d48d0;
+  color: #122039;
   font-size: 1.35rem;
   letter-spacing: -0.035em;
 }
@@ -736,7 +736,7 @@
 
 .pricing-addon-grid article > strong {
   margin: 15px 0 5px;
-  color: #1d48d0;
+  color: #122039;
   font-size: 0.8rem;
 }
 
@@ -843,7 +843,7 @@
 .pricing-final-cta-inner > div:first-child > span {
   display: block;
   margin-bottom: 10px;
-  color: #6de9a8;
+  color: #74adff;
   font-size: 0.72rem;
   font-weight: 850;
   letter-spacing: 0.12em;
@@ -1160,3 +1160,16 @@
 .pricing-section .pricing-table-shell {
   box-shadow: 0 1px 2px rgba(18, 32, 57, .09), 0 12px 30px rgba(18, 32, 57, .09);
 }
+
+/* Twee routes bovenaan: software op offerte of een websitepakket */
+.pricing-routes { display: grid; gap: 12px; margin: 30px 0 46px; }
+.pricing-route { display: grid; gap: 6px; padding: 20px 22px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.06); color: #fff; text-decoration: none; transition: border-color 160ms ease, background 160ms ease; }
+.pricing-route:hover { border-color: #74adff; background: rgba(116, 173, 255, 0.1); }
+.pricing-route:focus-visible { outline: 3px solid #facc15; outline-offset: 3px; }
+.pricing-route small { color: #74adff; font-size: .74rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.pricing-route strong { font-size: 1.2rem; letter-spacing: -.02em; }
+.pricing-route span { color: #d0d9e9; font-size: .95rem; line-height: 1.5; }
+.pricing-route em { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; color: #fff; font-style: normal; font-weight: 700; font-size: .92rem; }
+.pricing-route--main { border-color: rgba(116, 173, 255, 0.55); background: linear-gradient(135deg, rgba(116, 173, 255, 0.16), rgba(178, 154, 255, 0.1)); }
+@media (min-width: 768px) { .pricing-routes { grid-template-columns: 1fr 1fr; } }
+@media (prefers-reduced-motion: reduce) { .pricing-route { transition: none; } }

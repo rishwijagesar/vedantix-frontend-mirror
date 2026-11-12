@@ -25,6 +25,7 @@ import ServicePrices from "../components/ServicePrices";
 import { PROJECT_CATEGORIES } from "../data/services";
 import "../styles/services.css";
 import { CONTACT } from "../constants/contact";
+import { SCAN_URL } from "../data/positioning";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 import "../styles/prijzen.css";
 
@@ -104,6 +105,10 @@ const COMPARISON_ROWS = [
     values: { STARTER: "Optioneel", GROWTH: "Optioneel", PRO: "Inbegrepen" },
   },
   {
+    label: "Hosting en zakelijke e-mail",
+    values: { STARTER: "Los te kiezen", GROWTH: "Los te kiezen", PRO: "Los te kiezen" },
+  },
+  {
     label: "Feedbackrondes",
     values: { STARTER: "2", GROWTH: "3", PRO: "3" },
   },
@@ -148,12 +153,15 @@ const BASE_PRICE_FAQS = [
 ];
 
 function currency(value) {
+  const amount = Number(value || 0);
+  // Hele bedragen zonder decimalen (€ 499), anders altijd twee (€ 36,30 i.p.v. € 36,3)
+  const digits = Number.isInteger(amount) ? 0 : 2;
   return new Intl.NumberFormat("nl-NL", {
     style: "currency",
     currency: "EUR",
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 0,
-  }).format(Number(value || 0));
+    maximumFractionDigits: digits,
+    minimumFractionDigits: digits,
+  }).format(amount);
 }
 
 function packageWhatsapp(pkg) {
@@ -189,10 +197,15 @@ export default function Prijzen({ initialProducts = null }) {
     priceIncl: Number(p.price_incl_vat), description: p.description, featured: Number(p.duration_years) === 3,
   }));
   const addonIcons = { EMAIL: Mail, SEO_START: Search, AEO_START: MessageCircle, GEO_AIO_START: Sparkles, ANALYTICS: BarChart3, APPOINTMENTS: CalendarCheck2, EXTRA_PAGE: FilePlus2, COPYWRITING: PenLine, SUPPORT: Headphones };
-  const ADD_ONS = products.filter(p => !["WEBSITE","GROWTH","HOSTING",...PROJECT_CATEGORIES].includes(p.category.toUpperCase())).map(p => ({
-    title: p.name, price: `${p.from_price ? "Vanaf " : ""}${currency(p.price_ex_vat)} ${suffix(p.billing_type)}`,
-    priceIncl: Number(p.price_incl_vat), text: p.description, icon: addonIcons[p.code] || Sparkles,
-  }));
+  const ADD_ONS = products.filter(p => !["WEBSITE","GROWTH","HOSTING",...PROJECT_CATEGORIES].includes(p.category.toUpperCase())).map(p => {
+    const onRequest = !(Number(p.price_ex_vat) > 0);
+    const from = p.from_price ? "Vanaf " : "";
+    return {
+      title: p.name, text: p.description, icon: addonIcons[p.code] || Sparkles, onRequest,
+      price: onRequest ? "Prijs op aanvraag" : `${from}${currency(p.price_ex_vat)} ${suffix(p.billing_type)} excl. btw`,
+      priceIncl: onRequest ? "Afhankelijk van de uitvoering" : `${from.toLowerCase()}${currency(p.price_incl_vat)} incl. btw`,
+    };
+  });
   const projectProducts = products.filter(p => PROJECT_CATEGORIES.includes(p.category.toUpperCase()));
   const yearlyHosting = products.find(p => p.code === "HOSTING_YEAR");
   const heading = "Heldere prijzen. Ruimte om te groeien.";
@@ -226,7 +239,7 @@ export default function Prijzen({ initialProducts = null }) {
             <div className="pricing-container pricing-hero-inner">
               <header className="pricing-hero-header">
                 <div className="pricing-eyebrow">
-                  <span /> Websites · AI · Apps · Vindbaarheid
+                  <span /> Software op maat · Websites · Vindbaarheid
                 </div>
                 <h1 id="pricing-title">{heading}</h1>
                 <p>
@@ -235,6 +248,20 @@ export default function Prijzen({ initialProducts = null }) {
                 </p>
               </header>
 
+              <div className="pricing-routes">
+                <a className="pricing-route pricing-route--main" href="#apps-ai">
+                  <small>Voor mkb-bedrijven</small>
+                  <strong>Bedrijfssoftware op maat</strong>
+                  <span>Opstartkosten en een vast maandbedrag, vastgelegd in een offerte na de bedrijfsscan.</span>
+                  <em>Zo werkt de prijs <ArrowDown size={15} aria-hidden="true" /></em>
+                </a>
+                <a className="pricing-route" href="#websites">
+                  <small>Voor zelfstandigen en starters</small>
+                  <strong>Website laten maken</strong>
+                  <span>{WEBSITE_PACKAGES.length ? `Vanaf ${currency(Math.min(...WEBSITE_PACKAGES.map(p => p.price)))} eenmalig excl. btw. Geen verplicht abonnement.` : "Vaste pakketprijzen, geen verplicht abonnement."}</span>
+                  <em>Bekijk de pakketten <ArrowDown size={15} aria-hidden="true" /></em>
+                </a>
+              </div>
               <nav className="pricing-service-links" aria-label="Prijscategorieën"><a href="#websites">Websitepakketten</a><a href="#apps-ai">Software op offerte</a><a href="#groei">SEO & AI-vindbaarheid</a><a href="#uitbreidingen">Hosting & uitbreidingen</a></nav>
               <h2 id="websites">Websitepakketten</h2>
               {loading ? <p role="status">Actuele prijzen laden…</p> : null}
@@ -497,7 +524,7 @@ export default function Prijzen({ initialProducts = null }) {
                     return (
                       <article key={addon.title}>
                         <span className="pricing-icon"><Icon size={20} aria-hidden="true" /></span>
-                        <strong>{addon.price} excl. btw</strong><small>{currency(addon.priceIncl)} incl. btw</small>
+                        <strong>{addon.price}</strong><small>{addon.priceIncl}</small>
                         <h3>{addon.title}</h3>
                         <p>{addon.text}</p>
                         <a href={addonWhatsapp(addon.title)} target="_blank" rel="noreferrer">
@@ -546,7 +573,7 @@ export default function Prijzen({ initialProducts = null }) {
                 </p>
               </div>
               <div className="pricing-final-actions">
-                <Link className="pricing-primary-cta" to="/contact#contact-form">
+                <Link className="pricing-primary-cta" to={SCAN_URL}>
                   Plan een bedrijfsscan <ArrowRight size={17} aria-hidden="true" />
                 </Link>
                 <a

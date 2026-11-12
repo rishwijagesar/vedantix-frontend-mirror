@@ -2,7 +2,8 @@ import { Link } from "@/lib/router-compat";
 import { fetchPublicCatalog } from "../lib/public-content";
 import { usePublicContent } from "../lib/use-public-content";
 import "../styles/home-pricing.css";
-const money = new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const moneyFormat = digits => new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR", minimumFractionDigits: digits, maximumFractionDigits: digits });
+const money = { format: value => moneyFormat(Number.isInteger(Number(value)) ? 0 : 2).format(Number(value)) };
 export default function HomePricing() {
   const { data, loading, error } = usePublicContent(fetchPublicCatalog);
   const packages = data.filter(p => p.category.toUpperCase() === "WEBSITE");
