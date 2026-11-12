@@ -152,6 +152,9 @@ const BASE_PRICE_FAQS = [
   },
 ];
 
+// Eenheid per uitbreiding, zodat "eenmalig" niet verkeerd wordt gelezen
+const ADDON_UNITS = { SUPPORT: "per uur", COPYWRITING: "per pagina", EMAIL: "per mailbox per jaar" };
+
 function currency(value) {
   const amount = Number(value || 0);
   // Hele bedragen zonder decimalen (€ 499), anders altijd twee (€ 36,30 i.p.v. € 36,3)
@@ -202,7 +205,7 @@ export default function Prijzen({ initialProducts = null }) {
     const from = p.from_price ? "Vanaf " : "";
     return {
       title: p.name, text: p.description, icon: addonIcons[p.code] || Sparkles, onRequest,
-      price: onRequest ? "Prijs op aanvraag" : `${from}${currency(p.price_ex_vat)} ${suffix(p.billing_type)} excl. btw`,
+      price: onRequest ? "Prijs op aanvraag" : `${from}${currency(p.price_ex_vat)} ${ADDON_UNITS[p.code] || suffix(p.billing_type)} excl. btw`,
       priceIncl: onRequest ? "Afhankelijk van de uitvoering" : `${from.toLowerCase()}${currency(p.price_incl_vat)} incl. btw`,
     };
   });
