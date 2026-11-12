@@ -82,7 +82,7 @@ export default function Home({ initialCases = null }) {
           </section>
 
           {/* Doelgroep en probleem */}
-          <section className="vx-section" aria-labelledby="vx-pain-title">
+          <section className="vx-section vx-section--soft" aria-labelledby="vx-pain-title">
             <div className="vx-container">
               <div className="vx-head">
                 <p className="vx-eyebrow">Voor wie</p>
@@ -105,7 +105,7 @@ export default function Home({ initialCases = null }) {
           </section>
 
           {/* Oplossing: voor en na */}
-          <section className="vx-section vx-section--soft" aria-labelledby="vx-solution-title">
+          <section className="vx-section" aria-labelledby="vx-solution-title">
             <div className="vx-container vx-split">
               <div>
                 <p className="vx-eyebrow">De oplossing</p>
@@ -139,7 +139,7 @@ export default function Home({ initialCases = null }) {
           </section>
 
           {/* Zo ziet het eruit + tevreden klanten (alleen echte foto's uit CLIENT_PHOTOS) */}
-          <section className="vx-section" aria-labelledby="vx-day-title">
+          <section className="vx-section vx-section--soft" aria-labelledby="vx-day-title">
             <div className="vx-container vx-split vx-split--app">
               <div>
                 <p className="vx-eyebrow">In de praktijk</p>

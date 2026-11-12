@@ -13,8 +13,9 @@
   --vx-radius-lg: 22px;
   --vx-max: 1200px;
   --vx-ring: #facc15;
-  --vx-card-shadow: 0 1px 2px #12203912, 0 8px 24px #12203910;
-  --vx-card-shadow-hover: 0 2px 4px #12203914, 0 18px 40px #1220391c;
+  --vx-card-shadow: 0 1px 2px #12203918, 0 10px 28px #12203916;
+  --vx-card-shadow-hover: 0 2px 4px #1220391a, 0 22px 46px #12203926;
+  --vx-card-line: #c3d3ea;
 }
 @media (min-width: 1536px) { :root { --vx-max: 1320px; } }
 
@@ -27,7 +28,7 @@
 /* Layout ------------------------------------------------------------ */
 .vx-container { width: 100%; max-width: var(--vx-max); margin-inline: auto; padding-inline: var(--vx-gutter); }
 .vx-section { padding-block: var(--vx-section-y); }
-.vx-section--soft { background: var(--vx-soft); }
+.vx-section--soft { background: linear-gradient(180deg, #e8f0fc, #f0f5fd); border-block: 1px solid #d3e0f2; }
 .vx-section--dark { background: var(--vx-hero); color: var(--vx-on-dark); }
 .vx-section--tight { padding-block: clamp(32px, 5vw, 56px); }
 .vx-stack > * + * { margin-top: var(--vx-stack, 16px); }
@@ -65,10 +66,10 @@
 .vx-hero .vx-link, .vx-section--dark .vx-link { color: var(--vx-accent); }
 
 /* Cards & chips ------------------------------------------------------ */
-.vx-card { background: var(--vx-paper); border: 1px solid var(--vx-line); border-radius: var(--vx-radius-lg); padding: clamp(20px, 2.4vw, 32px); box-shadow: var(--vx-card-shadow); }
+.vx-card { position: relative; overflow: hidden; background: linear-gradient(180deg, #ffffff, #f7faff); border: 1px solid var(--vx-card-line); border-radius: var(--vx-radius-lg); padding: clamp(20px, 2.4vw, 32px); box-shadow: var(--vx-card-shadow); }
 .vx-card--hover { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-.vx-card--hover:hover { transform: translateY(-3px); box-shadow: var(--vx-card-shadow-hover); border-color: #c9d6e8; }
-.vx-icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--vx-accent-fill); color: var(--vx-success); margin-bottom: 18px; }
+.vx-card--hover:hover { transform: translateY(-3px); box-shadow: var(--vx-card-shadow-hover); border-color: var(--vx-accent); }
+.vx-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 13px; background: linear-gradient(135deg, #d6e6ff, #e4dcff); border: 1px solid #b4cdf5; color: var(--vx-ink); margin-bottom: 18px; }
 .vx-icon svg { width: 22px; height: 22px; }
 .vx-chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; font-size: .82rem; font-weight: 600; background: #ffffff12; border: 1px solid var(--vx-dark-line); color: var(--vx-on-dark); }
 .vx-chip svg { width: 15px; height: 15px; color: var(--vx-accent); flex-shrink: 0; }
@@ -100,3 +101,8 @@ body:has(.site-nav-links.is-open) .vx-sticky { display: none; }
   .vx-btn, .vx-card--hover, .vx-faq summary::after { transition: none; }
   .vx-btn:hover, .vx-card--hover:hover { transform: none; }
 }
+
+/* Kaarten: meer diepte en contrast (zelfde palet) ---------------------------- */
+.vx-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--vx-highlight); }
+.vx-card .vx-h3 { color: var(--vx-hero); }
+.vx-card__text { color: #44556f; }
