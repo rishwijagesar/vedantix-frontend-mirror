@@ -105,7 +105,7 @@ body:has(.site-nav-links.is-open) .vx-sticky { display: none; }
 /* Kaarten: meer diepte en contrast (zelfde palet) ---------------------------- */
 .vx-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--vx-highlight); }
 .vx-card .vx-h3 { color: var(--vx-hero); }
-.vx-card__text { color: #44556f; }
+.vx-card__text { margin-top: 10px; color: #44556f; line-height: 1.65; font-size: .97rem; }
 
 /* Paginakop en gedeelde onderdelen voor binnenpagina's -------------------------- */
 .vx-pagehero { position: relative; overflow: hidden; background: var(--vx-hero); color: var(--vx-paper); padding-block: calc(72px + clamp(36px, 6vw, 72px)) clamp(44px, 6vw, 80px); }

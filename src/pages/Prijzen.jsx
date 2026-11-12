@@ -71,6 +71,15 @@ const WEBSITE_PACKAGE_DETAILS = [
   },
 ];
 
+const WEBSITE_VALUE = [
+  { title: "Maatwerkdesign", text: "Ontworpen voor jouw bedrijf en responsive op mobiel, tablet en desktop.", icon: PenLine },
+  { title: "Vindbaarheid zit erin", text: "Elk pakket krijgt een technische SEO-basis. Growth en Pro ook AEO en structured data.", icon: Search },
+  { title: "Eén vast aanspreekpunt", text: "Je praat met degene die bouwt en beheert. Geen accountmanagers ertussen.", icon: MessageCircle },
+  { title: "Vaste prijs, geen abonnement", text: "Eenmalig betalen. Hosting en extra's kies je alleen als je ze nodig hebt.", icon: ShieldCheck },
+  { title: "Feedbackrondes vastgelegd", text: "Twee rondes bij Starter, drie bij Growth en Pro. Je weet vooraf waar je aan toe bent.", icon: CheckCircle2 },
+  { title: "Groeit mee met je bedrijf", text: "Later een klantportaal, koppeling of eigen app? Dat bouwt dezelfde partij.", icon: Sparkles },
+];
+
 const COMPARISON_ROWS = [
   {
     label: "Website",
@@ -327,6 +336,25 @@ export default function Prijzen({ initialProducts = null }) {
                 <a href="#vindbaarheid">
                   Bekijk vindbaarheid <ArrowDown size={15} aria-hidden="true" />
                 </a>
+              </div>
+            </div>
+          </section>
+
+          <section className="vx-page vx-section vx-section--soft" aria-labelledby="pricing-value-title">
+            <div className="vx-container">
+              <div className="vx-head vx-head--center">
+                <p className="vx-eyebrow">Wat je voor je geld krijgt</p>
+                <h2 id="pricing-value-title" className="vx-h2">Niet de goedkoopste. Wel een website die voor je werkt.</h2>
+                <p className="vx-lead">Een losse pagina laten bouwen kan voor een paar honderd euro. Bij Vedantix krijg je daarnaast vindbaarheid, vaste afspraken en een partner die meegroeit.</p>
+              </div>
+              <div className="vx-grid vx-grid--3">
+                {WEBSITE_VALUE.map(({ title, text, icon: Icon }) => (
+                  <article className="vx-card" key={title}>
+                    <div className="vx-icon"><Icon aria-hidden="true" /></div>
+                    <h3 className="vx-h3">{title}</h3>
+                    <p className="vx-card__text">{text}</p>
+                  </article>
+                ))}
               </div>
             </div>
           </section>
