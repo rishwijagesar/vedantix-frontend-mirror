@@ -10,7 +10,7 @@ export default function NavBar(){
  const location=useLocation();const home=location.pathname==="/";const [scrolled,setScrolled]=useState(false);const [mobile,setMobile]=useState(false);const [services,setServices]=useState(false);const [group,setGroup]=useState(null);const root=useRef(null);const trigger=useRef(null);const menuToggle=useRef(null);const timer=useRef(null);
  const close=()=>{setServices(false);setMobile(false);setGroup(null);};
  const cancel=()=>{if(timer.current)clearTimeout(timer.current);};
- const enter=()=>{cancel();if(matchMedia('(min-width: 1101px) and (hover: hover)').matches)setServices(true);};
+ const enter=()=>{cancel();if(matchMedia('(min-width: 901px) and (hover: hover)').matches)setServices(true);};
  const leave=()=>{cancel();timer.current=setTimeout(()=>{if(!root.current?.contains(document.activeElement))setServices(false);},180);};
  useEffect(()=>{close();},[location.pathname]);
  useEffect(()=>{if(!home)document.body.setAttribute('data-has-fixed-navbar','true');else document.body.removeAttribute('data-has-fixed-navbar');const scroll=()=>setScrolled(scrollY>40);scroll();window.addEventListener('scroll',scroll,{passive:true});return()=>{document.body.removeAttribute('data-has-fixed-navbar');window.removeEventListener('scroll',scroll);};},[home]);
@@ -29,9 +29,9 @@ export default function NavBar(){
       <div className="site-megamenu-groups">{SERVICE_GROUPS.map((g,i)=><section key={g.name} className="site-service-group"><h2 className="site-group-desktop">{g.name}</h2><Button variant="ghost" className="site-group-toggle" aria-expanded={group===i} aria-controls={`service-group-${i}`} onClick={()=>setGroup(group===i?null:i)}>{g.name}<ChevronDown/></Button><div id={`service-group-${i}`} className={`site-group-items${group===i?' is-expanded':''}`}>{g.items.map(item=>{const Icon=icons[item.icon];return <Link key={item.href} to={item.href} className="site-service-item" onClick={close}><span className="site-service-icon"><Icon/></span><span><strong>{item.label}</strong><small>{item.description}</small></span><ArrowUpRight className="site-service-arrow"/></Link>;})}</div></section>)}</div>
      </div>
     </div>
-    {[['/software-op-maat','Software op maat'],['/prijzen','Prijzen'],['/proces','Werkwijze'],['/resultaten','Resultaten'],['/over-ons','Over ons'],['/contact','Contact']].map(([to,label])=><Link key={to} to={to} className="site-nav-link" onClick={close}>{label}</Link>)}
+    {[['/software-op-maat','Software op maat'],['/prijzen','Prijzen'],['/proces','Werkwijze'],['/resultaten','Resultaten'],['/over-ons','Over ons'],['/contact','Contact']].map(([to,label])=><Link key={to} to={to} className={`site-nav-link${['/software-op-maat','/over-ons'].includes(to) ? ' site-nav-secondary' : ''}`} onClick={close}>{label}</Link>)}
     <Link to="/contact#contact-form" className="site-mobile-cta" onClick={close}>Plan een bedrijfsscan <ArrowUpRight/></Link>
    </div>
-   <Link to="/contact#contact-form" className="site-nav-cta" onClick={close}>Plan een bedrijfsscan →</Link>
+   <Link to="/contact#contact-form" className={home ? "site-nav-cta site-nav-cta--home" : "site-nav-cta"} onClick={close}>Plan een bedrijfsscan →</Link>
   </nav></div></header>;
 }
