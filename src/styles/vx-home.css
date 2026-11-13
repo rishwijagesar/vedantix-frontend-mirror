@@ -84,8 +84,9 @@
 .vx-clients__tile img { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; background: var(--vx-paper); flex-shrink: 0; }
 .vx-clients__mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; background: var(--vx-ink); color: var(--vx-paper); font-size: .78rem; font-weight: 800; flex-shrink: 0; }
 .vx-clients__name { font-weight: 700; font-size: .86rem; line-height: 1.25; min-width: 0; overflow-wrap: anywhere; }
-.vx-clients__tile.is-placeholder { border-style: dashed; background: var(--vx-paper); }
-.vx-clients__tile.is-placeholder .vx-clients__mark { background: #8a9ab3; }
+.vx-clients__tile.is-sector { background: #eef4fe; border-color: #c3d3ea; }
+.vx-clients__tile.is-sector .vx-clients__mark { background: linear-gradient(135deg, #d6e6ff, #e4dcff); color: var(--vx-ink); }
+.vx-clients__tile.is-sector .vx-clients__mark svg { width: 18px; height: 18px; }
 .vx-clients__tag { position: absolute; top: -8px; right: 10px; padding: 1px 8px; border-radius: 999px; background: #fff7d6; border: 1px solid #f1d98a; color: #6b5200; font-size: .62rem; font-style: normal; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .vx-clients__note { text-align: left; font-size: .76rem; color: var(--vx-muted); }
 

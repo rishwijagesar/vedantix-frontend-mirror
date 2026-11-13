@@ -11,10 +11,10 @@ const NAV = [
 const STEPS = ["Aanvraag", "Offerte", "Planning", "Factuur"];
 
 const ROWS = [
-  { name: "Familie Voorbeeld", detail: "Nieuwe aanvraag", step: 0 },
-  { name: "Bakkerij Voorbeeld", detail: "Offerte verstuurd", step: 1 },
-  { name: "Kantoor Voorbeeld", detail: "Ingepland voor dinsdag", step: 2 },
-  { name: "Praktijk Voorbeeld", detail: "Factuur betaald", step: 3 },
+  { name: "Familie de Vries", detail: "Nieuwe aanvraag", step: 0 },
+  { name: "Bakkerij Jansen", detail: "Offerte verstuurd", step: 1 },
+  { name: "Kantoor Bakker", detail: "Ingepland voor dinsdag", step: 2 },
+  { name: "Praktijk Smit", detail: "Factuur betaald", step: 3 },
 ];
 
 /**

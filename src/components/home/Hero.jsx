@@ -64,9 +64,9 @@ export default function Hero() {
               decoding="async"
             />
           </figure>
-          <p className="vx-hv__chip vx-hv__chip--a" aria-hidden="true"><span className="vx-hv__icon"><UserPlus /></span><span><b>Nieuwe aanvraag</b><small>Voorbeeldmelding</small></span></p>
-          <p className="vx-hv__chip vx-hv__chip--b" aria-hidden="true"><span className="vx-hv__icon"><FileText /></span><span><b>Offerte akkoord</b><small>Voorbeeldmelding</small></span></p>
-          <p className="vx-hv__chip vx-hv__chip--c" aria-hidden="true"><span className="vx-hv__icon"><Receipt /></span><span><b>Factuur betaald</b><small>Voorbeeldmelding</small></span></p>
+          <p className="vx-hv__chip vx-hv__chip--a" aria-hidden="true"><span className="vx-hv__icon"><UserPlus /></span><span><b>Nieuwe aanvraag</b><small>In jouw app</small></span></p>
+          <p className="vx-hv__chip vx-hv__chip--b" aria-hidden="true"><span className="vx-hv__icon"><FileText /></span><span><b>Offerte akkoord</b><small>In jouw app</small></span></p>
+          <p className="vx-hv__chip vx-hv__chip--c" aria-hidden="true"><span className="vx-hv__icon"><Receipt /></span><span><b>Factuur betaald</b><small>In jouw app</small></span></p>
           <p className="vx-hv__rating"><span className="vx-hv__stars" aria-hidden="true"><Star /><Star /><Star /><Star /><Star /></span><span><b>5,0</b> Google-review</span></p>
         </div>
       </div>

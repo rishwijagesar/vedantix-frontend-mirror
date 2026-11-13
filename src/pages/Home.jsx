@@ -17,7 +17,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_FAQS, SCAN_URL } from "../data/positioning";
-import { CLIENT_PHOTOS, COMMITMENTS, PAIN_POINTS } from "../data/proof";
+import { buildClientStrip, CLIENT_PHOTOS, COMMITMENTS, PAIN_POINTS } from "../data/proof";
 import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
 import CatalogPrice from "../components/CatalogPrice";
@@ -76,7 +76,7 @@ export default function Home({ initialCases = null }) {
           {/* Bewijs 1: klanten */}
           <section className="vx-section vx-section--tight vx-proofbar" aria-labelledby="vx-clients-title">
             <div className="vx-container">
-              <h2 id="vx-clients-title" className="vx-proofbar__title">Ondernemers die met Vedantix werken</h2>
+              <h2 id="vx-clients-title" className="vx-proofbar__title">{buildClientStrip(initialCases).some((tile) => tile.sector) ? "Onze klanten en de branches waarvoor we bouwen" : "Ondernemers die met Vedantix werken"}</h2>
               <ClientStrip clients={initialCases} />
             </div>
           </section>
