@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, FileText, MapPin, Receipt, ShieldCheck, Star, UserPlus } from "lucide-react";
+import { ArrowRight, Check, FileText, MessageCircle, Receipt, ShieldCheck, Star, UserPlus } from "lucide-react";
 import { SCAN_URL } from "../../data/positioning";
 
 const WORDS = ["hele bedrijf", "aanvragen", "offertes", "planning", "facturen"];
@@ -42,8 +42,8 @@ export default function Hero() {
           <p className="vx-hero__note">Vrijblijvend kennismaken. Omvang en kosten van de scan spreken we vooraf af.</p>
           <ul className="vx-hero__chips" aria-label="Waarom Vedantix">
             <li className="vx-chip"><Check aria-hidden="true" />Vaste prijs vooraf</li>
-            <li className="vx-chip"><MapPin aria-hidden="true" />Gebouwd in Den Bosch</li>
-            <li className="vx-chip"><ShieldCheck aria-hidden="true" />KvK 42056482</li>
+            <li className="vx-chip"><MessageCircle aria-hidden="true" />Eén vast aanspreekpunt</li>
+            <li className="vx-chip"><ShieldCheck aria-hidden="true" />Eerst jouw akkoord, dan live</li>
           </ul>
           <p className="vx-hero__alt">
             Alleen een website nodig? <a className="vx-link" href="/website-laten-maken">Bekijk de websitepakketten <ArrowRight aria-hidden="true" /></a>
