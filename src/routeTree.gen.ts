@@ -47,6 +47,9 @@ import { Route as WebsiteSalonRouteImport } from './routes/website-salon'
 import { Route as WebsiteSchoonmaakbedrijfRouteImport } from './routes/website-schoonmaakbedrijf'
 import { Route as WebsiteZzpRouteImport } from './routes/website-zzp'
 import { Route as AdminBillingRouteImport } from './routes/admin_.billing'
+import { Route as PrijzenWebsitesRouteImport } from './routes/prijzen_.websites'
+import { Route as PrijzenSoftwareOpMaatRouteImport } from './routes/prijzen_.software-op-maat'
+import { Route as PrijzenBeheerOnderhoudRouteImport } from './routes/prijzen_.beheer-onderhoud'
 import { Route as AdminGrowthRouteImport } from './routes/admin_.growth'
 import { Route as AdminLeadsRouteImport } from './routes/admin_.leads'
 import { Route as AdminMonitoringRouteImport } from './routes/admin_.monitoring'
@@ -253,6 +256,21 @@ const AdminBillingRoute = AdminBillingRouteImport.update({
   path: '/admin/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrijzenWebsitesRoute = PrijzenWebsitesRouteImport.update({
+  id: '/prijzen_/websites',
+  path: '/prijzen/websites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrijzenSoftwareOpMaatRoute = PrijzenSoftwareOpMaatRouteImport.update({
+  id: '/prijzen_/software-op-maat',
+  path: '/prijzen/software-op-maat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrijzenBeheerOnderhoudRoute = PrijzenBeheerOnderhoudRouteImport.update({
+  id: '/prijzen_/beheer-onderhoud',
+  path: '/prijzen/beheer-onderhoud',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminGrowthRoute = AdminGrowthRouteImport.update({
   id: '/admin_/growth',
   path: '/admin/growth',
@@ -358,6 +376,9 @@ export interface FileRoutesByFullPath {
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
   '/admin/billing': typeof AdminBillingRoute
+  '/prijzen/websites': typeof PrijzenWebsitesRoute
+  '/prijzen/software-op-maat': typeof PrijzenSoftwareOpMaatRoute
+  '/prijzen/beheer-onderhoud': typeof PrijzenBeheerOnderhoudRoute
   '/admin/growth': typeof AdminGrowthRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/monitoring': typeof AdminMonitoringRoute
@@ -411,6 +432,9 @@ export interface FileRoutesByTo {
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
   '/admin/billing': typeof AdminBillingRoute
+  '/prijzen/websites': typeof PrijzenWebsitesRoute
+  '/prijzen/software-op-maat': typeof PrijzenSoftwareOpMaatRoute
+  '/prijzen/beheer-onderhoud': typeof PrijzenBeheerOnderhoudRoute
   '/admin/growth': typeof AdminGrowthRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/monitoring': typeof AdminMonitoringRoute
@@ -465,6 +489,9 @@ export interface FileRoutesById {
   '/website-schoonmaakbedrijf': typeof WebsiteSchoonmaakbedrijfRoute
   '/website-zzp': typeof WebsiteZzpRoute
   '/admin_/billing': typeof AdminBillingRoute
+  '/prijzen_/websites': typeof PrijzenWebsitesRoute
+  '/prijzen_/software-op-maat': typeof PrijzenSoftwareOpMaatRoute
+  '/prijzen_/beheer-onderhoud': typeof PrijzenBeheerOnderhoudRoute
   '/admin_/growth': typeof AdminGrowthRoute
   '/admin_/leads': typeof AdminLeadsRoute
   '/admin_/monitoring': typeof AdminMonitoringRoute
@@ -520,6 +547,9 @@ export interface FileRouteTypes {
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
     | '/admin/billing'
+    | '/prijzen/websites'
+    | '/prijzen/software-op-maat'
+    | '/prijzen/beheer-onderhoud'
     | '/admin/growth'
     | '/admin/leads'
     | '/admin/monitoring'
@@ -573,6 +603,9 @@ export interface FileRouteTypes {
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
     | '/admin/billing'
+    | '/prijzen/websites'
+    | '/prijzen/software-op-maat'
+    | '/prijzen/beheer-onderhoud'
     | '/admin/growth'
     | '/admin/leads'
     | '/admin/monitoring'
@@ -626,6 +659,9 @@ export interface FileRouteTypes {
     | '/website-schoonmaakbedrijf'
     | '/website-zzp'
     | '/admin_/billing'
+    | '/prijzen_/websites'
+    | '/prijzen_/software-op-maat'
+    | '/prijzen_/beheer-onderhoud'
     | '/admin_/growth'
     | '/admin_/leads'
     | '/admin_/monitoring'
@@ -680,6 +716,9 @@ export interface RootRouteChildren {
   WebsiteSchoonmaakbedrijfRoute: typeof WebsiteSchoonmaakbedrijfRoute
   WebsiteZzpRoute: typeof WebsiteZzpRoute
   AdminBillingRoute: typeof AdminBillingRoute
+  PrijzenWebsitesRoute: typeof PrijzenWebsitesRoute
+  PrijzenSoftwareOpMaatRoute: typeof PrijzenSoftwareOpMaatRoute
+  PrijzenBeheerOnderhoudRoute: typeof PrijzenBeheerOnderhoudRoute
   AdminGrowthRoute: typeof AdminGrowthRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMonitoringRoute: typeof AdminMonitoringRoute
@@ -963,6 +1002,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBillingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prijzen_/websites': {
+      id: '/prijzen_/websites'
+      path: '/prijzen/websites'
+      fullPath: '/prijzen/websites'
+      preLoaderRoute: typeof PrijzenWebsitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prijzen_/software-op-maat': {
+      id: '/prijzen_/software-op-maat'
+      path: '/prijzen/software-op-maat'
+      fullPath: '/prijzen/software-op-maat'
+      preLoaderRoute: typeof PrijzenSoftwareOpMaatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prijzen_/beheer-onderhoud': {
+      id: '/prijzen_/beheer-onderhoud'
+      path: '/prijzen/beheer-onderhoud'
+      fullPath: '/prijzen/beheer-onderhoud'
+      preLoaderRoute: typeof PrijzenBeheerOnderhoudRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/growth': {
       id: '/admin_/growth'
       path: '/admin/growth'
@@ -1096,6 +1156,9 @@ const rootRouteChildren: RootRouteChildren = {
   WebsiteSchoonmaakbedrijfRoute: WebsiteSchoonmaakbedrijfRoute,
   WebsiteZzpRoute: WebsiteZzpRoute,
   AdminBillingRoute: AdminBillingRoute,
+  PrijzenWebsitesRoute: PrijzenWebsitesRoute,
+  PrijzenSoftwareOpMaatRoute: PrijzenSoftwareOpMaatRoute,
+  PrijzenBeheerOnderhoudRoute: PrijzenBeheerOnderhoudRoute,
   AdminGrowthRoute: AdminGrowthRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminMonitoringRoute: AdminMonitoringRoute,

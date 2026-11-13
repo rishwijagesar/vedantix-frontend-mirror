@@ -12,6 +12,21 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://vedantix.nl/prijzen/websites</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vedantix.nl/prijzen/software-op-maat</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vedantix.nl/prijzen/beheer-onderhoud</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://vedantix.nl/resultaten</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

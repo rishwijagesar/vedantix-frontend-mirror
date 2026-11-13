@@ -4,7 +4,7 @@ import { ADDITIONAL_SERVICES } from "../src/data/additional-services";
 
 test("all eleven offered services resolve to their real destination", () => {
   expect(SERVICE_GROUPS.map(group => group.items.map(item => item.href))).toEqual([
-    ["/website-laten-maken", "/prijzen#uitbreidingen", "/onderhoud-support"],
+    ["/website-laten-maken", "/prijzen/beheer-onderhoud#hosting", "/onderhoud-support"],
     ["/software-op-maat", "/webapps-klantportalen", "/mobiele-apps", "/ai-oplossingen", "/koppelingen-automatisering"],
     ["/ai-vindbaarheid", "/online-marketing", "/ai-marketing"],
   ]);

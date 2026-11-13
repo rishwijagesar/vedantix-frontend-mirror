@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { fetchPublicCatalog } from "../lib/public-content";
 import { usePublicContent } from "../lib/use-public-content";
 import { Link } from "@/lib/router-compat";
@@ -141,6 +142,10 @@ const BASE_PRICE_FAQS = [
       "Iedere Vedantix-website krijgt een technisch sterke basis. Growth en Pro krijgen meer SEO, structured data en antwoordgerichte optimalisatie. Uitgebreide of doorlopende SEO, AEO en GEO/AIO kun je los of als groeipakket afnemen.",
   },
   {
+    question: "Kan ik een website ook per maand betalen?",
+    answer: "Ja. Met een websiteabonnement betaal je lage opstartkosten en daarna een vast maandbedrag, inclusief hosting, technisch onderhoud en kleine aanpassingen. Er geldt een minimale looptijd; daarna is het maandelijks opzegbaar.",
+  },
+  {
     question: "Wat kost hosting?",
     answer:
       "Bekijk de actuele hostingtarieven op deze pagina. Domeinnamen, mailboxen en uitzonderlijk zwaar gebruik kunnen apart worden berekend.",
@@ -189,7 +194,30 @@ function addonWhatsapp(title) {
   )}`;
 }
 
-export default function Prijzen({ initialProducts = null }) {
+const VIEWS = {
+  overview: {
+    path: "/prijzen", crumb: "Prijzen", catalogName: "Vedantix diensten en prijzen",
+    title: "Prijzen: websites, software op maat en beheer | Vedantix",
+    description: "Bekijk de prijzen van Vedantix: websitepakketten eenmalig of als abonnement, bedrijfssoftware op maat op offerte en losse prijzen voor hosting, beheer en onderhoud.",
+  },
+  websites: {
+    path: "/prijzen/websites", crumb: "Websites", catalogName: "Websitepakketten en uitbreidingen",
+    title: "Website laten maken: prijzen eenmalig of per maand | Vedantix",
+    description: "Websitepakketten met een vaste eenmalige prijs, of lage opstartkosten plus een vast maandbedrag inclusief hosting, onderhoud en kleine aanpassingen.",
+  },
+  software: {
+    path: "/prijzen/software-op-maat", crumb: "Software op maat", catalogName: "Software op maat en AI-diensten",
+    title: "Software op maat: zo werkt de prijs | Vedantix",
+    description: "Bedrijfssoftware op maat met opstartkosten en een vast maandbedrag op offerte na een bedrijfsscan. Bekijk ook de vanafprijzen van afgebakende AI-, app- en koppelingsdiensten.",
+  },
+  beheer: {
+    path: "/prijzen/beheer-onderhoud", crumb: "Beheer en onderhoud", catalogName: "Hosting, beheer en onderhoud",
+    title: "Beheer, onderhoud en hosting: prijzen | Vedantix",
+    description: "Losse prijzen voor hosting, zakelijke e-mail, technisch beheer, groeipakketten en ondersteuning voor je website of applicatie.",
+  },
+};
+
+export default function Prijzen({ initialProducts = null, view = "overview" }) {
   const { data: products, loading, error } = usePublicContent(fetchPublicCatalog, initialProducts);
   const suffix = type => type === "MONTHLY" ? "per maand" : type === "YEARLY" ? "per jaar" : "eenmalig";
   const WEBSITE_PACKAGES = products.filter(p => p.category.toUpperCase() === "WEBSITE").map(p => {
@@ -210,69 +238,145 @@ export default function Prijzen({ initialProducts = null }) {
     priceIncl: Number(p.price_incl_vat), description: p.description, featured: Number(p.duration_years) === 3,
   }));
   const addonIcons = { EMAIL: Mail, SEO_START: Search, AEO_START: MessageCircle, GEO_AIO_START: Sparkles, ANALYTICS: BarChart3, APPOINTMENTS: CalendarCheck2, EXTRA_PAGE: FilePlus2, COPYWRITING: PenLine, SUPPORT: Headphones };
-  const ADD_ONS = products.filter(p => !["WEBSITE","GROWTH","HOSTING",...PROJECT_CATEGORIES].includes(p.category.toUpperCase())).map(p => {
+  const PLAN_BY_PACKAGE = Object.fromEntries(products.filter(p => p.category.toUpperCase() === "WEBSITE_PLAN" && p.base_package).map(p => [p.base_package, {
+    monthly: Number(p.price_ex_vat), monthlyIncl: Number(p.price_incl_vat),
+    setup: Number(p.setup_fee || 0), setupIncl: Number(p.setup_fee || 0) * (1 + Number(p.vat_rate || 21) / 100),
+    term: Number(p.min_term_months || 12), hours: Number(p.included_hours || 0), code: p.code,
+  }]));
+  const hasPlans = Object.keys(PLAN_BY_PACKAGE).length > 0;
+  const minPlan = hasPlans ? Object.values(PLAN_BY_PACKAGE).sort((a, b) => a.monthly - b.monthly)[0] : null;
+  const ADD_ONS_ALL = products.filter(p => !["WEBSITE","WEBSITE_PLAN","GROWTH","HOSTING",...PROJECT_CATEGORIES].includes(p.category.toUpperCase())).map(p => {
     const onRequest = !(Number(p.price_ex_vat) > 0);
     const from = p.from_price ? "Vanaf " : "";
     return {
       title: p.name, text: p.description, icon: addonIcons[p.code] || Sparkles, onRequest,
       price: onRequest ? "Prijs op aanvraag" : `${from}${currency(p.price_ex_vat)} ${ADDON_UNITS[p.code] || suffix(p.billing_type)} excl. btw`,
       priceIncl: onRequest ? "Afhankelijk van de uitvoering" : `${from.toLowerCase()}${currency(p.price_incl_vat)} incl. btw`,
+      code: p.code,
     };
   });
-  const projectProducts = products.filter(p => PROJECT_CATEGORIES.includes(p.category.toUpperCase()));
+  const CARE_CODES = ["EMAIL", "SUPPORT"];
+  const ADD_ONS = ADD_ONS_ALL.filter(a => !CARE_CODES.includes(a.code));
+  const CARE_ADDONS = ADD_ONS_ALL.filter(a => CARE_CODES.includes(a.code));
+  const careProducts = products.filter(p => p.category.toUpperCase() === "CARE");
+  const projectProducts = products.filter(p => PROJECT_CATEGORIES.includes(p.category.toUpperCase()) && p.category.toUpperCase() !== "CARE");
+  const [billing, setBilling] = useState("once");
   const yearlyHosting = products.find(p => p.code === "HOSTING_YEAR");
   const heading = <>Heldere prijzen. <span className="vx-grad">Ruimte om te groeien.</span></>;
   const PRICE_FAQS = BASE_PRICE_FAQS.map(faq => {
     if (faq.question === "Wat kost een website bij Vedantix?" && WEBSITE_PACKAGES.length) return { ...faq, answer: WEBSITE_PACKAGES.map(p => `${p.label}: ${currency(p.price)} excl. btw (${currency(p.priceIncl)} incl. btw), ${p.suffix}.`).join(" ") + " Hosting, e-mail en groeidiensten kies je apart." };
+    if (faq.question === "Kan ik een website ook per maand betalen?" && hasPlans) return { ...faq, answer: `Ja. ${WEBSITE_PACKAGES.filter(p => PLAN_BY_PACKAGE[p.code]).map(p => `${p.label}: ${currency(PLAN_BY_PACKAGE[p.code].setup)} opstartkosten en ${currency(PLAN_BY_PACKAGE[p.code].monthly)} per maand`).join("; ")}, excl. btw. Hosting, technisch onderhoud en kleine aanpassingen zitten in het maandbedrag. Minimale looptijd ${minPlan.term} maanden, daarna maandelijks opzegbaar.` };
     if (faq.question === "Wat kost hosting?" && yearlyHosting) return { ...faq, answer: `Jaarlijkse hosting kost ${currency(yearlyHosting.price_ex_vat)} excl. btw (${currency(yearlyHosting.price_incl_vat)} incl. btw). Domeinnamen en mailboxen staan los van hosting.` };
     return faq;
   });
-  const canonical = "https://vedantix.nl/prijzen";
+  const V = VIEWS[view] || VIEWS.overview;
+  const canonical = `https://vedantix.nl${V.path}`;
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Home", url: "https://vedantix.nl/" },
-    { name: "Prijzen", url: canonical },
+    { name: "Prijzen", url: "https://vedantix.nl/prijzen" },
+    ...(view === "overview" ? [] : [{ name: V.crumb, url: canonical }]),
   ]);
-  const faqSchema = createFAQSchema(PRICE_FAQS);
+  const faqs = view === "beheer" ? PRICE_FAQS.filter(f => /hosting|uitbreiding|btw|per maand/i.test(f.question)) : view === "software" ? [] : PRICE_FAQS;
+  const faqSchema = faqs.length ? createFAQSchema(faqs) : null;
+  const catalogForView = view === "websites" ? products.filter(p => ["WEBSITE", "WEBSITE_PLAN", "ADDON"].includes(p.category.toUpperCase()))
+    : view === "software" ? projectProducts
+    : view === "beheer" ? products.filter(p => ["GROWTH", "HOSTING", "CARE"].includes(p.category.toUpperCase()) || CARE_CODES.includes(p.code))
+    : products;
+  const minWebsite = WEBSITE_PACKAGES.length ? Math.min(...WEBSITE_PACKAGES.map(p => p.price)) : null;
 
   return (
     <>
       <SEO
-        title="Software op offerte, websiteprijzen en hosting | Vedantix"
-        description="Software op maat met opstartkosten en een vast maandbedrag op offerte. Bekijk de bestaande websiteprijzen, hosting, e-mail en optionele groeidiensten."
+        title={V.title}
+        description={V.description}
         canonical={canonical}
-        schemas={[breadcrumbSchema, faqSchema, { "@context": "https://schema.org", "@type": "OfferCatalog", name: "Vedantix diensten en prijzen", itemListElement: products.map(p => ({ "@type": "Offer", url: canonical, itemOffered: { "@type": "Service", name: p.name, description: p.description, provider: { "@id": "https://vedantix.nl/#localbusiness" } }, priceSpecification: { "@type": "UnitPriceSpecification", [p.from_price ? "minPrice" : "price"]: Number(p.price_ex_vat), priceCurrency: "EUR", valueAddedTaxIncluded: false, ...(p.billing_type === "MONTHLY" ? { billingDuration: "P1M" } : p.billing_type === "YEARLY" ? { billingDuration: "P1Y" } : {}) } })) }]}
+        schemas={[breadcrumbSchema, ...(faqSchema ? [faqSchema] : []), { "@context": "https://schema.org", "@type": "OfferCatalog", name: V.catalogName, itemListElement: catalogForView.map(p => ({ "@type": "Offer", url: canonical, itemOffered: { "@type": "Service", name: p.name, description: p.description, provider: { "@id": "https://vedantix.nl/#localbusiness" } }, priceSpecification: { "@type": "UnitPriceSpecification", [p.from_price ? "minPrice" : "price"]: Number(p.price_ex_vat), priceCurrency: "EUR", valueAddedTaxIncluded: false, ...(p.billing_type === "MONTHLY" ? { billingDuration: "P1M" } : p.billing_type === "YEARLY" ? { billingDuration: "P1Y" } : {}) } })) }]}
       />
 
       <div className="pricing-page">
         <NavBar />
 
         <main>
-          <PageHero
-            id="pricing-title"
-            eyebrow="Prijzen"
-            title={heading}
-            lead="Bedrijfssoftware op maat heeft opstartkosten en een vast maandbedrag op offerte. Websitepakketten hebben een vaste eenmalige prijs, zonder verplicht abonnement."
-          >
-              <div className="pricing-routes">
-                <a className="pricing-route pricing-route--main" href="#apps-ai">
+          {view === "overview" ? (
+            <PageHero
+              id="pricing-title"
+              eyebrow="Prijzen"
+              title={heading}
+              lead="Kies wat je zoekt. Elke pagina laat de prijzen, wat erin zit en de voorwaarden zien, zonder kleine lettertjes."
+            >
+              <div className="pricing-routes pricing-routes--three">
+                <Link className="pricing-route" to="/prijzen/websites">
+                  <small>Voor zelfstandigen en starters</small>
+                  <strong>Website laten maken</strong>
+                  <span>{minWebsite ? `Vanaf ${currency(minWebsite)} eenmalig` : "Vaste pakketprijzen"}{minPlan ? `, of vanaf ${currency(minPlan.monthly)} per maand met ${currency(minPlan.setup)} opstartkosten` : ""}. Bedragen excl. btw.</span>
+                  <em>Bekijk websiteprijzen <ArrowRight size={15} aria-hidden="true" /></em>
+                </Link>
+                <Link className="pricing-route pricing-route--main" to="/prijzen/software-op-maat">
                   <small>Voor mkb-bedrijven</small>
                   <strong>Bedrijfssoftware op maat</strong>
                   <span>Opstartkosten en een vast maandbedrag, vastgelegd in een offerte na de bedrijfsscan.</span>
-                  <em>Zo werkt de prijs <ArrowDown size={15} aria-hidden="true" /></em>
-                </a>
-                <a className="pricing-route" href="#websites">
-                  <small>Voor zelfstandigen en starters</small>
-                  <strong>Website laten maken</strong>
-                  <span>{WEBSITE_PACKAGES.length ? `Vanaf ${currency(Math.min(...WEBSITE_PACKAGES.map(p => p.price)))} eenmalig excl. btw. Geen verplicht abonnement.` : "Vaste pakketprijzen, geen verplicht abonnement."}</span>
-                  <em>Bekijk de pakketten <ArrowDown size={15} aria-hidden="true" /></em>
-                </a>
+                  <em>Zo werkt de prijs <ArrowRight size={15} aria-hidden="true" /></em>
+                </Link>
+                <Link className="pricing-route" to="/prijzen/beheer-onderhoud">
+                  <small>Na de oplevering</small>
+                  <strong>Beheer en onderhoud</strong>
+                  <span>Hosting, zakelijke e-mail, technisch beheer, groeipakketten en losse ondersteuning.</span>
+                  <em>Bekijk beheerprijzen <ArrowRight size={15} aria-hidden="true" /></em>
+                </Link>
               </div>
-              <nav className="pricing-service-links" aria-label="Prijscategorieën"><a href="#websites">Websitepakketten</a><a href="#apps-ai">Software op offerte</a><a href="#groei">SEO & AI-vindbaarheid</a><a href="#uitbreidingen">Hosting & uitbreidingen</a></nav>
-          </PageHero>
+            </PageHero>
+          ) : null}
 
+          {view === "websites" ? (
+            <PageHero
+              id="pricing-title"
+              eyebrow="Prijzen · Websites"
+              title={<>Een website die past bij <span className="vx-grad">je budget</span></>}
+              lead="Betaal in één keer, of start met lage opstartkosten en een vast maandbedrag. Bij een abonnement zitten hosting, technisch onderhoud en kleine aanpassingen erbij."
+            >
+              <nav className="pricing-service-links" aria-label="Op deze pagina"><a href="#websites">Pakketten</a><a href="#vergelijk">Vergelijken</a><a href="#vindbaarheid">Vindbaarheid</a><a href="#uitbreidingen">Uitbreidingen</a></nav>
+            </PageHero>
+          ) : null}
+
+          {view === "software" ? (
+            <PageHero
+              id="pricing-title"
+              eyebrow="Prijzen · Software op maat"
+              title={<>Software op maat, <span className="vx-grad">zonder verrassingen</span></>}
+              lead="Na een bedrijfsscan krijg je een offerte met opstartkosten en een vast maandbedrag. Daarin staat precies wat er gebouwd wordt, wat het maandbedrag dekt en hoe uitbreiden werkt."
+              actions={<>
+                <Link className="vx-btn vx-btn--primary" to={SCAN_URL}>Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" /></Link>
+                <Link className="vx-btn vx-btn--ghost" to="/software-op-maat">Meer over software op maat</Link>
+              </>}
+            />
+          ) : null}
+
+          {view === "beheer" ? (
+            <PageHero
+              id="pricing-title"
+              eyebrow="Prijzen · Beheer en onderhoud"
+              title={<>Na de lancering <span className="vx-grad">blijven we erbij</span></>}
+              lead="Hosting, zakelijke e-mail, technisch beheer en doorlopende verbeteringen voor je website of applicatie. Je kiest alleen wat je nodig hebt."
+            >
+              <nav className="pricing-service-links" aria-label="Op deze pagina"><a href="#hosting">Hosting en e-mail</a><a href="#beheer">Technisch beheer</a><a href="#groei">Groeipakketten</a><a href="#software-beheer">Software</a></nav>
+            </PageHero>
+          ) : null}
+
+          {view === "websites" ? (<>
           <section className="pricing-hero pricing-hero--continued" aria-label="Websitepakketten">
             <div className="pricing-container pricing-hero-inner">
-              <h2 id="websites">Websitepakketten</h2>
+              <div className="pricing-packages-head">
+                <h2 id="websites">Websitepakketten</h2>
+                {hasPlans ? (
+                  <div className="pricing-billing-toggle" role="group" aria-label="Betaalwijze">
+                    <button type="button" aria-pressed={billing === "once"} onClick={() => setBilling("once")}>Eenmalig</button>
+                    <button type="button" aria-pressed={billing === "plan"} onClick={() => setBilling("plan")}>Per maand</button>
+                  </div>
+                ) : null}
+              </div>
+              {hasPlans && billing === "plan" ? (
+                <p className="pricing-plan-intro">Lage opstartkosten en daarna een vast maandbedrag. Hosting, technisch onderhoud en kleine aanpassingen zitten erbij. Minimale looptijd {minPlan?.term || 12} maanden, daarna maandelijks opzegbaar.</p>
+              ) : null}
               {loading ? <p role="status">Actuele prijzen laden…</p> : null}
               {error ? <p role="alert">De prijzen zijn tijdelijk niet beschikbaar. Neem contact op voor een offerte.</p> : null}
               <div className="pricing-package-grid">
@@ -294,17 +398,32 @@ export default function Prijzen({ initialProducts = null }) {
                     </div>
                     <p className="pricing-card-description">{pkg.description}</p>
 
-                    <div className="pricing-cost-box">
-                      <span>Prijs exclusief btw</span>
-                      <div className="pricing-main-price">
-                        {currency(pkg.price)} <small>{pkg.suffix}</small>
+                    {billing === "plan" && PLAN_BY_PACKAGE[pkg.code] ? (() => { const plan = PLAN_BY_PACKAGE[pkg.code]; return (
+                      <div className="pricing-cost-box">
+                        <span>Abonnement, exclusief btw</span>
+                        <div className="pricing-main-price">
+                          {currency(plan.monthly)} <small>per maand</small>
+                        </div>
+                        <div className="pricing-zero-cost">+ {currency(plan.setup)} opstartkosten ({currency(plan.setupIncl)} incl. btw)</div>
+                        <div className="pricing-zero-cost">{currency(plan.monthlyIncl)} per maand inclusief btw</div>
+                        <div className="pricing-zero-cost">
+                          <CheckCircle2 size={16} aria-hidden="true" />
+                          Hosting en onderhoud inbegrepen{plan.hours ? `, ${plan.hours >= 1 ? `${plan.hours} uur` : `${Math.round(plan.hours * 60)} minuten`} aanpassingen per maand` : ""}
+                        </div>
                       </div>
-                      <div className="pricing-zero-cost">{currency(pkg.priceIncl)} inclusief btw</div>
-                      <div className="pricing-zero-cost">
-                        <CheckCircle2 size={16} aria-hidden="true" />
-                        {pkg.oneTime ? "Geen verplicht maandabonnement" : `Facturatie ${pkg.suffix}`}
+                    ); })() : (
+                      <div className="pricing-cost-box">
+                        <span>Prijs exclusief btw</span>
+                        <div className="pricing-main-price">
+                          {currency(pkg.price)} <small>{pkg.suffix}</small>
+                        </div>
+                        <div className="pricing-zero-cost">{currency(pkg.priceIncl)} inclusief btw</div>
+                        <div className="pricing-zero-cost">
+                          <CheckCircle2 size={16} aria-hidden="true" />
+                          {pkg.oneTime ? "Geen verplicht maandabonnement" : `Facturatie ${pkg.suffix}`}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     <ul className="pricing-feature-list">
                       {pkg.features.map((feature) => (
@@ -320,7 +439,7 @@ export default function Prijzen({ initialProducts = null }) {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Bespreek {pkg.label} <ArrowRight size={16} aria-hidden="true" />
+                      Bespreek {pkg.label}{billing === "plan" && PLAN_BY_PACKAGE[pkg.code] ? " als abonnement" : ""} <ArrowRight size={16} aria-hidden="true" />
                     </a>
                   </article>
                 ))}
@@ -329,7 +448,7 @@ export default function Prijzen({ initialProducts = null }) {
               <div className="pricing-hero-footer">
                 <span>Hoofdprijzen exclusief btw; bedragen inclusief btw staan erbij</span>
                 <span className="pricing-footer-divider" aria-hidden="true" />
-                {yearlyHosting ? <span>Hosting {currency(yearlyHosting.price_ex_vat)} excl. btw per jaar</span> : null}
+                {billing === "plan" ? <span>Abonnement: hosting en onderhoud inbegrepen</span> : yearlyHosting ? <span>Hosting {currency(yearlyHosting.price_ex_vat)} excl. btw per jaar, <Link to="/prijzen/beheer-onderhoud">zie beheer</Link></span> : null}
                 <a href="#vindbaarheid">
                   Bekijk vindbaarheid <ArrowDown size={15} aria-hidden="true" />
                 </a>
@@ -356,7 +475,6 @@ export default function Prijzen({ initialProducts = null }) {
             </div>
           </section>
 
-          <section className="pricing-section" id="apps-ai"><div className="pricing-container"><div className="pricing-section-heading"><div className="pricing-kicker">Slimmer werken en digitaal uitbreiden</div><h2>Bedrijfssoftware op maat: heldere afspraken op offerte.</h2><p>Een bedrijfsscan leidt tot een concreet voorstel. Opstartkosten en het vaste maandbedrag dekken de afgesproken functionaliteit, hosting, opslag, onderhoud en support. Inbegrepen gebruik, wijzigingen, uitbreiding, dataverwerking en export spreken we vooraf af.</p><p>Behoud je externe tools, dan kunnen hun abonnementskosten blijven gelden. Onderstaande catalogusdiensten zijn losse, afgebakende diensten; hun vanafprijzen zijn geen prijs voor een complete maatwerkapplicatie.</p><a className="pricing-secondary-cta" href="/software-op-maat">Meer over software op maat →</a></div><ServicePrices products={projectProducts} details /><p className="service-scope">Je ontvangt vooraf een offerte met scope, planning en acceptatieafspraken. Hosting, model- en API-gebruik, licenties en appstorekosten worden apart begroot. Vanafprijzen zijn geen prijs voor iedere denkbare uitvoering. Bestaande offertes, contracten en abonnementen behouden hun afgesproken tarieven.</p><a href="/diensten">Vergelijk de diensten en toepassingen →</a></div></section>
           <section className="pricing-section pricing-payment-section" id="vindbaarheid">
             <div className="pricing-container">
               <div className="pricing-section-heading">
@@ -464,6 +582,142 @@ export default function Prijzen({ initialProducts = null }) {
             </div>
           </section>
 
+          <section className="pricing-section pricing-addons-section" id="uitbreidingen">
+            <div className="pricing-container">
+              <div className="pricing-section-heading">
+                <div className="pricing-kicker">Losse uitbreidingen</div>
+                <h2>Neem alleen af wat je echt nodig hebt.</h2>
+                <p>Extra pagina's, teksten, afspraken of vindbaarheid voeg je toe wanneer je het nodig hebt. Hosting, e-mail en beheer staan op <Link to="/prijzen/beheer-onderhoud">beheer en onderhoud</Link>.</p>
+              </div>
+
+              <details className="pricing-more-addons" open>
+                <summary>
+                  <span>Losse uitbreidingen</span>
+                  <ChevronDown size={20} aria-hidden="true" />
+                </summary>
+                <div className="pricing-addon-grid">
+                  {ADD_ONS.map((addon) => {
+                    const Icon = addon.icon;
+                    return (
+                      <article key={addon.title}>
+                        <span className="pricing-icon"><Icon size={20} aria-hidden="true" /></span>
+                        <strong>{addon.price}</strong><small>{addon.priceIncl}</small>
+                        <h3>{addon.title}</h3>
+                        <p>{addon.text}</p>
+                        <a href={addonWhatsapp(addon.title)} target="_blank" rel="noreferrer">
+                          Bespreek uitbreiding <ArrowRight size={15} aria-hidden="true" />
+                        </a>
+                      </article>
+                    );
+                  })}
+                </div>
+              </details>
+            </div>
+          </section>
+          </>) : null}
+
+          {view === "software" ? (<>
+          <section className="pricing-section pricing-payment-section" id="zo-werkt-de-prijs">
+            <div className="pricing-container">
+              <div className="pricing-section-heading">
+                <div className="pricing-kicker">Zo werkt de prijs</div>
+                <h2>Twee bedragen, vooraf vastgelegd.</h2>
+                <p>Geen uurtje-factuurtje achteraf. Je weet voor de start wat het bouwen kost en wat je daarna per maand betaalt.</p>
+              </div>
+              <div className="pricing-payment-grid">
+                <article>
+                  <span className="pricing-icon"><Search size={22} aria-hidden="true" /></span>
+                  <div><span className="pricing-card-label">Stap 1</span><h3>Bedrijfsscan</h3><p>We brengen je processen, tools en dubbel werk in kaart. Daaruit volgt wat de software moet doen.</p></div>
+                </article>
+                <article>
+                  <span className="pricing-icon"><FilePlus2 size={22} aria-hidden="true" /></span>
+                  <div><span className="pricing-card-label">Opstartkosten</span><h3>Eenmalig voor het bouwen</h3><p>Ontwerp, bouw, inrichting en het overzetten van je gegevens, voor de afgesproken eerste fase.</p></div>
+                </article>
+                <article>
+                  <span className="pricing-icon"><ShieldCheck size={22} aria-hidden="true" /></span>
+                  <div><span className="pricing-card-label">Vast maandbedrag</span><h3>Hosting, beheer en support</h3><p>Hosting, opslag, onderhoud en support voor de afgesproken functies. Inbegrepen gebruik staat in de offerte.</p></div>
+                </article>
+                <article>
+                  <span className="pricing-icon"><Sparkles size={22} aria-hidden="true" /></span>
+                  <div><span className="pricing-card-label">Uitbreiden</span><h3>Groeit mee in fases</h3><p>Nieuwe functies krijgen een eigen voorstel. Je beslist per fase, zonder verrassingen achteraf.</p></div>
+                </article>
+              </div>
+            </div>
+          </section>
+          <section className="pricing-section" id="apps-ai"><div className="pricing-container"><div className="pricing-section-heading"><div className="pricing-kicker">Slimmer werken en digitaal uitbreiden</div><h2>Bedrijfssoftware op maat: heldere afspraken op offerte.</h2><p>Een bedrijfsscan leidt tot een concreet voorstel. Opstartkosten en het vaste maandbedrag dekken de afgesproken functionaliteit, hosting, opslag, onderhoud en support. Inbegrepen gebruik, wijzigingen, uitbreiding, dataverwerking en export spreken we vooraf af.</p><p>Behoud je externe tools, dan kunnen hun abonnementskosten blijven gelden. Onderstaande catalogusdiensten zijn losse, afgebakende diensten; hun vanafprijzen zijn geen prijs voor een complete maatwerkapplicatie.</p><a className="pricing-secondary-cta" href="/software-op-maat">Meer over software op maat →</a></div><ServicePrices products={projectProducts} details /><p className="service-scope">Je ontvangt vooraf een offerte met scope, planning en acceptatieafspraken. Hosting, model- en API-gebruik, licenties en appstorekosten worden apart begroot. Vanafprijzen zijn geen prijs voor iedere denkbare uitvoering. Bestaande offertes, contracten en abonnementen behouden hun afgesproken tarieven.</p><a href="/diensten">Vergelijk de diensten en toepassingen →</a></div></section>
+          </>) : null}
+
+          {view === "beheer" ? (<>
+          <section className="pricing-section pricing-addons-section" id="hosting">
+            <div className="pricing-container">
+              <div className="pricing-section-heading">
+                <div className="pricing-kicker">Hosting en e-mail</div>
+                <h2>Veilig online, zonder gedoe.</h2>
+                <p>Hosting en zakelijke e-mail kies je los. Bij een websiteabonnement zit hosting al in het maandbedrag.</p>
+              </div>
+              <article className="pricing-online-card">
+                <div className="pricing-online-copy">
+                  <span className="pricing-icon"><ShieldCheck size={22} aria-hidden="true" /></span>
+                  <span className="pricing-card-label">Voordelige hosting</span>
+                  <h3>Website Hosting</h3>
+                  <p>
+                    Wij zorgen dat je Vedantix-website veilig bereikbaar blijft met HTTPS en een
+                    moderne hostingomgeving. Domeinregistratie en mailboxen staan los van hosting.
+                  </p>
+                </div>
+                <div className="pricing-online-options">
+                  {HOSTING_OPTIONS.map((option) => (
+                    <a
+                      className={option.featured ? "featured" : ""}
+                      href={addonWhatsapp(`Website Hosting voor ${option.period}`)}
+                      key={option.code}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {option.featured ? <span>Voordelig</span> : null}
+                      <strong>{option.period}</strong>
+                      <b>{currency(option.price)} excl. btw</b><small>{currency(option.priceIncl)} incl. btw</small>
+                      <small>{option.description}</small>
+                    </a>
+                  ))}
+                </div>
+              </article>
+              <details className="pricing-more-addons" open>
+                <summary>
+                  <span>Zakelijke e-mail en ondersteuning</span>
+                  <ChevronDown size={20} aria-hidden="true" />
+                </summary>
+                <div className="pricing-addon-grid">
+                  {CARE_ADDONS.map((addon) => {
+                    const Icon = addon.icon;
+                    return (
+                      <article key={addon.title}>
+                        <span className="pricing-icon"><Icon size={20} aria-hidden="true" /></span>
+                        <strong>{addon.price}</strong><small>{addon.priceIncl}</small>
+                        <h3>{addon.title}</h3>
+                        <p>{addon.text}</p>
+                        <a href={addonWhatsapp(addon.title)} target="_blank" rel="noreferrer">
+                          Bespreek dit <ArrowRight size={15} aria-hidden="true" />
+                        </a>
+                      </article>
+                    );
+                  })}
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section className="pricing-section" id="beheer">
+            <div className="pricing-container">
+              <div className="pricing-section-heading">
+                <div className="pricing-kicker">Technisch beheer</div>
+                <h2>Updates, controles en kleine verbeteringen.</h2>
+                <p>Voor wie de techniek liever aan ons overlaat: we houden je website of koppelingen bij volgens vaste afspraken.</p>
+              </div>
+              {careProducts.length ? <ServicePrices products={careProducts} details /> : <p className="service-scope">Technisch beheer stemmen we af op je website of applicatie. <a href="/contact">Vraag een voorstel aan</a>.</p>}
+            </div>
+          </section>
+
           <section className="pricing-section pricing-addons-section" id="groei">
             <div className="pricing-container">
               <div className="pricing-section-heading">
@@ -505,67 +759,20 @@ export default function Prijzen({ initialProducts = null }) {
             </div>
           </section>
 
-          <section className="pricing-section pricing-addons-section" id="uitbreidingen">
+          <section className="pricing-section pricing-payment-section" id="software-beheer">
             <div className="pricing-container">
               <div className="pricing-section-heading">
-                <div className="pricing-kicker">Hosting en losse uitbreidingen</div>
-                <h2>Neem alleen af wat je echt nodig hebt.</h2>
-                <p>Geen verplicht servicepakket. Hosting, e-mail en extra optimalisatie kies je los.</p>
+                <div className="pricing-kicker">Beheer van maatwerksoftware</div>
+                <h2>Bij software op maat zit beheer in het maandbedrag.</h2>
+                <p>Het vaste maandbedrag uit je offerte dekt de afgesproken hosting, opslag, onderhoud en support. Wat inbegrepen gebruik is en hoe uitbreidingen werken, leggen we vooraf vast.</p>
+                <Link className="pricing-secondary-cta" to="/prijzen/software-op-maat">Zo werkt de prijs van software op maat →</Link>
               </div>
-
-              <article className="pricing-online-card">
-                <div className="pricing-online-copy">
-                  <span className="pricing-icon"><ShieldCheck size={22} aria-hidden="true" /></span>
-                  <span className="pricing-card-label">Voordelige hosting</span>
-                  <h3>Website Hosting</h3>
-                  <p>
-                    Wij zorgen dat je Vedantix-website veilig bereikbaar blijft met HTTPS en een
-                    moderne hostingomgeving. Domeinregistratie en mailboxen staan los van hosting.
-                  </p>
-                </div>
-                <div className="pricing-online-options">
-                  {HOSTING_OPTIONS.map((option) => (
-                    <a
-                      className={option.featured ? "featured" : ""}
-                      href={addonWhatsapp(`Website Hosting voor ${option.period}`)}
-                      key={option.code}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {option.featured ? <span>Voordelig</span> : null}
-                      <strong>{option.period}</strong>
-                      <b>{currency(option.price)} excl. btw</b><small>{currency(option.priceIncl)} incl. btw</small>
-                      <small>{option.description}</small>
-                    </a>
-                  ))}
-                </div>
-              </article>
-
-              <details className="pricing-more-addons" open>
-                <summary>
-                  <span>Losse uitbreidingen</span>
-                  <ChevronDown size={20} aria-hidden="true" />
-                </summary>
-                <div className="pricing-addon-grid">
-                  {ADD_ONS.map((addon) => {
-                    const Icon = addon.icon;
-                    return (
-                      <article key={addon.title}>
-                        <span className="pricing-icon"><Icon size={20} aria-hidden="true" /></span>
-                        <strong>{addon.price}</strong><small>{addon.priceIncl}</small>
-                        <h3>{addon.title}</h3>
-                        <p>{addon.text}</p>
-                        <a href={addonWhatsapp(addon.title)} target="_blank" rel="noreferrer">
-                          Bespreek uitbreiding <ArrowRight size={15} aria-hidden="true" />
-                        </a>
-                      </article>
-                    );
-                  })}
-                </div>
-              </details>
             </div>
           </section>
 
+          </>) : null}
+
+          {faqs.length ? (
           <section className="pricing-section pricing-faq-section" aria-labelledby="pricing-faq-title">
             <div className="pricing-container pricing-faq-layout">
               <div className="pricing-section-heading compact">
@@ -578,7 +785,7 @@ export default function Prijzen({ initialProducts = null }) {
               </div>
 
               <div className="pricing-faq-list">
-                {PRICE_FAQS.map((faq) => (
+                {faqs.map((faq) => (
                   <details key={faq.question}>
                     <summary>
                       {faq.question} <ChevronDown size={19} aria-hidden="true" />
@@ -589,6 +796,13 @@ export default function Prijzen({ initialProducts = null }) {
               </div>
             </div>
           </section>
+          ) : null}
+
+
+
+
+
+
 
           <section className="pricing-final-cta">
             <div className="pricing-container pricing-final-cta-inner">

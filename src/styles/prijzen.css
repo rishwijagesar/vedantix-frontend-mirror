@@ -1181,3 +1181,13 @@
 .vx-pagehero .pricing-service-links { margin: 18px 0 0; gap: 10px; }
 .vx-pagehero .pricing-service-links a { border-color: var(--vx-dark-line); color: var(--vx-on-dark); font-size: .9rem; }
 .vx-pagehero .pricing-service-links a:hover { background: #74adff1f; border-color: var(--vx-accent); color: #fff; }
+
+/* Overzicht met drie routes en de schakelaar eenmalig / per maand */
+@media (min-width: 1024px) { .pricing-routes--three { grid-template-columns: repeat(3, 1fr); } }
+.pricing-packages-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 8px; }
+.pricing-packages-head h2 { margin: 0; }
+.pricing-billing-toggle { display: inline-flex; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); border: 1px solid #31415b; }
+.pricing-billing-toggle button { min-height: 44px; padding: 8px 18px; border: 0; border-radius: 999px; background: transparent; color: #d0d9e9; font: inherit; font-weight: 700; font-size: .92rem; cursor: pointer; }
+.pricing-billing-toggle button[aria-pressed="true"] { background: #74adff; color: #0a1428; }
+.pricing-billing-toggle button:focus-visible { outline: 3px solid #facc15; outline-offset: 2px; }
+.pricing-plan-intro { margin: 14px 0 0; max-width: 760px; color: #d0d9e9; line-height: 1.6; }

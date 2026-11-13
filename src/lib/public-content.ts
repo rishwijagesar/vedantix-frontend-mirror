@@ -6,6 +6,7 @@ export type PublicProduct = {
   billing_type: "ONE_TIME" | "MONTHLY" | "YEARLY";
   price_ex_vat: number; price_incl_vat: number; vat_rate: number;
   sort_order: number; from_price: boolean; duration_years: string | null;
+  setup_fee?: number | null; min_term_months?: number | null; base_package?: string | null; included_hours?: number | null;
 };
 export type PublicCase = {
   id: string; name: string; website: string | null; logo: string | null; branch: string;

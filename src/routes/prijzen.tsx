@@ -9,9 +9,9 @@ const description = "Actuele tarieven voor websitepakketten, AI-automatisering, 
 export const Route = createFileRoute("/prijzen")({
   loader: () => fetchPublicCatalog().catch(() => null),
   staleTime: 0,
-  head: () => publicHead("Software op offerte, websiteprijzen en hosting | Vedantix", "Software op maat met opstartkosten en een vast maandbedrag op offerte. Bekijk de bestaande websiteprijzen, hosting, e-mail en optionele groeidiensten.", "/prijzen"),
+  head: () => publicHead("Prijzen: websites, software op maat en beheer | Vedantix", "Bekijk de prijzen van Vedantix: websitepakketten eenmalig of als abonnement, bedrijfssoftware op maat op offerte en losse prijzen voor hosting, beheer en onderhoud.", "/prijzen"),
   component: function ServiceRoute() {
-    return <Page initialProducts={Route.useLoaderData()} />;
+    return <Page initialProducts={Route.useLoaderData()} view="overview" />;
   },
 });
 

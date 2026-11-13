@@ -1,7 +1,7 @@
 export const SERVICE_GROUPS = [
   { name: "Websites & hosting", items: [
     { label: "Website design / website laten maken", href: "/website-laten-maken", description: "Een sterke website voor jouw bedrijf", icon: "Globe2" },
-    { label: "Hosting & zakelijke e-mail", href: "/prijzen#uitbreidingen", description: "Een betrouwbare basis voor je website en mailbox", icon: "Server" },
+    { label: "Hosting & zakelijke e-mail", href: "/prijzen/beheer-onderhoud#hosting", description: "Een betrouwbare basis voor je website en mailbox", icon: "Server" },
     { label: "Onderhoud & support", href: "/onderhoud-support", description: "Heldere afspraken over updates en ondersteuning", icon: "Wrench" },
   ] },
   { name: "Software & AI", items: [

@@ -13,7 +13,8 @@ async function page(path) {
 }
 const [products,cases]=await Promise.all([rpc("get_public_catalog"),rpc("get_public_client_cases")]);
 const money=n=>new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR",minimumFractionDigits:0,maximumFractionDigits:2}).format(n).replace(/\s+/g," ");
-const pricing=await page("/prijzen");
+const pricing=await page("/prijzen/websites");
+await page("/prijzen"); await page("/prijzen/software-op-maat"); await page("/prijzen/beheer-onderhoud");
 for(const p of products.filter(p=>p.category==="WEBSITE")){
   assert(pricing.includes(money(p.price_ex_vat)),p.code+" excluding VAT missing from rendered page");
   assert(pricing.includes(money(p.price_incl_vat)),p.code+" including VAT missing from rendered page");
