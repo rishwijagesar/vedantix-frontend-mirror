@@ -543,6 +543,44 @@ const PROCESS_STYLES = `
       align-items: center;
     }
   }
+
+  /* vx-stijllaag: zelfde labels, koppen, tegels, knoppen en kleuren als de homepage */
+  .proces-page { background: #ffffff; color: #122039; }
+  .proces-section { padding-block: clamp(56px, 8vw, 104px); }
+  .proces-section-muted { background: linear-gradient(180deg, #e8f0fc, #f0f5fd); border-block: 1px solid #d3e0f2; }
+  .proces-page .proces-label { color: #087b62; font-weight: 700; font-size: .78rem; letter-spacing: .08em; }
+  .proces-label::before { content: ""; width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
+  .proces-section-heading h2 { color: #0a1428; font-family: inherit; font-size: clamp(1.7rem, 2.6vw + .7rem, 2.75rem); line-height: 1.1; letter-spacing: -.03em; font-weight: 800; }
+  .proces-section-heading p { color: #44556f; line-height: 1.65; }
+  .proces-card, .proces-time-card, .proces-expect-card, .proces-faq-card {
+    position: relative; overflow: hidden; border: 1px solid #c3d3ea; border-radius: 22px;
+    background: linear-gradient(180deg, #ffffff, #f7faff);
+    box-shadow: 0 1px 2px #12203918, 0 10px 28px #12203916;
+  }
+  .proces-card::before, .proces-time-card::before, .proces-expect-card::before, .proces-faq-card::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(105deg, #74adff, #b29aff);
+  }
+  .proces-card h3, .proces-time-card h3, .proces-expect-card h3, .proces-faq-card h3 { color: #0a1428; letter-spacing: -.01em; }
+  .proces-card p, .proces-time-card p, .proces-expect-card p, .proces-faq-card p { color: #44556f; }
+  .proces-step-number, .proces-icon { background: linear-gradient(135deg, #d6e6ff, #e4dcff); border: 1px solid #b4cdf5; color: #122039; box-shadow: none; }
+  .proces-mini-box { background: #f4f7fc; border-color: #d3e0f2; }
+  .proces-result { background: #eef4fe; border-left: 3px solid #74adff; color: #122039; }
+  .proces-time-value { color: #087b62; }
+  .proces-time-card.highlight { background: linear-gradient(160deg, #0a1428, #162a4d); border-color: #31415b; }
+  .proces-time-card.highlight h3 { color: #ffffff; }
+  .proces-time-card.highlight .proces-time-value { background: #74adff26; color: #cfe2ff; }
+  .proces-time-card.highlight p { color: #d0d9e9; }
+  .proces-closing { background: #0a1428; }
+  .proces-closing-card { border-radius: 22px; background: radial-gradient(circle at 86% 20%, #b29aff22, transparent 40%), linear-gradient(145deg, #122039, #162a4d); border: 1px solid #31415b; }
+  .proces-page .proces-closing .proces-label { color: #74adff; }
+  .proces-closing h2 { font-family: inherit; font-weight: 800; letter-spacing: -.03em; }
+  .proces-closing-copy p { color: #d0d9e9; }
+  .proces-btn { min-height: 52px; border-radius: 12px; font-weight: 700; }
+  .proces-btn-primary { background: #74adff; color: #0a1428; box-shadow: 0 10px 30px #74adff40; border-color: transparent; }
+  .proces-btn-primary:hover { background: #8fbdff; }
+  .proces-btn-secondary { background: transparent; color: #ffffff; border: 1.5px solid #31415b; }
+  .proces-btn-secondary:hover { border-color: #74adff; color: #74adff; }
+
 `;
 
 const processSteps = [

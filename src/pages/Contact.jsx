@@ -560,6 +560,40 @@ const CONTACT_STYLES = `
       grid-column: 1 / -1;
     }
   }
+
+  /* vx-stijllaag: zelfde labels, koppen, tegels, knoppen en kleuren als de homepage */
+  .contact-page { background: #ffffff; color: #122039; }
+  main > .contact-section:nth-of-type(even) { background: linear-gradient(180deg, #e8f0fc, #f0f5fd); border-block: 1px solid #d3e0f2; }
+  .contact-page .contact-label { display: inline-flex; align-items: center; gap: 8px; color: #087b62; font-weight: 700; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+  .contact-label::before { content: ""; width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
+  .contact-section h2 { color: #0a1428; font-family: inherit; font-size: clamp(1.7rem, 2.6vw + .7rem, 2.6rem); line-height: 1.1; letter-spacing: -.03em; font-weight: 800; }
+  .contact-section-copy, .contact-section-header p { color: #44556f; }
+  .contact-intro-card, .contact-card, .contact-panel, .contact-faq-card {
+    position: relative; overflow: hidden; border: 1px solid #c3d3ea; border-radius: 22px;
+    background: linear-gradient(180deg, #ffffff, #f7faff);
+    box-shadow: 0 1px 2px #12203918, 0 10px 28px #12203916;
+  }
+  .contact-card::before, .contact-panel::before, .contact-faq-card::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(105deg, #74adff, #b29aff);
+  }
+  .contact-card h3, .contact-faq-card h3, .contact-panel h3 { color: #0a1428; }
+  .contact-card-icon { background: linear-gradient(135deg, #d6e6ff, #e4dcff); border: 1px solid #b4cdf5; color: #122039; }
+  .contact-link-pill { border: 1px solid #c3d3ea; color: #122039; background: #ffffff; border-radius: 999px; font-weight: 600; }
+  .contact-link-pill:hover { border-color: #087b62; color: #087b62; }
+  .contact-field input, .contact-field select, .contact-field textarea { border: 1.5px solid #b9c8dd; border-radius: 12px; background: #ffffff; color: #122039; }
+  .contact-field input:focus, .contact-field select:focus, .contact-field textarea:focus { border-color: #74adff; box-shadow: 0 0 0 4px #74adff33; outline: none; }
+  .contact-btn { min-height: 52px; border-radius: 12px; font-weight: 700; }
+  .contact-btn-primary { background: #74adff; color: #0a1428; box-shadow: 0 10px 30px #74adff40; }
+  .contact-btn-primary:hover { background: #8fbdff; }
+  .contact-btn-dark { background: #122039; color: #ffffff; }
+  .contact-btn-dark:hover { background: #1b2f52; }
+  .contact-btn-outline { border: 1.5px solid #31415b; background: transparent; color: #ffffff; }
+  .contact-btn-outline:hover { border-color: #74adff; color: #74adff; background: transparent; }
+  .contact-final-card { border-radius: 22px; background: radial-gradient(circle at 86% 20%, #b29aff22, transparent 40%), linear-gradient(145deg, #0a1428, #162a4d); border: 1px solid #31415b; }
+  .contact-page .contact-final-card .contact-label { color: #74adff; }
+  .contact-final-card h2 { color: #ffffff; }
+  .contact-final-card p { color: #d0d9e9; }
+
 `;
 
 const initialForm = {
