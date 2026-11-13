@@ -77,7 +77,7 @@ const WEBSITE_VALUE = [
   { title: "Maatwerkdesign", text: "Ontworpen voor jouw bedrijf en responsive op mobiel, tablet en desktop.", icon: PenLine },
   { title: "Vindbaarheid zit erin", text: "Elk pakket krijgt een technische SEO-basis. Growth en Pro ook AEO en structured data.", icon: Search },
   { title: "Eén vast aanspreekpunt", text: "Je praat met degene die bouwt en beheert. Geen accountmanagers ertussen.", icon: MessageCircle },
-  { title: "Vaste prijs, geen abonnement", text: "Eenmalig betalen. Hosting en extra's kies je alleen als je ze nodig hebt.", icon: ShieldCheck },
+  { title: "Eenmalig of per maand", text: "Betaal in één keer, of kies een abonnement met lage opstartkosten. Een abonnement is nooit verplicht.", icon: ShieldCheck },
   { title: "Feedbackrondes vastgelegd", text: "Twee rondes bij Starter, drie bij Growth en Pro. Je weet vooraf waar je aan toe bent.", icon: CheckCircle2 },
   { title: "Groeit mee met je bedrijf", text: "Later een klantportaal, koppeling of eigen app? Dat bouwt dezelfde partij.", icon: Sparkles },
 ];
