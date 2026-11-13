@@ -10,6 +10,8 @@ export default function NavBar(){
  const location=useLocation();const home=location.pathname==="/";const [scrolled,setScrolled]=useState(false);const [mobile,setMobile]=useState(false);const [openMenu,setOpenMenu]=useState(null);const services=openMenu!==null;const [group,setGroup]=useState(null);const root=useRef(null);const trigger=useRef(null);const priceTrigger=useRef(null);const menuToggle=useRef(null);const timer=useRef(null);
  const close=()=>{setOpenMenu(null);setMobile(false);setGroup(null);};
  const cancel=()=>{if(timer.current)clearTimeout(timer.current);};
+ const hoverDesktop=()=>typeof window!=='undefined'&&matchMedia('(min-width: 901px) and (hover: hover)').matches;
+ const toggle=name=>{cancel();setOpenMenu(v=>v===name&&!hoverDesktop()?null:name);};
  const enter=name=>{cancel();if(matchMedia('(min-width: 901px) and (hover: hover)').matches)setOpenMenu(name);};
  const leave=()=>{cancel();timer.current=setTimeout(()=>{if(!root.current?.contains(document.activeElement))setOpenMenu(null);},180);};
  useEffect(()=>{close();},[location.pathname]);
@@ -23,7 +25,7 @@ export default function NavBar(){
    <Button ref={menuToggle} variant="ghost" className="site-menu-toggle" aria-label={mobile?'Menu sluiten':'Menu openen'} aria-expanded={mobile} aria-controls="site-main-links" onClick={()=>{setMobile(v=>!v);setOpenMenu(null);}}>{mobile?<X/>:<Menu/>}<span>{mobile?'Sluiten':'Menu'}</span></Button>
    <div id="site-main-links" className={`site-nav-links${mobile?' is-open':''}`}>
     <div className="site-services" onMouseEnter={()=>enter("services")} onMouseLeave={leave}>
-     <Button ref={trigger} variant="ghost" className="site-nav-link site-services-trigger" aria-expanded={openMenu==='services'} aria-controls="site-services-panel" onClick={()=>{cancel();setOpenMenu(v=>v==='services'?null:'services');}} onKeyDown={e=>{if(e.key==='ArrowDown'){e.preventDefault();setOpenMenu('services');requestAnimationFrame(()=>root.current?.querySelector('#site-services-panel a')?.focus());}}}>Diensten<ChevronDown className={openMenu==='services'?'is-turned':''}/></Button>
+     <Button ref={trigger} variant="ghost" className="site-nav-link site-services-trigger" aria-expanded={openMenu==='services'} aria-controls="site-services-panel" onClick={()=>toggle('services')} onKeyDown={e=>{if(e.key==='ArrowDown'){e.preventDefault();setOpenMenu('services');requestAnimationFrame(()=>root.current?.querySelector('#site-services-panel a')?.focus());}}}>Diensten<ChevronDown className={openMenu==='services'?'is-turned':''}/></Button>
      <div id="site-services-panel" className="site-megamenu" hidden={openMenu!=='services'} onMouseEnter={cancel}>
       <div className="site-megamenu-heading"><Link to="/diensten" onClick={close}>Alle diensten <ArrowUpRight/></Link><span>Van een sterke website tot één centrale werkplek.</span></div>
       <div className="site-megamenu-groups">{SERVICE_GROUPS.map((g,i)=><section key={g.name} className="site-service-group"><h2 className="site-group-desktop">{g.name}</h2><Button variant="ghost" className="site-group-toggle" aria-expanded={group===i} aria-controls={`service-group-${i}`} onClick={()=>setGroup(group===i?null:i)}>{g.name}<ChevronDown/></Button><div id={`service-group-${i}`} className={`site-group-items${group===i?' is-expanded':''}`}>{g.items.map(item=>{const Icon=icons[item.icon];return <Link key={item.href} to={item.href} className="site-service-item" onClick={close}><span className="site-service-icon"><Icon/></span><span><strong>{item.label}</strong><small>{item.description}</small></span><ArrowUpRight className="site-service-arrow"/></Link>;})}</div></section>)}</div>
@@ -31,7 +33,7 @@ export default function NavBar(){
     </div>
     <Link to="/software-op-maat" className="site-nav-link site-nav-secondary" onClick={close}>Software op maat</Link>
     <div className="site-services site-dropdown" onMouseEnter={()=>enter("prices")} onMouseLeave={leave}>
-     <Button ref={priceTrigger} variant="ghost" className="site-nav-link site-services-trigger" aria-expanded={openMenu==='prices'} aria-controls="site-prices-panel" onClick={()=>{cancel();setOpenMenu(v=>v==='prices'?null:'prices');}} onKeyDown={e=>{if(e.key==='ArrowDown'){e.preventDefault();setOpenMenu('prices');requestAnimationFrame(()=>root.current?.querySelector('#site-prices-panel a')?.focus());}}}>Prijzen<ChevronDown className={openMenu==='prices'?'is-turned':''}/></Button>
+     <Button ref={priceTrigger} variant="ghost" className="site-nav-link site-services-trigger" aria-expanded={openMenu==='prices'} aria-controls="site-prices-panel" onClick={()=>toggle('prices')} onKeyDown={e=>{if(e.key==='ArrowDown'){e.preventDefault();setOpenMenu('prices');requestAnimationFrame(()=>root.current?.querySelector('#site-prices-panel a')?.focus());}}}>Prijzen<ChevronDown className={openMenu==='prices'?'is-turned':''}/></Button>
      <div id="site-prices-panel" className="site-megamenu site-megamenu--compact" hidden={openMenu!=='prices'} onMouseEnter={cancel}>
       {PRICE_LINKS.map(item=>{const Icon=icons[item.icon];return <Link key={item.href} to={item.href} className="site-service-item" onClick={close}><span className="site-service-icon"><Icon/></span><span><strong>{item.label}</strong><small>{item.description}</small></span><ArrowUpRight className="site-service-arrow"/></Link>;})}
      </div>
