@@ -15,4 +15,7 @@ test("new quotation services do not define generic prices or overwrite website c
     expect(Object.hasOwn(service, "price")).toBe(false);
     expect(Object.hasOwn(service, "codes")).toBe(false);
   }
+});test("price submenu points to the overview and the three pricing pages", async () => {
+  const { PRICE_LINKS } = await import("../src/data/service-navigation");
+  expect(PRICE_LINKS.map(link => link.href)).toEqual(["/prijzen", "/prijzen/websites", "/prijzen/software-op-maat", "/prijzen/beheer-onderhoud"]);
 });

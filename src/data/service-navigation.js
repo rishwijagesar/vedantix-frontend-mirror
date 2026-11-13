@@ -17,3 +17,9 @@ export const SERVICE_GROUPS = [
     { label: "AI-marketing met ChatGPT & Claude", href: "/ai-marketing", description: "Slim voorbereiden, menselijk controleren", icon: "Bot" },
   ] },
 ];
+export const PRICE_LINKS = [
+  { label: "Prijsoverzicht", href: "/prijzen", description: "Alle prijzen op een rij", icon: "Tags" },
+  { label: "Websites", href: "/prijzen/websites", description: "Eenmalig of per maand", icon: "Monitor" },
+  { label: "Software op maat", href: "/prijzen/software-op-maat", description: "Opstartkosten en vast maandbedrag", icon: "Code" },
+  { label: "Beheer en onderhoud", href: "/prijzen/beheer-onderhoud", description: "Hosting, e-mail en technisch beheer", icon: "LifeBuoy" },
+];

@@ -11,3 +11,14 @@
 
 @media(min-width:901px){.site-nav-links>.site-nav-secondary{display:none}}
 .site-nav-cta--home { display: none; }
+
+/* Prijzen-submenu: compact paneel onder de knop */
+.site-dropdown { position: relative; }
+@media (min-width: 901px) {
+  .site-megamenu--compact { left: 50%; right: auto; width: 320px; transform: translateX(-50%); top: calc(100% + 18px); padding: 10px; border-radius: 12px; display: grid; gap: 2px; }
+  .site-megamenu--compact[hidden] { display: none; }
+  .site-megamenu--compact::before { inset: -22px 0 auto; }
+}
+@media (max-width: 900px) {
+  .site-megamenu--compact { padding: 6px; }
+}
