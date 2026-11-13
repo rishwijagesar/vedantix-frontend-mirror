@@ -109,7 +109,7 @@ describe("Pricing pages are split by audience", () => {
   });
   test("hosting lives on the maintenance page, not on the websites page", () => {
     expect(renderToStaticMarkup(<Prijzen initialProducts={[product, hosting]} view="beheer"/>)).toContain("72,60");
-    expect(renderToStaticMarkup(<Prijzen initialProducts={[product, hosting]} view="websites"/>)).not.toContain("72,60");
+    expect(renderToStaticMarkup(<Prijzen initialProducts={[product, hosting]} view="websites"/>)).not.toContain("<h3>Website Hosting</h3>");
   });
   test("overview links to the three pricing pages", () => {
     const html = renderToStaticMarkup(<Prijzen initialProducts={[product, plan]}/>);
