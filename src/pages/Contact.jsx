@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import SEO from "../components/SEO";
 import NavBar from "../components/NavBar";
+import PageHero from "../components/PageHero";
 import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 
@@ -667,38 +668,21 @@ export default function Contact() {
         <NavBar />
 
         <main>
-          <header className="contact-hero">
-            <div className="contact-shell contact-hero-grid">
-              <div>
-                <div className="contact-kicker">
-                  <MessageCircle size={16} aria-hidden="true" />
-                  Contact met Vedantix
-                </div>
-                <h1>Neem contact op met Vedantix</h1>
-                <p className="contact-hero-subtitle">
-                  Plan een bedrijfsscan: we bespreken processen, tools, abonnementen, handwerk en kansen. Of stel je vraag over een website, hosting of vindbaarheid. Je krijgt een concreet voorstel voordat we bouwen.
-                </p>
-                <div className="contact-hero-actions" aria-label="Contact acties">
-                  <a className="contact-btn contact-btn-primary" href="#contact-form">
-                    Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" />
-                  </a>
-                  <a
-                    className="contact-btn contact-btn-outline"
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <MessageCircle size={18} aria-hidden="true" /> WhatsApp ons direct
-                  </a>
-                </div>
-              </div>
-
-              <aside className="contact-hero-note" aria-label="Waarom contact opnemen">
-                <strong>Maak je idee concreet</strong>
-                <span>Je hoeft nog geen uitgewerkt plan te hebben. Stuur je vraag, website of idee en vertel wat je wilt verbeteren.</span>
-              </aside>
-            </div>
-          </header>
+          <PageHero
+            as="header"
+            id="contact-title"
+            eyebrow="Contact"
+            title={<>Vertel wat je wilt <span className="vx-grad">verbeteren</span></>}
+            lead="Plan een bedrijfsscan: we bespreken processen, tools, abonnementen, handwerk en kansen. Of stel je vraag over een website, hosting of vindbaarheid. Je krijgt een concreet voorstel voordat we bouwen."
+            actions={<>
+              <a className="vx-btn vx-btn--primary" href="#contact-form">Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" /></a>
+              <a className="vx-btn vx-btn--ghost" href={whatsappUrl} target="_blank" rel="noreferrer"><MessageCircle size={18} aria-hidden="true" /> WhatsApp ons direct</a>
+            </>}
+            aside={<>
+              <p className="vx-pagehero__aside-title">Maak je idee concreet</p>
+              <p className="vx-pagehero__aside-text">Je hoeft nog geen uitgewerkt plan te hebben. Stuur je vraag, website of idee en vertel wat je wilt verbeteren.</p>
+            </>}
+          />
 
           <section className="contact-section">
             <div className="contact-shell">

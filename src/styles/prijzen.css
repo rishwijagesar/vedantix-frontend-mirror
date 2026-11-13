@@ -1173,3 +1173,11 @@
 .pricing-route--main { border-color: rgba(116, 173, 255, 0.55); background: linear-gradient(135deg, rgba(116, 173, 255, 0.16), rgba(178, 154, 255, 0.1)); }
 @media (min-width: 768px) { .pricing-routes { grid-template-columns: 1fr 1fr; } }
 @media (prefers-reduced-motion: reduce) { .pricing-route { transition: none; } }
+
+/* Paginakop via gedeelde PageHero; pakketten lopen door in hetzelfde donkere vlak */
+.pricing-hero--continued { min-height: 0; padding: 0 0 28px; background: #0a1428; }
+.pricing-hero--continued::before { display: none; }
+.vx-pagehero .pricing-routes { margin: 30px 0 0; }
+.vx-pagehero .pricing-service-links { margin: 18px 0 0; gap: 10px; }
+.vx-pagehero .pricing-service-links a { border-color: var(--vx-dark-line); color: var(--vx-on-dark); font-size: .9rem; }
+.vx-pagehero .pricing-service-links a:hover { background: #74adff1f; border-color: var(--vx-accent); color: #fff; }

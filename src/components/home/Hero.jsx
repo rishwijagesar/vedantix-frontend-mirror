@@ -22,7 +22,7 @@ export default function Hero() {
       <div className="vx-hero__bg" aria-hidden="true"><span /><span /><span /></div>
       <div className="vx-container vx-hero__layout">
         <div className="vx-hero__copy">
-          <p className="vx-eyebrow">Software op maat voor het mkb · Den Bosch</p>
+          <p className="vx-eyebrow">Op maat gebouwd voor jouw bedrijf</p>
           <h1 id="vx-hero-title" className="vx-h1">
             Stop met dubbel werk.
             <br />

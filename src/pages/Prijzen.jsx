@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import SEO from "../components/SEO";
 import NavBar from "../components/NavBar";
+import PageHero from "../components/PageHero";
 import ServicePrices from "../components/ServicePrices";
 import { PROJECT_CATEGORIES } from "../data/services";
 import "../styles/services.css";
@@ -220,7 +221,7 @@ export default function Prijzen({ initialProducts = null }) {
   });
   const projectProducts = products.filter(p => PROJECT_CATEGORIES.includes(p.category.toUpperCase()));
   const yearlyHosting = products.find(p => p.code === "HOSTING_YEAR");
-  const heading = "Heldere prijzen. Ruimte om te groeien.";
+  const heading = <>Heldere prijzen. <span className="vx-grad">Ruimte om te groeien.</span></>;
   const PRICE_FAQS = BASE_PRICE_FAQS.map(faq => {
     if (faq.question === "Wat kost een website bij Vedantix?" && WEBSITE_PACKAGES.length) return { ...faq, answer: WEBSITE_PACKAGES.map(p => `${p.label}: ${currency(p.price)} excl. btw (${currency(p.priceIncl)} incl. btw), ${p.suffix}.`).join(" ") + " Hosting, e-mail en groeidiensten kies je apart." };
     if (faq.question === "Wat kost hosting?" && yearlyHosting) return { ...faq, answer: `Jaarlijkse hosting kost ${currency(yearlyHosting.price_ex_vat)} excl. btw (${currency(yearlyHosting.price_incl_vat)} incl. btw). Domeinnamen en mailboxen staan los van hosting.` };
@@ -246,20 +247,12 @@ export default function Prijzen({ initialProducts = null }) {
         <NavBar />
 
         <main>
-          <section className="pricing-hero" aria-labelledby="pricing-title">
-            <div className="pricing-hero-glow" aria-hidden="true" />
-            <div className="pricing-container pricing-hero-inner">
-              <header className="pricing-hero-header">
-                <div className="pricing-eyebrow">
-                  <span /> Software op maat · Websites · Vindbaarheid
-                </div>
-                <h1 id="pricing-title">{heading}</h1>
-                <p>
-                  Bedrijfssoftware op maat heeft opstartkosten en een vast maandbedrag op offerte voor de afgesproken dienstverlening.
-                  Websitepakketten houden hun bestaande eenmalige prijzen, zonder verplicht maandabonnement.
-                </p>
-              </header>
-
+          <PageHero
+            id="pricing-title"
+            eyebrow="Prijzen"
+            title={heading}
+            lead="Bedrijfssoftware op maat heeft opstartkosten en een vast maandbedrag op offerte. Websitepakketten hebben een vaste eenmalige prijs, zonder verplicht abonnement."
+          >
               <div className="pricing-routes">
                 <a className="pricing-route pricing-route--main" href="#apps-ai">
                   <small>Voor mkb-bedrijven</small>
@@ -275,6 +268,10 @@ export default function Prijzen({ initialProducts = null }) {
                 </a>
               </div>
               <nav className="pricing-service-links" aria-label="Prijscategorieën"><a href="#websites">Websitepakketten</a><a href="#apps-ai">Software op offerte</a><a href="#groei">SEO & AI-vindbaarheid</a><a href="#uitbreidingen">Hosting & uitbreidingen</a></nav>
+          </PageHero>
+
+          <section className="pricing-hero pricing-hero--continued" aria-label="Websitepakketten">
+            <div className="pricing-container pricing-hero-inner">
               <h2 id="websites">Websitepakketten</h2>
               {loading ? <p role="status">Actuele prijzen laden…</p> : null}
               {error ? <p role="alert">De prijzen zijn tijdelijk niet beschikbaar. Neem contact op voor een offerte.</p> : null}

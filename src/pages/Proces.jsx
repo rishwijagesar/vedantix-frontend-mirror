@@ -1,4 +1,4 @@
-import { SOFTWARE_STEPS } from "../data/positioning";
+import { SCAN_URL, SOFTWARE_STEPS } from "../data/positioning";
 import { Link } from "@/lib/router-compat";
 import {
   ArrowRight,
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import SEO from "../components/SEO";
 import NavBar from "../components/NavBar";
+import PageHero from "../components/PageHero";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 
 const PROCESS_STYLES = `
@@ -759,48 +760,25 @@ export default function Proces() {
         <NavBar />
 
         <main>
-          <section className="proces-hero">
-            <div className="proces-shell proces-hero-grid">
-              <div>
-                <div className="proces-kicker">
-                  <Sparkles size={16} aria-hidden="true" />
-                  Van bedrijfsscan naar werkende software
+          <PageHero
+            id="proces-title"
+            eyebrow="Werkwijze"
+            title={<>Van jouw werkproces naar een <span className="vx-grad">passende applicatie</span></>}
+            lead="Eerst begrijpen wat jouw bedrijf nodig heeft, daarna helder afspreken en in fases bouwen. Je krijgt een concreet voorstel met opstartkosten en een vast maandbedrag voor de afgesproken dienstverlening."
+            actions={<>
+              <Link className="vx-btn vx-btn--primary" to={SCAN_URL}>Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" /></Link>
+              <Link className="vx-btn vx-btn--ghost" to="/prijzen">Bekijk prijzen</Link>
+            </>}
+            aside={<>
+              <p className="vx-pagehero__aside-title">Zo groeit je software mee</p>
+              {visualSteps.map(({ title, text, icon: Icon }) => (
+                <div className="vx-pagehero__step" key={title}>
+                  <span className="vx-pagehero__step-icon"><Icon aria-hidden="true" /></span>
+                  <div><strong>{title}</strong><span>{text}</span></div>
                 </div>
-                <h1>Van jouw werkproces naar een passende applicatie</h1>
-                <div className="proces-hero-text">
-                  <p>Eerst begrijpen wat jouw bedrijf nodig heeft.</p>
-                  <p>Daarna helder afspreken en in fases bouwen.</p>
-                  <p>
-                    We bespreken processen, tools, abonnementen en handwerk. Je krijgt
-                    een concreet voorstel met opstartkosten en een vast maandbedrag voor
-                    de afgesproken dienstverlening.
-                  </p>
-                </div>
-                <div className="proces-actions" aria-label="Belangrijkste acties">
-                  <Link className="proces-btn proces-btn-primary" to="/contact#contact-form">
-                    Plan een bedrijfsscan <ArrowRight size={18} aria-hidden="true" />
-                  </Link>
-                  <Link className="proces-btn proces-btn-secondary" to="/prijzen">
-                    Bekijk onze pakketten
-                  </Link>
-                </div>
-              </div>
-
-              <aside className="proces-visual" aria-label="Groeipad van Vedantix">
-                {visualSteps.map(({ title, text, icon: Icon }) => (
-                  <div className="proces-visual-step" key={title}>
-                    <span className="proces-visual-icon">
-                      <Icon size={22} aria-hidden="true" />
-                    </span>
-                    <div>
-                      <strong>{title}</strong>
-                      <span>{text}</span>
-                    </div>
-                  </div>
-                ))}
-              </aside>
-            </div>
-          </section>
+              ))}
+            </>}
+          />
 
           <section className="proces-section" aria-labelledby="samenwerking-title">
             <div className="proces-shell">

@@ -2,6 +2,7 @@ import { ArrowRight, BarChart3, MessageCircle, Search, ShieldCheck, Sparkles } f
 import { Link } from "@/lib/router-compat";
 import ClientCasesSection from "../components/home/ClientCasesSection";
 import NavBar from "../components/NavBar";
+import PageHero from "../components/PageHero";
 import SEO from "../components/SEO";
 import { createBreadcrumbSchema, createFAQSchema, createServiceSchema } from "../utils/schema";
 import "../styles/vx-home.css";
@@ -80,24 +81,22 @@ export default function Resultaten({ initialCases = null }) {
       <div className="vx-page">
         <NavBar />
         <main>
-          <section className="vx-pagehero" aria-labelledby="results-title">
-            <div className="vx-container vx-pagehero__inner">
-              <p className="vx-eyebrow">Klantcases</p>
-              <h1 id="results-title" className="vx-h1">Ons werk voor <span className="vx-grad">ondernemers</span></h1>
-              <p className="vx-lead">
-                Bekijk de websites die we hebben gebouwd, lees wat er is gerealiseerd en ontdek welke aanpak bij jouw bedrijf past.
-              </p>
-              <div className="vx-pagehero__actions">
-                <a href="/online-groei-audit" className="vx-btn vx-btn--primary">Vraag een gratis Online Groei Audit aan <ArrowRight aria-hidden="true" /></a>
-                <Link to="/prijzen" className="vx-btn vx-btn--ghost">Bekijk pakketten</Link>
-              </div>
-              <ul className="vx-pagehero__facts" aria-label="Waar we aan werken">
-                {[["Zichtbaarheid", "Google"], ["Vertrouwen", "Reviews"], ["Contact", "WhatsApp"], ["Groei", "Aanvragen"]].map(([label, value]) => (
-                  <li key={label}><span>{label}</span><strong>{value}</strong></li>
-                ))}
-              </ul>
-            </div>
-          </section>
+          <PageHero
+            id="results-title"
+            eyebrow="Klantcases"
+            title={<>Ons werk voor <span className="vx-grad">ondernemers</span></>}
+            lead="Bekijk de websites die we hebben gebouwd, lees wat er is gerealiseerd en ontdek welke aanpak bij jouw bedrijf past."
+            actions={<>
+              <a href="/online-groei-audit" className="vx-btn vx-btn--primary">Vraag een gratis Online Groei Audit aan <ArrowRight aria-hidden="true" /></a>
+              <Link to="/prijzen" className="vx-btn vx-btn--ghost">Bekijk pakketten</Link>
+            </>}
+          >
+            <ul className="vx-pagehero__facts" aria-label="Waar we aan werken">
+              {[["Zichtbaarheid", "Google"], ["Vertrouwen", "Reviews"], ["Contact", "WhatsApp"], ["Groei", "Aanvragen"]].map(([label, value]) => (
+                <li key={label}><span>{label}</span><strong>{value}</strong></li>
+              ))}
+            </ul>
+          </PageHero>
 
           <section className="vx-section vx-section--soft vx-cases" aria-label="Klantcases">
             <div className="vx-container">
