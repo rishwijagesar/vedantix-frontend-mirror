@@ -1,6 +1,6 @@
 # Vedantix
 
-> Vedantix bouwt bedrijfssoftware op maat voor het mkb en zelfstandigen, vanuit Den Bosch voor heel Nederland. Eén webapp voor aanvragen, offertes, planning en facturatie, gebouwd en beheerd door één vast aanspreekpunt. Daarnaast maakt Vedantix websites, verzorgt hosting en zakelijke e-mail en helpt bij vindbaarheid in Google en AI.
+> Vedantix bouwt bedrijfssoftware op maat voor het mkb en zelfstandigen, voor ondernemers in heel Nederland. Eén webapp voor aanvragen, offertes, planning en facturatie, gebouwd en beheerd door één vast aanspreekpunt. Daarnaast maakt Vedantix websites, verzorgt hosting en zakelijke e-mail en helpt bij vindbaarheid in Google en AI.
 
 ## Wat Vedantix doet
 
@@ -58,7 +58,7 @@
 Een webapplicatie die aansluit op jouw werkprocessen. Medewerkers voeren hun taken uit in één omgeving, met toegang die past bij hun rol. De afgesproken functionaliteit vormt de basis voor ontwikkeling en beheer.
 
 ### Voor wie bouwt Vedantix software?
-Voor het mkb en zelfstandigen in alle sectoren. Vanuit Den Bosch werken we voor bedrijven in heel Nederland. De bedrijfsscan bepaalt of maatwerk, bestaande tools of een combinatie het beste past.
+Voor het mkb en zelfstandigen in alle sectoren. We werken voor bedrijven in heel Nederland. De bedrijfsscan bepaalt of maatwerk, bestaande tools of een combinatie het beste past.
 
 ### Wat brengt een bedrijfsscan in kaart?
 We bespreken processen, afdelingen, bestaande tools, abonnementen, handwerk en knelpunten. Daarna maken we een concreet voorstel met prioriteiten, kosten en een gefaseerde aanpak. De omvang en eventuele kosten van de scan spreken we vooraf af.

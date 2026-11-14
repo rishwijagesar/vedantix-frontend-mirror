@@ -5,7 +5,7 @@ export const SERVICES = [
     "name": "Bedrijfssoftware op maat",
     "short": "Eén applicatie rond jouw processen. Met heldere rol- en beheerafspraken.",
     "icon": "LayoutDashboard",
-    "title": "Software op maat voor mkb | Vedantix Den Bosch",
+    "title": "Software op maat voor mkb | Vedantix",
     "description": "Bedrijfssoftware op maat voor mkb en zelfstandigen. Centrale webapp met rolrechten, AI-ondersteunde ontwikkeling en professionele tests.",
     "headline": "Software die meegroeit met jouw bedrijf.",
     "intro": "Breng je bedrijfsprocessen samen in een applicatie op maat. We beginnen met een bedrijfsscan, maken een concreet voorstel en bouwen in fases.",
@@ -21,7 +21,7 @@ export const SERVICES = [
     "short": "Een sterke eerste indruk. Een duidelijke route naar contact.",
     "icon": "Globe2",
     "title": "Website laten maken voor je bedrijf | Vedantix",
-    "description": "Laat een snelle bedrijfswebsite maken door Vedantix in Den Bosch. Heldere websitepakketten, mobiele ontwerpen, SEO en ondersteuning voor ondernemers.",
+    "description": "Laat een snelle bedrijfswebsite maken door Vedantix. Heldere websitepakketten, mobiele ontwerpen, SEO en ondersteuning voor ondernemers.",
     "headline": "Een website die jouw bedrijf vooruithelpt.",
     "intro": "Laat direct zien wat je doet, voor wie je werkt en waarom klanten bij jou moeten zijn. We bouwen snelle bedrijfswebsites met een heldere structuur en contactmogelijkheden die passen bij jouw klanten.",
     "codes": [

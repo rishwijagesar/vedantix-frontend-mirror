@@ -630,7 +630,7 @@ export default function VoorWie() {
     <>
       <SEO
         title="Software en websites voor mkb en zelfstandigen | Vedantix"
-        description="Voor mkb en zelfstandigen in alle sectoren: bedrijfssoftware op maat, websites en hosting. Vanuit Den Bosch, voor heel Nederland."
+        description="Voor mkb en zelfstandigen in alle sectoren: bedrijfssoftware op maat, websites en hosting. Voor ondernemers in heel Nederland."
         canonical={canonical}
         schemas={[breadcrumbSchema, faqSchema]}
       />
@@ -712,7 +712,7 @@ export default function VoorWie() {
               <div className="voorwie-section-heading">
                 <p className="voorwie-label">Geen vaste niche</p>
                 <h2 id="ondernemers-title">Voor welke ondernemers werken wij?</h2>
-                <p>We werken voor alle sectoren, vanuit Den Bosch met landelijke dienstverlening.</p>
+                <p>We werken voor alle sectoren, met landelijke dienstverlening.</p>
               </div>
 
               <div className="voorwie-category-grid">

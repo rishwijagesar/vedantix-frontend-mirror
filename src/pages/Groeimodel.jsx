@@ -125,7 +125,7 @@ const groeimodelFaqs = [
   {
     question: "Voor wie is Vedantix bedoeld?",
     answer:
-      "Vedantix is bedoeld voor het mkb en zelfstandigen in alle sectoren. Vanuit Den Bosch werken we landelijk aan software op maat, websites en hosting.",
+      "Vedantix is bedoeld voor het mkb en zelfstandigen in alle sectoren. We werken in heel Nederland aan software op maat, websites en hosting.",
   },
   {
     question: "Wat doet Vedantix na oplevering?",

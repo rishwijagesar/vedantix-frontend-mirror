@@ -1,10 +1,10 @@
 export const ADDITIONAL_SERVICES = [
   {
     slug: "online-marketing", name: "Online marketing & advertenties", icon: "Megaphone",
-    title: "Online marketing & advertenties voor mkb | Vedantix Den Bosch",
+    title: "Online marketing & advertenties voor mkb | Vedantix",
     description: "Online marketing en advertenties op offerte voor mkb en zelfstandigen. Heldere doelen, campagnes, meting en afgesproken advertentiebudget bij Vedantix.",
     headline: "Marketing die aansluit op jouw bedrijf.",
-    intro: "Bereik de mensen voor wie jouw aanbod relevant is. We verbinden je boodschap, website en campagnes met een concreet doel en een werkbare aanpak. Vanuit Den Bosch werken we voor bedrijven in heel Nederland.",
+    intro: "Bereik de mensen voor wie jouw aanbod relevant is. We verbinden je boodschap, website en campagnes met een concreet doel en een werkbare aanpak. We werken voor bedrijven in heel Nederland.",
     sections: [
       { title: "Van doel naar passende campagne", text: "We bespreken je doelgroep, aanbod, werkgebied en de opvolging van aanvragen. Daarna kiezen we kanalen, maken we campagnevoorstellen en stemmen we teksten en beelden af op je bedrijf.", items: ["Campagneplanning en content afgestemd op je aanbod.", "Google Ads of Meta Ads waar passend bij doelgroep en doel.", "Landingspagina’s en contactmomenten in samenhang."] },
       { title: "Inzicht en gerichte verbetering", text: "We spreken af wat we meten en hoe we resultaten bespreken. Toestemming, accounttoegang en gegevensverwerking krijgen vooraf aandacht. Op basis van de beschikbare inzichten stellen we campagnes en content bij.", items: ["Afgesproken meetpunten en rapportagemomenten.", "Menselijke goedkeuring van campagne-inhoud voor publicatie.", "Duidelijke taakverdeling voor opvolging van aanvragen."] },

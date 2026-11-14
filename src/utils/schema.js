@@ -51,7 +51,7 @@ export const vedantixEntity = {
   email: "info@vedantix.nl",
   telephone: "+31626219989",
   description:
-    "Vedantix in Den Bosch maakt bedrijfssoftware op maat voor het mkb en zelfstandigen in alle sectoren. AI ondersteunt de ontwikkeling; Vedantix controleert en test professioneel. Ook voor websites, hosting en vindbaarheid, met landelijke dienstverlening.",
+    "Vedantix maakt bedrijfssoftware op maat voor het mkb en zelfstandigen in alle sectoren. AI ondersteunt de ontwikkeling; Vedantix controleert en test professioneel. Ook voor websites, hosting en vindbaarheid, met landelijke dienstverlening.",
 };
 
 export function createOrganizationSchema() {
@@ -86,8 +86,6 @@ export function createOrganizationSchema() {
     },
     vatID: "NL005461438B38",
     areaServed: [
-      { "@type": "City", name: "'s-Hertogenbosch" },
-      { "@type": "AdministrativeArea", name: "Noord-Brabant" },
       { "@type": "Country", name: "Nederland" },
     ],
     knowsAbout: [
@@ -127,8 +125,6 @@ export function createLocalBusinessSchema() {
     address: ADDRESS,
     sameAs: SOCIAL_PROFILES,
     areaServed: [
-      { "@type": "City", name: "'s-Hertogenbosch" },
-      { "@type": "AdministrativeArea", name: "Noord-Brabant" },
       { "@type": "Country", name: "Nederland" },
     ],
     hasOfferCatalog: SERVICE_CATALOG,

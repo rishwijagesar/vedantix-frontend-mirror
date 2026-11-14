@@ -98,7 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           name: "description",
           content:
-            "Bedrijfssoftware op maat, websites en hosting voor het mkb en zelfstandigen. Vanuit Den Bosch, voor heel Nederland.",
+            "Bedrijfssoftware op maat, websites en hosting voor het mkb en zelfstandigen. Voor ondernemers in heel Nederland.",
         },
         {
           name: "robots",
@@ -114,7 +114,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           property: "og:description",
           content:
-            "Bedrijfssoftware op maat, websites en hosting voor het mkb en zelfstandigen. Vanuit Den Bosch, voor heel Nederland.",
+            "Bedrijfssoftware op maat, websites en hosting voor het mkb en zelfstandigen. Voor ondernemers in heel Nederland.",
         },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "Vedantix" },
@@ -122,7 +122,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:image", content: "https://vedantix.nl/images/og-vedantix.png" },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
-        { property: "og:image:alt", content: "Vedantix: software op maat voor het mkb, vanuit Den Bosch" },
+        { property: "og:image:alt", content: "Vedantix: software op maat voor het mkb in heel Nederland" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:image", content: "https://vedantix.nl/images/og-vedantix.png" },
         { name: "theme-color", content: "#0a1428" },
