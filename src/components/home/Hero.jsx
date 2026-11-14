@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, FileText, MessageCircle, Receipt, ShieldCheck, Star, UserPlus } from "lucide-react";
 import { SCAN_URL } from "../../data/positioning";
+import reviewSnapshot from "../../data/google-reviews.json";
 
 const WORDS = ["hele bedrijf", "aanvragen", "offertes", "planning", "facturen"];
 
@@ -26,8 +27,8 @@ export default function Hero() {
           <h1 id="vx-hero-title" className="vx-h1">
             Stop met dubbel werk.
             <br />
-            Eén app voor je <span className="vx-sr">hele bedrijf</span>
-            <span className="vx-rotor" aria-hidden="true">
+            Eén app voor je{" "}
+            <span className="vx-rotor">
               <span key={word} className="vx-rotor__word vx-grad">{word}</span>
             </span>
           </h1>
@@ -67,7 +68,7 @@ export default function Hero() {
           <p className="vx-hv__chip vx-hv__chip--a" aria-hidden="true"><span className="vx-hv__icon"><UserPlus /></span><span><b>Nieuwe aanvraag</b><small>In jouw app</small></span></p>
           <p className="vx-hv__chip vx-hv__chip--b" aria-hidden="true"><span className="vx-hv__icon"><FileText /></span><span><b>Offerte akkoord</b><small>In jouw app</small></span></p>
           <p className="vx-hv__chip vx-hv__chip--c" aria-hidden="true"><span className="vx-hv__icon"><Receipt /></span><span><b>Factuur betaald</b><small>In jouw app</small></span></p>
-          <p className="vx-hv__rating"><span className="vx-hv__stars" aria-hidden="true"><Star /><Star /><Star /><Star /><Star /></span><span><b>5,0</b> Google-review</span></p>
+          <p className="vx-hv__rating"><span className="vx-hv__stars" aria-hidden="true"><Star /><Star /><Star /><Star /><Star /></span><span><b>{reviewSnapshot.overallRating.toFixed(1).replace(".", ",")}</b> · {reviewSnapshot.totalReviews} Google-{reviewSnapshot.totalReviews === 1 ? "review" : "reviews"}</span></p>
         </div>
       </div>
     </section>

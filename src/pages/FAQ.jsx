@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "@/lib/router-compat";
 import SEO from "../components/SEO";
 import NavBar from "../components/NavBar";
+import PageHero from "../components/PageHero";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
 
 export const FAQS = [
@@ -402,28 +403,22 @@ export default function FAQ() {
       <div className="faq-page">
         <NavBar />
 
-        <header className="faq-hero">
-          <div className="faq-shell">
-            <Link className="faq-back-link" to="/">
-              ← Terug naar Vedantix
-            </Link>
-
-            <h1 className="faq-title">Veelgestelde vragen</h1>
-            <p className="faq-subtitle">
-              Duidelijke antwoorden over software op maat, bedrijfsscans, maandkosten,
-              gebruik, beheer, websiteprijzen, hosting en vindbaarheid.
-            </p>
-          </div>
-        </header>
+        <PageHero
+          as="header"
+          id="faq-title"
+          eyebrow="Veelgestelde vragen"
+          title={<>Antwoord op je <span className="vx-grad">vragen</span></>}
+          lead="Over software op maat, bedrijfsscans, maandkosten, beheer, websiteprijzen, hosting en vindbaarheid."
+        />
 
         <main className="faq-content">
           <div className="faq-shell">
             <section className="faq-intro" aria-labelledby="faq-overview-title">
-              <h2 id="faq-overview-title">Antwoorden op de belangrijkste vragen</h2>
+              <h2 id="faq-overview-title">De belangrijkste antwoorden</h2>
               <p>
                 Hieronder lees je wat we vooraf afspreken over software, gebruik, beheer en
-                uitbreiding. Websitepakketten blijven eenmalig, zonder verplicht
-                maandabonnement; software op maat krijgt een eigen offerte.
+                uitbreiding. Een website betaal je eenmalig of als abonnement met lage
+                opstartkosten; software op maat krijgt een eigen offerte.
               </p>
             </section>
 

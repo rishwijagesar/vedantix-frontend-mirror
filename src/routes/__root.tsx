@@ -134,6 +134,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         { rel: "preload", href: "/fonts/inter-400.woff", as: "font", type: "font/woff", crossOrigin: "anonymous" },
         { rel: "preload", href: "/fonts/inter-800.woff", as: "font", type: "font/woff", crossOrigin: "anonymous" },
+        { rel: "icon", href: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+        { rel: "icon", href: "/favicon-48x48.png", type: "image/png", sizes: "48x48" },
         { rel: "icon", href: "/favicon.ico", sizes: "any" },
         { rel: "icon", href: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
         { rel: "icon", href: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },

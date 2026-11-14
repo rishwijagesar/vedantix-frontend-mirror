@@ -70,6 +70,7 @@ const COMPANY_LINKS = [
 ];
 
 const INDUSTRY_LINKS = [
+  ["/website-zzp", "Zzp'ers"],
   ["/website/personal-trainer", "Personal trainers"],
   ["/website/fysiotherapeut", "Fysiotherapeuten"],
   ["/website/coach", "Coaches"],

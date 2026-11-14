@@ -20,6 +20,7 @@ export default function NavBar(){
  useEffect(()=>{const escape=e=>{if(e.key==='Escape'&&(services||mobile)){e.preventDefault();cancel();close();(openMenu==='prices'?priceTrigger.current:services?trigger.current:menuToggle.current)?.focus();}};document.addEventListener('keydown',escape);return()=>document.removeEventListener('keydown',escape);},[openMenu,mobile]);
  function key(event){if(event.key==='Escape'){event.preventDefault();const was=openMenu;close();(was==='prices'?priceTrigger.current:was?trigger.current:menuToggle.current)?.focus();}}
  return <header ref={root} className={`site-header${scrolled||!home||services||mobile?' is-solid': ' is-home'}`} onKeyDown={key} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))close();}}><div className="site-header-inner">
+  <a href="#main" className="site-skip-link" onClick={e=>{const m=document.querySelector("main");if(!m)return;e.preventDefault();m.setAttribute("tabindex","-1");m.focus();m.scrollIntoView();}}>Naar de inhoud</a>
   <Link to="/" className="site-brand" aria-label="Vedantix home"><VedantixLogo variant="full" size="md" theme={scrolled||!home||services||mobile?'dark':'light'}/></Link>
   <nav className="site-nav" aria-label="Hoofdnavigatie">
    <Button ref={menuToggle} variant="ghost" className="site-menu-toggle" aria-label={mobile?'Menu sluiten':'Menu openen'} aria-expanded={mobile} aria-controls="site-main-links" onClick={()=>{setMobile(v=>!v);setOpenMenu(null);}}>{mobile?<X/>:<Menu/>}<span>{mobile?'Sluiten':'Menu'}</span></Button>

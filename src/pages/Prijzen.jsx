@@ -202,7 +202,7 @@ const VIEWS = {
   },
   websites: {
     path: "/prijzen/websites", crumb: "Websites", catalogName: "Websitepakketten en uitbreidingen",
-    title: "Website laten maken: prijzen eenmalig of per maand | Vedantix",
+    title: "Websiteprijzen: eenmalig of per maand | Vedantix",
     description: "Websitepakketten met een vaste eenmalige prijs, of lage opstartkosten plus een vast maandbedrag inclusief hosting, onderhoud en kleine aanpassingen.",
   },
   software: {

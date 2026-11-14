@@ -1,5 +1,6 @@
 import { Link } from "@/lib/router-compat";
 import NavBar from "../components/NavBar";
+import PageHero from "../components/PageHero";
 import SEO from "../components/SEO";
 import { createBreadcrumbSchema } from "../utils/schema";
 import { blogPosts } from "../data/seoData";
@@ -13,10 +14,19 @@ const BLOG_STYLES = `
     color: #0f172a;
   }
 
+  .blog-card {
+    border: 1px solid #c3d3ea !important;
+    border-radius: 18px !important;
+    background: linear-gradient(180deg, #fff, #f7faff) !important;
+    box-shadow: 0 1px 2px #12203918, 0 10px 28px #12203916 !important;
+  }
+
+  .blog-card:hover { border-color: #74adff !important; }
+
   .blog-page-shell {
     max-width: 980px;
     margin: 0 auto;
-    padding: 110px 20px 60px;
+    padding: clamp(36px, 5vw, 56px) 20px 60px;
   }
 
   .blog-hero {
@@ -85,7 +95,7 @@ const BLOG_STYLES = `
 
   @media (max-width: 480px) {
     .blog-page-shell {
-      padding: 90px 14px 40px;
+      padding: 32px 14px 40px;
     }
 
     .blog-hero h1 {
@@ -93,48 +103,6 @@ const BLOG_STYLES = `
     }
   }
 `;
-
-/** @type {import('react').CSSProperties} */
-const HERO_CONTENT_STYLE = { maxWidth: 760 };
-
-/** @type {import('react').CSSProperties} */
-const BREADCRUMB_STYLE = {
-  marginBottom: 18,
-  fontSize: 14,
-  color: "rgba(255,255,255,0.68)",
-};
-
-/** @type {import('react').CSSProperties} */
-const BREADCRUMB_LINK_STYLE = {
-  color: "rgba(255,255,255,0.68)",
-  textDecoration: "none",
-};
-
-/** @type {import('react').CSSProperties} */
-const HERO_LABEL_STYLE = {
-  margin: "0 0 12px",
-  fontSize: "0.9rem",
-  fontWeight: 700,
-  letterSpacing: "0.04em",
-  textTransform: "uppercase",
-  color: "#93c5fd",
-};
-
-/** @type {import('react').CSSProperties} */
-const HERO_TITLE_STYLE = {
-  fontSize: 40,
-  marginBottom: 16,
-  lineHeight: 1.1,
-};
-
-/** @type {import('react').CSSProperties} */
-const HERO_TEXT_STYLE = {
-  color: "rgba(255,255,255,0.82)",
-  lineHeight: 1.8,
-  marginBottom: 0,
-  fontSize: 18,
-  maxWidth: 760,
-};
 
 /** @type {import('react').CSSProperties} */
 const CARD_TITLE_STYLE = {
@@ -191,30 +159,13 @@ export default function Blog() {
       <div className="blog-page">
         <NavBar />
 
+        <PageHero
+          id="blog-title"
+          eyebrow="Blog van Vedantix"
+          title={<>Websites, vindbaarheid en <span className="vx-grad">online groei</span></>}
+          lead="Praktische artikelen over hoe ondernemers meer klanten krijgen via een goede website, betere zichtbaarheid in Google en AI, en slimme software."
+        />
         <main className="blog-page-shell">
-          <section className="blog-hero">
-            <div style={HERO_CONTENT_STYLE}>
-              <nav aria-label="Breadcrumb" style={BREADCRUMB_STYLE}>
-                <Link to="/" style={BREADCRUMB_LINK_STYLE}>
-                  Home
-                </Link>
-                {" / "}
-                <span>Blog</span>
-              </nav>
-
-              <p style={HERO_LABEL_STYLE}>Blog van Vedantix</p>
-
-              <h1 style={HERO_TITLE_STYLE}>
-                Blog over websites, lokale SEO en online groei
-              </h1>
-
-              <p style={HERO_TEXT_STYLE}>
-                Lees praktische artikelen over hoe lokale ondernemers meer klanten
-                kunnen krijgen via een professionele website, betere zichtbaarheid
-                in Google en sterke conversiegerichte pagina’s.
-              </p>
-            </div>
-          </section>
 
           <section className="blog-list">
             {blogPosts.map((post) => (

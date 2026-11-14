@@ -786,7 +786,7 @@ export default function Proces() {
   return (
     <>
       <SEO
-        title="Werkwijze | Van bedrijfsscan tot beheerde software | Vedantix"
+        title="Werkwijze: van bedrijfsscan tot beheer | Vedantix"
         description="Van bedrijfsscan en concreet voorstel tot gefaseerd bouwen, testen, acceptatie en beheer. Heldere afspraken voor software en websites bij Vedantix."
         canonical={canonical}
         schemas={[breadcrumbSchema, faqSchema]}

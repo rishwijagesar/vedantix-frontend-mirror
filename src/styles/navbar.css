@@ -22,3 +22,8 @@
 @media (max-width: 900px) {
   .site-megamenu--compact { padding: 6px; }
 }
+
+/* Skip-link: onzichtbaar tot hij focus krijgt */
+.site-skip-link { position: absolute; left: 16px; top: -60px; z-index: 1001; padding: 10px 16px; border-radius: 10px; background: var(--vx-ink); color: var(--vx-paper); font-weight: 700; font-size: .9rem; text-decoration: none; }
+.site-skip-link:focus { top: 12px; outline: 3px solid var(--vx-ring, #facc15); outline-offset: 2px; }
+main:focus { outline: none; }

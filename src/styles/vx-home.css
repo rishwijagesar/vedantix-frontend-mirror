@@ -268,3 +268,11 @@
 .vx-happy__card p { display: grid; padding: 14px 16px 4px; }
 .vx-happy__card span { color: var(--vx-muted); font-size: .85rem; }
 .vx-happy__card blockquote { margin: 0; padding: 4px 16px 16px; color: var(--vx-ink); font-size: .92rem; line-height: 1.55; }
+
+/* Klein pauze-icoon voor de klantenbanner */
+.vx-clients { position: relative; }
+.vx-clients__pause { position: absolute; right: 0; bottom: -38px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--vx-line); border-radius: 999px; background: var(--vx-paper); color: var(--vx-muted); cursor: pointer; opacity: .75; }
+.vx-clients__pause:hover, .vx-clients__pause:focus-visible { opacity: 1; color: var(--vx-ink); border-color: var(--vx-ink); }
+.vx-clients__pause:focus-visible { outline: 3px solid var(--vx-ring); outline-offset: 2px; }
+.vx-clients__pause svg { width: 13px; height: 13px; }
+@media (prefers-reduced-motion: reduce) { .vx-clients__pause { display: none; } }
