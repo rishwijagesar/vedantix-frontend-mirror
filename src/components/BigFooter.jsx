@@ -95,7 +95,7 @@ export default function BigFooter() {
           <div className="big-footer__brand">
             <div className="big-footer__brand-name">Vedantix</div>
             <p className="big-footer__brand-text">
-              Bedrijfssoftware op maat voor het mkb en zelfstandigen. Ook websites, hosting en vindbaarheid. Vanuit Den Bosch, voor heel Nederland.
+              Bedrijfssoftware op maat voor het mkb en zelfstandigen. Ook websites, hosting en vindbaarheid. Voor ondernemers in heel Nederland.
             </p>
             <ul className="big-footer__contact-list">
               <li className="big-footer__contact-item">

@@ -1,6 +1,6 @@
 # Vedantix
 
-> Vedantix bouwt bedrijfssoftware op maat voor het mkb en zelfstandigen, vanuit Den Bosch voor heel Nederland. Eén webapp voor aanvragen, offertes, planning en facturatie, gebouwd en beheerd door één vast aanspreekpunt. Daarnaast maakt Vedantix websites, verzorgt hosting en zakelijke e-mail en helpt bij vindbaarheid in Google en AI.
+> Vedantix bouwt bedrijfssoftware op maat voor het mkb en zelfstandigen, voor ondernemers in heel Nederland. Eén webapp voor aanvragen, offertes, planning en facturatie, gebouwd en beheerd door één vast aanspreekpunt. Daarnaast maakt Vedantix websites, verzorgt hosting en zakelijke e-mail en helpt bij vindbaarheid in Google en AI.
 
 ## Wat Vedantix doet
 

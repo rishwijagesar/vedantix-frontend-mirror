@@ -196,7 +196,7 @@ export default function HomeFounderSection() {
           <h2 className="section-h2">Persoonlijk contact en een praktische aanpak</h2>
 
           <p>
-            Vedantix is er voor het mkb en zelfstandigen in alle sectoren. Vanuit Den Bosch helpen we
+            Vedantix is er voor het mkb en zelfstandigen in alle sectoren. We helpen
             bedrijven in heel Nederland met software op maat, websites en hosting.
           </p>
 

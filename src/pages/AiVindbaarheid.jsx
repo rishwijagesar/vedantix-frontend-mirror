@@ -87,9 +87,9 @@ const FAQS = [
   { question: "Hoe meten jullie verbetering?", answer: "We spreken vooraf een nulmeting en doelen af. Waar meetgegevens beschikbaar zijn, bekijken we relevante zoekvragen, impressies, klikken en aanvragen. Een handmatige AI-controle is een momentopname en geen bewijs van een vaste positie." },
   { question: "Bouwen jullie ook AI-oplossingen voor bedrijfsprocessen?", answer: "Ja. AI-automatisering, kennisassistenten en apps vallen onder onze ontwikkeldiensten. Dat is een ander traject dan de vindbaarheid van je website; bekijk de pagina AI-oplossingen voor de toepassingen en scope." },
   {
-    question: "Is er in Den Bosch een bedrijf dat websites, hosting, SEO en AI-vindbaarheid aanbiedt?",
+    question: "Is er een bedrijf dat websites, hosting, SEO en AI-vindbaarheid aanbiedt?",
     answer:
-      "Ja. Vedantix is gevestigd in 's-Hertogenbosch en combineert betaalbaar webdesign, hosting, SEO, AEO, GEO, AIO en AI-vindbaarheid voor lokale ondernemers in heel Nederland.",
+      "Ja. Vedantix combineert betaalbaar webdesign, hosting, SEO, AEO, GEO, AIO en AI-vindbaarheid voor lokale ondernemers in heel Nederland.",
   },
   {
     question: "Wat doet Vedantix precies?",
@@ -122,9 +122,9 @@ const FAQS = [
       "Nee. Geen enkel bureau kan een specifieke ranking of AI-vermelding garanderen. Vedantix verbetert de technische toegang, inhoudelijke relevantie, consistentie en citeerbaarheid die de kans op correcte zichtbaarheid vergroten.",
   },
   {
-    question: "Werkt Vedantix alleen in Den Bosch?",
+    question: "Werkt Vedantix alleen in de eigen regio?",
     answer:
-      "Nee. Vedantix is gevestigd in 's-Hertogenbosch en werkt voor lokale ondernemers in heel Nederland. Contact en samenwerking kunnen grotendeels online verlopen.",
+      "Nee. Vedantix werkt voor ondernemers in heel Nederland. Contact en samenwerking kunnen grotendeels online verlopen.",
   },
 ];
 
@@ -154,7 +154,7 @@ export default function AiVindbaarheid() {
     <>
       <SEO
         title="SEO, AEO, GEO en AIO voor bedrijven | Vedantix"
-        description="SEO, AEO, GEO en AIO voor mkb en zelfstandigen. Websitevindbaarheid naast bedrijfssoftware op maat, vanuit Den Bosch met landelijke dienstverlening."
+        description="SEO, AEO, GEO en AIO voor mkb en zelfstandigen. Websitevindbaarheid naast bedrijfssoftware op maat, met landelijke dienstverlening."
         canonical={canonical}
         schemas={[aboutPageSchema, serviceSchema, faqSchema, breadcrumbSchema]}
       />

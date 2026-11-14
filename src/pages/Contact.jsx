@@ -68,7 +68,7 @@ const FAQS = [
   {
     question: "Voor welke bedrijven werkt Vedantix?",
     answer:
-      "Vedantix werkt voor het mkb en zelfstandigen in alle sectoren. Vanuit Den Bosch bedienen we bedrijven in heel Nederland, voor software op maat, websites, hosting en vindbaarheid.",
+      "Vedantix werkt voor het mkb en zelfstandigen in alle sectoren. We werken voor bedrijven in heel Nederland, voor software op maat, websites, hosting en vindbaarheid.",
   },
   {
     question: "Kan ik mijn website later zelf aanpassen?",
@@ -692,7 +692,7 @@ export default function Contact() {
     <>
       <SEO
         title="Plan een bedrijfsscan of bespreek je website | Vedantix"
-        description="Plan een bedrijfsscan met Vedantix. Bespreek processen, tools, maatwerksoftware, een website of hosting. Vanuit Den Bosch voor heel Nederland."
+        description="Plan een bedrijfsscan met Vedantix. Bespreek processen, tools, maatwerksoftware, een website of hosting. Voor ondernemers in heel Nederland."
         canonical={canonical}
         schemas={[contactPageSchema, faqSchema, breadcrumbSchema]}
       />
