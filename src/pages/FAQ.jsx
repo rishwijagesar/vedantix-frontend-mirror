@@ -417,8 +417,8 @@ export default function FAQ() {
               <h2 id="faq-overview-title">De belangrijkste antwoorden</h2>
               <p>
                 Hieronder lees je wat we vooraf afspreken over software, gebruik, beheer en
-                uitbreiding. Een website betaal je eenmalig of als abonnement met lage
-                opstartkosten; software op maat krijgt een eigen offerte.
+                uitbreiding. Een website heeft een vaste pakketprijs; software op maat krijgt
+                een eigen offerte.
               </p>
             </section>
 

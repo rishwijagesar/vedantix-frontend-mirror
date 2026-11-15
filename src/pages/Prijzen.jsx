@@ -276,7 +276,8 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
     { name: "Prijzen", url: "https://vedantix.nl/prijzen" },
     ...(view === "overview" ? [] : [{ name: V.crumb, url: canonical }]),
   ]);
-  const faqs = view === "beheer" ? PRICE_FAQS.filter(f => /hosting|uitbreiding|btw|per maand/i.test(f.question)) : view === "software" ? [] : PRICE_FAQS;
+  const faqsAll = view === "beheer" ? PRICE_FAQS.filter(f => /hosting|uitbreiding|btw|per maand/i.test(f.question)) : view === "software" ? [] : PRICE_FAQS;
+  const faqs = faqsAll.filter(f => hasPlans || f.question !== "Kan ik een website ook per maand betalen?");
   const faqSchema = faqs.length ? createFAQSchema(faqs) : null;
   const catalogForView = view === "websites" ? products.filter(p => ["WEBSITE", "WEBSITE_PLAN", "ADDON"].includes(p.category.toUpperCase()))
     : view === "software" ? projectProducts
@@ -338,7 +339,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                 <div className="vx-grid vx-grid--3">
                   <article className="vx-card">
                     <h3 className="vx-h3">Je wilt beter gevonden worden en meer aanvragen</h3>
-                    <p className="vx-card__text">Je hebt nog geen goede website, of je huidige site levert weinig op. Kies een websitepakket: eenmalig betalen of per maand met hosting en onderhoud erbij.</p>
+                    <p className="vx-card__text">Je hebt nog geen goede website, of je huidige site levert weinig op. Kies een websitepakket met een vaste prijs{hasPlans ? ", eenmalig of per maand met hosting en onderhoud erbij" : ""}.</p>
                     <p className="vx-card__text"><Link className="vx-link" to="/prijzen/websites">Naar websiteprijzen <ArrowRight size={16} aria-hidden="true" /></Link></p>
                   </article>
                   <article className="vx-card">
@@ -361,7 +362,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
               id="pricing-title"
               eyebrow="Prijzen · Websites"
               title={<>Een website die past bij <span className="vx-grad">je budget</span></>}
-              lead="Betaal in één keer, of start met lage opstartkosten en een vast maandbedrag. Bij een abonnement zitten hosting, technisch onderhoud en kleine aanpassingen erbij."
+              lead={hasPlans ? "Betaal in één keer, of start met lage opstartkosten en een vast maandbedrag. Bij een abonnement zitten hosting, technisch onderhoud en kleine aanpassingen erbij." : "Vaste pakketprijzen, eenmalig te betalen en zonder verplicht abonnement. Je weet vooraf precies wat je krijgt."}
             >
               <nav className="pricing-service-links" aria-label="Op deze pagina"><a href="#websites">Pakketten</a><a href="#vergelijk">Vergelijken</a><a href="#vindbaarheid">Vindbaarheid</a><a href="#uitbreidingen">Uitbreidingen</a></nav>
             </PageHero>
@@ -493,7 +494,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                 <p className="vx-lead">Een losse pagina laten bouwen kan voor een paar honderd euro. Bij Vedantix krijg je daarnaast vindbaarheid, vaste afspraken en een partner die meegroeit.</p>
               </div>
               <div className="vx-grid vx-grid--3">
-                {WEBSITE_VALUE.map(({ title, text, icon: Icon }) => (
+                {WEBSITE_VALUE.map(item => item.title === "Eenmalig of per maand" && !hasPlans ? { ...item, title: "Vaste prijs, geen abonnement", text: "Eenmalig betalen. Hosting en extra's kies je alleen als je ze nodig hebt." } : item).map(({ title, text, icon: Icon }) => (
                   <article className="vx-card" key={title}>
                     <div className="vx-icon"><Icon aria-hidden="true" /></div>
                     <h3 className="vx-h3">{title}</h3>
