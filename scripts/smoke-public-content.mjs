@@ -14,10 +14,10 @@ async function page(path) {
 const [products,cases]=await Promise.all([rpc("get_public_catalog"),rpc("get_public_client_cases")]);
 const money=n=>new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR",minimumFractionDigits:0,maximumFractionDigits:2}).format(n).replace(/\s+/g," ");
 const pricing=await page("/prijzen/websites");
+assert(!/incl\. btw|inclusief btw/i.test(pricing),"pricing page must only show prices excluding VAT");
 await page("/prijzen"); await page("/prijzen/software-op-maat"); await page("/prijzen/beheer-onderhoud");
 for(const p of products.filter(p=>p.category==="WEBSITE")){
   assert(pricing.includes(money(p.price_ex_vat)),p.code+" excluding VAT missing from rendered page");
-  assert(pricing.includes(money(p.price_incl_vat)),p.code+" including VAT missing from rendered page");
 }
 for(const [path,flag] of [["/","show_on_home"],["/resultaten","show_on_results"]]){
   const html=await page(path);
@@ -52,7 +52,7 @@ for (const [path,codes,quoteBased = false] of [
     assert(schemas.some(s=>s["@type"]==="FAQPage"),path+" FAQ schema missing");
     const text=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"").replace(/<[^>]+>/g,"").replace(/\s+/g," ");
     if (quoteBased) assert(text.includes("vast maandbedrag op offerte"), path + " quote pricing missing");
-    for(const code of codes) { const p=products.find(p=>p.code===code); assert(p,code+" catalog entry missing"); assert(text.includes(money(p.price_ex_vat)),code+" current price missing"); assert(text.includes(money(p.price_incl_vat)),code+" VAT price missing"); }
+    for(const code of codes) { const p=products.find(p=>p.code===code); assert(p,code+" catalog entry missing"); assert(text.includes(money(p.price_ex_vat)),code+" current price missing"); }
   }
 }
 console.log("Service routes, exact catalog prices and SSR canonical/structured data verified.");

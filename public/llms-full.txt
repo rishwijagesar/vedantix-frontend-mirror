@@ -17,7 +17,7 @@
 
 ## Prijzen en werkwijze
 
-- [Actuele prijzen](https://vedantix.nl/prijzen): websitepakketten, hosting, e-mail en losse diensten, met prijzen exclusief en inclusief btw
+- [Actuele prijzen](https://vedantix.nl/prijzen): websitepakketten, hosting, e-mail en losse diensten, met prijzen exclusief btw
 - [Werkwijze](https://vedantix.nl/proces): van bedrijfsscan tot beheer
 - Software op maat wordt geoffreerd met eenmalige opstartkosten en een vast maandbedrag voor de afgesproken functionaliteit, hosting, onderhoud en support.
 - Websitepakketten hebben eenmalige prijzen en geen verplicht maandabonnement.

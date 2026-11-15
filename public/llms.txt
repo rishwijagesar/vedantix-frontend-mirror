@@ -18,7 +18,7 @@
 ## Prijzen en werkwijze
 
 - [Prijzen](https://vedantix.nl/prijzen): overzicht van websites, software op maat en beheer
-- [Websiteprijzen](https://vedantix.nl/prijzen/websites): pakketten Starter, Growth en Pro, eenmalig of als abonnement (opstartkosten plus maandbedrag), prijzen exclusief en inclusief btw
+- [Websiteprijzen](https://vedantix.nl/prijzen/websites): pakketten Starter, Growth en Pro, eenmalig of als abonnement (opstartkosten plus maandbedrag), prijzen exclusief btw
 - [Prijs van software op maat](https://vedantix.nl/prijzen/software-op-maat): opstartkosten en een vast maandbedrag op offerte na een bedrijfsscan
 - [Beheer en onderhoud](https://vedantix.nl/prijzen/beheer-onderhoud): hosting, zakelijke e-mail, technisch beheer, groeipakketten en ondersteuning
 - [Werkwijze](https://vedantix.nl/proces): van bedrijfsscan tot beheer

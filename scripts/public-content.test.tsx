@@ -23,14 +23,16 @@ describe("Live public content", () => {
     expect((await fetchPublicCatalog())[0].price_ex_vat).toBe(512.34);
     expect(requests.every(r=>r.cache==="no-store")).toBe(true);
   });
-  test("all visible website amounts and FAQ follow the supplied catalog with exact VAT", () => {
+  test("all visible website amounts and FAQ follow the supplied catalog, excluding VAT only", () => {
     const current = renderToStaticMarkup(<Prijzen initialProducts={[product]} view="websites"/>);
     expect(current).toContain("499");
-    expect(current).toContain("603,79");
+    expect(current).not.toContain("603,79");
+    expect(current).not.toContain("incl. btw");
+    expect(current).not.toContain("inclusief btw");
     expect(current).not.toContain("399");
     const changed = renderToStaticMarkup(<Prijzen initialProducts={[{...product,price_ex_vat:512.34,price_incl_vat:619.93}]} view="websites"/>);
     expect(changed).toContain("512,34");
-    expect(changed).toContain("619,93");
+    expect(changed).not.toContain("619,93");
     expect(changed).not.toContain("603,79");
     expect(changed).not.toContain("499");
     expect(changed).toContain("excl. btw");
@@ -71,7 +73,7 @@ describe("Service expansion uses the current catalog", () => {
   test("catalog keeps live AI prices while custom software details do not advertise a generic project amount", () => {
     const pricing=renderToStaticMarkup(<Prijzen initialProducts={[product,ai]} view="software"/>);
     const detail=renderToStaticMarkup(<ServiceDetail slug="ai-oplossingen" initialProducts={[product,ai]}/>);
-    expect(pricing).toContain("1.001,23"); expect(pricing).toContain("1.211,49");
+    expect(pricing).toContain("1.001,23"); expect(pricing).not.toContain("1.211,49");
     expect(detail).not.toContain("1.001,23"); expect(detail).not.toContain("1.211,49");
     expect(detail).not.toContain("603,79");
     const changed=renderToStaticMarkup(<ServiceDetail slug="ai-oplossingen" initialProducts={[{...ai,price_ex_vat:1111.11,price_incl_vat:1344.44}]}/>);
@@ -97,7 +99,8 @@ describe("Pricing pages are split by audience", () => {
   const hosting = { ...product, code:"HOSTING_YEAR", name:"Web Hosting", category:"HOSTING", billing_type:"ONE_TIME", price_ex_vat:60, price_incl_vat:72.6, duration_years:"1" };
   test("websites page offers a subscription next to the one-time price, from the catalog", () => {
     const html = renderToStaticMarkup(<Prijzen initialProducts={[product, plan]} view="websites"/>);
-    expect(html).toContain("603,79");
+    expect(html).toContain("499");
+    expect(html).not.toContain("603,79");
     expect(html).toContain("Per maand");
     expect(html).toContain("149");
     expect(html).toContain("12 maanden");
@@ -108,7 +111,9 @@ describe("Pricing pages are split by audience", () => {
     expect(html).not.toContain("pricing-billing-toggle");
   });
   test("hosting lives on the maintenance page, not on the websites page", () => {
-    expect(renderToStaticMarkup(<Prijzen initialProducts={[product, hosting]} view="beheer"/>)).toContain("72,60");
+    const beheer = renderToStaticMarkup(<Prijzen initialProducts={[product, hosting]} view="beheer"/>);
+    expect(beheer).toContain("60");
+    expect(beheer).not.toContain("72,60");
     expect(renderToStaticMarkup(<Prijzen initialProducts={[product, hosting]} view="websites"/>)).not.toContain("<h3>Website Hosting</h3>");
   });
   test("overview links to the three pricing pages", () => {

@@ -164,7 +164,7 @@ export default function Starters() {
   const codes = { starter: "STARTER", business: "GROWTH", premium: "PRO" };
   const PACKAGES = PACKAGE_DETAILS.flatMap(details => {
     const product = products.find(p => p.code === codes[details.id]);
-    return product ? [{ ...details, name: product.name, price: Number(product.price_ex_vat), priceIncl: Number(product.price_incl_vat) }] : [];
+    return product ? [{ ...details, name: product.name, price: Number(product.price_ex_vat) }] : [];
   });
   const extraPrice = products.find(p => p.code === "CONFIGURATOR_EXTRA")?.price_ex_vat ?? null;
   const priceLabel = value => value === null ? "Op aanvraag" : new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(value);
@@ -412,7 +412,7 @@ export default function Starters() {
             )}
 
             <h3 style={{ fontWeight: 700, marginBottom: 6 }}>Kies je basispakket</h3>
-            <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: 16 }}>De bedragen hieronder zijn exclusief btw. Hosting, e-mail en groeidiensten zijn apart te kiezen. Bekijk de actuele tarieven en bedragen inclusief btw op de prijzenpagina.</p>
+            <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: 16 }}>De bedragen hieronder zijn exclusief btw. Hosting, e-mail en groeidiensten zijn apart te kiezen. Bekijk de actuele tarieven op de prijzenpagina.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 32 }}>
               {pricesLoading ? <p>Actuele prijzen laden…</p> : null}{pricesError ? <p role="alert">De actuele prijzen zijn tijdelijk niet beschikbaar. Vraag een offerte aan.</p> : null}{PACKAGES.map(pkg => (
                 <div key={pkg.id} className={`pkg-card ${selectedPackage===pkg.id?"selected":""}`} onClick={() => setSelectedPackage(pkg.id)}>
@@ -421,7 +421,7 @@ export default function Starters() {
                       <span style={{ fontWeight: 800, fontSize: "1.1rem" }}>{pkg.name}</span>
                       <span style={{ color: "#6b7280", fontSize: "0.88rem", marginLeft: 8 }}>{pkg.pages}</span>
                     </div>
-                    <span style={{ fontWeight: 900, fontSize: "1.3rem", color: "#1a73e8" }}>{priceLabel(pkg.price)} <small>excl. btw · {priceLabel(pkg.priceIncl)} incl. btw</small></span>
+                    <span style={{ fontWeight: 900, fontSize: "1.3rem", color: "#1a73e8" }}>{priceLabel(pkg.price)} <small>excl. btw</small></span>
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {pkg.features.map(f => <span key={f} style={{ background: "#f3f4f6", color: "#374151", padding: "3px 10px", borderRadius: 100, fontSize: "0.78rem" }}>✓ {f}</span>)}
