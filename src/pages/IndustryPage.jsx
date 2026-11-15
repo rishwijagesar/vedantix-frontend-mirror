@@ -381,6 +381,11 @@ const INDUSTRY_STYLES = `
       flex-direction: column;
     }
   }
+
+  /* Lange woorden (bijv. schoonmaakbedrijven) mogen niet buiten het scherm vallen */
+  .industry-panel { min-width: 0; }
+  .industry-panel h1, .industry-panel h2 { overflow-wrap: anywhere; hyphens: auto; }
+
 `;
 
 const OUTCOME_ICONS = [ShieldCheck, Search, MessageCircle, Sparkles];

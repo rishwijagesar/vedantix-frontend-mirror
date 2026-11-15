@@ -219,6 +219,10 @@ const LEGAL_STYLES = `
       padding: 26px;
     }
   }
+
+  /* Lange e-mailadressen en URL's breken af op smalle schermen */
+  .legal-page, .legal-page * { overflow-wrap: anywhere; }
+
 `;
 
 function slugify(value) {
