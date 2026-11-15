@@ -54,6 +54,18 @@ export const vedantixEntity = {
     "Vedantix maakt bedrijfssoftware op maat voor het mkb en zelfstandigen in alle sectoren. AI ondersteunt de ontwikkeling; Vedantix controleert en test professioneel. Ook voor websites, hosting en vindbaarheid, met landelijke dienstverlening.",
 };
 
+// Oprichter: alleen gegevens die ook zichtbaar op de site staan (Over ons, homepage).
+export const FOUNDER = {
+  "@type": "Person",
+  "@id": `${SITE_URL}/over-ons#rishwi`,
+  name: "Rishwi",
+  jobTitle: "Oprichter en ontwikkelaar",
+  image: `${SITE_URL}/images/founder.jpeg`,
+  url: `${SITE_URL}/over-ons`,
+  worksFor: { "@id": ORGANIZATION_ID },
+  knowsAbout: ["Software op maat", "Webontwikkeling", "AI-vindbaarheid"],
+};
+
 export function createOrganizationSchema() {
   return {
     "@context": "https://schema.org",
@@ -85,6 +97,7 @@ export function createOrganizationSchema() {
       value: "42056482",
     },
     vatID: "NL005461438B38",
+    founder: FOUNDER,
     areaServed: [
       { "@type": "Country", name: "Nederland" },
     ],
@@ -156,6 +169,7 @@ export function createAboutPageSchema({
   description,
   url,
   dateModified = undefined,
+  mainEntity = undefined,
 }) {
   return {
     "@context": "https://schema.org",
@@ -167,6 +181,7 @@ export function createAboutPageSchema({
     inLanguage: "nl-NL",
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": ORGANIZATION_ID },
+    ...(mainEntity ? { mainEntity } : {}),
     publisher: { "@id": ORGANIZATION_ID },
     ...(dateModified ? { dateModified } : {}),
   };

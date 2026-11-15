@@ -13,6 +13,6 @@ function OnlineGrowthAuditRoute() {
 }
 
 export const Route = createFileRoute("/online-groei-audit")({
-  head: () => publicHead("Gratis Online Groei Audit | Vedantix", "Laat een pagina van je website gratis controleren op vindbaarheid, technische basisinstellingen en contactmogelijkheden. Bekijk je verbeterpunten en download het PDF-rapport.", "/online-groei-audit"),
+  head: () => publicHead("Gratis Online Groei Audit | Vedantix", "Laat je website gratis controleren op vindbaarheid, techniek en contactmogelijkheden. Je krijgt direct je verbeterpunten en een PDF-rapport.", "/online-groei-audit"),
   component: OnlineGrowthAuditRoute,
 });

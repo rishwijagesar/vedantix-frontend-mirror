@@ -792,7 +792,7 @@ export const blogPosts = [
     ],
     ctaLink: "/online-groei-audit",
     ctaLabel: "Check je GEO-kansen met de audit →",
-    seoTitle: "Wat is GEO? | Vedantix",
+    seoTitle: "Wat is GEO (Generative Engine Optimization)? | Vedantix",
     seoDescription:
       "GEO betekent Generative Engine Optimization. Lees hoe lokale ondernemers beter zichtbaar worden in AI-antwoorden met duidelijke content en structuur.",
   }),
@@ -839,7 +839,7 @@ export const blogPosts = [
     ],
     ctaLink: "/online-groei-audit",
     ctaLabel: "Check je AEO met de audit →",
-    seoTitle: "Wat is AEO? | Vedantix",
+    seoTitle: "Wat is AEO (Answer Engine Optimization)? | Vedantix",
     seoDescription:
       "AEO staat voor Answer Engine Optimization. Ontdek hoe duidelijke antwoorden, FAQ's en schema je vindbaarheid en conversie verbeteren.",
   }),

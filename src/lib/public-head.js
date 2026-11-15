@@ -1,4 +1,13 @@
-export function publicHead(title, description, path, { noindex = false, type = "website" } = {}) {
+// Google toont ongeveer 155-160 tekens; langer wordt midden in een woord afgekapt.
+export function clampDescription(text, max = 158) {
+  const clean = String(text ?? "").replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[\s,;:.-]+$/, "")}…`;
+}
+
+export function publicHead(title, rawDescription, path, { noindex = false, type = "website" } = {}) {
+  const description = clampDescription(rawDescription);
   const url = `https://vedantix.nl${path}`;
   return { meta: [
     { title }, { name: "description", content: description },

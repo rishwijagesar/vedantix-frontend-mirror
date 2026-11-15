@@ -327,6 +327,35 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
             </PageHero>
           ) : null}
 
+          {view === "overview" ? (
+            <section className="vx-page vx-section vx-section--soft" aria-labelledby="pricing-choose-title">
+              <div className="vx-container">
+                <div className="vx-head vx-head--center">
+                  <p className="vx-eyebrow">Welke route past bij jou?</p>
+                  <h2 id="pricing-choose-title" className="vx-h2">Kies op basis van wat je wilt oplossen</h2>
+                  <p className="vx-lead">Twijfel je? In een kort gesprek kijken we samen wat het meeste oplevert. Alle bedragen zijn exclusief btw en staan vast voordat we beginnen.</p>
+                </div>
+                <div className="vx-grid vx-grid--3">
+                  <article className="vx-card">
+                    <h3 className="vx-h3">Je wilt beter gevonden worden en meer aanvragen</h3>
+                    <p className="vx-card__text">Je hebt nog geen goede website, of je huidige site levert weinig op. Kies een websitepakket: eenmalig betalen of per maand met hosting en onderhoud erbij.</p>
+                    <p className="vx-card__text"><Link className="vx-link" to="/prijzen/websites">Naar websiteprijzen <ArrowRight size={16} aria-hidden="true" /></Link></p>
+                  </article>
+                  <article className="vx-card">
+                    <h3 className="vx-h3">Je verliest tijd aan losse tools en dubbel werk</h3>
+                    <p className="vx-card__text">Aanvragen in de mail, planning in Excel, facturen in een ander pakket. Software op maat brengt dat samen; je krijgt na een bedrijfsscan een offerte met opstartkosten en een vast maandbedrag.</p>
+                    <p className="vx-card__text"><Link className="vx-link" to="/prijzen/software-op-maat">Zo werkt de prijs <ArrowRight size={16} aria-hidden="true" /></Link></p>
+                  </article>
+                  <article className="vx-card">
+                    <h3 className="vx-h3">Je site staat er al, maar niemand houdt hem bij</h3>
+                    <p className="vx-card__text">Hosting, zakelijke e-mail, updates en kleine aanpassingen.</p>
+                    <p className="vx-card__text"><Link className="vx-link" to="/prijzen/beheer-onderhoud">Naar beheer en onderhoud <ArrowRight size={16} aria-hidden="true" /></Link></p>
+                  </article>
+                </div>
+              </div>
+            </section>
+          ) : null}
+
           {view === "websites" ? (
             <PageHero
               id="pricing-title"

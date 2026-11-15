@@ -1,3 +1,4 @@
+import { clampDescription } from "./public-head";
 import { blogPosts } from "../data/seoData";
 import {
   createBreadcrumbSchema,
@@ -17,7 +18,7 @@ export function getBlogSeo(slug) {
 
   const canonical = `${SITE_URL}/blog/${post.slug}`;
   const title = post.seo?.title || `${post.title} | Vedantix`;
-  const description = post.seo?.description || post.intro;
+  const description = clampDescription(post.seo?.description || post.intro);
 
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Home", url: `${SITE_URL}/` },
