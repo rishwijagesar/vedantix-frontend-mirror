@@ -1,2 +1,2 @@
-Publish security headers, founder schema, meta description clamp, pricing overview block and conditional subscription copy.
-CI 43760424896 passed.
+Publish prices excluding VAT only on public pages, plus mobile overflow fix for branche and legal pages.
+CI 43773724757 passed.
