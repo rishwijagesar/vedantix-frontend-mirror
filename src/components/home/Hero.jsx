@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, FileText, MessageCircle, Receipt, ShieldCheck, Star, UserPlus } from "lucide-react";
-import { SCAN_URL } from "../../data/positioning";
+import { ArrowRight, Check, MessageCircle, ShieldCheck, Star } from "lucide-react";
+import QuickLeadForm from "../QuickLeadForm";
 import reviewSnapshot from "../../data/google-reviews.json";
 
 const WORDS = ["hele bedrijf", "aanvragen", "offertes", "planning", "facturen"];
@@ -37,7 +37,7 @@ export default function Hero() {
             Vaste prijs vooraf, gebouwd en beheerd door één vast aanspreekpunt.
           </p>
           <div className="vx-hero__actions">
-            <a className="vx-btn vx-btn--primary" href={SCAN_URL}>Plan een bedrijfsscan <ArrowRight aria-hidden="true" /></a>
+            <a className="vx-btn vx-btn--primary vx-hero__jump" href="#snel-contact">Plan een kennismaking <ArrowRight aria-hidden="true" /></a>
             <a className="vx-btn vx-btn--ghost" href="/prijzen">Bekijk prijzen</a>
           </div>
           <p className="vx-hero__note">Vrijblijvend kennismaken. Omvang en kosten van de scan spreken we vooraf af.</p>
@@ -51,24 +51,9 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="vx-hv">
-          <div className="vx-hv__ring" aria-hidden="true" />
-          <figure className="vx-hv__photo">
-            <img
-              src="/images/vedantix-ondernemers-hero-small.webp"
-              srcSet="/images/vedantix-ondernemers-hero-small.webp 768w, /images/vedantix-ondernemers-hero.webp 1536w"
-              sizes="(min-width: 1024px) 560px, 92vw"
-              width="768"
-              height="512"
-              alt="Twee ondernemers kijken tevreden samen naar een laptop"
-              fetchpriority="high"
-              decoding="async"
-            />
-          </figure>
-          <p className="vx-hv__chip vx-hv__chip--a" aria-hidden="true"><span className="vx-hv__icon"><UserPlus /></span><span><b>Nieuwe aanvraag</b><small>In jouw app</small></span></p>
-          <p className="vx-hv__chip vx-hv__chip--b" aria-hidden="true"><span className="vx-hv__icon"><FileText /></span><span><b>Offerte akkoord</b><small>In jouw app</small></span></p>
-          <p className="vx-hv__chip vx-hv__chip--c" aria-hidden="true"><span className="vx-hv__icon"><Receipt /></span><span><b>Factuur betaald</b><small>In jouw app</small></span></p>
-          <p className="vx-hv__rating"><span className="vx-hv__stars" aria-hidden="true"><Star /><Star /><Star /><Star /><Star /></span><span><b>{reviewSnapshot.overallRating.toFixed(1).replace(".", ",")}</b> · {reviewSnapshot.totalReviews} Google-{reviewSnapshot.totalReviews === 1 ? "review" : "reviews"}</span></p>
+        <div className="vx-hero__form">
+          <QuickLeadForm id="snel-contact" sourcePath="/" />
+          <p className="vx-hero__rating"><span className="vx-hv__stars" aria-hidden="true"><Star /><Star /><Star /><Star /><Star /></span><span><b>{reviewSnapshot.overallRating.toFixed(1).replace(".", ",")}</b> · {reviewSnapshot.totalReviews} Google-{reviewSnapshot.totalReviews === 1 ? "review" : "reviews"}</span></p>
         </div>
       </div>
     </section>

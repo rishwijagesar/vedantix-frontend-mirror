@@ -17,6 +17,7 @@ import MetaPixel from "@/components/MetaPixel";
 import CookieConsent from "@/components/CookieConsent";
 import WebsiteAnalytics from "@/components/WebsiteAnalytics";
 import BigFooter from "@/components/BigFooter";
+import { captureLeadAttribution } from "@/lib/lead-attribution";
 
 function NotFoundComponent() {
   return (
@@ -184,6 +185,9 @@ function RootComponent() {
     select: (state) => state.location.pathname,
   });
   const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+  useEffect(() => {
+    if (!isAdmin) captureLeadAttribution();
+  }, [pathname, isAdmin]);
 
   return (
     <QueryClientProvider client={queryClient}>

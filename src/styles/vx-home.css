@@ -276,3 +276,10 @@
 .vx-clients__pause:focus-visible { outline: 3px solid var(--vx-ring); outline-offset: 2px; }
 .vx-clients__pause svg { width: 13px; height: 13px; }
 @media (prefers-reduced-motion: reduce) { .vx-clients__pause { display: none; } }
+
+/* Above-the-fold enquiry form in the hero (replaces the photo collage). */
+.vx-hero__form { min-width: 0; display: grid; gap: 14px; justify-items: center; }
+.vx-hero__rating { display: inline-flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--vx-on-dark); }
+.vx-hero__rating .vx-hv__stars { display: inline-flex; gap: 2px; color: #facc15; }
+.vx-hero__rating .vx-hv__stars svg { width: 16px; height: 16px; fill: currentColor; }
+@media (min-width: 960px) { .vx-hero__jump { display: none; } }

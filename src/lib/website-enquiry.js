@@ -10,7 +10,11 @@ export function websiteEnquiryUrl(subject, fields) {
  */
 export async function submitContactEnquiry(fields, sourcePath = "/contact") {
   const { supabase } = await import("./supabase");
-  const { data, error } = await supabase.functions.invoke("contact-enquiry", { body: { ...fields, sourcePath } });
+  const { leadAttributionSummary } = await import("./lead-attribution");
+  const origin = leadAttributionSummary();
+  const message = origin ? `${fields.message || ""}\n\n— ${origin}`.slice(0, 4000) : fields.message;
+  const path = origin ? `${sourcePath} | ${origin}`.slice(0, 200) : sourcePath;
+  const { data, error } = await supabase.functions.invoke("contact-enquiry", { body: { ...fields, message, sourcePath: path } });
   if (error) {
     let message = "Versturen is niet gelukt.";
     try {

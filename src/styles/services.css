@@ -36,3 +36,6 @@
 .service-faqs details{border-bottom-color:#c3d3ea}
 .services-page a:focus-visible,.service-card:focus-visible,.services-page summary:focus-visible{outline:3px solid #facc15}
 .home-services{background:linear-gradient(180deg,#e8f0fc,#f0f5fd)}
+
+/* Intro with an above-the-fold enquiry form */
+.services-intro--lead{display:grid;gap:clamp(28px,5vw,56px);align-items:center}.services-intro--lead>div{min-width:0}@media(min-width:960px){.services-intro--lead{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}.services-intro--lead .services-intro__jump{display:none}.services-intro--lead h1{font-size:clamp(2.1rem,2.4vw + 1.2rem,3.2rem)}}
