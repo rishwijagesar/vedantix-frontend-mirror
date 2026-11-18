@@ -112,19 +112,25 @@ export default function Home({ initialCases = null }) {
                 </ul>
                 <a className="vx-btn vx-btn--dark" href={SCAN_URL}>Bespreek jouw situatie <ArrowRight aria-hidden="true" /></a>
               </div>
-              <div className="vx-compare" aria-label="Voor en na">
-                <div className="vx-compare__col">
-                  <h3 className="vx-compare__title">Nu</h3>
-                  <ul className="vx-compare__chips">
-                    {["Excel", "Mail", "Boekhoudpakket", "Planningstool", "Notities", "WhatsApp"].map((tool) => <li key={tool}>{tool}</li>)}
-                  </ul>
-                </div>
+              <div className="vx-compare vx-compare--photo" aria-label="Voor en na">
+                <figure className="vx-compare__card">
+                  <img src="/images/oplossing-nu.webp" alt="Rommelig bureau vol papieren, geeltjes, uitgeprinte spreadsheets en een rekenmachine" width="744" height="929" loading="lazy" decoding="async" />
+                  <figcaption className="vx-compare__overlay">
+                    <h3 className="vx-compare__title">Nu</h3>
+                    <ul className="vx-compare__chips">
+                      {["Excel", "Mail", "Boekhoudpakket", "Planningstool", "Notities", "WhatsApp"].map((tool) => <li key={tool}>{tool}</li>)}
+                    </ul>
+                  </figcaption>
+                </figure>
                 <div className="vx-compare__arrow" aria-hidden="true"><ArrowRight /></div>
-                <div className="vx-compare__col vx-compare__col--after">
-                  <h3 className="vx-compare__title">Straks</h3>
-                  <p className="vx-compare__one"><LayoutDashboard aria-hidden="true" /> Eén app op maat</p>
-                  <p className="vx-compare__sub">Met rollen, rechten en instructies</p>
-                </div>
+                <figure className="vx-compare__card vx-compare__card--after">
+                  <img src="/images/oplossing-straks.webp" alt="Ondernemer en medewerker kijken tevreden samen naar een tablet" width="954" height="712" loading="lazy" decoding="async" />
+                  <figcaption className="vx-compare__overlay">
+                    <h3 className="vx-compare__title">Straks</h3>
+                    <p className="vx-compare__one"><LayoutDashboard aria-hidden="true" /> Eén app op maat</p>
+                    <p className="vx-compare__sub">Met rollen, rechten en instructies</p>
+                  </figcaption>
+                </figure>
               </div>
             </div>
           </section>
