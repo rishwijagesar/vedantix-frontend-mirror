@@ -269,13 +269,7 @@
 .vx-happy__card span { color: var(--vx-muted); font-size: .85rem; }
 .vx-happy__card blockquote { margin: 0; padding: 4px 16px 16px; color: var(--vx-ink); font-size: .92rem; line-height: 1.55; }
 
-/* Klein pauze-icoon voor de klantenbanner */
 .vx-clients { position: relative; }
-.vx-clients__pause { position: absolute; right: 0; bottom: -38px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--vx-line); border-radius: 999px; background: var(--vx-paper); color: var(--vx-muted); cursor: pointer; opacity: .75; }
-.vx-clients__pause:hover, .vx-clients__pause:focus-visible { opacity: 1; color: var(--vx-ink); border-color: var(--vx-ink); }
-.vx-clients__pause:focus-visible { outline: 3px solid var(--vx-ring); outline-offset: 2px; }
-.vx-clients__pause svg { width: 13px; height: 13px; }
-@media (prefers-reduced-motion: reduce) { .vx-clients__pause { display: none; } }
 
 /* Above-the-fold enquiry form in the hero (replaces the photo collage). */
 .vx-hero__form { min-width: 0; display: grid; gap: 14px; justify-items: center; }
@@ -283,3 +277,23 @@
 .vx-hero__rating .vx-hv__stars { display: inline-flex; gap: 2px; color: #facc15; }
 .vx-hero__rating .vx-hv__stars svg { width: 16px; height: 16px; fill: currentColor; }
 @media (min-width: 960px) { .vx-hero__jump { display: none; } }
+
+/* Hero met foto als achtergrond en klantenbalk onderin ---------------------- */
+.vx-hero__photo { position: absolute; inset: 0 0 auto 0; height: min(78vw, 420px); pointer-events: none; }
+.vx-hero__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 35%; }
+.vx-hero__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #0a1428d9 0%, #0a142833 30%, #0a142833 55%, var(--vx-hero) 100%); }
+.vx-hero { padding-top: calc(min(78vw, 420px) - 40px); }
+.vx-hero__rating { margin-top: 18px; }
+.vx-hero__clients { position: relative; z-index: 1; margin-top: clamp(36px, 5vw, 56px); }
+.vx-hero__clients .vx-clients__tile { background: #0e1b34cc; border-color: var(--vx-dark-line); color: var(--vx-paper); backdrop-filter: blur(6px); }
+.vx-hero__clients .vx-clients__tile.is-sector { background: #ffffff0d; border-color: var(--vx-dark-line); }
+.vx-hero__clients .vx-clients__mark { background: #74adff26; color: var(--vx-accent); }
+.vx-hero__clients .vx-clients__tile.is-sector .vx-clients__mark { background: linear-gradient(135deg, #74adff40, #b29aff40); color: var(--vx-paper); }
+@media (min-width: 960px) {
+  .vx-hero { padding-top: calc(72px + clamp(32px, 6vw, 72px)); }
+  .vx-hero__photo { inset: 0 0 0 auto; width: 62%; height: 100%; }
+  .vx-hero__photo img { object-position: 60% 40%; }
+  .vx-hero__photo::after { background: linear-gradient(90deg, var(--vx-hero) 0%, #0a1428d1 22%, #0a142826 58%, #0a142859 100%), linear-gradient(180deg, #0a1428b3 0%, transparent 22%, transparent 70%, var(--vx-hero) 100%); }
+  .vx-hero__layout { grid-template-columns: minmax(0, 1fr); }
+  .vx-hero__copy { max-width: 620px; }
+}
