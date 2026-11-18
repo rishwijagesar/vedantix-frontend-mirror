@@ -1,11 +1,11 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { publicHead } from "@/lib/public-head";
-import CustomerPreviewPage from "@/pages/CustomerPreviewPage";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 
 /**
  * Catch-all that reproduces the legacy redirect table from the previous
  * src/App.jsx: capitalised legacy URLs, removed admin/CRM/portal paths and the
  * final wildcard all end up on their canonical public counterpart.
+ * Every other unknown URL is a real 404 (root notFoundComponent, noindex). The
+ * old one-segment customer-preview slugs were retired; previews live at /preview/$token.
  */
 const LEGACY_REDIRECTS: Record<string, string> = {
   "/home": "/",
@@ -40,11 +40,9 @@ const LEGACY_REDIRECTS: Record<string, string> = {
 };
 
 export const Route = createFileRoute("/$")({
-  head: () => publicHead("Klantpreview | Vedantix", "Tijdelijke klantpreview van Vedantix.", "/", { noindex: true }),
   beforeLoad: ({ params }) => {
     const splat = (params._splat ?? "").replace(/^\/+|\/+$/g, "");
-    const raw = `/${splat}`;
-    const key = raw.toLowerCase();
+    const key = `/${splat}`.toLowerCase();
 
     if (key === "/pakketvergelijking") {
       throw redirect({ to: "/prijzen", hash: "vergelijk", replace: true });
@@ -55,19 +53,7 @@ export const Route = createFileRoute("/$")({
       throw redirect({ to: target, replace: true });
     }
 
-    // Exactly one unknown segment is treated as a public customer preview slug
-    // (legacy `/:previewSlug` route). Anything deeper keeps the old wildcard
-    // behaviour and redirects home.
-    if (splat && !splat.includes("/")) {
-      return { previewSlug: splat };
-    }
-
-    throw redirect({ to: "/", replace: true });
+    throw notFound();
   },
-  component: CustomerPreviewRoute,
+  component: () => null,
 });
-
-function CustomerPreviewRoute() {
-  const { previewSlug } = Route.useRouteContext();
-  return <CustomerPreviewPage slug={previewSlug} />;
-}

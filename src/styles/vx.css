@@ -128,7 +128,7 @@ body:has(.site-nav-links.is-open) .vx-sticky { display: none; }
 @media (min-width: 480px) { .vx-pagehero__actions { flex-direction: row; flex-wrap: wrap; } }
 .vx-pagehero__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 36px; max-width: 720px; }
 .vx-pagehero__facts li { display: grid; gap: 4px; padding: 14px 16px; border-radius: 14px; background: #ffffff0d; border: 1px solid var(--vx-dark-line); }
-.vx-pagehero__facts span { font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9fb0cb; }
+.vx-pagehero__facts span { font-size: 0.75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9fb0cb; }
 .vx-pagehero__facts strong { font-size: 1.05rem; color: var(--vx-paper); }
 @media (min-width: 768px) { .vx-pagehero__facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .vx-final__icon { width: 34px; height: 34px; margin: 0 auto 14px; color: var(--vx-accent); }

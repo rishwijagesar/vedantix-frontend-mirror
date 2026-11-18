@@ -18,7 +18,7 @@
   display: block;
   margin-bottom: 12px;
   color: #64748b;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 750;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -75,7 +75,7 @@
 .client-case__logo > span { color: #334155; font-size: 28px; font-weight: 800; }
 .client-case__identity { min-width: 0; }
 .client-case__meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 9px; margin-bottom: 10px; }
-.client-case__status { padding: 3px 8px; border-radius: 6px; background: #ecfdf5; color: #047857; font-size: 11px; font-weight: 700; line-height: 1.6; }
+.client-case__status { padding: 3px 8px; border-radius: 6px; background: #ecfdf5; color: #047857; font-size: 12px; font-weight: 700; line-height: 1.6; }
 .client-case__branch { color: #64748b; font-size: 12px; line-height: 1.5; }
 .client-case__identity h3 { margin: 0; color: #0f172a; font-size: clamp(20px, 2vw, 25px); line-height: 1.2; font-weight: 800; letter-spacing: -.035em; overflow-wrap: anywhere; }
 .client-case__domain { display: block; margin-top: 7px; color: #64748b; font-size: 13px; overflow-wrap: anywhere; }

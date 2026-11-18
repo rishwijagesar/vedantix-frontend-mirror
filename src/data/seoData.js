@@ -380,7 +380,12 @@ const createIndustryPage = ({
   heroTitle: `Website laten maken voor ${plural}`,
   heroText: `Vedantix helpt ${plural} professioneel zichtbaar te worden met een website die vertrouwen wekt, lokaal beter gevonden wordt en bezoekers aanzet tot contact.`,
   cityHeroTitle: (city) => `Website laten maken voor ${plural} in ${city}`,
-  cityMetaTitle: (city) => `Website laten maken voor ${plural} in ${city} | Vedantix`,
+  // Google toont ongeveer 60 tekens; lange branche- en stadsnamen krijgen een kortere variant.
+  cityMetaTitle: (city) => [
+    `Website laten maken voor ${plural} in ${city} | Vedantix`,
+    `Website voor ${plural} in ${city} | Vedantix`,
+    `Website voor ${plural} in ${city}`,
+  ].find((title) => title.length <= 60) ?? `Website voor ${plural} in ${city}`,
   cityMetaDescription: (city) =>
     `Professionele website voor ${plural} in ${city}. Meer vertrouwen, meer lokale zichtbaarheid en meer aanvragen met Vedantix.`,
   cityHeroText: (city) =>
@@ -698,7 +703,7 @@ export const blogPosts = [
     ],
     ctaLink: "/online-groei-audit",
     ctaLabel: "Laat je lokale vindbaarheid analyseren →",
-    seoTitle: "Beter gevonden worden in Google als lokale ondernemer | Vedantix",
+    seoTitle: "Beter gevonden in Google als lokale ondernemer | Vedantix",
     seoDescription:
       "Leer hoe lokale ondernemers beter gevonden worden in Google met duidelijke diensten, lokale SEO, reviews en een website die vertrouwen opbouwt.",
   }),
@@ -980,7 +985,7 @@ export const blogPosts = [
     ],
     ctaLink: "/online-groei-audit",
     ctaLabel: "Laat je reviews en zichtbaarheid bekijken →",
-    seoTitle: "Waarom reviews belangrijk zijn voor lokale vindbaarheid | Vedantix",
+    seoTitle: "Reviews en lokale vindbaarheid: waarom ze tellen | Vedantix",
     seoDescription:
       "Reviews helpen lokale ondernemers aan meer vertrouwen, betere zichtbaarheid en meer aanvragen. Lees waarom ze belangrijk zijn.",
   }),
