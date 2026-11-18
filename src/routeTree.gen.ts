@@ -19,6 +19,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DataDeletionRouteImport } from './routes/data-deletion'
 import { Route as DienstenRouteImport } from './routes/diensten'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as BedrijfsscanRouteImport } from './routes/bedrijfsscan'
 import { Route as GroeimodelRouteImport } from './routes/groeimodel'
 import { Route as KoppelingenAutomatiseringRouteImport } from './routes/koppelingen-automatisering'
 import { Route as MobieleAppsRouteImport } from './routes/mobiele-apps'
@@ -112,6 +113,11 @@ const DienstenRoute = DienstenRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BedrijfsscanRoute = BedrijfsscanRouteImport.update({
+  id: '/bedrijfsscan',
+  path: '/bedrijfsscan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GroeimodelRoute = GroeimodelRouteImport.update({
@@ -348,6 +354,7 @@ export interface FileRoutesByFullPath {
   '/data-deletion': typeof DataDeletionRoute
   '/diensten': typeof DienstenRoute
   '/faq': typeof FaqRoute
+  '/bedrijfsscan': typeof BedrijfsscanRoute
   '/groeimodel': typeof GroeimodelRoute
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
@@ -404,6 +411,7 @@ export interface FileRoutesByTo {
   '/data-deletion': typeof DataDeletionRoute
   '/diensten': typeof DienstenRoute
   '/faq': typeof FaqRoute
+  '/bedrijfsscan': typeof BedrijfsscanRoute
   '/groeimodel': typeof GroeimodelRoute
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
@@ -461,6 +469,7 @@ export interface FileRoutesById {
   '/data-deletion': typeof DataDeletionRoute
   '/diensten': typeof DienstenRoute
   '/faq': typeof FaqRoute
+  '/bedrijfsscan': typeof BedrijfsscanRoute
   '/groeimodel': typeof GroeimodelRoute
   '/koppelingen-automatisering': typeof KoppelingenAutomatiseringRoute
   '/mobiele-apps': typeof MobieleAppsRoute
@@ -519,6 +528,7 @@ export interface FileRouteTypes {
     | '/data-deletion'
     | '/diensten'
     | '/faq'
+    | '/bedrijfsscan'
     | '/groeimodel'
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
@@ -575,6 +585,7 @@ export interface FileRouteTypes {
     | '/data-deletion'
     | '/diensten'
     | '/faq'
+    | '/bedrijfsscan'
     | '/groeimodel'
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
@@ -631,6 +642,7 @@ export interface FileRouteTypes {
     | '/data-deletion'
     | '/diensten'
     | '/faq'
+    | '/bedrijfsscan'
     | '/groeimodel'
     | '/koppelingen-automatisering'
     | '/mobiele-apps'
@@ -688,6 +700,7 @@ export interface RootRouteChildren {
   DataDeletionRoute: typeof DataDeletionRoute
   DienstenRoute: typeof DienstenRoute
   FaqRoute: typeof FaqRoute
+  BedrijfsscanRoute: typeof BedrijfsscanRoute
   GroeimodelRoute: typeof GroeimodelRoute
   KoppelingenAutomatiseringRoute: typeof KoppelingenAutomatiseringRoute
   MobieleAppsRoute: typeof MobieleAppsRoute
@@ -804,6 +817,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bedrijfsscan': {
+      id: '/bedrijfsscan'
+      path: '/bedrijfsscan'
+      fullPath: '/bedrijfsscan'
+      preLoaderRoute: typeof BedrijfsscanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/groeimodel': {
@@ -1128,6 +1148,7 @@ const rootRouteChildren: RootRouteChildren = {
   DataDeletionRoute: DataDeletionRoute,
   DienstenRoute: DienstenRoute,
   FaqRoute: FaqRoute,
+  BedrijfsscanRoute: BedrijfsscanRoute,
   GroeimodelRoute: GroeimodelRoute,
   KoppelingenAutomatiseringRoute: KoppelingenAutomatiseringRoute,
   MobieleAppsRoute: MobieleAppsRoute,

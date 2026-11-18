@@ -24,6 +24,7 @@ const LEGACY_REDIRECTS: Record<string, string> = {
   "/data-deletion": "/data-deletion",
   "/faq": "/faq",
   "/contact": "/contact",
+  "/bedrijfsscan": "/bedrijfsscan",
   "/resultaten": "/resultaten",
   "/blog": "/blog",
   "/pakketvergelijking": "/prijzen",

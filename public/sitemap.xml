@@ -63,6 +63,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://vedantix.nl/bedrijfsscan</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://vedantix.nl/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
