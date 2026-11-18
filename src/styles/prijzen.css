@@ -597,6 +597,10 @@
   color: #183aab;
 }
 
+.pricing-price-row small {
+  font-size: 0.75rem;
+}
+
 .pricing-price-row strong {
   font-size: 0.88rem;
 }
