@@ -268,7 +268,7 @@ export default function Home({ initialCases = null }) {
                   <ul className="vx-checks">
                     <li><Check aria-hidden="true" />Pakketten Starter, Growth en Pro</li>
                     <li><Check aria-hidden="true" />Gericht op lokale vindbaarheid</li>
-                    <li><Check aria-hidden="true" />Prijzen inclusief en exclusief btw</li>
+                    <li><Check aria-hidden="true" />Vaste prijzen, vooraf bekend</li>
                   </ul>
                   <a className="vx-btn vx-btn--outline vx-btn--block" href="/prijzen">Bekijk alle prijzen <ArrowRight aria-hidden="true" /></a>
                 </article>

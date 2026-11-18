@@ -400,7 +400,7 @@ export default function Starters() {
                 <p style={{ fontWeight: 700, color: "#0369a1", marginBottom: 4 }}>
                   💡 Aanbevolen voor {SUGGESTIONS[branche]?.icon} {SUGGESTIONS[branche]?.label}
                 </p>
-                <p style={{ color: "#0c4a6e", fontSize: "0.85rem", marginBottom: 16 }}>Elke extra functie kost {priceLabel(extraPrice)} excl. btw. Klik aan wat je wil.</p>
+                <p style={{ color: "#0c4a6e", fontSize: "0.85rem", marginBottom: 16 }}>Elke extra functie kost {priceLabel(extraPrice)}. Klik aan wat je wil.</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                   {currentSuggestions.map(f => (
                     <button key={f} className={`feat-chip ${selectedFeatures.includes(f) ? "selected" : ""}`} onClick={() => toggleFeature(f)}>
@@ -412,7 +412,7 @@ export default function Starters() {
             )}
 
             <h3 style={{ fontWeight: 700, marginBottom: 6 }}>Kies je basispakket</h3>
-            <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: 16 }}>De bedragen hieronder zijn exclusief btw. Hosting, e-mail en groeidiensten zijn apart te kiezen. Bekijk de actuele tarieven op de prijzenpagina.</p>
+            <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: 16 }}>Hosting, e-mail en groeidiensten zijn apart te kiezen. Bekijk de actuele tarieven op de prijzenpagina.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 32 }}>
               {pricesLoading ? <p>Actuele prijzen laden…</p> : null}{pricesError ? <p role="alert">De actuele prijzen zijn tijdelijk niet beschikbaar. Vraag een offerte aan.</p> : null}{PACKAGES.map(pkg => (
                 <div key={pkg.id} className={`pkg-card ${selectedPackage===pkg.id?"selected":""}`} onClick={() => setSelectedPackage(pkg.id)}>
@@ -421,7 +421,7 @@ export default function Starters() {
                       <span style={{ fontWeight: 800, fontSize: "1.1rem" }}>{pkg.name}</span>
                       <span style={{ color: "#6b7280", fontSize: "0.88rem", marginLeft: 8 }}>{pkg.pages}</span>
                     </div>
-                    <span style={{ fontWeight: 900, fontSize: "1.3rem", color: "#1a73e8" }}>{priceLabel(pkg.price)} <small>excl. btw</small></span>
+                    <span style={{ fontWeight: 900, fontSize: "1.3rem", color: "#1a73e8" }}>{priceLabel(pkg.price)}</span>
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {pkg.features.map(f => <span key={f} style={{ background: "#f3f4f6", color: "#374151", padding: "3px 10px", borderRadius: 100, fontSize: "0.78rem" }}>✓ {f}</span>)}

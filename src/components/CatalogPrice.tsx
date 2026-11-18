@@ -5,5 +5,5 @@ export default function CatalogPrice({ code }: { code: string }) {
   const product = data.find(p => p.code === code);
   if (!product) return <a href="/prijzen">Actuele prijs</a>;
   const money = new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" });
-  return <span>{money.format(product.price_ex_vat)} excl. btw</span>;
+  return <span>{money.format(product.price_ex_vat)}</span>;
 }

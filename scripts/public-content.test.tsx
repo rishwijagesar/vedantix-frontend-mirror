@@ -35,7 +35,7 @@ describe("Live public content", () => {
     expect(changed).not.toContain("619,93");
     expect(changed).not.toContain("603,79");
     expect(changed).not.toContain("499");
-    expect(changed).toContain("excl. btw");
+    expect(changed).not.toContain("excl. btw");
   });
   test("an unavailable catalog never falls back to a stale advertised price", async () => {
     globalThis.fetch = mock(async()=>new Response("",{status:503})) as any;

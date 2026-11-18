@@ -184,7 +184,7 @@ function currency(value) {
 
 function packageWhatsapp(pkg) {
   return `${CONTACT.WHATSAPP_URL}?text=${encodeURIComponent(
-    `Hallo Vedantix, ik wil graag meer weten over het ${pkg.label}-websitepakket van ${currency(pkg.price)} excl. btw ${pkg.suffix}.`
+    `Hallo Vedantix, ik wil graag meer weten over het ${pkg.label}-websitepakket van ${currency(pkg.price)} ${pkg.suffix}.`
   )}`;
 }
 
@@ -250,7 +250,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
     const from = p.from_price ? "Vanaf " : "";
     return {
       title: p.name, text: p.description, icon: addonIcons[p.code] || Sparkles, onRequest,
-      price: onRequest ? "Prijs op aanvraag" : `${from}${currency(p.price_ex_vat)} ${ADDON_UNITS[p.code] || suffix(p.billing_type)} excl. btw`,
+      price: onRequest ? "Prijs op aanvraag" : `${from}${currency(p.price_ex_vat)} ${ADDON_UNITS[p.code] || suffix(p.billing_type)}`,
       priceNote: onRequest ? "Afhankelijk van de uitvoering" : "",
       code: p.code,
     };
@@ -264,9 +264,9 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
   const yearlyHosting = products.find(p => p.code === "HOSTING_YEAR");
   const heading = <>Heldere prijzen. <span className="vx-grad">Ruimte om te groeien.</span></>;
   const PRICE_FAQS = BASE_PRICE_FAQS.map(faq => {
-    if (faq.question === "Wat kost een website bij Vedantix?" && WEBSITE_PACKAGES.length) return { ...faq, answer: WEBSITE_PACKAGES.map(p => `${p.label}: ${currency(p.price)} excl. btw, ${p.suffix}.`).join(" ") + " Hosting, e-mail en groeidiensten kies je apart." };
-    if (faq.question === "Kan ik een website ook per maand betalen?" && hasPlans) return { ...faq, answer: `Ja. ${WEBSITE_PACKAGES.filter(p => PLAN_BY_PACKAGE[p.code]).map(p => `${p.label}: ${currency(PLAN_BY_PACKAGE[p.code].setup)} opstartkosten en ${currency(PLAN_BY_PACKAGE[p.code].monthly)} per maand`).join("; ")}, excl. btw. Hosting, technisch onderhoud en kleine aanpassingen zitten in het maandbedrag. Minimale looptijd ${minPlan.term} maanden, daarna maandelijks opzegbaar.` };
-    if (faq.question === "Wat kost hosting?" && yearlyHosting) return { ...faq, answer: `Jaarlijkse hosting kost ${currency(yearlyHosting.price_ex_vat)} excl. btw. Domeinnamen en mailboxen staan los van hosting.` };
+    if (faq.question === "Wat kost een website bij Vedantix?" && WEBSITE_PACKAGES.length) return { ...faq, answer: WEBSITE_PACKAGES.map(p => `${p.label}: ${currency(p.price)}, ${p.suffix}.`).join(" ") + " Hosting, e-mail en groeidiensten kies je apart." };
+    if (faq.question === "Kan ik een website ook per maand betalen?" && hasPlans) return { ...faq, answer: `Ja. ${WEBSITE_PACKAGES.filter(p => PLAN_BY_PACKAGE[p.code]).map(p => `${p.label}: ${currency(PLAN_BY_PACKAGE[p.code].setup)} opstartkosten en ${currency(PLAN_BY_PACKAGE[p.code].monthly)} per maand`).join("; ")}. Hosting, technisch onderhoud en kleine aanpassingen zitten in het maandbedrag. Minimale looptijd ${minPlan.term} maanden, daarna maandelijks opzegbaar.` };
+    if (faq.question === "Wat kost hosting?" && yearlyHosting) return { ...faq, answer: `Jaarlijkse hosting kost ${currency(yearlyHosting.price_ex_vat)} per jaar. Domeinnamen en mailboxen staan los van hosting.` };
     return faq;
   });
   const V = VIEWS[view] || VIEWS.overview;
@@ -309,7 +309,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                 <Link className="pricing-route" to="/prijzen/websites">
                   <small>Voor zelfstandigen en starters</small>
                   <strong>Website laten maken</strong>
-                  <span>{minWebsite ? `Vanaf ${currency(minWebsite)} eenmalig` : "Vaste pakketprijzen"}{minPlan ? `, of vanaf ${currency(minPlan.monthly)} per maand met ${currency(minPlan.setup)} opstartkosten` : ""}. Bedragen excl. btw.</span>
+                  <span>{minWebsite ? `Vanaf ${currency(minWebsite)} eenmalig` : "Vaste pakketprijzen"}{minPlan ? `, of vanaf ${currency(minPlan.monthly)} per maand met ${currency(minPlan.setup)} opstartkosten` : ""}.</span>
                   <em>Bekijk websiteprijzen <ArrowRight size={15} aria-hidden="true" /></em>
                 </Link>
                 <Link className="pricing-route pricing-route--main" to="/prijzen/software-op-maat">
@@ -334,7 +334,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                 <div className="vx-head vx-head--center">
                   <p className="vx-eyebrow">Welke route past bij jou?</p>
                   <h2 id="pricing-choose-title" className="vx-h2">Kies op basis van wat je wilt oplossen</h2>
-                  <p className="vx-lead">Twijfel je? In een kort gesprek kijken we samen wat het meeste oplevert. Alle bedragen zijn exclusief btw en staan vast voordat we beginnen.</p>
+                  <p className="vx-lead">Twijfel je? In een kort gesprek kijken we samen wat het meeste oplevert. Alle bedragen staan vast voordat we beginnen.</p>
                 </div>
                 <div className="vx-grid vx-grid--3">
                   <article className="vx-card">
@@ -430,7 +430,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
 
                     {billing === "plan" && PLAN_BY_PACKAGE[pkg.code] ? (() => { const plan = PLAN_BY_PACKAGE[pkg.code]; return (
                       <div className="pricing-cost-box">
-                        <span>Abonnement, exclusief btw</span>
+                        <span>Abonnement</span>
                         <div className="pricing-main-price">
                           {currency(plan.monthly)} <small>per maand</small>
                         </div>
@@ -442,7 +442,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                       </div>
                     ); })() : (
                       <div className="pricing-cost-box">
-                        <span>Prijs exclusief btw</span>
+                        <span>Vaste prijs</span>
                         <div className="pricing-main-price">
                           {currency(pkg.price)} <small>{pkg.suffix}</small>
                         </div>
@@ -474,9 +474,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
               </div>
 
               <div className="pricing-hero-footer">
-                <span>Alle prijzen zijn exclusief btw</span>
-                <span className="pricing-footer-divider" aria-hidden="true" />
-                {billing === "plan" ? <span>Abonnement: hosting en onderhoud inbegrepen</span> : yearlyHosting ? <span>Hosting {currency(yearlyHosting.price_ex_vat)} excl. btw per jaar, <Link to="/prijzen/beheer-onderhoud">zie beheer</Link></span> : null}
+                {billing === "plan" ? <span>Abonnement: hosting en onderhoud inbegrepen</span> : yearlyHosting ? <span>Hosting {currency(yearlyHosting.price_ex_vat)} per jaar, <Link to="/prijzen/beheer-onderhoud">zie beheer</Link></span> : null}
                 <a href="#vindbaarheid">
                   Bekijk vindbaarheid <ArrowDown size={15} aria-hidden="true" />
                 </a>
@@ -600,7 +598,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                       <td>Prijs</td>
                       {WEBSITE_PACKAGES.map((pkg) => (
                         <td key={`price-${pkg.code}`}>
-                          <strong>{currency(pkg.price)} {pkg.suffix}</strong><small> excl. btw</small>
+                          <strong>{currency(pkg.price)} {pkg.suffix}</strong>
                         </td>
                       ))}
                     </tr>
@@ -704,7 +702,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                     >
                       {option.featured ? <span>Voordelig</span> : null}
                       <strong>{option.period}</strong>
-                      <b>{currency(option.price)} excl. btw</b>
+                      <b>{currency(option.price)}</b>
                       <small>{option.description}</small>
                     </a>
                   ))}
@@ -778,7 +776,7 @@ export default function Prijzen({ initialProducts = null, view = "overview" }) {
                     >
                       {plan.featured ? <span>Aanbevolen</span> : null}
                       <strong>{plan.name}</strong>
-                      <b>{currency(plan.price)} {plan.suffix} excl. btw</b>
+                      <b>{currency(plan.price)} {plan.suffix}</b>
                       <small>{plan.note}</small>
                     </a>
                   ))}
