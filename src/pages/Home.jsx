@@ -17,14 +17,13 @@ import {
   Wrench,
 } from "lucide-react";
 import { SOFTWARE_TITLE, SOFTWARE_DESCRIPTION, SOFTWARE_FAQS, SCAN_URL } from "../data/positioning";
-import { buildClientStrip, CLIENT_PHOTOS, COMMITMENTS, PAIN_POINTS } from "../data/proof";
+import { CLIENT_PHOTOS, COMMITMENTS, PAIN_POINTS } from "../data/proof";
 import NavBar from "../components/NavBar";
 import SEO from "../components/SEO";
 import CatalogPrice from "../components/CatalogPrice";
 import JotformReviewWidget from "../components/JotformReviewWidget";
 import Hero from "../components/home/Hero";
 import AppMock from "../components/home/AppMock";
-import ClientStrip from "../components/home/ClientStrip";
 import ClientCasesSection from "../components/home/ClientCasesSection";
 import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
@@ -71,15 +70,7 @@ export default function Home({ initialCases = null }) {
         <NavBar />
 
         <main>
-          <Hero />
-
-          {/* Bewijs 1: klanten */}
-          <section className="vx-section vx-section--tight vx-proofbar" aria-labelledby="vx-clients-title">
-            <div className="vx-container">
-              <h2 id="vx-clients-title" className="vx-proofbar__title">{buildClientStrip(initialCases).some((tile) => tile.sector) ? "Onze klanten en de branches waarvoor we bouwen" : "Ondernemers die met Vedantix werken"}</h2>
-              <ClientStrip clients={initialCases} />
-            </div>
-          </section>
+          <Hero clients={initialCases} />
 
           {/* Doelgroep en probleem */}
           <section className="vx-section vx-section--soft" aria-labelledby="vx-pain-title">

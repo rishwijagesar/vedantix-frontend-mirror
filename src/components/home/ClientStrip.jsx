@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Building2, Pause, Play } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { safeLogoUrl } from "../../lib/public-content";
 import { buildClientStrip } from "../../data/proof";
 
@@ -27,13 +26,12 @@ function Tile({ client }) {
   );
 }
 
-/** Doorlopende banner met klanten. Klein pauze-icoon (WCAG 2.2.2), stopt ook bij hover of focus; bij "minder beweging" een gewoon raster. */
+/** Doorlopende banner met klanten. Stopt bij hover of focus; bij "minder beweging" een gewoon raster. */
 export default function ClientStrip({ clients }) {
   const tiles = buildClientStrip(clients);
-  const [paused, setPaused] = useState(false);
   const hasSectors = tiles.some((tile) => tile.sector);
   return (
-    <div className={`vx-clients${paused ? " is-paused" : ""}`}>
+    <div className="vx-clients">
       <div className="vx-clients__viewport">
         <div className="vx-clients__track">
           <ul className="vx-clients__list" aria-label={hasSectors ? "Klanten en branches" : "Klanten van Vedantix"}>
@@ -44,9 +42,6 @@ export default function ClientStrip({ clients }) {
           </ul>
         </div>
       </div>
-      <button type="button" className="vx-clients__pause" onClick={() => setPaused((value) => !value)} aria-pressed={paused} aria-label={paused ? "Klantenbanner afspelen" : "Klantenbanner pauzeren"}>
-        {paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
-      </button>
     </div>
   );
 }

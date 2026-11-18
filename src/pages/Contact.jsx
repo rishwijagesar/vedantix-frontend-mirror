@@ -63,7 +63,7 @@ const FAQS = [
   {
     question: "Kost een eerste gesprek geld?",
     answer:
-      "Een eerste contact is vrijblijvend. We bespreken vooraf de omvang en eventuele kosten van een bedrijfsscan. Daarna volgt een concreet voorstel; we starten niet met bouwen zonder afspraken.",
+      "Een eerste contact is vrijblijvend en de bedrijfsscan is gratis. Daarna volgt een concreet voorstel; we starten niet met bouwen zonder afspraken.",
   },
   {
     question: "Voor welke bedrijven werkt Vedantix?",
