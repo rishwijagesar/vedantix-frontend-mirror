@@ -2,7 +2,7 @@ export const SOFTWARE_TITLE = "Bedrijfssoftware op maat en webapplicaties | Veda
 export const SOFTWARE_DESCRIPTION = "Laat bedrijfssoftware op maat maken rond sales, planning, finance, HR en IT. Bedrijfsscan, gefaseerde bouw, tests en beheer op offerte bij Vedantix.";
 export const SOFTWARE_HEADLINE = "Software die meegroeit met jouw bedrijf.";
 export const SOFTWARE_INTRO = "Breng je bedrijfsprocessen samen in één applicatie op maat. Snel ontwikkeld met behulp van AI, zorgvuldig getest en beheerd door Vedantix. Met eenmalige opstartkosten en een vast maandbedrag voor de afgesproken dienstverlening.";
-export const SCAN_URL = "/contact#contact-form";
+export const SCAN_URL = "/bedrijfsscan";
 
 export const SOFTWARE_FAQS = [
   { question: "Wat is bedrijfssoftware op maat?", answer: "Een webapplicatie die aansluit op jouw werkprocessen. Medewerkers voeren hun taken uit in één omgeving, met toegang die past bij hun rol. De afgesproken functionaliteit vormt de basis voor ontwikkeling en beheer." },

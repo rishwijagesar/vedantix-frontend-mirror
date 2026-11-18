@@ -17,6 +17,7 @@ import MetaPixel from "@/components/MetaPixel";
 import CookieConsent from "@/components/CookieConsent";
 import WebsiteAnalytics from "@/components/WebsiteAnalytics";
 import BigFooter from "@/components/BigFooter";
+import ChatWidget from "@/components/intake/ChatWidget";
 import { captureLeadAttribution } from "@/lib/lead-attribution";
 
 function NotFoundComponent() {
@@ -185,6 +186,7 @@ function RootComponent() {
     select: (state) => state.location.pathname,
   });
   const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+  const showChat = !isAdmin && !/^\/(bedrijfsscan|preview|contract|factuur|betaling|offerte)(\/|$)/.test(pathname);
   useEffect(() => {
     if (!isAdmin) captureLeadAttribution();
   }, [pathname, isAdmin]);
@@ -196,6 +198,7 @@ function RootComponent() {
       {!isAdmin ? <CookieConsent /> : null}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      {showChat ? <ChatWidget pathname={pathname} /> : null}
       {!isAdmin ? (
         <Suspense fallback={null}>
           <BigFooter />

@@ -1,0 +1,40 @@
+/* Landingspagina /bedrijfsscan ---------------------------------------------------------- */
+.vx-scan__hero { position: relative; overflow: hidden; background: var(--vx-hero); color: #ffffff; padding: calc(72px + clamp(28px, 5vw, 56px)) 0 clamp(56px, 7vw, 88px); }
+.vx-scan__photo { position: absolute; inset: 0; pointer-events: none; }
+.vx-scan__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; opacity: .35; }
+.vx-scan__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #0a1428e6, #0a1428b3 40%, var(--vx-hero)); }
+.vx-scan__layout { position: relative; display: grid; gap: clamp(32px, 5vw, 56px); align-items: start; }
+.vx-scan__copy { display: flex; flex-direction: column; gap: 20px; }
+.vx-scan__copy .vx-lead { color: var(--vx-on-dark); max-width: 34rem; }
+.vx-scan__badge { align-self: flex-start; padding: 8px 16px; border-radius: 999px; background: var(--vx-highlight); color: #0a1428; font-size: .9rem; font-weight: 800; }
+.vx-scan__benefits { display: flex; flex-direction: column; gap: 16px; margin: 4px 0 0; padding: 0; list-style: none; }
+.vx-scan__benefits li { display: flex; gap: 14px; align-items: flex-start; }
+.vx-scan__benefits li > span:first-child { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; background: #74adff26; color: var(--vx-accent); }
+.vx-scan__benefits svg { width: 20px; height: 20px; }
+.vx-scan__benefits li > span:last-child { display: flex; flex-direction: column; gap: 2px; color: var(--vx-on-dark); line-height: 1.5; }
+.vx-scan__benefits strong { color: #ffffff; font-size: 1.05rem; }
+.vx-scan__rating { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--vx-on-dark); font-size: .95rem; }
+.vx-scan__rating span { display: inline-flex; gap: 2px; color: #fbbf24; }
+.vx-scan__rating svg { width: 16px; height: 16px; fill: currentColor; stroke: none; }
+.vx-scan__rating b { color: #ffffff; }
+.vx-scan__chat { display: flex; flex-direction: column; gap: 12px; }
+.vx-scan__chat .vx-intake { height: min(640px, 82vh); }
+.vx-scan__alt { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 0; font-size: .85rem; color: var(--vx-on-dark); }
+.vx-scan__alt svg { width: 15px; height: 15px; }
+.vx-scan__alt a { color: #ffffff; font-weight: 600; }
+.vx-scan__steps ol { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 28px 0 0; padding: 0; list-style: none; }
+.vx-scan__steps li { display: flex; flex-direction: column; gap: 10px; padding: 24px; border: 1px solid var(--vx-line); border-radius: 18px; background: #ffffff; }
+.vx-scan__steps li > span { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--vx-hero); color: #ffffff; font-weight: 800; }
+.vx-scan__steps li strong { font-size: 1.1rem; }
+.vx-scan__steps li p { margin: 0; color: var(--vx-muted); line-height: 1.55; }
+.vx-scan__faq dl { display: grid; gap: 14px; margin: 24px 0 0; }
+.vx-scan__faq dl > div { padding: 20px 22px; border: 1px solid var(--vx-line); border-radius: 16px; background: #ffffff; }
+.vx-scan__faq dt { font-weight: 700; }
+.vx-scan__faq dd { margin: 6px 0 0; color: var(--vx-muted); line-height: 1.55; }
+@media (min-width: 960px) {
+  .vx-scan__layout { grid-template-columns: minmax(0, 1fr) minmax(0, 480px); }
+  .vx-scan__photo { left: auto; width: 55%; }
+  .vx-scan__photo img { opacity: .55; }
+  .vx-scan__photo::after { background: linear-gradient(90deg, var(--vx-hero) 0%, #0a1428d9 35%, #0a142899 100%); }
+  .vx-scan__copy { padding-top: 12px; }
+}
