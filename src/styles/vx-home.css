@@ -298,15 +298,32 @@
   .vx-hero__copy { max-width: 620px; }
 }
 
-/* Voor en na met foto's ----------------------------------------------------- */
-.vx-compare--photo { align-items: center; }
-.vx-compare__card { position: relative; margin: 0; overflow: hidden; border-radius: var(--vx-radius-lg); box-shadow: var(--vx-card-shadow); aspect-ratio: 4 / 5; min-height: 320px; background: var(--vx-hero); }
-.vx-compare__card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.vx-compare__card--after img { object-position: 38% 30%; }
-.vx-compare__card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #0a142800 35%, #0a1428d9 78%, #0a1428f2 100%); }
-.vx-compare__card .vx-compare__overlay { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 20px; color: var(--vx-paper); }
-.vx-compare__card .vx-compare__title { color: #ffffff; margin-bottom: 10px; display: inline-block; padding: 4px 10px; border-radius: 999px; background: #0a1428b3; }
-.vx-compare__card--after .vx-compare__title { color: #0a1428; background: var(--vx-highlight); }
-.vx-compare__card .vx-compare__chips li { background: #ffffffeb; border-color: transparent; color: var(--vx-ink); font-size: .8rem; padding: 6px 10px; }
-.vx-compare__card .vx-compare__one { color: #ffffff; font-size: 1.25rem; }
-.vx-compare__card .vx-compare__sub { color: var(--vx-on-dark); margin-top: 4px; }
+/* Woordweb: losse tools worden één app ---------------------------------------- */
+.vx-web-wrap { container-type: inline-size; width: 100%; }
+.vx-web { position: relative; width: 100%; max-width: 560px; margin-inline: auto; aspect-ratio: 520 / 460; }
+.vx-web__lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.vx-web__lines path { fill: none; stroke-width: 2; stroke-dasharray: 5 6; stroke-linecap: round; opacity: .55; vector-effect: non-scaling-stroke; animation: vx-web-flow 1.6s linear infinite; }
+@keyframes vx-web-flow { to { stroke-dashoffset: -22; } }
+.vx-web__bubble { position: absolute; z-index: 1; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: .45em; white-space: nowrap; padding: .55em .95em; border-radius: 999px; background: var(--vx-paper); border: 1.5px solid color-mix(in srgb, var(--c) 35%, transparent); box-shadow: 0 10px 26px #12203924; color: var(--vx-ink); font-size: clamp(12px, 2.7cqw, 15px); font-weight: 700; }
+.vx-web__bubble svg { width: 1.15em; height: 1.15em; color: var(--c); }
+.vx-web__app { position: absolute; z-index: 2; display: flex; flex-direction: column; border-radius: clamp(12px, 3cqw, 18px); overflow: hidden; background: var(--vx-hero); box-shadow: 0 26px 60px #0a142859; color: var(--vx-paper); }
+.vx-web__bar { display: flex; align-items: center; gap: 5px; padding: .7em .9em; background: #ffffff12; font-size: clamp(12px, 2.5cqw, 14px); }
+.vx-web__bar span { width: .55em; height: .55em; border-radius: 50%; background: #ffffff40; }
+.vx-web__bar b { margin-left: .4em; font-weight: 800; }
+.vx-web__app ul { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; gap: 2px; margin: 0; padding: .4em .7em .7em; list-style: none; }
+.vx-web__app li { display: flex; align-items: center; gap: .55em; padding: .45em .55em; border-radius: 8px; background: #ffffff0d; font-size: clamp(12px, 2.45cqw, 14px); font-weight: 600; }
+.vx-web__app li svg { flex-shrink: 0; width: 1.2em; height: 1.2em; padding: .2em; border-radius: 6px; color: var(--c); background: color-mix(in srgb, var(--c) 22%, transparent); }
+.vx-web__label { position: absolute; z-index: 1; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--vx-muted); }
+.vx-web__label--now { left: 50%; top: -9%; transform: translateX(-50%); white-space: nowrap; }
+.vx-web__label--after { left: 50%; bottom: -2%; transform: translateX(-50%); color: var(--vx-success); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .vx-web__lines path { animation: none; } }
+@container (max-width: 479px) {
+  .vx-web { aspect-ratio: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding-top: 26px; }
+  .vx-web__lines { display: none; }
+  .vx-web__bubble { position: static; transform: none; font-size: 13px; }
+  .vx-web__label--now { top: 0; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .vx-web__app { position: static; order: 2; flex-basis: 100%; width: auto !important; height: auto !important; margin-top: 12px; }
+  .vx-web__app li, .vx-web__bar { font-size: 14px; }
+  .vx-web__label--after { position: static; order: 1; flex-basis: 100%; transform: none; text-align: center; margin-top: 18px; }
+  .vx-web__label--after::before { content: "↓"; display: block; font-size: 20px; line-height: 1; margin-bottom: 6px; }
+}

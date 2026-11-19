@@ -24,6 +24,7 @@ import CatalogPrice from "../components/CatalogPrice";
 import JotformReviewWidget from "../components/JotformReviewWidget";
 import Hero from "../components/home/Hero";
 import AppMock from "../components/home/AppMock";
+import ToolsToApp from "../components/home/ToolsToApp";
 import ClientCasesSection from "../components/home/ClientCasesSection";
 import { CONTACT } from "../constants/contact";
 import { createBreadcrumbSchema, createFAQSchema } from "../utils/schema";
@@ -112,26 +113,7 @@ export default function Home({ initialCases = null }) {
                 </ul>
                 <a className="vx-btn vx-btn--dark" href={SCAN_URL}>Bespreek jouw situatie <ArrowRight aria-hidden="true" /></a>
               </div>
-              <div className="vx-compare vx-compare--photo" aria-label="Voor en na">
-                <figure className="vx-compare__card">
-                  <img src="/images/oplossing-nu.webp" alt="Rommelig bureau vol papieren, geeltjes, uitgeprinte spreadsheets en een rekenmachine" width="744" height="929" loading="lazy" decoding="async" />
-                  <figcaption className="vx-compare__overlay">
-                    <h3 className="vx-compare__title">Nu</h3>
-                    <ul className="vx-compare__chips">
-                      {["Excel", "Mail", "Boekhoudpakket", "Planningstool", "Notities", "WhatsApp"].map((tool) => <li key={tool}>{tool}</li>)}
-                    </ul>
-                  </figcaption>
-                </figure>
-                <div className="vx-compare__arrow" aria-hidden="true"><ArrowRight /></div>
-                <figure className="vx-compare__card vx-compare__card--after">
-                  <img src="/images/oplossing-straks.webp" alt="Ondernemer en medewerker kijken tevreden samen naar een tablet" width="954" height="712" loading="lazy" decoding="async" />
-                  <figcaption className="vx-compare__overlay">
-                    <h3 className="vx-compare__title">Straks</h3>
-                    <p className="vx-compare__one"><LayoutDashboard aria-hidden="true" /> Eén app op maat</p>
-                    <p className="vx-compare__sub">Met rollen, rechten en instructies</p>
-                  </figcaption>
-                </figure>
-              </div>
+              <ToolsToApp />
             </div>
           </section>
 
