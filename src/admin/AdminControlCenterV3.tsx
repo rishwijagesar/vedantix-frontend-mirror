@@ -28,12 +28,15 @@ import {
   getOverview,
   listCustomers,
   listDomains,
+  listMonitoringAlerts,
   listWebsites,
   type Customer,
   type Domain,
+  type MonitoringAlert,
   type Overview,
   type Website,
 } from "./control-center-data";
+import { checkLabel, statusLabel } from "./status-labels";
 import { scanDomainHealth, type DomainHealthCheck } from "./domain-health";
 import {
   cancelStaffInvite,
@@ -195,7 +198,7 @@ function Dashboard({ overview, customers, domains, websites, loading }: { overvi
         <dl className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div><dt className="text-xs text-muted-foreground">Automatische monitoring</dt><dd className="mt-1 text-sm font-semibold"><Badge tone="success">ACTIEF</Badge></dd></div>
           <div><dt className="text-xs text-muted-foreground">Laatste run</dt><dd className="mt-1 text-sm font-semibold">{overview.lastMonitoringAt ? new Date(overview.lastMonitoringAt).toLocaleString("nl-NL") : "Nog geen run"}</dd></div>
-          <div><dt className="text-xs text-muted-foreground">Status</dt><dd className="mt-1 break-words text-sm font-semibold">{overview.lastMonitoringStatus || "UNKNOWN"}</dd></div>
+          <div><dt className="text-xs text-muted-foreground">Status</dt><dd className="mt-1 break-words text-sm font-semibold">{statusLabel(overview.lastMonitoringStatus)}{overview.checksNeedingAttention ? <span className="block text-xs font-normal text-muted-foreground">{overview.checksNeedingAttention} open melding(en), zie Monitoring</span> : null}</dd></div>
           <div><dt className="text-xs text-muted-foreground">Planning</dt><dd className="mt-1 text-sm font-semibold">Dagelijks automatisch</dd></div>
         </dl>
       </section>
@@ -229,6 +232,10 @@ function CustomersModule({ customers, showForm, onDone }: { customers: Customer[
 
 function DomainsModule({ domains, customers, showForm, onDone }: { domains: Domain[]; customers: Customer[]; showForm: boolean; onDone: () => Promise<void> }) {
   const [busy, setBusy] = useState(false);
+  const [alerts, setAlerts] = useState<MonitoringAlert[]>([]);
+  useEffect(() => { listMonitoringAlerts().then(setAlerts).catch(() => setAlerts([])); }, [domains]);
+  // De reden achter een status: de open meldingen van dat domein, in gewone woorden.
+  const reasons = (domainId: string) => alerts.filter((alert) => alert.domain_id === domainId && alert.status !== "RESOLVED").map((alert) => alert.message);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
@@ -241,7 +248,7 @@ function DomainsModule({ domains, customers, showForm, onDone }: { domains: Doma
     } finally { setBusy(false); }
   }
   const customerName = (id: string) => customers.find((customer) => customer.id === id)?.company_name || "Onbekend";
-  return <div className="space-y-5">{showForm ? <Panel title="Domein toevoegen"><form className="grid gap-4 md:grid-cols-2" onSubmit={submit}><label className="text-sm font-medium">Klant<select name="customer_id" required className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"><option value="">Selecteer klant</option>{customers.map((customer) => <option value={customer.id} key={customer.id}>{customer.company_name}</option>)}</select></label><Input name="domain_name" label="Domein" placeholder="voorbeeld.nl" required /><Input name="registrar" label="Registrar" /><Input name="dns_provider" label="DNS-provider" /><Input name="email_provider" label="E-mailprovider" placeholder="Migadu" /><div className="flex items-end"><button disabled={busy} className="w-full rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">{busy ? "Opslaan…" : "Domein opslaan"}</button></div></form></Panel> : null}<Panel title="Domeinen" subtitle={`${domains.length} domein(en)`}>{domains.length === 0 ? <Empty>Nog geen domeinen.</Empty> : <div className="grid gap-3">{domains.map((domain) => <div key={domain.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><strong className="text-sm">{domain.domain_name}</strong><span className="block text-xs text-slate-400">{customerName(domain.customer_id)} · {domain.dns_provider || "DNS onbekend"} · {domain.email_provider || "mail onbekend"}</span></div><div className="flex items-center gap-2"><Badge tone={domain.status === "HEALTHY" ? "success" : domain.status === "WARNING" ? "warning" : domain.status === "ERROR" ? "danger" : "neutral"}>{domain.status}</Badge><button type="button" onClick={async () => { if (confirm(`${domain.domain_name} verwijderen?`)) { await deleteDomain(domain.id); await onDone(); } }} className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600"><Trash2 size={15} /></button></div></div>)}</div>}</Panel></div>;
+  return <div className="space-y-5">{showForm ? <Panel title="Domein toevoegen"><form className="grid gap-4 md:grid-cols-2" onSubmit={submit}><label className="text-sm font-medium">Klant<select name="customer_id" required className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"><option value="">Selecteer klant</option>{customers.map((customer) => <option value={customer.id} key={customer.id}>{customer.company_name}</option>)}</select></label><Input name="domain_name" label="Domein" placeholder="voorbeeld.nl" required /><Input name="registrar" label="Registrar" /><Input name="dns_provider" label="DNS-provider" /><Input name="email_provider" label="E-mailprovider" placeholder="Migadu" /><div className="flex items-end"><button disabled={busy} className="w-full rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">{busy ? "Opslaan…" : "Domein opslaan"}</button></div></form></Panel> : null}<Panel title="Domeinen" subtitle={`${domains.length} domein(en)`}>{domains.length === 0 ? <Empty>Nog geen domeinen.</Empty> : <div className="grid gap-3">{domains.map((domain) => <div key={domain.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><strong className="text-sm">{domain.domain_name}</strong><span className="block text-xs text-slate-400">{customerName(domain.customer_id)} · {domain.dns_provider || "DNS onbekend"} · {domain.email_provider || "mail onbekend"}</span>{domain.status !== "HEALTHY" && reasons(domain.id).length ? <span className="mt-1 block text-xs text-red-700">{reasons(domain.id).join(" · ")}</span> : null}</div><div className="flex items-center gap-2"><Badge tone={domain.status === "HEALTHY" ? "success" : domain.status === "WARNING" ? "warning" : domain.status === "ERROR" ? "danger" : "neutral"}>{statusLabel(domain.status)}</Badge><button type="button" onClick={async () => { if (confirm(`${domain.domain_name} verwijderen?`)) { await deleteDomain(domain.id); await onDone(); } }} className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600"><Trash2 size={15} /></button></div></div>)}</div>}</Panel></div>;
 }
 
 function snapshotChecks(domain: Domain): DomainHealthCheck[] {
@@ -277,10 +284,10 @@ function HealthModule({ domains, onChanged }: { domains: Domain[]; onChanged: ()
           <Panel key={domain.id} title={domain.domain_name} subtitle={`${domain.email_provider || "Geen mailprovider"} · laatste scan ${domain.last_dns_snapshot_at ? new Date(domain.last_dns_snapshot_at).toLocaleString("nl-NL") : "nog niet uitgevoerd"}`}>
             <p className="mb-3 text-xs text-muted-foreground">Domeinen worden ook dagelijks automatisch gecontroleerd.</p>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <Badge tone={domain.status === "HEALTHY" ? "success" : domain.status === "WARNING" ? "warning" : domain.status === "ERROR" ? "danger" : "neutral"}>{domain.status}</Badge>
+              <Badge tone={domain.status === "HEALTHY" ? "success" : domain.status === "WARNING" ? "warning" : domain.status === "ERROR" ? "danger" : "neutral"}>{statusLabel(domain.status)}</Badge>
               <button type="button" onClick={() => scan(domain)} disabled={scanning === domain.id} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"><ScanLine size={15} /> {scanning === domain.id ? "Scannen…" : "Scan opnieuw"}</button>
             </div>
-            {checks.length === 0 ? <Empty>Nog geen automatische healthscan opgeslagen.</Empty> : <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{checks.map((check) => <div key={check.check_type} className="rounded-xl border border-slate-100 p-4"><div className="mb-2 flex items-center justify-between"><strong className="text-sm">{check.check_type}</strong><Badge tone={check.status === "PASS" ? "success" : check.status === "WARNING" || check.status === "UNKNOWN" ? "warning" : "danger"}>{check.status}</Badge></div><p className="text-xs leading-5 text-slate-500">{check.summary}</p></div>)}</div>}
+            {checks.length === 0 ? <Empty>Nog geen automatische healthscan opgeslagen.</Empty> : <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{checks.map((check) => <div key={check.check_type} className="rounded-xl border border-slate-100 p-4"><div className="mb-2 flex items-center justify-between"><strong className="text-sm">{checkLabel(check.check_type)}</strong><Badge tone={check.status === "PASS" ? "success" : check.status === "WARNING" || check.status === "UNKNOWN" ? "warning" : "danger"}>{statusLabel(check.status)}</Badge></div><p className="text-xs leading-5 text-slate-500">{check.summary}</p></div>)}</div>}
           </Panel>
         );
       })}

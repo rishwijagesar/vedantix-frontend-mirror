@@ -108,16 +108,16 @@ export function SubscriptionsModule({ customers }: { customers: Customer[] }) {
   useEffect(() => { load(); }, []);
 
   const active = subscriptions.filter((subscription) => subscription.status === "ACTIVE");
-  const monthly = active.filter((subscription) => subscription.billing_type === "MONTHLY").reduce((sum, subscription) => sum + estimateSubscriptionInvoice(subscription, items).totalInclVat, 0);
-  const yearly = active.filter((subscription) => subscription.billing_type === "YEARLY").reduce((sum, subscription) => sum + estimateSubscriptionInvoice(subscription, items).totalInclVat, 0);
+  const monthly = active.filter((subscription) => subscription.billing_type === "MONTHLY").reduce((sum, subscription) => sum + estimateSubscriptionInvoice(subscription, items).totalExVat, 0);
+  const yearly = active.filter((subscription) => subscription.billing_type === "YEARLY").reduce((sum, subscription) => sum + estimateSubscriptionInvoice(subscription, items).totalExVat, 0);
   const inThirtyDays = new Date(); inThirtyDays.setDate(inThirtyDays.getDate() + 30);
   const dueSoon = active.filter((subscription) => new Date(`${subscription.next_invoice_date}T12:00:00`) <= inThirtyDays).length;
 
   return <div className="space-y-5">
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <Metric label="Actieve abonnementen" value={String(active.length)} caption="Maand en jaar samen"/>
-      <Metric label="Maandelijks" value={`${money.format(monthly)} p/m`} caption="Geschatte volgende termijnen"/>
-      <Metric label="Jaarlijks" value={`${money.format(yearly)} p/j`} caption="Geschatte volgende termijnen"/>
+      <Metric label="Maandelijks" value={`${money.format(monthly)} p/m`} caption="Excl. btw, geschatte volgende termijnen"/>
+      <Metric label="Jaarlijks" value={`${money.format(yearly)} p/j`} caption="Excl. btw, geschatte volgende termijnen"/>
       <Metric label="Binnen 30 dagen" value={String(dueSoon)} caption="Volgende factuurmomenten"/>
     </section>
 
@@ -162,7 +162,7 @@ function SubscriptionCard({ subscription, items, customer, onChanged }: { subscr
   return <article className="rounded-2xl border border-slate-200 p-4">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div><div className="flex flex-wrap items-center gap-2"><strong>{subscription.subscription_number}</strong><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${subscription.status === "ACTIVE" ? "bg-emerald-50 text-emerald-700" : subscription.status === "PAUSED" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-500"}`}>{statusLabel(subscription.status)}</span><span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">{subscription.billing_type === "MONTHLY" ? "Maandelijks" : "Jaarlijks"}</span></div><span className="mt-1 block text-sm text-slate-500">{customer?.company_name || "Klant"} · gestart {dateNl(subscription.start_date)}</span></div>
-      <div className="text-right"><span className="block text-xs text-slate-400">Volgende factuur</span><strong className="text-xl">{money.format(estimate.totalInclVat)}{subscription.billing_type === "MONTHLY" ? " p/m" : " p/j"}</strong>{estimate.totalInclVat !== standardEstimate.totalInclVat ? <span className="block text-xs text-slate-400">daarna {money.format(standardEstimate.totalInclVat)}</span> : null}</div>
+      <div className="text-right"><span className="block text-xs text-slate-400">Volgende factuur</span><strong className="text-xl">{money.format(estimate.totalExVat)}{subscription.billing_type === "MONTHLY" ? " p/m" : " p/j"}</strong><span className="block text-xs text-slate-400">excl. btw · {money.format(estimate.totalInclVat)} incl.</span>{estimate.totalExVat !== standardEstimate.totalExVat ? <span className="block text-xs text-slate-400">daarna {money.format(standardEstimate.totalExVat)} excl. btw</span> : null}</div>
     </div>
 
     <details className="mt-4 rounded-xl bg-slate-50 p-3"><summary className="cursor-pointer text-sm font-semibold text-slate-700">{ownItems.length} abonnementregel(s)</summary><div className="mt-3 space-y-2">{ownItems.map((item) => <div key={item.id} className="flex justify-between gap-4 text-sm"><span>{item.description} × {Number(item.quantity).toLocaleString("nl-NL")}</span><strong>{money.format(Number(item.line_total_incl_vat))}</strong></div>)}</div></details>

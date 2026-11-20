@@ -5,7 +5,7 @@ type Mode = "probe" | "deliver";
 type NotificationRow = {
   id: string;
   alert_id: string | null;
-  event_type: "ALERT_OPENED" | "ALERT_RESOLVED";
+  event_type: "ALERT_OPENED" | "ALERT_RESOLVED" | "CONTACT_ENQUIRY";
   channel: string;
   status: "QUEUED" | "SENT" | "FAILED" | "SKIPPED";
   payload: Record<string, unknown>;
@@ -104,7 +104,18 @@ async function smtpProbe() {
   return capabilities;
 }
 
-async function sendSmtpMail(args: { user: string; password: string; from: string; recipients: string[]; subject: string; body: string }) {
+// Header values must never contain line breaks (header injection) and non-ASCII needs RFC 2047.
+function headerValue(value: string) {
+  const flat = value.replace(/[\r\n]+/g, " ").trim();
+  return /^[\x20-\x7e]*$/.test(flat) ? flat : `=?UTF-8?B?${utf8Base64(flat)}?=`;
+}
+
+function safeEmail(value: unknown) {
+  const email = String(value ?? "").trim();
+  return /^[^\s@<>,;"]+@[^\s@<>,;"]+\.[^\s@<>,;"]{2,}$/.test(email) ? email : null;
+}
+
+async function sendSmtpMail(args: { user: string; password: string; from: string; fromName?: string; replyTo?: string | null; recipients: string[]; subject: string; body: string }) {
   const { smtp } = await connectSmtp();
   try {
     const authPayload = utf8Base64(`\u0000${args.user}\u0000${args.password}`);
@@ -115,9 +126,10 @@ async function sendSmtpMail(args: { user: string; password: string; from: string
 
     const messageId = `<${crypto.randomUUID()}@admin.vedantix.nl>`;
     const data = [
-      `From: Vedantix Monitoring <${args.from}>`,
+      `From: ${headerValue(args.fromName ?? "Vedantix Monitoring")} <${args.from}>`,
       `To: ${args.recipients.join(", ")}`,
-      `Subject: ${args.subject}`,
+      ...(args.replyTo ? [`Reply-To: ${args.replyTo}`] : []),
+      `Subject: ${headerValue(args.subject)}`,
       `Date: ${new Date().toUTCString()}`,
       `Message-ID: ${messageId}`,
       "MIME-Version: 1.0",
@@ -134,6 +146,32 @@ async function sendSmtpMail(args: { user: string; password: string; from: string
   } finally {
     smtp.close();
   }
+}
+
+function enquiryText(notification: NotificationRow) {
+  const p = notification.payload ?? {};
+  const text = (key: string) => String(p[key] ?? "").trim();
+  const name = text("name") || "Onbekend";
+  const company = text("company_name");
+  const helpType = text("help_type");
+  const subject = `Nieuwe aanvraag: ${name}${company ? ` (${company})` : ""}${helpType ? ` - ${helpType}` : ""}`;
+  const body = [
+    "Er is een nieuwe aanvraag binnengekomen via vedantix.nl.",
+    "",
+    `Naam: ${name}`,
+    company ? `Bedrijf: ${company}` : null,
+    `E-mail: ${text("email")}`,
+    text("phone") ? `Telefoon: ${text("phone")}` : null,
+    helpType ? `Onderwerp: ${helpType}` : null,
+    text("source_path") ? `Bron: ${text("source_path")}` : null,
+    "",
+    "Bericht:",
+    text("message"),
+    "",
+    "Beantwoord deze mail om direct te reageren aan de aanvrager.",
+    "De aanvraag staat ook als lead in het Control Center: https://vedantix.nl/admin/leads",
+  ].filter((line) => line !== null).join("\n");
+  return { subject, body, replyTo: safeEmail(p["email"]) };
 }
 
 function notificationText(notification: NotificationRow, domainName: string) {
@@ -212,6 +250,20 @@ Deno.serve(async (request: Request) => {
   const results: Array<Record<string, unknown>> = [];
 
   for (const notification of rows) {
+    if (notification.event_type === "CONTACT_ENQUIRY") {
+      const { subject, body: emailBody, replyTo } = enquiryText(notification);
+      try {
+        await sendSmtpMail({ user: smtpUser, password: smtpPassword, from: smtpFrom, fromName: "Vedantix website", replyTo, recipients, subject, body: emailBody });
+        await admin.from("monitoring_notifications").update({ channel: "MIGADU_SMTP", status: "SENT", processed_at: new Date().toISOString(), error_message: null }).eq("id", notification.id);
+        results.push({ id: notification.id, status: "SENT", type: "CONTACT_ENQUIRY" });
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        await admin.from("monitoring_notifications").update({ channel: "MIGADU_SMTP", status: "FAILED", processed_at: new Date().toISOString(), error_message: errorMessage.slice(0, 1000) }).eq("id", notification.id);
+        results.push({ id: notification.id, status: "FAILED", type: "CONTACT_ENQUIRY", error: errorMessage });
+      }
+      continue;
+    }
+
     const domainId = String(notification.payload?.domain_id ?? "");
     const { data: domain } = domainId
       ? await admin.from("domains").select("domain_name").eq("id", domainId).maybeSingle()

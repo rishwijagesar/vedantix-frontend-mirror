@@ -435,6 +435,6 @@ export async function getBillingDashboard() {
   const openQuotes = quotes.filter((q) => ["DRAFT", "SENT"].includes(q.status)).length;
   const outstanding = invoices.filter((i) => ["FINALIZED", "SENT", "PARTIALLY_PAID", "OVERDUE"].includes(i.status)).reduce((sum, i) => sum + Math.max(0, Number(i.total_incl_vat) - Number(i.amount_paid)), 0);
   const overdue = invoices.filter((i) => i.due_date && new Date(i.due_date) < now && !["PAID", "CREDITED"].includes(i.status)).reduce((sum, i) => sum + Math.max(0, Number(i.total_incl_vat) - Number(i.amount_paid)), 0);
-  const monthRevenue = invoices.filter((i) => i.finalized_at && new Date(i.finalized_at) >= monthStart && !["DRAFT", "CREDITED"].includes(i.status)).reduce((sum, i) => sum + Number(i.total_incl_vat), 0);
+  const monthRevenue = invoices.filter((i) => i.finalized_at && new Date(i.finalized_at) >= monthStart && !["DRAFT", "CREDITED"].includes(i.status)).reduce((sum, i) => sum + Number(i.total_ex_vat), 0);
   return { openQuotes, outstanding, overdue, monthRevenue };
 }

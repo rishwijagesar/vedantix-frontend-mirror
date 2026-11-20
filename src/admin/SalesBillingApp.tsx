@@ -57,7 +57,7 @@ const titles: Record<Section, [string, string]> = {
   administration: ["Administratie", "Kosten, aankopen, omzet en bewijsstukken per kwartaal. Met overzichtelijke controles voor je boekhouding."],
   accounting: ["e-Boekhouden", "Verbind je administratie, kies boekhoudrekeningen en controleer de gegevens voor synchronisatie."],
   email: ["E-mail & herinneringen", "Verstuur offertes en facturen via Migadu en beheer automatische betaalherinneringen."],
-  production: ["Systeemcontrole", "Valideer de AWS serverless productie-release voordat klantcommunicatie en betalingen actief zijn."],
+  production: ["Systeemcontrole", "Zie of facturen per e-mail, herinneringen en online betalen aan staan."],
   subscriptions: ["Abonnementen", "Beheer maand- en jaarabonnementen en hun automatische factuurmomenten."],
   catalog: ["Catalogus & prijzen", "Beheer pakketten en diensten met prijzen excl. btw; de incl.-btw prijs wordt direct herberekend."],
   customers: ["Factuurgegevens klanten", "Factuur-, offerte- en contractgegevens per klant, inclusief IBAN."],
@@ -118,7 +118,7 @@ export default function SalesBillingApp() {
                   <DashboardAction icon={ReceiptText} title="Administratie" description="Kosten, aankopen, kwartaalcijfers en bewijsstukken beheren." onClick={() => setSection("administration")} />
                   <DashboardAction icon={Link2} title="e-Boekhouden" description="Account verbinden en boekhoudrekeningen instellen." onClick={() => setSection("accounting")} />
                   <DashboardAction icon={Mail} title="E-mail" description="Offertes, facturen en betaalherinneringen via Migadu." onClick={() => setSection("email")} />
-                  <DashboardAction icon={ShieldCheck} title="Systeemcontrole" description="Controleer AWS release en commerce-activatie." onClick={() => setSection("production")} />
+                  <DashboardAction icon={ShieldCheck} title="Systeemcontrole" description="Staan facturen per e-mail, herinneringen en betalingen aan?" onClick={() => setSection("production")} />
                   <DashboardAction icon={Repeat2} title="Abonnementen" description="Maand- en jaarfacturen automatisch laten ontstaan." onClick={() => setSection("subscriptions")} />
                   <DashboardAction icon={Link2} title="Offertelinks" description="Deel offertes veilig en registreer akkoord of afwijzing." onClick={() => setSection("quote-links")} />
                   <DashboardAction icon={Link2} title="Website previews" description="Maak tijdelijke, intrekbare klantlinks voor websitepreviews." onClick={() => window.location.assign("/admin/previews")} />

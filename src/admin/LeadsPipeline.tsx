@@ -116,7 +116,7 @@ export default function LeadsPipeline() {
         <div className="mb-7">
           <span className="text-xs font-semibold uppercase tracking-[.16em] text-slate-400">Sales</span>
           <h1 className="mt-1 text-3xl font-bold tracking-tight">Leads & opvolging</h1>
-          <p className="mt-2 max-w-3xl text-sm text-slate-500">Nieuwe Online Groei Audits verschijnen automatisch als lead. Beheer opvolging, gesprekken en offertes vanuit één pipeline.</p>
+          <p className="mt-2 max-w-3xl text-sm text-slate-500">Aanvragen via het contactformulier en nieuwe Online Groei Audits verschijnen automatisch als lead. Beheer opvolging, gesprekken en offertes vanuit één pipeline.</p>
         </div>
 
         {error ? <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}

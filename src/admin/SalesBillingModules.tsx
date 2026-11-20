@@ -109,9 +109,9 @@ export function BillingDashboardCards() {
   useEffect(() => { getBillingDashboard().then(setData).catch(() => setData(null)); }, []);
   const cards = [
     ["Open offertes", data?.openQuotes ?? "—", FileText, "Concept en verzonden"],
-    ["Openstaand", data ? money.format(data.outstanding) : "—", CircleDollarSign, "Nog te ontvangen"],
-    ["Achterstallig", data ? money.format(data.overdue) : "—", CreditCard, "Vervaldatum verstreken"],
-    ["Gefactureerd deze maand", data ? money.format(data.monthRevenue) : "—", ReceiptText, "Gefinaliseerde facturen"],
+    ["Openstaand", data ? money.format(data.outstanding) : "—", CircleDollarSign, "Nog te ontvangen, incl. btw"],
+    ["Achterstallig", data ? money.format(data.overdue) : "—", CreditCard, "Vervaldatum verstreken, incl. btw"],
+    ["Gefactureerd deze maand", data ? money.format(data.monthRevenue) : "—", ReceiptText, "Gefinaliseerde facturen, excl. btw"],
   ] as const;
   return <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{cards.map(([label, value, Icon, caption]) => <article key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100"><Icon size={18} /></div><p className="text-sm text-slate-500">{label}</p><strong className="mt-1 block text-2xl font-bold">{value}</strong><span className="mt-1 block text-xs text-slate-400">{caption}</span></article>)}</section>;
 }

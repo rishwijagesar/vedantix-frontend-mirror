@@ -37,7 +37,7 @@ export type AutomationRun = {
 export type MonitoringNotification = {
   id: string;
   alert_id: string | null;
-  event_type: "ALERT_OPENED" | "ALERT_RESOLVED";
+  event_type: "ALERT_OPENED" | "ALERT_RESOLVED" | "CONTACT_ENQUIRY";
   channel: string;
   status: NotificationStatus;
   payload: Record<string, unknown>;

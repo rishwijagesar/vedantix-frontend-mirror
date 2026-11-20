@@ -179,9 +179,9 @@ export function PaymentsModule({ customers }: { customers: Customer[] }) {
   const visibleInvoices = invoices.filter((invoice) => invoice.status !== "DRAFT");
   return <div className="space-y-5">
     <section className="grid gap-4 sm:grid-cols-3">
-      <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><CircleDollarSign className="mb-3" size={19}/><span className="text-sm text-slate-500">Ontvangen</span><strong className="mt-1 block text-2xl">{money.format(stats.received)}</strong></article>
-      <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><WalletCards className="mb-3" size={19}/><span className="text-sm text-slate-500">Openstaand</span><strong className="mt-1 block text-2xl">{money.format(stats.outstanding)}</strong></article>
-      <article className="rounded-2xl border border-red-200 bg-white p-5 shadow-sm"><CheckCircle2 className="mb-3 text-red-600" size={19}/><span className="text-sm text-slate-500">Achterstallig</span><strong className="mt-1 block text-2xl text-red-700">{money.format(stats.overdue)}</strong><span className="text-xs text-slate-400">{stats.overdueCount} factuur/facturen</span></article>
+      <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><CircleDollarSign className="mb-3" size={19}/><span className="text-sm text-slate-500">Ontvangen (incl. btw)</span><strong className="mt-1 block text-2xl">{money.format(stats.received)}</strong></article>
+      <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><WalletCards className="mb-3" size={19}/><span className="text-sm text-slate-500">Openstaand (incl. btw)</span><strong className="mt-1 block text-2xl">{money.format(stats.outstanding)}</strong></article>
+      <article className="rounded-2xl border border-red-200 bg-white p-5 shadow-sm"><CheckCircle2 className="mb-3 text-red-600" size={19}/><span className="text-sm text-slate-500">Achterstallig (incl. btw)</span><strong className="mt-1 block text-2xl text-red-700">{money.format(stats.overdue)}</strong><span className="text-xs text-slate-400">{stats.overdueCount} factuur/facturen</span></article>
     </section>
 
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

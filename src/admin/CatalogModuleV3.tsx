@@ -41,6 +41,24 @@ async function listCatalog(): Promise<CatalogProduct[]> {
   })) as CatalogProduct[];
 }
 
+function metaNumber(product: CatalogProduct, key: string) {
+  const value = Number(product.metadata?.[key]);
+  return Number.isFinite(value) ? value : 0;
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  WEBSITE_PLAN: "Websiteabonnementen",
+  WEBSITE: "Websitepakketten",
+  AI: "AI en automatisering",
+  APP: "Apps en webapps",
+  INTEGRATION: "Koppelingen",
+  HOSTING: "Hosting",
+  Mail: "E-mail",
+  GROWTH: "Groeipakketten",
+  CARE: "Beheer",
+  ADDON: "Uitbreidingen",
+};
+
 function ErrorBox({ error }: { error: string | null }) {
   return error ? <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null;
 }
@@ -103,6 +121,10 @@ function CatalogRow({ product, onChanged, onDeleted, onError }: { product: Catal
   const [billingType, setBillingType] = useState<BillingType>(product.billing_type);
   const [active, setActive] = useState(product.active);
   const [websitePublic, setWebsitePublic] = useState(product.metadata?.["public_package"] === true);
+  const isPlan = product.category === "WEBSITE_PLAN" || product.metadata?.["setup_fee"] !== undefined;
+  const [setupFee, setSetupFee] = useState(metaNumber(product, "setup_fee"));
+  const [minTerm, setMinTerm] = useState(metaNumber(product, "min_term_months"));
+  const [hours, setHours] = useState(metaNumber(product, "included_hours"));
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -113,10 +135,14 @@ function CatalogRow({ product, onChanged, onDeleted, onError }: { product: Catal
     setBillingType(product.billing_type);
     setActive(product.active);
     setWebsitePublic(product.metadata?.["public_package"] === true);
+    setSetupFee(metaNumber(product, "setup_fee"));
+    setMinTerm(metaNumber(product, "min_term_months"));
+    setHours(metaNumber(product, "included_hours"));
   }, [product]);
 
   const calculatedInclVat = useMemo(() => inclVat(priceExVat, vatRate), [priceExVat, vatRate]);
-  const dirty = name !== product.name || priceExVat !== product.price_ex_vat || vatRate !== product.vat_rate || billingType !== product.billing_type || active !== product.active || websitePublic !== (product.metadata?.["public_package"] === true);
+  const dirty = name !== product.name || priceExVat !== product.price_ex_vat || vatRate !== product.vat_rate || billingType !== product.billing_type || active !== product.active || websitePublic !== (product.metadata?.["public_package"] === true)
+    || (isPlan && (setupFee !== metaNumber(product, "setup_fee") || minTerm !== metaNumber(product, "min_term_months") || hours !== metaNumber(product, "included_hours")));
 
   async function save() {
     setSaving(true);
@@ -128,7 +154,11 @@ function CatalogRow({ product, onChanged, onDeleted, onError }: { product: Catal
         vat_rate: vatRate,
         billing_type: billingType,
         active,
-        metadata: { ...product.metadata, public_package: websitePublic },
+        metadata: {
+          ...product.metadata,
+          public_package: websitePublic,
+          ...(isPlan ? { setup_fee: setupFee, min_term_months: minTerm, included_hours: hours } : {}),
+        },
       }).eq("id", product.id).select("*").single();
       fail(error);
       onChanged({
@@ -167,6 +197,11 @@ function CatalogRow({ product, onChanged, onDeleted, onError }: { product: Catal
     <label className="text-sm font-medium">Type<select value={billingType} onChange={(e) => setBillingType(e.target.value as BillingType)} className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-2 py-2.5"><option value="ONE_TIME">Eenmalig</option><option value="MONTHLY">Maand</option><option value="YEARLY">Jaar</option></select></label>
     <div className="space-y-2 pb-2 text-xs text-slate-600"><label className="block"><input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} className="mr-1"/>Actief</label><label className="block"><input type="checkbox" checked={websitePublic} onChange={(e) => setWebsitePublic(e.target.checked)} className="mr-1"/>Op website</label></div>
     <div className="flex min-w-36 flex-col gap-1.5"><button type="button" disabled={!dirty || saving} onClick={() => void save()} className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 py-2.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"><Save size={14}/>{saving ? "Opslaan…" : saved ? "Opgeslagen" : "Opslaan"}</button><button type="button" onClick={() => void remove()} className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-100 px-3 py-2 text-xs font-semibold text-red-600"><Trash2 size={14}/>Verwijderen</button></div>
+    {isPlan ? <div className="grid gap-3 border-t border-slate-100 pt-3 md:col-span-7 md:grid-cols-3">
+      <label className="text-sm font-medium">Opstartkosten excl. btw<input type="number" min="0" step="1" value={setupFee} onChange={(e) => setSetupFee(Number(e.target.value))} className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"/></label>
+      <label className="text-sm font-medium">Minimale looptijd (maanden)<input type="number" min="0" step="1" value={minTerm} onChange={(e) => setMinTerm(Number(e.target.value))} className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"/></label>
+      <label className="text-sm font-medium">Aanpassingen per maand (uren)<input type="number" min="0" step="0.25" value={hours} onChange={(e) => setHours(Number(e.target.value))} className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5"/></label>
+    </div> : null}
   </div>;
 }
 
@@ -186,12 +221,19 @@ export default function CatalogModuleV3() {
 
   useEffect(() => { void load(); }, []);
 
+  // Groepeer per soort, in de volgorde waarin de soorten in de catalogus voorkomen.
+  const groups = useMemo(() => {
+    const map = new Map<string, CatalogProduct[]>();
+    for (const product of products) map.set(product.category, [...(map.get(product.category) ?? []), product]);
+    return [...map.entries()];
+  }, [products]);
+
   return <div className="space-y-5">
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Productcatalogus</h2><p className="mt-1 text-sm text-slate-500">Wijzig de prijs excl. btw of het BTW-percentage. De prijs incl. btw wordt direct opnieuw berekend; pas met Opslaan wordt de wijziging definitief. Actieve producten met “Op website” verschijnen automatisch op de prijzenpagina, inclusief de actuele btw-bedragen.</p></div><button type="button" onClick={() => setShowNew((value) => !value)} className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">Nieuw product</button></div>
       <ErrorBox error={error}/>
       {showNew ? <NewProductForm onCancel={() => setShowNew(false)} onDone={async () => { setShowNew(false); await load(); }}/> : null}
-      <div className="space-y-3">{products.map((product) => <CatalogRow key={product.id} product={product} onChanged={(next) => setProducts((current) => current.map((item) => item.id === next.id ? next : item))} onDeleted={(id) => setProducts((current) => current.filter((item) => item.id !== id))} onError={setError}/>)}</div>
+      <div className="space-y-7">{groups.map(([category, items]) => <div key={category}><h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">{CATEGORY_LABELS[category] ?? category} <span className="font-normal normal-case text-slate-400">({items.length})</span></h3><div className="space-y-3">{items.map((product) => <CatalogRow key={product.id} product={product} onChanged={(next) => setProducts((current) => current.map((item) => item.id === next.id ? next : item))} onDeleted={(id) => setProducts((current) => current.filter((item) => item.id !== id))} onError={setError}/>)}</div></div>)}</div>
     </section>
   </div>;
 }

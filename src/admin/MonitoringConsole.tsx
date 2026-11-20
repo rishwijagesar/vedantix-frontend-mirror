@@ -1,4 +1,5 @@
 import AdminLayout from "./AdminLayout";
+import { checkLabel, eventLabel, statusLabel } from "./status-labels";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
@@ -155,7 +156,7 @@ export default function MonitoringConsole({ embedded = false }: { embedded?: boo
       await updateDeliveryEnabled(!delivery.enabled);
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Delivery-instelling kon niet worden gewijzigd.");
+      setError(err instanceof Error ? err.message : "De instelling voor e-mailmeldingen kon niet worden gewijzigd.");
     } finally {
       setBusyId(null);
     }
@@ -172,27 +173,27 @@ export default function MonitoringConsole({ embedded = false }: { embedded?: boo
           <div className="mb-7">
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Vedantix Operations</span>
             <h1 className="mt-1 text-3xl font-bold tracking-tight">Monitoring</h1>
-            <p className="mt-2 max-w-3xl text-sm text-slate-500">Autonome domein-, e-mail- en websitecontrole met audit trail, alerts en notification delivery.</p>
+            <p className="mt-2 max-w-3xl text-sm text-slate-500">Dagelijkse controle van domeinen, e-mail en websites, met meldingen per e-mail.</p>
           </div>
         )}
 
         {error ? <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
         <section className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <SummaryCard label="Actieve alerts" value={loading ? "—" : activeAlerts.length} icon={CircleAlert} caption="Open of acknowledged" tone={activeAlerts.length > 0 ? "warning" : "success"} />
-          <SummaryCard label="Critical" value={loading ? "—" : criticalAlerts.length} icon={AlertTriangle} caption="Directe aandacht vereist" tone={criticalAlerts.length > 0 ? "danger" : "success"} />
-          <SummaryCard label="Laatste monitor" value={latestRun?.status ?? (loading ? "—" : "GEEN RUN")} icon={Activity} caption={latestRun ? formatDate(latestRun.finished_at || latestRun.created_at) : "Nog geen run"} tone={latestRun?.status === "FAILED" ? "danger" : latestRun?.status === "SUCCEEDED" ? "success" : "neutral"} />
-          <SummaryCard label="Notificaties" value={loading ? "—" : queuedNotifications} icon={Mail} caption="Queued voor delivery" tone={queuedNotifications > 0 ? "warning" : "success"} />
+          <SummaryCard label="Open meldingen" value={loading ? "—" : activeAlerts.length} icon={CircleAlert} caption="Open of bevestigd" tone={activeAlerts.length > 0 ? "warning" : "success"} />
+          <SummaryCard label="Kritiek" value={loading ? "—" : criticalAlerts.length} icon={AlertTriangle} caption="Directe aandacht vereist" tone={criticalAlerts.length > 0 ? "danger" : "success"} />
+          <SummaryCard label="Laatste controle" value={latestRun?.status ? statusLabel(latestRun.status) : (loading ? "—" : "Nog niet gedraaid")} icon={Activity} caption={latestRun ? formatDate(latestRun.finished_at || latestRun.created_at) : "Nog geen run"} tone={latestRun?.status === "FAILED" ? "danger" : latestRun?.status === "SUCCEEDED" ? "success" : "neutral"} />
+          <SummaryCard label="E-mails in wachtrij" value={loading ? "—" : queuedNotifications} icon={Mail} caption="Wachten op verzending" tone={queuedNotifications > 0 ? "warning" : "success"} />
         </section>
 
         <div className="grid gap-6 xl:grid-cols-[1.4fr_1fr]">
           <div className="space-y-6">
-            <Panel title="Alerts" subtitle="Actuele problemen en eerder opgeloste incidenten.">
-              {alerts.length === 0 ? <Empty>Geen monitoringalerts. Alle beheerde systemen zijn gezond.</Empty> : <div className="space-y-3">{alerts.slice(0, 30).map((alert) => (
+            <Panel title="Meldingen" subtitle="Actuele problemen en eerder opgeloste meldingen.">
+              {alerts.length === 0 ? <Empty>Geen meldingen. Alle domeinen en websites zijn gezond.</Empty> : <div className="space-y-3">{alerts.slice(0, 30).map((alert) => (
                 <div key={alert.id} className="rounded-xl border border-slate-100 p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <div className="flex flex-wrap items-center gap-2"><strong className="text-sm">{domainName.get(alert.domain_id) || alert.domain_id.slice(0, 8)}</strong><Badge tone={alertTone(alert)}>{alert.severity}</Badge><Badge>{alert.check_type}</Badge><Badge tone={alert.status === "RESOLVED" ? "success" : alert.status === "ACKNOWLEDGED" ? "warning" : "danger"}>{alert.status}</Badge></div>
+                      <div className="flex flex-wrap items-center gap-2"><strong className="text-sm">{domainName.get(alert.domain_id) || alert.domain_id.slice(0, 8)}</strong><Badge tone={alertTone(alert)}>{statusLabel(alert.severity)}</Badge><Badge>{checkLabel(alert.check_type)}</Badge><Badge tone={alert.status === "RESOLVED" ? "success" : alert.status === "ACKNOWLEDGED" ? "warning" : "danger"}>{statusLabel(alert.status)}</Badge></div>
                       <p className="mt-2 text-sm text-slate-600">{alert.message}</p>
                       <p className="mt-1 text-xs text-slate-400">Eerste detectie {formatDate(alert.first_seen_at)} · laatste detectie {formatDate(alert.last_seen_at)}</p>
                     </div>
@@ -202,38 +203,38 @@ export default function MonitoringConsole({ embedded = false }: { embedded?: boo
               ))}</div>}
             </Panel>
 
-            <Panel title="Automation runs" subtitle="Audit trail van de autonome dagelijkse domeinmonitor.">
-              {runs.length === 0 ? <Empty>Nog geen automation-runs.</Empty> : <div className="space-y-3">{runs.slice(0, 20).map((run) => {
+            <Panel title="Automatische controles" subtitle="Logboek van de dagelijkse domeincontrole.">
+              {runs.length === 0 ? <Empty>Nog geen automatische controles uitgevoerd.</Empty> : <div className="space-y-3">{runs.slice(0, 20).map((run) => {
                 const output = run.output ?? {};
                 const changeCount = Number(output['change_count'] ?? 0);
                 const overall = String(output['overall_status'] ?? "—");
-                return <div key={run.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><div className="flex items-center gap-2"><strong className="text-sm">{run.domain_id ? domainName.get(run.domain_id) || run.domain_id.slice(0, 8) : "Monitoring run"}</strong><Badge tone={runTone(run.status)}>{run.status}</Badge></div><span className="mt-1 block text-xs text-slate-400">{formatDate(run.finished_at || run.created_at)} · overall {overall} · {changeCount} relevante wijziging(en)</span>{run.error_message ? <span className="mt-1 block text-xs text-red-600">{run.error_message}</span> : null}</div><Clock3 size={16} className="text-slate-300" /></div>;
+                return <div key={run.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"><div><div className="flex items-center gap-2"><strong className="text-sm">{run.domain_id ? domainName.get(run.domain_id) || run.domain_id.slice(0, 8) : "Monitoring run"}</strong><Badge tone={runTone(run.status)}>{statusLabel(run.status)}</Badge></div><span className="mt-1 block text-xs text-slate-400">{formatDate(run.finished_at || run.created_at)} · overall {overall} · {changeCount} relevante wijziging(en)</span>{run.error_message ? <span className="mt-1 block text-xs text-red-600">{run.error_message}</span> : null}</div><Clock3 size={16} className="text-slate-300" /></div>;
               })}</div>}
             </Panel>
           </div>
 
           <div className="space-y-6">
-            <Panel title="Migadu delivery" subtitle="SMTP transport en notification scheduler.">
+            <Panel title="E-mailverzending" subtitle="Verzending van meldingen via Migadu.">
               <div className="space-y-4 text-sm">
-                <StatusRow label="SMTP transport" ok={delivery?.transport_ok === true} value={delivery?.transport_ok === true ? "TLS / SMTP bereikbaar" : "Niet gevalideerd"} />
-                <StatusRow label="Credentials" ok={delivery?.credentials_configured === true} value={delivery?.credentials_configured ? "Geconfigureerd" : "Nog niet ingesteld"} />
-                <StatusRow label="Scheduler" ok={delivery?.enabled === true} value={delivery?.enabled ? `Actief · ${delivery.schedule}` : "Uitgeschakeld"} />
-                <StatusRow label="Laatste probe" ok={delivery?.transport_ok === true} value={formatDate(delivery?.last_probe_at)} />
+                <StatusRow label="Mailserver" ok={delivery?.transport_ok === true} value={delivery?.transport_ok === true ? "Bereikbaar" : "Niet gevalideerd"} />
+                <StatusRow label="Inloggegevens" ok={delivery?.credentials_configured === true} value={delivery?.credentials_configured ? "Ingesteld" : "Nog niet ingesteld"} />
+                <StatusRow label="Planning" ok={delivery?.enabled === true} value={delivery?.enabled ? `Actief · ${delivery.schedule}` : "Uitgeschakeld"} />
+                <StatusRow label="Laatste test" ok={delivery?.transport_ok === true} value={formatDate(delivery?.last_probe_at)} />
               </div>
-              <button type="button" onClick={toggleDelivery} disabled={!delivery?.credentials_configured || busyId === "delivery"} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40">{delivery?.enabled ? "Delivery uitschakelen" : "Delivery inschakelen"}</button>
-              {!delivery?.credentials_configured ? <p className="mt-3 text-xs leading-5 text-slate-500">Delivery blijft bewust uit totdat de Migadu SMTP-gebruikersnaam en het SMTP-wachtwoord als Supabase secrets zijn ingesteld.</p> : null}
+              <button type="button" onClick={toggleDelivery} disabled={!delivery?.credentials_configured || busyId === "delivery"} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40">{delivery?.enabled ? "E-mailmeldingen uitzetten" : "E-mailmeldingen aanzetten"}</button>
+              {!delivery?.credentials_configured ? <p className="mt-3 text-xs leading-5 text-slate-500">E-mailmeldingen blijven uit totdat de inloggegevens van Migadu zijn ingesteld.</p> : null}
             </Panel>
 
-            <Panel title="Notification outbox" subtitle="Queued, verzonden en mislukte monitoringberichten.">
-              {notifications.length === 0 ? <Empty>De outbox is leeg.</Empty> : <div className="space-y-3">{notifications.slice(0, 25).map((notification) => {
+            <Panel title="Verzonden meldingen" subtitle="Meldingen in de wachtrij, verzonden en mislukt.">
+              {notifications.length === 0 ? <Empty>Nog geen meldingen verstuurd.</Empty> : <div className="space-y-3">{notifications.slice(0, 25).map((notification) => {
                 const payload = notification.payload ?? {};
                 const domainId = String(payload['domain_id'] ?? "");
-                return <div key={notification.id} className="rounded-xl border border-slate-100 p-3"><div className="flex items-center justify-between gap-2"><div><strong className="text-xs">{domainName.get(domainId) || "Monitoring"}</strong><span className="block text-xs text-slate-400">{notification.event_type} · {formatDate(notification.created_at)}</span></div><div className="flex items-center gap-2"><Badge tone={notificationTone(notification.status)}>{notification.status}</Badge>{notification.status === "FAILED" ? <button type="button" disabled={busyId === notification.id} onClick={() => retryNotification(notification)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 disabled:opacity-50" title="Opnieuw proberen"><RotateCcw size={14} /></button> : null}</div></div>{notification.error_message ? <p className="mt-2 text-xs leading-5 text-red-600">{notification.error_message}</p> : null}</div>;
+                return <div key={notification.id} className="rounded-xl border border-slate-100 p-3"><div className="flex items-center justify-between gap-2"><div><strong className="text-xs">{domainName.get(domainId) || (notification.event_type === "CONTACT_ENQUIRY" ? String(payload["name"] ?? "Aanvraag") : "Monitoring")}</strong><span className="block text-xs text-slate-400">{eventLabel(notification.event_type)} · {formatDate(notification.created_at)}</span></div><div className="flex items-center gap-2"><Badge tone={notificationTone(notification.status)}>{statusLabel(notification.status)}</Badge>{notification.status === "FAILED" ? <button type="button" disabled={busyId === notification.id} onClick={() => retryNotification(notification)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 disabled:opacity-50" title="Opnieuw proberen"><RotateCcw size={14} /></button> : null}</div></div>{notification.error_message ? <p className="mt-2 text-xs leading-5 text-red-600">{notification.error_message}</p> : null}</div>;
               })}</div>}
             </Panel>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white shadow-sm">
-              <div className="mb-2 flex items-center gap-2 text-emerald-300"><ShieldCheck size={16} /><strong className="text-sm">Read-only infrastructure monitoring</strong></div>
+              <div className="mb-2 flex items-center gap-2 text-emerald-300"><ShieldCheck size={16} /><strong className="text-sm">Alleen-lezen controle van domeinen en websites</strong></div>
               <p className="text-xs leading-5 text-slate-400">De monitor controleert en rapporteert zelfstandig. DNS-, hosting- en mailrecords worden nooit automatisch gewijzigd zonder expliciete goedkeuring.</p>
             </div>
           </div>
