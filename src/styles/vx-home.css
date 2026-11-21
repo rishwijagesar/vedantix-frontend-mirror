@@ -292,10 +292,23 @@
 @media (min-width: 960px) {
   .vx-hero { padding-top: calc(72px + clamp(32px, 6vw, 72px)); }
   .vx-hero__photo { inset: 0 0 0 auto; width: 62%; height: 100%; }
-  .vx-hero__photo img { object-position: 60% 40%; }
+  /* Smalle, hoge fotokolom: naar rechts schuiven zodat beide gezichten in beeld blijven. */
+  .vx-hero__photo img { object-position: 80% 35%; }
   .vx-hero__photo::after { background: linear-gradient(90deg, var(--vx-hero) 0%, #0a1428d1 22%, #0a142826 58%, #0a142859 100%), linear-gradient(180deg, #0a1428b3 0%, transparent 22%, transparent 70%, var(--vx-hero) 100%); }
   .vx-hero__layout { grid-template-columns: minmax(0, 1fr); }
   .vx-hero__copy { max-width: 620px; }
+}
+/* Laptops met een lage viewport (bv. 1366×768, of 1920×1080 op 125% schaal): hele hero boven de vouw. */
+@media (min-width: 960px) and (max-height: 900px) {
+  .vx-hero { padding-top: calc(72px + clamp(16px, 4vh, 48px)); padding-bottom: clamp(28px, 5vh, 64px); }
+  .vx-hero .vx-h1 { font-size: clamp(2rem, 5.2vh + .4rem, 3rem); }
+  .vx-hero .vx-lead { font-size: clamp(1rem, 1.6vh + .4rem, 1.15rem); margin-top: 12px; }
+  .vx-hero__actions { margin-top: clamp(16px, 2.6vh, 28px); }
+  .vx-hero__note { margin-top: 10px; }
+  .vx-hero__chips { margin-top: clamp(12px, 2.2vh, 26px); }
+  .vx-hero__rating { margin-top: 12px; }
+  .vx-hero__alt { margin-top: 12px; }
+  .vx-hero__clients { margin-top: clamp(20px, 3.5vh, 56px); }
 }
 
 /* Woordweb: losse tools worden één app ---------------------------------------- */
